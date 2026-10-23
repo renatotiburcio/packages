@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XForge.Mapper</RootNamespace>
+
+    <!-- Packaging -->
+    <PackageId>XForge.Mapper</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>XForge</Authors>
+    <Company>XForge</Company>
+    <Product>XForge.Mapper</Product>
+    <Description>Simple, flexible and fast object-to-object mapper for .NET with a fully fluent API. Convention-based mapping, custom member mappings, merges onto existing instances, polymorphism, collections, enums, records/immutable types and configuration validation.</Description>
+    <PackageTags>mapper;mapping;automapper;mapster;fluent;dto;cqrs;clean-architecture</PackageTags>
+    <PackageProjectUrl>https://github.com/renatotiburcio/packages</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+
+</Project>
