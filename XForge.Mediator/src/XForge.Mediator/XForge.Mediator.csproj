@@ -15,7 +15,7 @@
     <Product>XForge.Mediator</Product>
     <Description>Simple, flexible and fast in-process mediator for requests, commands, queries, notifications and streams. Clean/CQRS-friendly with pipeline behaviors, pre/post processors, exception handling and publishing strategies.</Description>
     <PackageTags>mediator;mediatr;cqrs;clean-architecture;pipeline;in-memory;eventing;commands;queries</PackageTags>
-    <PackageProjectUrl>https://github.com/XForge/Packages</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/renatotiburcio/packages</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>

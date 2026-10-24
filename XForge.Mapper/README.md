@@ -116,17 +116,32 @@ Suportado e anotado `[RequiresDynamicCode]`/`[RequiresUnreferencedCode]` (parida
 | Projeção LINQ (ProjectTo) | ✅ | ✅ | ❌ | ✅ | 🗺️ roadmap |
 | Zero reflection em runtime | ❌ | ❌ | ✅ | ❌ | 🗺️ roadmap (source generator) |
 
+## Performance
+
+Resultados medidos (BenchmarkDotNet, .NET 8 — detalhes e metodologia em [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md)):
+
+| Cenário | XForge.Mapper | AutoMapper 12 | Mapster 10 | Mapperly 4.3 (source-gen) |
+|---|---:|---:|---:|---:|
+| Simples (6 propriedades) | **60.5 ns** | 67.8 ns | 21.6 ns | 10.9 ns |
+| Membro customizado | **84.1 ns** | 91.1 ns | 16.9 ns | 5.6 ns |
+| Merge em instância existente | **60.8 ns** | 66.7 ns | 28.9 ns | 12.3 ns |
+| Grafo complexo (nested + 10 itens) | 830 ns | **290 ns** | 163 ns | 150 ns |
+| Lista (10 itens) | 465 ns | **293 ns** | 154 ns | 135 ns |
+
+Leitura honesta: **batemos o AutoMapper em simples/custom/merge** (0.89–0.92×, mesma alocação); grafos
+grandes ficam entre AutoMapper e Mapster/Mapperly (eles inlinam o plano do elemento na expressão do pai —
+inlining recursivo de planos é o próximo passo do motor, junto com o source generator para AOT total).
+
 ## Como funciona (performance)
 
-1. **Plano por par de tipos** — construído sob demanda (ou no `Validate()`) e cacheado em
-   `ConcurrentDictionary` na configuração: o hot path é lookup de dicionário + delegates tipados.
-2. **Getters/setters tipados por membro** — `PropertyInfo` vira `Func<TSource, TMember>`/`Action<TDest, TMember>`
-   compilados; conversões por membro são delegates específicos (nunca `object` no caminho principal).
-3. **Conversor dedicado por par de tipos** — enums (nome/numérico), strings (parse/format invariante),
-   nullables (wrappers compilados por expressão, sem boxing), coleções (List/Array/HashSet/Dictionary com
-   conversor de elemento), operadores `implicit`/`explicit`, `IConvertible`.
-4. **Contexto sob demanda** — `MappingContext` (cache de instâncias, profundidade, mapper) só é criado quando
-   o plano declara necessidade (ciclos, `MaxDepth`, callbacks com mapper).
+1. **Fast action único** — todas as atribuições context-free são compiladas em **um único delegate**
+   por plano (técnica AutoMapper/Mapster): uma invocação por mapa.
+2. **Plano por par de tipos** — construído sob demanda (ou no `Validate()`) e cacheado em
+   `ConcurrentDictionary` na configuração; planos aninhados também cacheados no closure dos conversores.
+3. **Getters/setters/conversores tipados por membro** — compilados 1×; conversões específicas por par
+   (nunca `object` no caminho principal); sem `Expression.Compile` de árvore inteira (build de plano rápido).
+4. **Contexto sob demanda** — `MappingContext` (cache de instâncias para ciclos, `MaxDepth`, mapper)
+   só é criado quando o plano declara necessidade — zero alocação em grafos simples.
 
 > Benchmarks comparativos (BenchmarkDotNet vs AutoMapper 12, Mapster 10) são o próximo passo — a arquitetura
 > atual evita `Expression.Compile` de árvores inteiras (build de plano mais rápido) e aloca menos por mapa.

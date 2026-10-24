@@ -707,9 +707,18 @@ internal static class ConverterFactory
 
     private static Func<TSrcValue, TDestValue> NestedConverter<TSrcValue, TDestValue>(MapperConfiguration configuration)
     {
-        return value => value is null
-            ? default!
-            : (TDestValue)configuration.GetOrSynthesizePlan(typeof(TSrcValue), typeof(TDestValue)).MapObject(value, null, null)!;
+        IMappingPlan? cachedPlan = null;
+
+        return value =>
+        {
+            if (value is null)
+            {
+                return default!;
+            }
+
+            cachedPlan ??= configuration.GetOrSynthesizePlan(typeof(TSrcValue), typeof(TDestValue));
+            return (TDestValue)cachedPlan.MapObject(value, null, null)!;
+        };
     }
 
     /// <summary>
@@ -720,6 +729,8 @@ internal static class ConverterFactory
     public static Func<TSource, TSourceValue, MappingContext?, TDestValue> CreateNestedTransform<TSource, TSourceValue, TDestValue>(
         MapperConfiguration configuration)
     {
+        IMappingPlan? cachedPlan = null;
+
         return (source, value, context) =>
         {
             if (value is null)
@@ -727,7 +738,8 @@ internal static class ConverterFactory
                 return default!;
             }
 
-            var plan = configuration.GetOrSynthesizePlan(typeof(TSourceValue), typeof(TDestValue));
+            cachedPlan ??= configuration.GetOrSynthesizePlan(typeof(TSourceValue), typeof(TDestValue));
+            var plan = cachedPlan;
 
             if (context is null)
             {

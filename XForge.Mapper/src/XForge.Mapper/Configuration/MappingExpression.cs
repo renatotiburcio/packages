@@ -150,7 +150,7 @@ public sealed class MappingExpression<TSource, TDestination>
 
     /// <summary>
     /// Registers a derived map used when the source runtime type matches:
-    /// <c>.Include<Employee, EmployeeDto>()</c>.
+    /// <c>.Include&lt;Employee, EmployeeDto&gt;()</c>.
     /// </summary>
     public MappingExpression<TSource, TDestination> Include<TDerivedSource, TDerivedDestination>()
         where TDerivedSource : TSource

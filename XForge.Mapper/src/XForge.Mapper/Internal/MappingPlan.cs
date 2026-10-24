@@ -30,6 +30,7 @@ internal interface IMemberBinding<TSource, TDestination>
 
 /// <summary>
 /// One destination member binding: typed getter → transform (converter/nested plan/identity) → typed setter.
+/// Used for context-dependent members (circular references, conditional ignores).
 /// </summary>
 internal sealed class ValueBinding<TSource, TDestination, TSourceValue, TValue> : IMemberBinding<TSource, TDestination>
 {
@@ -51,8 +52,7 @@ internal sealed class ValueBinding<TSource, TDestination, TSourceValue, TValue> 
     {
         try
         {
-            var raw = _transform(source, _getter(source), context);
-            _setter(destination, raw);
+            _setter(destination, _transform(source, _getter(source), context));
         }
         catch (MappingException)
         {
@@ -89,26 +89,35 @@ internal sealed class ConditionalBinding<TSource, TDestination> : IMemberBinding
 }
 
 /// <summary>
-/// Compiled mapping plan for one source→destination pair: destination factory + ordered member bindings +
-/// Before/After callbacks. Cached per <see cref="MapperConfiguration"/>; execution is allocation-free
-/// unless the plan requires a context (circular references / MaxDepth / mapper-aware callbacks).
+/// Compiled mapping plan for one source→destination pair:
+/// <list type="bullet">
+///   <item><description><c>_fastAction</c> — ALL context-free assignments compiled into a single delegate
+///   (one invocation per map, like AutoMapper/Mapster);</description></item>
+///   <item><description><c>_slowBindings</c> — context-dependent members (circular refs, conditional ignores)
+///   executed via interface dispatch;</description></item>
+///   <item><description>Before/After callbacks.</description></item>
+/// </list>
+/// Cached per <see cref="MapperConfiguration"/>.
 /// </summary>
 internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
     where TSource : notnull
     where TDestination : notnull
 {
     private readonly Func<TSource, TDestination> _factory;
-    private readonly List<IMemberBinding<TSource, TDestination>> _bindings;
+    private readonly Action<TSource, TDestination>? _fastAction;
+    private readonly List<IMemberBinding<TSource, TDestination>> _slowBindings;
     private readonly List<Delegate> _before;
     private readonly List<Delegate> _after;
     private readonly int? _maxDepth;
     private readonly bool _requiresContext;
 
-    public MappingPlan(Func<TSource, TDestination> factory, List<IMemberBinding<TSource, TDestination>> bindings,
-        List<Delegate> before, List<Delegate> after, int? maxDepth, bool requiresContext)
+    public MappingPlan(Func<TSource, TDestination> factory, Action<TSource, TDestination>? fastAction,
+        List<IMemberBinding<TSource, TDestination>> slowBindings, List<Delegate> before, List<Delegate> after,
+        int? maxDepth, bool requiresContext)
     {
         _factory = factory;
-        _bindings = bindings;
+        _fastAction = fastAction;
+        _slowBindings = slowBindings;
         _before = before;
         _after = after;
         _maxDepth = maxDepth;
@@ -119,7 +128,7 @@ internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
     public Type DestinationType => typeof(TDestination);
     public bool RequiresContext => _requiresContext;
     public int? MaxDepth => _maxDepth;
-    public int BindingCount => _bindings.Count;
+    public int BindingCount => _slowBindings.Count + (_fastAction is null ? 0 : 1);
 
     public TDestination Map(TSource source, TDestination? destination, MappingContext? context)
     {
@@ -133,7 +142,9 @@ internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
 
         InvokeCallbacks(_before, source, destination, context);
 
-        foreach (var binding in _bindings)
+        _fastAction?.Invoke(source, destination);
+
+        foreach (var binding in _slowBindings)
         {
             binding.Apply(source, destination, context);
         }
@@ -156,7 +167,9 @@ internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
     {
         var typedDestination = (TDestination)destination;
 
-        foreach (var binding in _bindings)
+        _fastAction?.Invoke((TSource)source, typedDestination);
+
+        foreach (var binding in _slowBindings)
         {
             binding.Apply((TSource)source, typedDestination, context);
         }
@@ -167,7 +180,9 @@ internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
         var typedDestination = (TDestination)destination;
         InvokeCallbacks(_before, (TSource)source, typedDestination, context);
 
-        foreach (var binding in _bindings)
+        _fastAction?.Invoke((TSource)source, typedDestination);
+
+        foreach (var binding in _slowBindings)
         {
             binding.Apply((TSource)source, typedDestination, context);
         }

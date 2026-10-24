@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-pack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Build & test XForge.Mediator
+        run: |
+          dotnet build XForge.Mediator/XForge.Mediator.sln -c Release
+          dotnet test XForge.Mediator/XForge.Mediator.sln -c Release --no-build
+
+      - name: Build & test XForge.Mapper
+        run: |
+          dotnet build XForge.Mapper/XForge.Mapper.sln -c Release
+          dotnet test XForge.Mapper/XForge.Mapper.sln -c Release --no-build
+
+      - name: Pack
+        run: |
+          dotnet pack XForge.Mediator/src/XForge.Mediator/XForge.Mediator.csproj -c Release -o artifacts/mediator
+          dotnet pack XForge.Mapper/src/XForge.Mapper/XForge.Mapper.csproj -c Release -o artifacts/mapper
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/**/*.nupkg
+          retention-days: 14
