@@ -30,10 +30,16 @@ jobs:
           dotnet build XForge.Mapper/XForge.Mapper.sln -c Release
           dotnet test XForge.Mapper/XForge.Mapper.sln -c Release --no-build
 
+      - name: Build & test XForge.Mapper.Projections
+        run: |
+          dotnet build XForge.Mapper.Projections/XForge.Mapper.Projections.sln -c Release
+          dotnet test XForge.Mapper.Projections/XForge.Mapper.Projections.sln -c Release --no-build
+
       - name: Pack
         run: |
           dotnet pack XForge.Mediator/src/XForge.Mediator/XForge.Mediator.csproj -c Release -o artifacts/mediator
           dotnet pack XForge.Mapper/src/XForge.Mapper/XForge.Mapper.csproj -c Release -o artifacts/mapper
+          dotnet pack XForge.Mapper.Projections/src/XForge.Mapper.Projections/XForge.Mapper.Projections.csproj -c Release -o artifacts/mapper-projections
 
       - name: Upload packages
         uses: actions/upload-artifact@v4

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XForge.Mapper.Projections</RootNamespace>
+
+    <!-- Packaging -->
+    <PackageId>XForge.Mapper.Projections</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>XForge</Authors>
+    <Company>XForge</Company>
+    <Product>XForge.Mapper.Projections</Product>
+    <Description>IQueryable projection support (ProjectTo) for XForge.Mapper — builds LINQ Select expressions from your fluent maps, translated by EF Core.</Description>
+    <PackageTags>mapper;mapping;automapper;mapster;projection;projectto;iqueryable;efcore;cqrs</PackageTags>
+    <PackageProjectUrl>https://github.com/renatotiburcio/packages</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\XForge.Mapper\src\XForge.Mapper\XForge.Mapper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
