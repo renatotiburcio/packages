@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XForge.Mediator.Behaviors</RootNamespace>
+
+    <!-- Packaging -->
+    <PackageId>XForge.Mediator.Behaviors</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>XForge</Authors>
+    <Company>XForge</Company>
+    <Product>XForge.Mediator.Behaviors</Product>
+    <Description>Pipeline behaviors for XForge.Mediator — validation (XForge.Validation) and logging behaviors.</Description>
+    <PackageTags>mediator;behaviors;validation;pipeline;cqrs;clean-architecture</PackageTags>
+    <PackageProjectUrl>https://github.com/renatotiburcio/packages</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\XForge.Mediator\src\XForge.Mediator\XForge.Mediator.csproj" />
+    <ProjectReference Include="..\..\..\XForge.Validation\src\XForge.Validation\XForge.Validation.csproj" />
+  </ItemGroup>
+
+</Project>

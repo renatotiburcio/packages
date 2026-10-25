@@ -35,11 +35,17 @@ jobs:
           dotnet build XForge.Mapper.Projections/XForge.Mapper.Projections.sln -c Release
           dotnet test XForge.Mapper.Projections/XForge.Mapper.Projections.sln -c Release --no-build
 
+      - name: Build & test XForge.Mediator.Behaviors
+        run: |
+          dotnet build XForge.Mediator.Behaviors/XForge.Mediator.Behaviors.sln -c Release
+          dotnet test XForge.Mediator.Behaviors/XForge.Mediator.Behaviors.sln -c Release --no-build
+
       - name: Pack
         run: |
           dotnet pack XForge.Mediator/src/XForge.Mediator/XForge.Mediator.csproj -c Release -o artifacts/mediator
           dotnet pack XForge.Mapper/src/XForge.Mapper/XForge.Mapper.csproj -c Release -o artifacts/mapper
           dotnet pack XForge.Mapper.Projections/src/XForge.Mapper.Projections/XForge.Mapper.Projections.csproj -c Release -o artifacts/mapper-projections
+          dotnet pack XForge.Mediator.Behaviors/src/XForge.Mediator.Behaviors/XForge.Mediator.Behaviors.csproj -c Release -o artifacts/mediator-behaviors
 
       - name: Upload packages
         uses: actions/upload-artifact@v4
