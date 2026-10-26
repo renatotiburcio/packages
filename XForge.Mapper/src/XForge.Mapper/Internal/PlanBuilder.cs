@@ -4,12 +4,17 @@ using System.Reflection;
 namespace XForge.Mapper.Internal;
 
 /// <summary>
-/// Builds <see cref="MappingPlan{TSource, TDestination}"/>s from <see cref="MapDefinition"/>s.
-/// Performance design: context-free bindings are compiled into a SINGLE delegate via expression trees
-/// (one invocation per map, like AutoMapper/Mapster); only context-dependent bindings (circular
-/// references, MaxDepth, mapper-aware callbacks, conditional ignores) remain as per-member dispatch.
+/// Constrói <see cref="MappingPlan{TSource, TDestination}"/>s a partir de <see cref="MapDefinition"/>s.
+///
+/// Estratégia (v0.2 — inlining recursivo de planos): o plano é construído PRIMEIRO por expression trees
+/// recursivas — objetos aninhados (MemberInit) e coleções (Select + materialização) são compilados em
+/// UM único delegate por plano (<c>createAndPopulate</c>), a técnica usada por AutoMapper/Mapster.
+///
+/// Pares com ciclos no grafo de tipos, MaxDepth, ConstructUsing ou callbacks em mapas aninhados caem
+/// para o caminho clássico: bindings por membro com <see cref="MappingContext"/> (cache de instâncias
+/// para referências circulares e controle de profundidade).
 /// </summary>
-internal static class PlanBuilder
+internal static partial class PlanBuilder
 {
     private static readonly MethodInfo BuildGenericMethod =
         typeof(PlanBuilder).GetMethod(nameof(BuildGeneric), BindingFlags.NonPublic | BindingFlags.Static)!;
@@ -37,161 +42,169 @@ internal static class PlanBuilder
         where TSource : notnull
         where TDestination : notnull
     {
-        var errors = new List<string>();
+        // MaxDepth exige rastreio de profundidade e ConstructUsing exige fábrica custom — caminho clássico direto.
+        if (definition.MaxDepth is null && definition.ConstructUsing is null)
+        {
+            try
+            {
+                return BuildInlinePlan<TSource, TDestination>(definition, configuration, requireDestinationMemberSource);
+            }
+            catch (PlanFallbackException)
+            {
+                // par não inlinável (ex.: destino sem construtor acessível) — caminho clássico reporta os erros
+            }
+            catch (CycleDetectedException)
+            {
+                // ciclo no grafo — caminho clássico resolve com cache de instâncias
+            }
+        }
 
-        var sourceMembers = ReflectionHelper.GetReadableMembers(typeof(TSource));
-        var destinationMembers = ReflectionHelper.GetWritableMembers(typeof(TDestination));
-        var overrides = CollectOverrides(definition, configuration);
+        return BuildClassicPlan<TSource, TDestination>(definition, configuration, requireDestinationMemberSource);
+    }
 
-        // ----- destination factory -----
-        var factory = ResolveFactory<TSource, TDestination>(definition, configuration, sourceMembers, errors);
+    // ------------------------------------------------------------------
+    // Plano inline (v0.2): criação + população em uma única expression tree
+    // ------------------------------------------------------------------
 
-        // ----- member bindings: fast (compiled block) vs slow (context-dependent dispatch) -----
+    private static IMappingPlan BuildInlinePlan<TSource, TDestination>(
+        MapDefinition definition, MapperConfiguration configuration, bool requireDestinationMemberSource)
+        where TSource : notnull
+        where TDestination : notnull
+    {
+        var context = new PlanContext(configuration);
         var sourceParameter = Expression.Parameter(typeof(TSource), "source");
-        var destinationParameter = Expression.Parameter(typeof(TDestination), "destination");
-        var fastStatements = new List<Expression>();
+        var creation = BuildCreation(
+            definition, typeof(TSource), typeof(TDestination), sourceParameter, context,
+            requireDestinationMemberSource, topLevel: true);
+
+        if (context.Errors.Count > 0)
+        {
+            throw new MappingValidationException(context.Errors);
+        }
+
+        // ----- bindings lentos (membros que caíram no fallback: IgnoreIf, dicionários por classe, etc.) -----
         var slowBindings = new List<IMemberBinding<TSource, TDestination>>();
-        var slowNeedsContext = false;
 
-        foreach (var destinationMember in destinationMembers)
+        foreach (var fallback in creation.FallbackMembers)
         {
-            var destinationMemberType = destinationMember.GetMemberType();
-            var memberOverride = FindOverride(overrides, destinationMember.Name);
+            var binding = DispatchSlowBinding(
+                typeof(TSource), typeof(TDestination), fallback.MemberName, fallback.DestinationMember,
+                fallback.SourceMember, fallback.Override, fallback.SourceValueType, fallback.DestinationValueType,
+                configuration);
 
-            // pure ignore → member intentionally not mapped
-            if (memberOverride is not null && memberOverride.Ignore && memberOverride.IgnoreCondition is null)
+            if (binding is not null)
             {
-                continue;
+                slowBindings.Add((IMemberBinding<TSource, TDestination>)binding);
             }
-
-            var hasExplicitMap = memberOverride is { SourceValue: not null };
-            var conventionSourceMember = hasExplicitMap ? null : FindSourceMember(sourceMembers, destinationMember.Name);
-
-            if (!hasExplicitMap && conventionSourceMember is null)
-            {
-                if (requireDestinationMemberSource)
-                {
-                    errors.Add($"Destination member '{destinationMember.Name}' on '{typeof(TDestination)}' has no matching " +
-                               "source member and no Map/Ignore override (RequireDestinationMemberSource).");
-                }
-
-                continue;
-            }
-
-            var sourceValueType = hasExplicitMap
-                ? memberOverride!.SourceValue!.GetType().GetGenericArguments()[1]
-                : conventionSourceMember!.GetMemberType();
-
-            var destinationAccess = destinationMember switch
-            {
-                PropertyInfo destinationProperty => Expression.Property(destinationParameter, destinationProperty),
-                FieldInfo destinationField => Expression.Field(destinationParameter, destinationField),
-                _ => (Expression)null!,
-            };
-
-            // source access: convention member or user selector invoke
-            Expression sourceAccess;
-
-            if (hasExplicitMap)
-            {
-                sourceAccess = Expression.Invoke(
-                    Expression.Constant(memberOverride!.SourceValue!), sourceParameter);
-
-                if (sourceAccess.Type != sourceValueType)
-                {
-                    sourceAccess = Expression.Convert(sourceAccess, sourceValueType);
-                }
-            }
-            else
-            {
-                sourceAccess = conventionSourceMember switch
-                {
-                    PropertyInfo sourceProperty => Expression.Property(sourceParameter, sourceProperty),
-                    FieldInfo sourceField => Expression.Field(sourceParameter, sourceField),
-                    _ => (Expression)null!,
-                };
-            }
-
-            // value conversion chain (context-free)
-            Expression valueExpression = sourceAccess;
-
-            if (sourceValueType != destinationMemberType)
-            {
-                var converter = ConverterFactory.TryCreate(sourceValueType, destinationMemberType, configuration, out var converterRequiresContext);
-
-                // nested class → class: needs mapping context (cycles) → slow path
-                if (converterRequiresContext)
-                {
-                    valueExpression = null!;
-                }
-                else if (converter is null)
-                {
-                    continue; // incompatible — skipped silently (AutoMapper-like behavior)
-                }
-                else
-                {
-                    var invokeArgument = sourceAccess.Type == sourceValueType
-                        ? sourceAccess
-                        : Expression.Convert(sourceAccess, sourceValueType);
-                    valueExpression = Expression.Invoke(Expression.Constant(converter), invokeArgument);
-                }
-            }
-
-            var isConditional = memberOverride is not null && memberOverride.IgnoreCondition is not null;
-            var isFast = valueExpression is not null && !isConditional;
-
-            if (isFast && valueExpression is not null)
-            {
-                if (valueExpression.Type != destinationMemberType)
-                {
-                    valueExpression = Expression.Convert(valueExpression, destinationMemberType);
-                }
-
-                fastStatements.Add(Expression.Assign(destinationAccess, valueExpression));
-                continue;
-            }
-
-            // ----- slow path: conditional ignores and nested class→class (context-aware) -----
-            var slowBinding = (IMemberBinding<TSource, TDestination>?)BuildSlowBindingMethod
-                .MakeGenericMethod(typeof(TSource), typeof(TDestination), sourceValueType, destinationMemberType)
-                .Invoke(null, new[]
-                {
-                    (object)destinationMember.Name!,
-                    (object)destinationMember!,
-                    (object?)conventionSourceMember!,
-                    (object?)memberOverride!,
-                    (object)configuration!,
-                });
-
-            if (slowBinding is null)
-            {
-                continue;
-            }
-
-            if (isNestedClass(sourceValueType, destinationMemberType))
-            {
-                slowNeedsContext = true;
-            }
-
-            slowBindings.Add(slowBinding);
         }
 
-        if (errors.Count > 0)
-        {
-            throw new MappingValidationException(errors);
-        }
+        // ----- createAndPopulate: UM delegate cria E popula (fast path do Map sem callbacks) -----
+        var createAndPopulate = CompileCreateAndPopulate<TSource, TDestination>(creation, sourceParameter);
 
-        // ----- compiled fast action (single delegate for all context-free assignments) -----
+        // ----- create (fábrica): apenas o construtor — caminho com callbacks e CreateDestinationObject -----
+        var factory = Expression.Lambda<Func<TSource, TDestination>>(creation.NewInstance, sourceParameter).Compile();
+
+        // ----- fastAction (merge/PopulateObject): atribuições contra a instância de destino -----
         Action<TSource, TDestination>? fastAction = null;
 
-        if (fastStatements.Count > 0)
+        if (creation.Assignments.Count > 0)
         {
-            var block = Expression.Block(typeof(void), fastStatements);
+            var destinationParameter = Expression.Parameter(typeof(TDestination), "destination");
+            var statements = new List<Expression>(creation.Assignments.Count);
+
+            foreach (var assignment in creation.Assignments)
+            {
+                statements.Add(Expression.Assign(MemberAccess(destinationParameter, assignment.Member), assignment.Value));
+            }
+
             fastAction = Expression.Lambda<Action<TSource, TDestination>>(
-                block, sourceParameter, destinationParameter).Compile();
+                Expression.Block(typeof(void), statements), sourceParameter, destinationParameter).Compile();
         }
 
-        // ----- callbacks (base first, then own) -----
+        // ----- callbacks (base primeiro, depois os próprios) -----
+        var (before, after) = CollectCallbacks(definition, configuration);
+
+        var requiresContext = slowBindings.Count > 0 ||
+                              before.Concat(after).Any(callback => callback is not Action<TSource, TDestination>);
+
+        return new MappingPlan<TSource, TDestination>(
+            factory, createAndPopulate, fastAction, slowBindings, before, after, null, requiresContext);
+    }
+
+    private static Func<TSource, TDestination> CompileCreateAndPopulate<TSource, TDestination>(
+        InlineCreation creation, ParameterExpression sourceParameter)
+    {
+        if (creation.Assignments.Count == 0)
+        {
+            return Expression.Lambda<Func<TSource, TDestination>>(creation.NewInstance, sourceParameter).Compile();
+        }
+
+        if (creation.HasParameterlessConstructor)
+        {
+            // new TDest { membros... } — MemberInit: uma única expressão
+            var bindings = new List<MemberBinding>(creation.Assignments.Count);
+
+            foreach (var assignment in creation.Assignments)
+            {
+                bindings.Add(Expression.Bind(assignment.Member, assignment.Value));
+            }
+
+            var memberInit = Expression.MemberInit(creation.NewInstance, bindings);
+            return Expression.Lambda<Func<TSource, TDestination>>(memberInit, sourceParameter).Compile();
+        }
+
+        // destino com construtor parametrizado (records) + membros graváveis restantes: bloco com variável local
+        var variable = Expression.Variable(creation.DestinationType, "destination");
+        var statements = new List<Expression>(creation.Assignments.Count + 2)
+        {
+            Expression.Assign(variable, creation.NewInstance),
+        };
+
+        foreach (var assignment in creation.Assignments)
+        {
+            statements.Add(Expression.Assign(MemberAccess(variable, assignment.Member), assignment.Value));
+        }
+
+        statements.Add(variable);
+        return Expression.Lambda<Func<TSource, TDestination>>(
+            Expression.Block(new[] { variable }, statements), sourceParameter).Compile();
+    }
+
+    // ------------------------------------------------------------------
+    // Helpers compartilhados entre os caminhos inline e clássico
+    // ------------------------------------------------------------------
+
+    /// <summary>Dispatch genérico do binding lento (usado pelo fallback inline e pelo caminho clássico).</summary>
+    private static object? DispatchSlowBinding(
+        Type sourceType, Type destinationType, string memberName, MemberInfo destinationMember,
+        MemberInfo? sourceMember, MemberOverride? memberOverride, Type sourceValueType, Type destinationValueType,
+        MapperConfiguration configuration)
+    {
+        return BuildSlowBindingMethod
+            .MakeGenericMethod(sourceType, destinationType, sourceValueType, destinationValueType)
+            .Invoke(null, new[]
+            {
+                (object)memberName,
+                (object)destinationMember,
+                (object?)sourceMember,
+                (object?)memberOverride,
+                (object)configuration,
+            });
+    }
+
+    private static Expression MemberAccess(Expression instance, MemberInfo member)
+    {
+        return member switch
+        {
+            PropertyInfo property => Expression.Property(instance, property),
+            FieldInfo field => Expression.Field(instance, field),
+            _ => throw new ArgumentException($"Member '{member.Name}' is not a property or field.", nameof(member)),
+        };
+    }
+
+    private static (List<Delegate> Before, List<Delegate> After) CollectCallbacks(
+        MapDefinition definition, MapperConfiguration configuration)
+    {
         var before = new List<Delegate>();
         var after = new List<Delegate>();
 
@@ -208,326 +221,6 @@ internal static class PlanBuilder
 
         before.AddRange(definition.BeforeMap);
         after.AddRange(definition.AfterMap);
-
-        var needsContextForCallbacks = before.Concat(after).Any(callback => callback is not Action<TSource, TDestination>);
-        var requiresContext = slowNeedsContext || slowBindings.Count > 0 ||
-                              definition.MaxDepth is not null || needsContextForCallbacks;
-
-        return new MappingPlan<TSource, TDestination>(factory, fastAction, slowBindings, before, after, definition.MaxDepth, requiresContext);
-    }
-
-    private static bool isNestedClass(Type sourceType, Type destinationType)
-    {
-        return IsMappableClass(Nullable.GetUnderlyingType(sourceType) ?? sourceType) &&
-               IsMappableClass(Nullable.GetUnderlyingType(destinationType) ?? destinationType);
-    }
-
-    private static bool IsMappableClass(Type type)
-    {
-        var effective = Nullable.GetUnderlyingType(type) ?? type;
-        return !effective.IsPrimitive && effective != typeof(decimal) && effective != typeof(string) &&
-               effective != typeof(DateTime) && effective != typeof(DateTimeOffset) && effective != typeof(Guid) &&
-               effective != typeof(TimeSpan) && effective != typeof(object) && !effective.IsEnum;
-    }
-
-    // ------------------------------------------------------------------
-    // Slow binding builder (conditional ignores, nested class→class with context)
-    // ------------------------------------------------------------------
-
-    private static IMemberBinding<TSource, TDestination>? BuildSlowBinding<TSource, TDestination, TSourceValue, TValue>(
-        string destinationMemberName, MemberInfo destinationMember, MemberInfo? sourceMember,
-        MemberOverride? memberOverride, MapperConfiguration configuration)
-        where TSource : notnull
-        where TDestination : notnull
-    {
-        var setter = ReflectionHelper.CreateSetter<TDestination, TValue>(destinationMember);
-        IMemberBinding<TSource, TDestination>? inner = null;
-
-        if (memberOverride is not null && memberOverride.SourceValue is not null)
-        {
-            // explicit user selector
-            if (typeof(TSourceValue) != typeof(TValue))
-            {
-                return null;
-            }
-
-            var overrideGetter = (Func<TSource, TValue>)memberOverride.SourceValue;
-            inner = new ValueBinding<TSource, TDestination, TValue, TValue>(
-                destinationMemberName, overrideGetter, setter, IdentityTransform<TSource, TValue>());
-        }
-        else if (sourceMember is not null)
-        {
-            var actualSourceType = sourceMember.GetMemberType();
-            var getter = ReflectionHelper.CreateGetter<TSource, TSourceValue>(sourceMember);
-
-            if (actualSourceType == typeof(TValue))
-            {
-                // TSourceValue == TValue at runtime — same closed generic
-                var identityGetter = (Func<TSource, TValue>)(object)getter;
-                inner = new ValueBinding<TSource, TDestination, TValue, TValue>(
-                    destinationMemberName, identityGetter, setter, IdentityTransform<TSource, TValue>());
-            }
-            else
-            {
-                var converter = ConverterFactory.TryCreate(actualSourceType, typeof(TValue), configuration, out var converterRequiresContext);
-
-                if (converter is null)
-                {
-                    return null;
-                }
-
-                if (!converterRequiresContext)
-                {
-                    var typedConverter = (Func<TSourceValue, TValue>)converter;
-                    inner = new ValueBinding<TSource, TDestination, TSourceValue, TValue>(
-                        destinationMemberName, getter, setter, (source, value, context) => typedConverter(value));
-                }
-                else
-                {
-                    // nested class→class: context-aware resolver (cycles, MaxDepth)
-                    var resolver = CreateNestedPlanResolver<TSourceValue, TValue>(configuration);
-                    inner = new ValueBinding<TSource, TDestination, TSourceValue, TValue>(
-                        destinationMemberName, getter, setter, (source, value, context) => resolver(value, context));
-                }
-            }
-        }
-
-        if (inner is null)
-        {
-            return null;
-        }
-
-        if (memberOverride is not null && memberOverride.IgnoreCondition is not null)
-        {
-            var condition = (Func<TSource, bool>)memberOverride.IgnoreCondition;
-            return new ConditionalBinding<TSource, TDestination>(condition, inner);
-        }
-
-        return inner;
-    }
-
-    private static Func<TSource, TValue, MappingContext?, TValue> IdentityTransform<TSource, TValue>()
-    {
-        return static (source, value, context) => value;
-    }
-
-    /// <summary>Context-aware nested resolution: instance cache (cycles, cache-before-populate) + MaxDepth.</summary>
-    private static Func<TSrcValue, MappingContext?, TDestValue> CreateNestedPlanResolver<TSrcValue, TDestValue>(
-        MapperConfiguration configuration)
-    {
-        IMappingPlan? cachedPlan = null;
-
-        return (value, context) =>
-        {
-            if (value is null)
-            {
-                return default!;
-            }
-
-            cachedPlan ??= configuration.GetOrSynthesizePlan(typeof(TSrcValue), typeof(TDestValue));
-            var plan = cachedPlan;
-
-            if (context is null)
-            {
-                return (TDestValue)plan.MapObject(value, null, null)!;
-            }
-
-            if (context.TryGetCreated(typeof(TSrcValue), typeof(TDestValue), value, out var existing))
-            {
-                return (TDestValue)existing!;
-            }
-
-            context.Depth++;
-
-            if (context.Depth >= context.MaxDepth)
-            {
-                context.Depth--;
-                return default!; // MaxDepth: nested levels beyond the limit stay at their default value
-            }
-
-            try
-            {
-                var destinationInstance = plan.CreateDestinationObject(value, context);
-                context.CacheCreated(typeof(TSrcValue), typeof(TDestValue), value, destinationInstance);
-                plan.PopulateObject(value, destinationInstance, context);
-                return (TDestValue)destinationInstance;
-            }
-            finally
-            {
-                context.Depth--;
-            }
-        };
-    }
-
-    // ------------------------------------------------------------------
-    // Destination factory
-    // ------------------------------------------------------------------
-
-    private static Func<TSource, TDestination> ResolveFactory<TSource, TDestination>(
-        MapDefinition definition, MapperConfiguration configuration, List<MemberInfo> sourceMembers, List<string> errors)
-    {
-        if (definition.ConstructUsing is Delegate customFactory)
-        {
-            return (Func<TSource, TDestination>)customFactory;
-        }
-
-        var destinationType = typeof(TDestination);
-
-        var parameterless = destinationType.GetConstructor(Type.EmptyTypes);
-        if (parameterless is not null && parameterless.IsPublic)
-        {
-            var emptySourceParameter = Expression.Parameter(typeof(TSource), "source");
-            return Expression.Lambda<Func<TSource, TDestination>>(
-                Expression.New(parameterless), emptySourceParameter).Compile();
-        }
-
-        var constructor = ChooseParameterizedConstructor(destinationType);
-
-        if (constructor is null)
-        {
-            errors.Add($"Destination '{destinationType}' has no accessible constructor to create instances.");
-            return source => throw new MappingException(
-                $"Destination '{destinationType}' has no accessible constructor.");
-        }
-
-        var parameters = constructor.GetParameters();
-        var arguments = new Expression[parameters.Length];
-        var sourceParameter = Expression.Parameter(typeof(TSource), "source");
-
-        for (var i = 0; i < parameters.Length; i++)
-        {
-            var parameter = parameters[i];
-            var sourceMember = FindSourceMember(sourceMembers, parameter.Name!);
-
-            if (sourceMember is null)
-            {
-                var defaultValue = parameter.HasDefaultValue
-                    ? Expression.Constant(parameter.DefaultValue, parameter.ParameterType)
-                    : Expression.Constant(parameter.ParameterType.IsValueType
-                        ? Activator.CreateInstance(parameter.ParameterType)
-                        : null, parameter.ParameterType);
-                arguments[i] = defaultValue;
-                continue;
-            }
-
-            var memberAccess = Expression.PropertyOrField(sourceParameter, sourceMember.Name);
-            arguments[i] = ConvertExpression(
-                memberAccess, sourceMember.GetMemberType(), parameter.ParameterType, configuration, errors,
-                $"constructor parameter '{parameter.Name}' of '{destinationType}'");
-        }
-
-        try
-        {
-            var body = Expression.New(constructor, arguments);
-            return Expression.Lambda<Func<TSource, TDestination>>(body, sourceParameter).Compile();
-        }
-        catch (Exception exception)
-        {
-            errors.Add($"Destination '{destinationType}': cannot bind constructor '{constructor}': {exception.Message}");
-            return source => throw new MappingException(
-                $"Destination '{destinationType}' could not be constructed.");
-        }
-    }
-
-    private static ConstructorInfo? ChooseParameterizedConstructor(Type destinationType)
-    {
-        ConstructorInfo? best = null;
-        var bestScore = -1;
-
-        foreach (var constructor in destinationType.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
-        {
-            var score = constructor.GetParameters().Length;
-            if (score > bestScore)
-            {
-                best = constructor;
-                bestScore = score;
-            }
-        }
-
-        return bestScore > 0 ? best : null;
-    }
-
-    private static Expression ConvertExpression(Expression memberAccess, Type sourceType, Type targetType,
-        MapperConfiguration configuration, List<string> errors, string contextDescription)
-    {
-        if (sourceType == targetType)
-        {
-            return memberAccess;
-        }
-
-        var converter = ConverterFactory.TryCreate(sourceType, targetType, configuration, out _);
-
-        if (converter is not null)
-        {
-            return Expression.Invoke(Expression.Constant(converter), memberAccess);
-        }
-
-        try
-        {
-            return Expression.Convert(memberAccess, targetType);
-        }
-        catch (Exception exception)
-        {
-            errors.Add($"Cannot convert {sourceType} to {targetType} for {contextDescription}: {exception.Message}");
-            return Expression.Constant(targetType.IsValueType ? Activator.CreateInstance(targetType) : null, targetType);
-        }
-    }
-
-    // ------------------------------------------------------------------
-    // Overrides / member resolution
-    // ------------------------------------------------------------------
-
-    private static List<MemberOverride> CollectOverrides(MapDefinition definition, MapperConfiguration configuration)
-    {
-        var overrides = new List<MemberOverride>();
-
-        foreach (var (baseSource, baseDestination) in definition.IncludeBases)
-        {
-            var baseDefinition = configuration.FindDefinition(baseSource, baseDestination);
-
-            if (baseDefinition is not null)
-            {
-                overrides.AddRange(CollectOverrides(baseDefinition, configuration));
-            }
-        }
-
-        overrides.AddRange(definition.MemberOverrides);
-        return overrides;
-    }
-
-    private static MemberOverride? FindOverride(List<MemberOverride> overrides, string destinationMemberName)
-    {
-        MemberOverride? found = null;
-
-        foreach (var candidate in overrides)
-        {
-            if (string.Equals(candidate.DestinationMemberName, destinationMemberName, StringComparison.OrdinalIgnoreCase))
-            {
-                found = candidate; // last wins (derived overrides come after base overrides)
-            }
-        }
-
-        return found;
-    }
-
-    private static MemberInfo? FindSourceMember(List<MemberInfo> sourceMembers, string name)
-    {
-        foreach (var member in sourceMembers)
-        {
-            if (member.Name == name)
-            {
-                return member;
-            }
-        }
-
-        foreach (var member in sourceMembers)
-        {
-            if (string.Equals(member.Name, name, StringComparison.OrdinalIgnoreCase))
-            {
-                return member;
-            }
-        }
-
-        return null;
+        return (before, after);
     }
 }

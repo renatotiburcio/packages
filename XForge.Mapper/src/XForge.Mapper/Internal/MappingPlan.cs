@@ -91,8 +91,11 @@ internal sealed class ConditionalBinding<TSource, TDestination> : IMemberBinding
 /// <summary>
 /// Compiled mapping plan for one source→destination pair:
 /// <list type="bullet">
-///   <item><description><c>_fastAction</c> — ALL context-free assignments compiled into a single delegate
-///   (one invocation per map, like AutoMapper/Mapster);</description></item>
+///   <item><description><c>_createAndPopulate</c> — creates AND populates the destination in a single
+///   delegate (recursive inlined expression tree: nested objects + collections, v0.2); used when there
+///   are no Before callbacks;</description></item>
+///   <item><description><c>_fastAction</c> — assignments-only delegate (merge path: Map onto existing
+///   instance / PopulateObject);</description></item>
 ///   <item><description><c>_slowBindings</c> — context-dependent members (circular refs, conditional ignores)
 ///   executed via interface dispatch;</description></item>
 ///   <item><description>Before/After callbacks.</description></item>
@@ -104,6 +107,7 @@ internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
     where TDestination : notnull
 {
     private readonly Func<TSource, TDestination> _factory;
+    private readonly Func<TSource, TDestination>? _createAndPopulate;
     private readonly Action<TSource, TDestination>? _fastAction;
     private readonly List<IMemberBinding<TSource, TDestination>> _slowBindings;
     private readonly List<Delegate> _before;
@@ -111,11 +115,12 @@ internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
     private readonly int? _maxDepth;
     private readonly bool _requiresContext;
 
-    public MappingPlan(Func<TSource, TDestination> factory, Action<TSource, TDestination>? fastAction,
-        List<IMemberBinding<TSource, TDestination>> slowBindings, List<Delegate> before, List<Delegate> after,
-        int? maxDepth, bool requiresContext)
+    public MappingPlan(Func<TSource, TDestination> factory, Func<TSource, TDestination>? createAndPopulate,
+        Action<TSource, TDestination>? fastAction, List<IMemberBinding<TSource, TDestination>> slowBindings,
+        List<Delegate> before, List<Delegate> after, int? maxDepth, bool requiresContext)
     {
         _factory = factory;
+        _createAndPopulate = createAndPopulate;
         _fastAction = fastAction;
         _slowBindings = slowBindings;
         _before = before;
@@ -134,6 +139,21 @@ internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
     {
         if (destination is null)
         {
+            // fast path: um único delegate cria E popula (sem Before callbacks que precisam preceder)
+            if (_before.Count == 0 && _createAndPopulate is not null)
+            {
+                destination = _createAndPopulate(source);
+                context?.CacheCreated(typeof(TSource), typeof(TDestination), source, destination);
+
+                foreach (var binding in _slowBindings)
+                {
+                    binding.Apply(source, destination, context);
+                }
+
+                InvokeCallbacks(_after, source, destination, context);
+                return destination;
+            }
+
             destination = _factory(source);
 
             // cache before populating: nested bindings may point back to this instance (circular graphs)

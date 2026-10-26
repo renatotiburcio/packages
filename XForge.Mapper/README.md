@@ -122,37 +122,37 @@ Resultados medidos (BenchmarkDotNet, .NET 8 — detalhes e metodologia em [`docs
 
 | Cenário | XForge.Mapper | AutoMapper 12 | Mapster 10 | Mapperly 4.3 (source-gen) |
 |---|---:|---:|---:|---:|
-| Simples (6 propriedades) | **60.5 ns** | 67.8 ns | 21.6 ns | 10.9 ns |
-| Membro customizado | **84.1 ns** | 91.1 ns | 16.9 ns | 5.6 ns |
-| Merge em instância existente | **60.8 ns** | 66.7 ns | 28.9 ns | 12.3 ns |
-| Grafo complexo (nested + 10 itens) | 830 ns | **290 ns** | 163 ns | 150 ns |
-| Lista (10 itens) | 465 ns | **293 ns** | 154 ns | 135 ns |
+| Simples (6 propriedades) | **46.9 ns** | 58.3 ns | 20.0 ns | 11.1 ns |
+| Membro customizado | **69.1 ns** | 73.8 ns | 16.7 ns | 4.7 ns |
+| Merge em instância existente | **48.9 ns** | 59.8 ns | 25.5 ns | 9.3 ns |
+| Grafo complexo (nested + 10 itens) | 249.5 ns / **776 B** | 219.0 ns / 928 B | 154 ns | 143 ns |
+| Lista (10 itens) | 392 ns | **222 ns** | 123 ns | 110 ns |
 
-Leitura honesta: **batemos o AutoMapper em simples/custom/merge** (0.89–0.92×, mesma alocação); grafos
-grandes ficam entre AutoMapper e Mapster/Mapperly (eles inlinam o plano do elemento na expressão do pai —
-inlining recursivo de planos é o próximo passo do motor, junto com o source generator para AOT total).
+Leitura honesta: **batemos o AutoMapper em simples/custom/merge (0.80–0.94×)** e, no grafo complexo,
+empatamos em tempo (1.14× default, 0.94× in-process) **alocando menos (0.84×)** — o inlining
+recursivo compila aninhados e coleções em uma única expression tree. `MapList` (lista de nível
+superior) ainda tem dispatch por elemento (1.77×); o `XForge.Mapper.SourceGenerator` (roadmap) fecha
+esse custo e persegue o teto do Mapperly.
 
 ## Como funciona (performance)
 
-1. **Fast action único** — todas as atribuições context-free são compiladas em **um único delegate**
-   por plano (técnica AutoMapper/Mapster): uma invocação por mapa.
-2. **Plano por par de tipos** — construído sob demanda (ou no `Validate()`) e cacheado em
-   `ConcurrentDictionary` na configuração; planos aninhados também cacheados no closure dos conversores.
-3. **Getters/setters/conversores tipados por membro** — compilados 1×; conversões específicas por par
-   (nunca `object` no caminho principal); sem `Expression.Compile` de árvore inteira (build de plano rápido).
-4. **Contexto sob demanda** — `MappingContext` (cache de instâncias para ciclos, `MaxDepth`, mapper)
-   só é criado quando o plano declara necessidade — zero alocação em grafos simples.
-
-> Benchmarks comparativos (BenchmarkDotNet vs AutoMapper 12, Mapster 10) são o próximo passo — a arquitetura
-> atual evita `Expression.Compile` de árvores inteiras (build de plano mais rápido) e aloca menos por mapa.
-> Para o teto absoluto (dispatch 100% gerado), o roadmap prevê o `XForge.Mapper.SourceGenerator` (paridade Mapperly
-> com config em runtime).
+1. **Inlining recursivo de planos** — objetos aninhados (MemberInit) e coleções (materializador
+   pré-dimensionado + projeção de elemento pré-compilada) são compilados em **uma única expression
+   tree** por plano (`createAndPopulate`): uma invocação por mapa, técnica AutoMapper/Mapster.
+2. **Ciclos detectados em build-time** — o grafo de tipos é percorrido na construção; ciclos caem
+   para o caminho clássico com `MappingContext` (cache de instâncias, `MaxDepth`).
+3. **Plano por par de tipos** — construído sob demanda (ou no `Validate()`) e cacheado em
+   `ConcurrentDictionary` na configuração.
+4. **Projeções como constantes** — a projeção de elemento de cada coleção é compilada uma vez e
+   injetada como `Expression.Constant` (lambdas citadas têm invocação ~3× mais lenta).
+5. **Contexto sob demanda** — `MappingContext` só é criado quando o plano declara necessidade
+   (ciclos, `MaxDepth`, callbacks com mapper) — zero alocação em grafos simples.
 
 ## Roadmap
 
-- `ProjectTo` (projeção LINQ para EF Core) — pacote `XForge.Mapper.Projections`.
 - Atributos de mapeamento (`[XForgeMap]`, `[XForgeIgnore]`).
-- `XForge.Mapper.SourceGenerator` — dispatch gerado em compile-time (AOT total).
+- `XForge.Mapper.SourceGenerator` — dispatch gerado em compile-time (AOT total; inclui materialização
+  de listas em uma única chamada).
 - Naming strategies (PascalCase/snake_case/camelCase), flattening/unflattening.
 
 ## Estrutura
@@ -162,11 +162,12 @@ XForge.Mapper/
 ├── src/XForge.Mapper/
 │   ├── Contracts (IMapper, expressões fluent, exceções)
 │   ├── Configuration (MapperConfiguration, MappingExpression, DSL)
-│   ├── Internal (planos, bindings, conversores, contexto — não público)
+│   ├── Internal (planos com inlining recursivo, bindings, conversores, contexto — não público)
 │   ├── XForgeMapper.cs (implementação de IMapper)
 │   ├── MappingExtensions.cs (MapTo/MapOver/MapListTo)
 │   └── XForgeMapperServiceCollectionExtensions.cs (AddXForgeMapper)
-├── tests/XForge.Mapper.Tests/     # 39 testes (net8.0 + net10.0)
+├── tests/XForge.Mapper.Tests/     # 52 testes (net8.0 + net10.0)
+├── benchmarks/                    # BenchmarkDotNet vs AutoMapper/Mapster/Mapperly
 └── docs/ANALISE-PACOTES.md        # consolidação REA das 4 bibliotecas analisadas
 ```
 
