@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XForge.Mapper.Generators</RootNamespace>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
+
+    <!-- Packaging: analyzer layout — consumers reference the nupkg and the generator runs in the compiler -->
+    <PackageId>XForge.Mapper.SourceGenerator</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>XForge</Authors>
+    <Company>XForge</Company>
+    <Product>XForge.Mapper.SourceGenerator</Product>
+    <Description>Source generator do XForge.Mapper: métodos parciais em classes marcadas com [XForgeMap] ganham corpo gerado em compile-time com as mesmas convenções do motor de runtime (nomes, aninhados, coleções, records). Dispatch gerado — zero reflection em runtime.</Description>
+    <PackageTags>mapper;mapping;source-generator;roslyn;automapper;mapster;mapperly;fluent;dto;cqrs;clean-architecture</PackageTags>
+    <PackageProjectUrl>https://github.com/renatotiburcio/packages</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;RS2008</NoWarn>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
+    <ProjectReference Include="..\..\..\XForge.Mapper\src\XForge.Mapper\XForge.Mapper.csproj" />
+  </ItemGroup>
+
+</Project>
