@@ -126,13 +126,12 @@ Resultados medidos (BenchmarkDotNet, .NET 8 — detalhes e metodologia em [`docs
 | Membro customizado | **69.1 ns** | 73.8 ns | 16.7 ns | 4.7 ns |
 | Merge em instância existente | **48.9 ns** | 59.8 ns | 25.5 ns | 9.3 ns |
 | Grafo complexo (nested + 10 itens) | 249.5 ns / **776 B** | 219.0 ns / 928 B | 154 ns | 143 ns |
-| Lista (10 itens) | 392 ns | **222 ns** | 123 ns | 110 ns |
+| Lista (10 itens) | **254.5 ns / 736 B** | 285.5 ns / 888 B | 148.5 ns | 134.8 ns |
 
-Leitura honesta: **batemos o AutoMapper em simples/custom/merge (0.80–0.94×)** e, no grafo complexo,
-empatamos em tempo (1.14× default, 0.94× in-process) **alocando menos (0.84×)** — o inlining
-recursivo compila aninhados e coleções em uma única expression tree. `MapList` (lista de nível
-superior) ainda tem dispatch por elemento (1.77×); o `XForge.Mapper.SourceGenerator` (roadmap) fecha
-esse custo e persegue o teto do Mapperly.
+Leitura honesta: **batemos o AutoMapper em todos os cenários medidos** (0.80×–0.94×) com igual ou
+menor alocação — o inlining recursivo compila aninhados e coleções em uma única expression tree, e
+o `MapList` materializa a lista inteira em uma chamada. `XForge.Mapper.SourceGenerator` (roadmap)
+persegue o teto do Mapperly.
 
 ## Como funciona (performance)
 

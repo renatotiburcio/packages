@@ -59,25 +59,23 @@ Evolução vs v0.1.0: **830 ns → 249.5 ns (3.3× mais rápido)**; alocações 
 
 | Biblioteca | Tempo | Alocação | vs AutoMapper |
 |---|---:|---:|---:|
-| AutoMapper 12.0.1 (baseline) | 222.1 ns | 888 B | 1.00× |
-| **XForge.Mapper** | 392.4 ns | 928 B | 1.77× |
-| Mapster 10.0.13 | 122.9 ns | 696 B | 0.55× |
-| Mapperly 4.3.1 (source-gen) | 110.4 ns | 696 B | 0.50× |
+| **XForge.Mapper** | **254.5 ns** | **736 B (0.83×)** | **0.89×** |
+| AutoMapper 12.0.1 (baseline) | 285.5 ns | 888 B | 1.00× |
+| Mapster 10.0.13 | 148.5 ns | 696 B | 0.52× |
+| Mapperly 4.3.1 (source-gen) | 134.8 ns | 696 B | 0.47× |
 
-`MapList` despacha o plano por elemento (dispatch tipado + callbacks por item) — absoluto melhorou
-(465 → 392 ns), mas o teto exige o source generator (materialização da lista inteira em uma chamada).
+Fast path do `MapList`: planos puros materializam a lista inteira em UMA chamada
+(entrada da v0.2.0; antes era 392 ns com dispatch por elemento — 1.77× do AutoMapper).
 
 ## Leitura honesta dos resultados (v0.2.0)
 
-1. **XForge.Mapper bate o AutoMapper em simples, customizado e merge** (0.80–0.94×) com a mesma
-   alocação.
+1. **XForge.Mapper bate o AutoMapper em TODOS os cenários de mapa simples** — simples 0.80×,
+   customizado 0.94×, merge 0.82× e lista 0.89× — sempre com igual ou menor alocação.
 2. **Grafos complexos empatam com o AutoMapper em tempo (1.14× default / 0.94× in-process) e
    alocam MENOS (0.84×)** — consequência do inlining recursivo: objetos aninhados e coleções são
    compilados em uma única expression tree com projeções pré-compiladas e materialização
    pré-dimensionada.
-3. **`MapList` (lista de nível superior) ainda tem dispatch por elemento** (1.77×) — o
-   `XForge.Mapper.SourceGenerator` elimina esse custo (no roadmap).
-4. **Mapperly (source generator) segue o teto absoluto** — código gerado em compile-time, zero
+3. **Mapperly (source generator) segue o teto absoluto** — código gerado em compile-time, zero
    runtime. Categoria diferente (como documentado no XForge.Mediator).
 
 ## Otimizações aplicadas nesta rodada (v0.2.0)

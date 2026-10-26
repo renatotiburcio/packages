@@ -403,4 +403,67 @@ public class InliningTests
         public ClienteV2Dto? Cliente { get; set; }
         public List<ItemV2Dto> Itens { get; set; } = new();
     }
+
+    [Fact]
+    public void MapList_pure_plan_materializes_all_items()
+    {
+        var mapper = MapperConfiguration.Create(cfg => cfg.CreateMap<PessoaV2, PessoaV2Dto>()).CreateMapper();
+
+        var pessoas = new List<PessoaV2>
+        {
+            new() { Nome = "ana" },
+            new() { Nome = "bruno" },
+            new() { Nome = "carla" },
+        };
+
+        var dtos = mapper.MapList<PessoaV2, PessoaV2Dto>(pessoas);
+
+        Assert.Equal(3, dtos.Count);
+        Assert.Equal("ana", dtos[0].Nome);
+        Assert.Equal("bruno", dtos[1].Nome);
+        Assert.Equal("carla", dtos[2].Nome);
+        Assert.NotSame(pessoas[0], dtos[0]); // novos objetos
+    }
+
+    [Fact]
+    public void MapList_skips_null_items()
+    {
+        var mapper = MapperConfiguration.Create(cfg => cfg.CreateMap<PessoaV2, PessoaV2Dto>()).CreateMapper();
+
+        var pessoas = new List<PessoaV2?> { new() { Nome = "ana" }, null, new() { Nome = "bruno" } };
+
+        var dtos = mapper.MapList<PessoaV2?, PessoaV2Dto>(pessoas!);
+
+        Assert.Equal(2, dtos.Count);
+        Assert.Equal("ana", dtos[0].Nome);
+        Assert.Equal("bruno", dtos[1].Nome);
+    }
+
+    [Fact]
+    public void MapList_runs_callbacks_per_element()
+    {
+        // com callbacks o plano NÃO usa o materializador rápido — callbacks por item preservados
+        var contador = 0;
+
+        var mapper = MapperConfiguration.Create(cfg =>
+            cfg.CreateMap<PessoaV2, PessoaV2Dto>()
+                .AfterMap((s, d) => contador++)).CreateMapper();
+
+        var pessoas = new List<PessoaV2> { new() { Nome = "ana" }, new() { Nome = "bruno" } };
+
+        var dtos = mapper.MapList<PessoaV2, PessoaV2Dto>(pessoas);
+
+        Assert.Equal(2, dtos.Count);
+        Assert.Equal(2, contador); // AfterMap executado por elemento
+    }
+}
+
+public class PessoaV2
+{
+    public string Nome { get; set; } = string.Empty;
+}
+
+public class PessoaV2Dto
+{
+    public string Nome { get; set; } = string.Empty;
 }

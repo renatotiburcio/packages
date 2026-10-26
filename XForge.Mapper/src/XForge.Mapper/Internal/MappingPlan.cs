@@ -178,6 +178,45 @@ internal sealed class MappingPlan<TSource, TDestination> : IMappingPlan
         return Map((TSource)source, (TDestination?)destination, context);
     }
 
+    /// <summary>
+    /// Materializador da lista inteira em UMA chamada (fast path do <c>MapList</c>), disponível
+    /// apenas para planos puros: <c>createAndPopulate</c> compilado, sem callbacks e sem bindings
+    /// lentos. Nesses casos o loop é um delegate C# comum — sem dispatch por elemento. Quando o
+    /// plano tem callbacks/bindings, retorna <see langword="null"/> (caminho por elemento preserva
+    /// a semântica de callbacks por item). Race benigno: threads concorrentes compilam
+    /// materializadores equivalentes.
+    /// </summary>
+    internal Func<IEnumerable<TSource>, List<TDestination>>? GetListMapper()
+    {
+        if (_listMapper is null && _createAndPopulate is not null &&
+            _slowBindings.Count == 0 && _before.Count == 0 && _after.Count == 0)
+        {
+            var elementMapper = _createAndPopulate;
+            _listMapper = source =>
+            {
+                // pré-dimensionado via ICollection.Count (evita crescimento do List)
+                var count = source is ICollection<TSource> collection ? collection.Count : 0;
+                var result = new List<TDestination>(count);
+
+                foreach (var item in source)
+                {
+                    if (item is null)
+                    {
+                        continue; // paridade: itens nulos são ignorados
+                    }
+
+                    result.Add(elementMapper(item));
+                }
+
+                return result;
+            };
+        }
+
+        return _listMapper;
+    }
+
+    private Func<IEnumerable<TSource>, List<TDestination>>? _listMapper;
+
     public object CreateDestinationObject(object source, MappingContext? context)
     {
         return _factory((TSource)source)!;

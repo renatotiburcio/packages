@@ -15,6 +15,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
   distintos) são suportados sem falso positivo.
 - Fast path do `Map` sem callbacks: um único delegate cria E popula a instância
   (`createAndPopulate`), eliminando a chamada separada de fábrica + população.
+- **Fast path do `MapList`**: planos puros (sem callbacks e sem bindings lentos) materializam a
+  lista inteira em UMA chamada — delegate C# com pré-dimensionamento e sem dispatch por elemento.
+  Planos com callbacks/bindings lentos preservam a execução por elemento (callbacks por item).
 - Materialização de coleções com pré-dimensionamento via `ICollection.Count` (elimina o crescimento
   dinâmico do `ToList` sobre `Select` — ~8,5 KB economizados em listas de 1.000 elementos).
 - Projeções de elemento compiladas separadamente e injetadas como `Expression.Constant`

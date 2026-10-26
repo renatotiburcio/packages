@@ -70,6 +70,19 @@ public sealed class XForgeMapper : IMapper
         }
 
         var plan = _configuration.GetOrSynthesizePlan(typeof(TSource), typeof(TDestination));
+
+        // fast path: planos puros materializam a lista inteira em UMA chamada (sem dispatch por elemento)
+        if (plan is MappingPlan<TSource, TDestination> typedPlan)
+        {
+            var listMapper = typedPlan.GetListMapper();
+
+            if (listMapper is not null)
+            {
+                return listMapper(source);
+            }
+        }
+
+        // caminho por elemento: planos com callbacks/bindings lentos/contexto (semântica preservada)
         var context = CreateContext(plan);
         var result = new List<TDestination>();
 
