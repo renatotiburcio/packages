@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XForge.Mediator.Generators</RootNamespace>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
+
+    <!-- Packaging: analyzer layout — consumidores recebem o source generator via o pacote -->
+    <PackageId>XForge.Mediator.SourceGenerator</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>XForge</Authors>
+    <Company>XForge</Company>
+    <Product>XForge.Mediator.SourceGenerator</Product>
+    <Description>Source generator do XForge.Mediator: handlers de request implementados na compilação são registrados e despachados por código gerado em compile-time — wrappers tipados por par (request, resposta) com cadeia de behaviors, sem reflection e sem assembly scanning.</Description>
+    <PackageTags>mediator;cqrs;source-generator;roslyn;medatr;fluent;clean-architecture;performance</PackageTags>
+    <PackageProjectUrl>https://github.com/renatotiburcio/packages</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;RS2008</NoWarn>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
+    <ProjectReference Include="..\..\..\XForge.Mediator\src\XForge.Mediator\XForge.Mediator.csproj" />
+  </ItemGroup>
+
+</Project>

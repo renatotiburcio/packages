@@ -35,6 +35,11 @@ jobs:
           dotnet build XForge.Mapper.SourceGenerator/XForge.Mapper.SourceGenerator.sln -c Release
           dotnet test XForge.Mapper.SourceGenerator/XForge.Mapper.SourceGenerator.sln -c Release --no-build
 
+      - name: Build & test XForge.Mediator.SourceGenerator
+        run: |
+          dotnet build XForge.Mediator.SourceGenerator/XForge.Mediator.SourceGenerator.sln -c Release
+          dotnet test XForge.Mediator.SourceGenerator/XForge.Mediator.SourceGenerator.sln -c Release --no-build
+
       - name: Build & test XForge.Mapper.Projections
         run: |
           dotnet build XForge.Mapper.Projections/XForge.Mapper.Projections.sln -c Release

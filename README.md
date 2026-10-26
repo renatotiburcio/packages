@@ -8,6 +8,7 @@ e pode ser consumido de forma independente ou em conjunto.
 | Pacote | Versão | Descrição | Testes |
 |---|---|---|---|
 | [`XForge.Mediator`](XForge.Mediator/) | 0.1.0 | Mediador in-process (requests, commands, queries, notifications, streams) com pipeline de behaviors — API mental do MediatR, `ValueTask` end-to-end. [Benchmarks](XForge.Mediator/docs/BENCHMARKS.md) | 50/50 (net8.0 + net10.0) |
+| [`XForge.Mediator.SourceGenerator`](XForge.Mediator.SourceGenerator/) | 0.1.0 | Source generator do Mediator: handlers da compilação ganham registro no DI + dispatch por wrapper tipado gerado, sem reflection | 6/6 (net8.0) |
 | [`XForge.Mapper`](XForge.Mapper/) | 0.2.0 | Mapeador objeto-a-objeto com API 100% fluente — convenção automática, merge, polimorfismo, coleções, records; inlining recursivo de planos. [Benchmarks](XForge.Mapper/docs/BENCHMARKS.md) | 55/55 (net8.0 + net10.0) |
 | [`XForge.Mapper.SourceGenerator`](XForge.Mapper.SourceGenerator/) | 0.1.0 | Source generator: métodos parciais em classes `[XForgeMap]` ganham corpo gerado em compile-time — mesmas convenções do motor, código C# puro (zero reflection) | 6/6 (net8.0) |
 | [`XForge.Mapper.Projections`](XForge.Mapper.Projections/) | 0.1.0 | `ProjectTo` para `IQueryable` — projeções LINQ traduzíveis pelo EF Core | 9/9 (net8.0) |
@@ -28,6 +29,7 @@ e pode ser consumido de forma independente ou em conjunto.
 dotnet test XForge.Mediator/XForge.Mediator.sln
 dotnet test XForge.Mapper/XForge.Mapper.sln
 dotnet test XForge.Mapper.SourceGenerator/XForge.Mapper.SourceGenerator.sln
+dotnet test XForge.Mediator.SourceGenerator/XForge.Mediator.SourceGenerator.sln
 dotnet test XForge.Mapper.Projections/XForge.Mapper.Projections.sln
 dotnet test XForge.Validation/XForge.Validation.sln
 dotnet test XForge.Mediator.Behaviors/XForge.Mediator.Behaviors.sln
