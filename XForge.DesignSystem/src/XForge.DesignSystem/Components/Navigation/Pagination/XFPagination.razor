@@ -36,7 +36,7 @@
                              ValueChanged="HandlePageSizeSelectAsync">
                         @foreach (var option in NormalizedPageSizeOptions)
                         {
-                            <XFSelectOption TValue="int" Value="option" Text="@option.ToString()" />
+                            <XFSelectOption @key="option" TValue="int" Value="option" Text="@option.ToString()" />
                         }
                     </XFSelect>
                 </div>

@@ -12,7 +12,7 @@
     <div><strong>Destinatario:</strong> @RecipientName (@RecipientCnpj)</div>
   </div>
   <div class="xf-nfe-items">
-    @foreach (var i in Items) { <div>@i.Code - @i.Description: @i.Quantity x @i.UnitPrice = @i.TotalPrice</div> }
+    @foreach (var i in Items) { <div @key="i">@i.Code - @i.Description: @i.Quantity x @i.UnitPrice = @i.TotalPrice</div> }
   </div>
   <div class="xf-nfe-totals">
     <div>Produtos: @TotalProducts.ToString("C")</div>

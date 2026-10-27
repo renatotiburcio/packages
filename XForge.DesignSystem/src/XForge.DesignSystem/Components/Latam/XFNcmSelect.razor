@@ -3,7 +3,7 @@
 
 <select class="xf-ncm-select" @bind="Value" @bind:after="() => ValueChanged.InvokeAsync(Value)">
   <option value="">--</option>
-  @foreach (var n in Ncms) { <option value="@n.Code">@n.Code - @n.Description (@n.Ipi%)</option> }
+  @foreach (var n in Ncms) { <option @key="n.Code" value="@n.Code">@n.Code - @n.Description (@n.Ipi%)</option> }
 </select>
 
 @code {

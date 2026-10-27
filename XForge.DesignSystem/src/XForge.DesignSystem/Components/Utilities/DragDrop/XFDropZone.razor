@@ -20,7 +20,7 @@
         @foreach (var item in Items)
         {
             var itemContext = new XFDropZoneItemContext<TItem>(item, this);
-            <div draggable="true"
+            <div @key="item" draggable="true"
                  @ondragstart="@(e => OnDragStartAsync(e, item))"
                  class="cursor-grab rounded-lg border border-surface-200 bg-bg-surface px-3 py-2 text-sm transition-all hover:shadow-md active:cursor-grabbing">
                 @if (ItemTemplate is not null)
