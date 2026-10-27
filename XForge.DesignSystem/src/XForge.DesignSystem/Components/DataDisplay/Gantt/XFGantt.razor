@@ -23,7 +23,7 @@
                     @foreach (var resource in Resources)
                     {
                         var taskCount = CountTasksForResource(resource.Id);
-                        <div class="flex items-center border-b border-border-light px-3 hover:bg-surface-100 transition-colors"
+                        <div @key="resource" class="flex items-center border-b border-border-light px-3 hover:bg-surface-100 transition-colors"
                              style="height: @(EffectiveRowHeight)px;">
                             <div class="flex items-center gap-2 truncate">
                                 @if (!string.IsNullOrEmpty(resource.Color))

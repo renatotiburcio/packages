@@ -7,7 +7,7 @@
         {
             if (fragment.IsMatch)
             {
-                <mark class="@MarkClass">@fragment.Text</mark>
+                <mark @key="fragment" class="@MarkClass">@fragment.Text</mark>
             }
             else
             {

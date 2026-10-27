@@ -11,7 +11,7 @@
                 <rect width="@SvgSize" height="@SvgSize" fill="@BackgroundColor" />
                 @foreach (var module in DarkModules)
                 {
-                    <rect x="@module.X" y="@module.Y" width="@SafeModuleSize" height="@SafeModuleSize" fill="@ForegroundColor" />
+                    <rect @key="module" x="@module.X" y="@module.Y" width="@SafeModuleSize" height="@SafeModuleSize" fill="@ForegroundColor" />
                 }
             </svg>
             @if (CenterContent is not null)

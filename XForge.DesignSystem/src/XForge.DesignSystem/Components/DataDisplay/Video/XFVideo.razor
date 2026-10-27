@@ -22,7 +22,7 @@
                 }
                 @foreach (var source in Sources)
                 {
-                    <source src="@source.Src" type="@source.Type" />
+                    <source @key="source" src="@source.Src" type="@source.Type" />
                 }
                 @foreach (var track in Tracks)
                 {

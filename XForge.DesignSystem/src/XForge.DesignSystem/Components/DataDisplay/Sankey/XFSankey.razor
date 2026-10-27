@@ -83,7 +83,7 @@
                             ? $"xf-sankey-node xf-sankey-series-{node.ColorIndex}"
                             : "xf-sankey-node";
 
-                        <g class="@nodeClass"
+                        <g @key="node" class="@nodeClass"
                            @onclick="() => HandleNodeClick(node)"
                            @onmouseover="args => HandleNodeMouseOver(args, node)"
                            @onmouseout="() => HandleMouseOut()">

@@ -24,7 +24,7 @@
             {
                 @foreach (var bar in BarRects)
                 {
-                    <rect x="@bar.X" y="@bar.Y" width="@bar.Width" height="@bar.Height"
+                    <rect @key="bar" x="@bar.X" y="@bar.Y" width="@bar.Width" height="@bar.Height"
                           fill="@EffectiveColor" opacity="0.8" rx="1" />
                 }
             }
