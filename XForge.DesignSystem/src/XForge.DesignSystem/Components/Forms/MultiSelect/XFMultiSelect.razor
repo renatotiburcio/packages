@@ -21,7 +21,7 @@
                 <div class="@ChipListClass">
                     @foreach (var selectedItem in SelectedItems.Take(MaxVisibleChips))
                     {
-                        <span class="@ChipClass">
+                        <span @key="selectedItem" class="@ChipClass">
                             <span class="min-w-0 truncate">@GetItemText(selectedItem)</span>
                             @if (!Disabled && !ReadOnly)
                             {
@@ -113,7 +113,7 @@
                         var groupedIndex = 0;
                         @foreach (var group in FilteredItems.GroupBy(GetItemGroup))
                         {
-                            <div class="@GroupHeaderClass" role="group" aria-label="@group.Key">
+                            <div @key="group.Key" class="@GroupHeaderClass" role="group" aria-label="@group.Key">
                                 @if (GroupTemplate is not null)
                                 {
                                     @GroupTemplate(group.Key)

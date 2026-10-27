@@ -42,7 +42,7 @@
                 <tr class="@HeaderRowClass">
                     @foreach (var column in VisibleColumns)
                     {
-                        <th class="@HeaderCellClass(column)" style="@ColumnStyle(column)" scope="col" aria-sort="@(HeaderCanSort(column) ? GetAriaSort(column) : null)">
+                        <th @key="column" class="@HeaderCellClass(column)" style="@ColumnStyle(column)" scope="col" aria-sort="@(HeaderCanSort(column) ? GetAriaSort(column) : null)">
                             <div class="flex min-w-0 items-center gap-2">
                                 @if (HeaderCanSort(column))
                                 {
