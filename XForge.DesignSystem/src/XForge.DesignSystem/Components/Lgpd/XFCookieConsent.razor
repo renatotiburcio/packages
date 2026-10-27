@@ -5,7 +5,7 @@
     <h3>Preferencias de Cookies (LGPD art. 18)</h3>
     @foreach (var c in Categories)
     {
-      <label><input type="checkbox" @bind="c.Enabled" /> @c.Name <small>@c.Description</small></label>
+      <label @key="c"><input type="checkbox" @bind="c.Enabled" /> @c.Name <small>@c.Description</small></label>
     }
     <button @onclick="Save">Salvar preferencias</button>
   </div>

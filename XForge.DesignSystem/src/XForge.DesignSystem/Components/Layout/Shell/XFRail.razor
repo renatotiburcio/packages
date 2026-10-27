@@ -24,7 +24,7 @@
         {
             @foreach (var item in MainItems)
             {
-                <XFRailItem Item="@item" Label="@item.Label" />
+                <XFRailItem @key="item" Item="@item" Label="@item.Label" />
             }
         }
         else
