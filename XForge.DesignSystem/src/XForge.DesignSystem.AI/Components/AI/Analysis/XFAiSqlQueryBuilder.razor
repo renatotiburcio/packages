@@ -1,0 +1,290 @@
+@using XForge.DesignSystem.Components.AI.Common
+@using XForge.DesignSystem.Services.AI
+@inherits XForgeComponentBase
+
+<section class="@RootClass"
+         style="@Style"
+         role="region"
+         aria-label="@Title"
+         aria-busy="@AriaBusyValue"
+         @attributes="AdditionalAttributes">
+
+    @* -- Header ------------------------------------------------------- *@
+    @if (ShowHeader)
+    {
+        <header class="@HeaderClass">
+            @if (HeaderContent is not null)
+            {
+                @HeaderContent
+            }
+            else
+            {
+                <div class="min-w-0">
+                    <div class="@HeaderTitleClass">
+                        <span class="inline-flex h-5 w-5 items-center justify-center text-text-muted" aria-hidden="true">
+                            @XFSvgIcons.Markup("database")
+                        </span>
+                        @Title
+                    </div>
+                </div>
+                @if (ReadOnly)
+                {
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700 ring-1 ring-emerald-200">
+                        <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("lock")</span>
+                        Somente leitura
+                    </span>
+                }
+            }
+        </header>
+    }
+
+    @* -- Composer: NL input + Generate button ------------------------- *@
+    <div class="@ComposerClass">
+        <textarea class="@TextareaClass"
+                  rows="2"
+                  value="@_nlQuery"
+                  placeholder="@Placeholder"
+                  disabled="@(Disabled || IsBusy)"
+                  aria-label="@Placeholder"
+                  @oninput="HandleInput"
+                  @onkeydown="HandleKeyDownAsync"
+                  @onkeydown:preventDefault="false"></textarea>
+
+        <button type="button"
+                class="@GenerateButtonClass"
+                disabled="@(!CanGenerate)"
+                aria-label="Gerar SQL"
+                title="Gerar SQL"
+                @onclick="GenerateAsync">
+            <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                @XFSvgIcons.Markup("wand-magic-sparkles")
+            </span>
+            <span class="hidden sm:inline">Gerar</span>
+        </button>
+    </div>
+
+    @* -- Error Banner ------------------------------------------------- *@
+    @if (HasError)
+    {
+        <div class="@ErrorBannerClass" role="alert">
+            <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden="true">
+                @XFSvgIcons.Markup("circle-exclamation")
+            </span>
+            <span>@_errorMessage</span>
+        </div>
+    }
+
+    @* -- Results Area ------------------------------------------------- *@
+    <div class="@ResultContainerClass"
+         aria-live="polite"
+         aria-label="Resultado da consulta SQL">
+
+        @if (IsBusy)
+        {
+            @* -- Loading skeleton -- *@
+            <div class="flex flex-col gap-3 animate-pulse" role="status" aria-label="Gerando SQL...">
+                <div class="h-4 w-3/4 rounded bg-surface-200"></div>
+                <div class="h-4 w-1/2 rounded bg-surface-200"></div>
+                <div class="h-32 rounded-lg bg-surface-200"></div>
+                <span class="sr-only">Gerando SQL a partir da descricao...</span>
+            </div>
+        }
+        else if (!HasQuery)
+        {
+            @* -- Empty state -- *@
+            <div class="@EmptyContainerClass">
+                <div class="@EmptyInnerClass">
+                    <div class="@EmptyIconClass" aria-hidden="true">
+                        @XFSvgIcons.Markup("code")
+                    </div>
+                    <div class="text-sm font-medium text-text-primary">Construtor de SQL por IA</div>
+                    <div class="@EmptyTextClass">
+                        Descreva a consulta que deseja em linguagem natural e a IA gerara o SQL correspondente.
+                    </div>
+                </div>
+            </div>
+        }
+        else if (_currentQuery is not null)
+        {
+            @* -- Validation status -- *@
+            @if (_currentQuery.ValidationResult.IsValid)
+            {
+                <div class="@ValidationValidClass" role="status">
+                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden="true">
+                        @XFSvgIcons.Markup("shield-check")
+                    </span>
+                    <span>SQL validado com seguranca</span>
+                    @if (_currentQuery.IsReadOnly)
+                    {
+                        <span class="ml-1 inline-flex items-center gap-0.5 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-medium">
+                            <span class="inline-flex h-2.5 w-2.5 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("lock")</span>
+                            Somente leitura
+                        </span>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="@ValidationInvalidClass" role="alert">
+                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden="true">
+                        @XFSvgIcons.Markup("circle-exclamation")
+                    </span>
+                    <span>@(_currentQuery.ValidationResult.ErrorMessage ?? "SQL rejeitado por politica de seguranca.")</span>
+                </div>
+            }
+
+            @* -- Warnings -- *@
+            @if (_currentQuery.ValidationResult.Warnings is { Count: > 0 })
+            {
+                @foreach (var warning in _currentQuery.ValidationResult.Warnings)
+                {
+                    <div class="@ValidationWarningClass" role="status">
+                        <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden="true">
+                            @XFSvgIcons.Markup("circle-exclamation")
+                        </span>
+                        <span>@warning</span>
+                    </div>
+                }
+            }
+
+            @* -- SQL Code Block -- *@
+            @if (!string.IsNullOrWhiteSpace(_currentQuery.GeneratedSql))
+            {
+                @if (SqlPreview is not null)
+                {
+                    @SqlPreview(_currentQuery)
+                }
+                else
+                {
+                    <div class="@SqlCodeBlockClass">
+                        <pre class="@SqlCodeClass"><code>@_currentQuery.GeneratedSql</code></pre>
+                        <button type="button"
+                                class="@CopyButtonClass"
+                                aria-label="@(IsCopied(_currentQuery) ? "Copiado!" : "Copiar SQL")"
+                                title="@(IsCopied(_currentQuery) ? "Copiado!" : "Copiar SQL")"
+                                @onclick="() => CopySqlAsync(_currentQuery)"
+                                @onclick:stopPropagation="true">
+                            <span class="inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">
+                                @if (IsCopied(_currentQuery))
+                                {
+                                    @XFSvgIcons.Markup("check")
+                                }
+                                else
+                                {
+                                    @XFSvgIcons.Markup("copy")
+                                }
+                            </span>
+                        </button>
+                    </div>
+                }
+            }
+
+            @* -- Touched Tables -- *@
+            @if (_currentQuery.TouchedTables is { Count: > 0 })
+            {
+                <div class="space-y-1">
+                    <div class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Tabelas referenciadas</div>
+                    <div class="@TablesContainerClass">
+                        @foreach (var table in _currentQuery.TouchedTables)
+                        {
+                            <span class="@TableBadgeClass">
+                                <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("table")</span>
+                                @table
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* -- Confidence -- *@
+            @if (_currentQuery.Confidence > 0)
+            {
+                <div class="@ConfidenceBarContainerClass">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Confianca</span>
+                    <div class="@ConfidenceBarTrackClass"
+                         role="progressbar"
+                         aria-valuenow="@((int)(_currentQuery.Confidence * 100))"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-label="Confianca da IA">
+                        <div class="@ConfidenceBarFillClass"
+                             style="width: @ConfidenceWidth(_currentQuery.Confidence)%"></div>
+                    </div>
+                    <span class="@ConfidenceLabelClass">@ConfidencePercent(_currentQuery.Confidence)</span>
+                </div>
+            }
+
+            @* -- Explanation (collapsible) -- *@
+            @if (!string.IsNullOrWhiteSpace(_currentQuery.Explanation))
+            {
+                <div class="@InfoSectionClass">
+                    <div class="@InfoHeaderClass"
+                         role="button"
+                         tabindex="0"
+                         aria-expanded="@_showExplanation"
+                         @onclick="() => _showExplanation = !_showExplanation"
+                         @onkeydown="HandleExplanationKeyDown">
+                        <span class="inline-flex items-center gap-1.5">
+                            <span class="inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("sparkles")</span>
+                            Explicacao
+                        </span>
+                        <span class="inline-flex h-3.5 w-3.5 items-center justify-center transition-transform duration-200 @(_showExplanation ? "rotate-180" : "")" aria-hidden="true">
+                            @XFSvgIcons.Markup("chevron-down")
+                        </span>
+                    </div>
+                    @if (_showExplanation)
+                    {
+                        <div class="@InfoContentClass">@_currentQuery.Explanation</div>
+                    }
+                </div>
+            }
+
+            @* -- Optimization (collapsible) -- *@
+            @if (!string.IsNullOrWhiteSpace(_currentQuery.Optimization))
+            {
+                <div class="@InfoSectionClass">
+                    <div class="@InfoHeaderClass"
+                         role="button"
+                         tabindex="0"
+                         aria-expanded="@_showOptimization"
+                         @onclick="() => _showOptimization = !_showOptimization"
+                         @onkeydown="HandleOptimizationKeyDown">
+                        <span class="inline-flex items-center gap-1.5">
+                            <span class="inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("bolt")</span>
+                            Otimizacao
+                        </span>
+                        <span class="inline-flex h-3.5 w-3.5 items-center justify-center transition-transform duration-200 @(_showOptimization ? "rotate-180" : "")" aria-hidden="true">
+                            @XFSvgIcons.Markup("chevron-down")
+                        </span>
+                    </div>
+                    @if (_showOptimization)
+                    {
+                        <div class="@InfoContentClass">@_currentQuery.Optimization</div>
+                    }
+                </div>
+            }
+
+            @* -- Approval button -- *@
+            @if (_currentQuery.RequiresApproval && _currentQuery.ValidationResult.IsValid)
+            {
+                <div class="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                    <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-amber-600" aria-hidden="true">
+                        @XFSvgIcons.Markup("shield-halved")
+                    </span>
+                    <div class="flex-1 text-xs text-amber-800">
+                        Esta consulta nao e somente leitura e requer aprovacao antes da execucao.
+                    </div>
+                    <button type="button"
+                            class="@ApprovalButtonClass"
+                            aria-label="Aprovar execucao da consulta SQL"
+                            @onclick="() => ApproveAsync(_currentQuery)">
+                        <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                            @XFSvgIcons.Markup("check")
+                        </span>
+                        Aprovar
+                    </button>
+                </div>
+            }
+        }
+    </div>
+</section>

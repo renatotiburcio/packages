@@ -1,0 +1,76 @@
+﻿@inherits XForgeComponentBase
+@using Microsoft.AspNetCore.Components.Web
+
+<section id="@Id"
+         @attributes="AdditionalAttributes"
+         class="@GetComponentClass()"
+         style="@Style"
+         data-state="@State"
+         data-disabled="@Disabled.ToString().ToLowerInvariant()">
+    <h3 class="m-0">
+        <button @ref="headerElement"
+                id="@HeaderId"
+                type="button"
+                class="@HeaderClass"
+                aria-expanded="@CurrentExpanded.ToString().ToLowerInvariant()"
+                aria-controls="@PanelId"
+                aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                disabled="@Disabled"
+                title="@GetToggleTitle()"
+                @onclick="ToggleAsync"
+                @onkeydown="HandleKeyDownAsync">
+            @if (StartIcon is not null)
+            {
+                <span class="@StartIconClass">@StartIcon</span>
+            }
+
+            <span class="min-w-0 flex-1 text-left">
+                @if (Header is not null)
+                {
+                    @Header
+                }
+                else
+                {
+                    <span class="block truncate font-semibold text-text-primary">@Title</span>
+                    @if (!string.IsNullOrWhiteSpace(Description))
+                    {
+                        <span class="mt-0.5 block text-sm font-normal leading-5 text-text-secondary">@Description</span>
+                    }
+                }
+            </span>
+
+            @if (EndContent is not null)
+            {
+                <span class="shrink-0">@EndContent</span>
+            }
+
+            @if (Parent?.IconMode != XFAccordionIconMode.None)
+            {
+                <span class="@IconClass" aria-hidden="true">
+                    @if (Parent?.IconMode == XFAccordionIconMode.PlusMinus)
+                    {
+                        <span class="@PlusIconClass">@XFSvgIcons.Markup(CurrentExpanded ? "minus" : "plus")</span>
+                        <span class="@PlusVerticalClass"></span>
+                    }
+                    else
+                    {
+                        <span class="@ChevronIconClass">@XFSvgIcons.MarkupWithSize("chevron-down", 14)</span>
+                    }
+                </span>
+            }
+        </button>
+    </h3>
+
+    <div id="@PanelId"
+         role="region"
+         aria-labelledby="@HeaderId"
+         class="@PanelOuterClass">
+        <div class="@PanelInnerClass">
+            @if (!Lazy || CurrentExpanded || hasRenderedContent)
+            {
+                @ChildContent
+            }
+        </div>
+    </div>
+</section>
+

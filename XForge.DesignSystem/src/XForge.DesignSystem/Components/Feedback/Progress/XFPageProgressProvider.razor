@@ -1,0 +1,17 @@
+@inherits XForgeComponentBase
+
+@if (_visible)
+{
+    <div class="xf-page-progress-container"
+         data-xf-page-progress>
+        <div class="@GetBarClass()"
+             role="progressbar"
+              aria-label="@AriaLabel"
+             aria-valuemin="0"
+             aria-valuemax="100"
+             aria-valuenow="@_percentage"
+             aria-valuetext="@GetAriaValueText()"
+             style="@GetBarStyle()">
+        </div>
+    </div>
+}

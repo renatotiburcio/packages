@@ -1,0 +1,57 @@
+@inherits XForgeComponentBase
+@using XForge.DesignSystem.Services
+@using XForge.DesignSystem.Components.Shared
+@using XForge.DesignSystem.Components.Icon
+
+@if (Item?.Type == RailNavItemType.Separator)
+{
+    <div data-rail-item
+         @attributes="AdditionalAttributes"
+         class="@GetRailItemClass()"
+         aria-label="@EffectiveSeparatorLabel"
+         role="separator">
+        <span class="w-8 h-px rounded-full bg-primary-contrast/25"></span>
+    </div>
+}
+else if (ShowTooltip && !string.IsNullOrEmpty(EffectiveLabel))
+{
+    <XFTooltip Text="@EffectiveLabel" Position="@TooltipPosition" Theme="@TooltipTheme" Class="@GetTooltipClass()">
+        <button data-rail-item
+                @attributes="AdditionalAttributes"
+                type="button"
+                disabled="@Disabled"
+                class="@GetRailItemClass()"
+                aria-label="@EffectiveLabel"
+                aria-current="@(_isActive ? "page" : null)"
+                @onclick="HandleClickAsync">
+            @if (ShouldRenderIcon)
+            {
+                @RenderRailIcon()
+            }
+            else
+            {
+                @ChildContent
+            }
+        </button>
+    </XFTooltip>
+}
+else
+{
+    <button data-rail-item
+            @attributes="AdditionalAttributes"
+            type="button"
+            disabled="@Disabled"
+            class="@GetRailItemClass()"
+            aria-label="@EffectiveLabel"
+            aria-current="@(_isActive ? "page" : null)"
+            @onclick="HandleClickAsync">
+        @if (ShouldRenderIcon)
+        {
+            @RenderRailIcon()
+        }
+        else
+        {
+            @ChildContent
+        }
+    </button>
+}

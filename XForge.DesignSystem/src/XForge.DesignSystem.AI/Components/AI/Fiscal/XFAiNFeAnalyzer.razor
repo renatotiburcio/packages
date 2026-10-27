@@ -1,0 +1,242 @@
+@using XForge.DesignSystem.Components.AI.Common
+@using XForge.DesignSystem.Services.AI
+@inherits XForgeComponentBase
+
+<section class="@RootClass"
+         style="@Style"
+         role="region"
+         aria-label="@Title"
+         aria-busy="@AriaBusyValue"
+         @attributes="AdditionalAttributes">
+
+    @* -- Header ------------------------------------------------------- *@
+    @if (ShowHeader)
+    {
+        <header class="@HeaderClass">
+            @if (HeaderContent is not null)
+            {
+                @HeaderContent
+            }
+            else
+            {
+                <div class="min-w-0">
+                    <div class="@HeaderTitleClass">
+                        <span class="inline-flex h-5 w-5 items-center justify-center text-text-muted" aria-hidden="true">
+                            @XFSvgIcons.Markup("sparkles")
+                        </span>
+                        @Title
+                    </div>
+                </div>
+            }
+        </header>
+    }
+
+    @* -- Input Area --------------------------------------------------- *@
+    <div class="@InputContainerClass">
+        <textarea class="@TextareaClass"
+                  rows="3"
+                  value="@_query"
+                  placeholder="@Placeholder"
+                  disabled="@IsBusy"
+                  aria-label="@Placeholder"
+                  @oninput="HandleInput"
+                  @onkeydown="HandleKeyDownAsync"
+                  @onkeydown:preventDefault="@_preventEnterDefault"></textarea>
+
+        <div class="@InputActionsClass">
+            <button type="button"
+                    class="@SendButtonClass"
+                    disabled="@(!CanSend)"
+                    aria-label="Analisar NF-e"
+                    title="Analisar NF-e"
+                    @onclick="AnalyzeAsync">
+                @if (IsBusy)
+                {
+                    <span class="inline-flex h-4 w-4 animate-spin items-center justify-center" aria-hidden="true">
+                        @XFSvgIcons.Markup("spinner")
+                    </span>
+                }
+                else
+                {
+                    <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                        @XFSvgIcons.Markup("magnifying-glass-chart")
+                    </span>
+                }
+                <span>Analisar</span>
+            </button>
+        </div>
+    </div>
+
+    @* -- Error Banner ------------------------------------------------- *@
+    @if (!string.IsNullOrWhiteSpace(_errorText))
+    {
+        <div class="@ErrorBannerClass" role="alert">
+            <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                @XFSvgIcons.Markup("circle-exclamation")
+            </span>
+            <span>@_errorText</span>
+            <button type="button"
+                    class="ml-auto inline-flex h-5 w-5 items-center justify-center rounded text-text-muted hover:text-text-primary"
+                    aria-label="Dispensar erro"
+                    @onclick="DismissError">
+                <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                    @XFSvgIcons.Markup("xmark")
+                </span>
+            </button>
+        </div>
+    }
+
+    @* -- Loading Skeleton --------------------------------------------- *@
+    @if (IsBusy)
+    {
+        <div class="@LoadingContainerClass" role="status" aria-label="Analisando NF-e...">
+            <span class="sr-only">Analisando NF-e...</span>
+            <div class="space-y-3">
+                <div class="@SkeletonLineClass w-3/4"></div>
+                <div class="@SkeletonLineClass w-1/2"></div>
+                <div class="@SkeletonLineClass w-5/6"></div>
+                <div class="flex gap-2 pt-2">
+                    <div class="@SkeletonChipClass w-24"></div>
+                    <div class="@SkeletonChipClass w-16"></div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @* -- Analysis Result ---------------------------------------------- *@
+    @if (!IsBusy && _result is not null)
+    {
+        <div class="@PreviewContainerClass" aria-live="polite" aria-label="Resultado da analise">
+            @if (ResultPreview is not null)
+            {
+                @ResultPreview(_result)
+            }
+            else
+            {
+                @* -- Header Info *@
+                <div class="mb-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="@RiskBadgeClass">
+                            @GetRiskLabel(_result.RiskLevel)
+                        </span>
+                        <span class="@SpedBadgeClass">
+                            @GetSpedLabel(_result.SpedStatus)
+                        </span>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(_result.AiSummary))
+                    {
+                        <div class="@SummaryBoxClass">
+                            <div class="flex items-start gap-2">
+                                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center text-primary" aria-hidden="true">
+                                    @XFSvgIcons.Markup("sparkles")
+                                </span>
+                                <p class="text-sm leading-5 text-text-primary">@_result.AiSummary</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @* -- NFe Info *@
+                @if (!string.IsNullOrWhiteSpace(_result.NFeKey))
+                {
+                    <div class="mb-3 grid grid-cols-2 gap-2 text-xs">
+                        <div class="rounded bg-surface-50 px-3 py-2 ring-1 ring-border-light">
+                            <span class="text-text-muted">Chave:</span>
+                            <span class="ml-1 font-mono text-text-primary">@_result.NFeKey</span>
+                        </div>
+                        <div class="rounded bg-surface-50 px-3 py-2 ring-1 ring-border-light">
+                            <span class="text-text-muted">Emitente:</span>
+                            <span class="ml-1 text-text-primary">@_result.IssuerName</span>
+                        </div>
+                        <div class="rounded bg-surface-50 px-3 py-2 ring-1 ring-border-light">
+                            <span class="text-text-muted">Numero:</span>
+                            <span class="ml-1 text-text-primary">@_result.InvoiceNumber</span>
+                        </div>
+                        <div class="rounded bg-surface-50 px-3 py-2 ring-1 ring-border-light">
+                            <span class="text-text-muted">Valor Total:</span>
+                            <span class="ml-1 font-semibold text-text-primary">@_result.TotalValue.ToString("C2")</span>
+                        </div>
+                    </div>
+                }
+
+                @* -- Tax Summary *@
+                @if (_result.TaxSummary is { Count: > 0 })
+                {
+                    <div class="mb-3">
+                        <div class="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">Resumo por CFOP</div>
+                        <div class="space-y-1">
+                            @foreach (var tax in _result.TaxSummary)
+                            {
+                                <div class="flex items-center justify-between rounded-md bg-surface-50 px-3 py-1.5 text-xs ring-1 ring-border-light">
+                                    <span class="font-mono font-medium">@tax.Cfop</span>
+                                    <span class="text-text-secondary">@tax.Description</span>
+                                    <span class="font-semibold text-text-primary">@tax.TotalValue.ToString("C2")</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @* -- Inconsistencies *@
+                @if (_result.Inconsistencies is { Count: > 0 })
+                {
+                    <div class="mb-3">
+                        <div class="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">Inconsistencias</div>
+                        <div class="space-y-1">
+                            @foreach (var issue in _result.Inconsistencies)
+                            {
+                                <div class="@GetInconsistencyClass(issue.Severity)">
+                                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden="true">
+                                        @XFSvgIcons.Markup(GetInconsistencyIcon(issue.Severity))
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <span class="font-medium">@issue.Message</span>
+                                        @if (!string.IsNullOrWhiteSpace(issue.Suggestion))
+                                        {
+                                            <p class="mt-0.5 text-xs opacity-80">@issue.Suggestion</p>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @* -- Confidence *@
+                @if (_result.Confidence > 0)
+                {
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-text-muted">Confianca:</span>
+                        <div class="@ConfidenceTrackClass" role="progressbar" aria-valuenow="@((int)(_result.Confidence * 100))" aria-valuemin="0" aria-valuemax="100">
+                            <div class="@ConfidenceFillClass" style="width: @((int)(_result.Confidence * 100))%"></div>
+                        </div>
+                        <span class="text-xs font-medium tabular-nums">@((_result.Confidence * 100).ToString("F0"))%</span>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+    @* -- Empty State -------------------------------------------------- *@
+    @if (!IsBusy && _result is null && string.IsNullOrWhiteSpace(_errorText))
+    {
+        <div class="@EmptyContainerClass">
+            @if (EmptyContent is not null)
+            {
+                @EmptyContent
+            }
+            else
+            {
+                <div class="@EmptyInnerClass">
+                    <div class="@EmptyIconClass" aria-hidden="true">
+                        @XFSvgIcons.Markup("file-invoice")
+                    </div>
+                    <div class="text-sm font-medium text-text-primary">Analisador de NF-e</div>
+                    <div class="@EmptyTextClass">
+                        Cole o XML da NF-e ou descreva o que deseja analisar. A IA identificara inconsistencias fiscais, validara CFOP/CST/NCM e avaliara riscos.
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>

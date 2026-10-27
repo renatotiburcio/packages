@@ -1,0 +1,63 @@
+@* XFMapMarker — Adds a marker to the parent XFMap *@
+
+@code {
+    [CascadingParameter] private XFMap ParentMap { get; set; } = default!;
+
+    /// <summary>
+    /// Unique marker identifier. Auto-generated if not provided.
+    /// </summary>
+    [Parameter] public string MarkerId { get; set; } = $"xf-m-{Guid.NewGuid().ToString("N")[..8]}";
+
+    /// <summary>
+    /// Marker position (latitude/longitude). Required.
+    /// </summary>
+    [Parameter, EditorRequired] public XFMapCoordinate Position { get; set; }
+
+    /// <summary>
+    /// Browser tooltip text for the marker.
+    /// </summary>
+    [Parameter] public string? Title { get; set; }
+
+    /// <summary>
+    /// Popup text opened when the marker is clicked.
+    /// </summary>
+    [Parameter] public string? PopupText { get; set; }
+
+    /// <summary>
+    /// Whether the marker can be dragged. Default: false.
+    /// </summary>
+    [Parameter] public bool Draggable { get; set; }
+
+    /// <summary>
+    /// Custom marker icon.
+    /// </summary>
+    [Parameter] public XFMapMarkerIcon? Icon { get; set; }
+
+    /// <summary>Fires when the marker is clicked.</summary>
+    [Parameter] public EventCallback<XFMapMarkerClickEventArgs> OnClick { get; set; }
+
+    /// <summary>Fires when the marker is dragged.</summary>
+    [Parameter] public EventCallback<XFMapMarkerDragEventArgs> OnDragEnd { get; set; }
+
+    private int _layerIndex = -1;
+    private bool _added;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ParentMap.IsReady && !_added)
+        {
+            _layerIndex = await ParentMap.AddMarkerAsync(MarkerId, Position, Title, PopupText, Draggable, Icon);
+            _added = true;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_layerIndex >= 0 && ParentMap != null)
+        {
+            try { await ParentMap.RemoveLayerAsync(_layerIndex); }
+            catch (Microsoft.JSInterop.JSDisconnectedException) { }
+            catch (InvalidOperationException) { }
+        }
+    }
+}

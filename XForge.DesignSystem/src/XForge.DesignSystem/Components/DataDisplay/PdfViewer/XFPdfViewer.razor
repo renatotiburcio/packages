@@ -1,0 +1,73 @@
+@inherits XForgeComponentBase
+
+<section @attributes="AdditionalAttributes" id="@Id" class="@RootClass" aria-label="@AriaLabel">
+    @if (ShowToolbar)
+    {
+        <div class="@ToolbarClass">
+            <div class="min-w-0">
+                <div class="truncate text-sm font-semibold text-text-primary">@Title</div>
+                @if (!string.IsNullOrWhiteSpace(SourceLabel))
+                {
+                    <div class="truncate text-xs text-text-secondary">@SourceLabel</div>
+                }
+            </div>
+            <div class="ml-auto flex items-center gap-2">
+                <button class="@ToolButtonClass" type="button" disabled="@(!CanGoPrevious)" aria-label="@PreviousLabel" @onclick="PreviousPageAsync">@PreviousLabel</button>
+                <span class="text-xs font-medium text-text-secondary">@PageText</span>
+                <button class="@ToolButtonClass" type="button" disabled="@(!CanGoNext)" aria-label="@NextLabel" @onclick="NextPageAsync">@NextLabel</button>
+                <button class="@IconButtonClass" type="button" disabled="@(!CanZoomOut)" aria-label="@ZoomOutLabel" @onclick="ZoomOutAsync">-</button>
+                <span class="w-12 text-center text-xs font-medium text-text-secondary">@ZoomText</span>
+                <button class="@IconButtonClass" type="button" disabled="@(!CanZoomIn)" aria-label="@ZoomInLabel" @onclick="ZoomInAsync">+</button>
+                @if (RenderMode == XFPdfRenderMode.Canvas)
+                {
+                    @if (ShowDownload)
+                    {
+                        <button class="@IconButtonClass" type="button" aria-label="@DownloadLabel" @onclick="DownloadAsync" title="@DownloadLabel">&#8615;</button>
+                    }
+                    @if (ShowPrint)
+                    {
+                        <button class="@IconButtonClass" type="button" aria-label="@PrintLabel" @onclick="PrintAsync" title="@PrintLabel">&#128424;</button>
+                    }
+                    @if (ShowFullscreen)
+                    {
+                        <button class="@IconButtonClass" type="button" aria-label="@FullscreenLabel" @onclick="ToggleFullscreenAsync" title="@FullscreenLabel">&#9974;</button>
+                    }
+                }
+            </div>
+        </div>
+    }
+
+    <div class="@ViewportClass">
+        @if (HasSource)
+        {
+            @if (RenderMode == XFPdfRenderMode.Canvas)
+            {
+                <div class="relative">
+                    @if (_isLoading)
+                    {
+                        <div class="absolute inset-0 z-10 grid place-items-center bg-bg-surface/80">
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="h-8 w-8 animate-spin rounded-full border-2 border-border-light border-t-primary"></div>
+                                <span class="text-xs text-text-secondary">@LoadingText</span>
+                            </div>
+                        </div>
+                    }
+                    <canvas id="@_canvasId" class="@CanvasClass"></canvas>
+                </div>
+            }
+            else
+            {
+                <iframe class="@FrameClass"
+                        src="@FrameSource"
+                        title="@FrameTitle"
+                        style="@FrameStyle"></iframe>
+            }
+        }
+        else
+        {
+            <div class="grid min-h-80 place-items-center p-6 text-center text-sm text-text-secondary">
+                @EmptyText
+            </div>
+        }
+    </div>
+</section>

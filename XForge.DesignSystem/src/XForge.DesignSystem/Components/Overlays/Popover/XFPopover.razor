@@ -1,0 +1,32 @@
+@inherits XForgeComponentBase
+
+<span class="@RootClass">
+    <span id="@AnchorId" class="inline-flex" @onclick="ToggleAsync">
+        @if (Trigger is not null)
+        {
+            @Trigger(TriggerContext)
+        }
+        else
+        {
+            <button type="button" class="@DefaultTriggerClass" aria-expanded="@Open.ToString().ToLowerInvariant()" aria-controls="@PanelId">
+                @ButtonText
+            </button>
+        }
+    </span>
+
+    @if (Open)
+    {
+        <div @attributes="AdditionalAttributes"
+             id="@PanelId"
+             class="@PanelClass"
+             style="@Style"
+             role="@Role"
+             aria-label="@EffectivePanelAriaLabel"
+             aria-labelledby="@PanelAriaLabelledBy"
+             tabindex="-1"
+             @onclick:stopPropagation="true"
+             @onkeydown="HandleKeyDownAsync">
+            @ChildContent
+        </div>
+    }
+</span>

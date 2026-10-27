@@ -1,0 +1,51 @@
+﻿@inherits XForgeComponentBase
+@using XForge.DesignSystem.Services
+<nav id="@Id"
+     @attributes="AdditionalAttributes"
+    
+     role="navigation"
+     aria-label="@AriaLabel"
+     class="@GetRailClass()">
+    @if (Header != null)
+    {
+        <div class="@GetHeaderClass()">
+            @Header
+        </div>
+    }
+    <div class="@GetItemsClass()">
+        @{
+            var offset = GetIndicatorOffset();
+        }
+        @if (ShowActiveIndicator && offset >= 0)
+        {
+            <div class="rail-active-indicator" style="top: @(offset)px; background: @IndicatorColor; height: @(IndicatorHeight)px;"></div>
+        }
+        @if (ShouldRenderItemsFromModel)
+        {
+            @foreach (var item in MainItems)
+            {
+                <XFRailItem Item="@item" Label="@item.Label" />
+            }
+        }
+        else
+        {
+            @ChildContent
+        }
+    </div>
+    @if (Footer != null || (ShouldRenderItemsFromModel && FooterItems.Any()))
+    {
+        <div class="@GetFooterClass()">
+            @if (Footer != null)
+            {
+                @Footer
+            }
+            else
+            {
+                @foreach (var item in FooterItems)
+                {
+                    <XFRailItem Item="@item" Label="@item.Label" />
+                }
+            }
+        </div>
+    }
+</nav>

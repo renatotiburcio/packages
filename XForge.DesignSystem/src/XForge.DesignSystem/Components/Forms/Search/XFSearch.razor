@@ -1,0 +1,48 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">@Label</label>
+    }
+
+    <div class="@FieldClass">
+        <span class="inline-block h-4 w-4 shrink-0 text-text-muted group-focus-within:text-primary" aria-hidden="true">
+            @XFSvgIcons.Markup("magnifying-glass")
+        </span>
+
+        <input @ref="InputRef"
+               @attributes="AdditionalAttributes"
+               id="@Id"
+               name="@Name"
+               class="@InputClass"
+               type="search"
+               placeholder="@Placeholder"
+               autocomplete="@AutoComplete"
+               maxlength="@MaxLength"
+               minlength="@MinLength"
+               disabled="@Disabled"
+               readonly="@ReadOnly"
+               aria-label="@AriaLabel"
+               aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+               aria-describedby="@DescribedBy"
+               value="@CurrentValue"
+               @oninput="HandleInputAsync"
+               @onchange="HandleChangeAsync"
+               @onkeydown="HandleKeyDownAsync"
+               @onfocus="OnFocus"
+               @onblur="OnBlur" />
+
+        @if (Clearable && !string.IsNullOrEmpty(CurrentValue) && !ReadOnly && !Disabled)
+        {
+            <button type="button" class="@ClearButtonClass" aria-label="@ClearLabel" @onclick="ClearAsync">
+                <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("xmark")</span>
+            </button>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="text-xs leading-5 text-text-secondary">@HelperText</div>
+    }
+</div>

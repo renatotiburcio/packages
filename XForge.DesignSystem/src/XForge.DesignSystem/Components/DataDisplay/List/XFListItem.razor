@@ -1,0 +1,56 @@
+@namespace XForge.DesignSystem.Components.DataDisplay.List
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <div id="@Id"
+         class="@GetComponentClass()"
+         role="@Role"
+         aria-selected="@AriaSelected"
+         aria-disabled="@AriaDisabled"
+         tabindex="@TabIndexValue"
+         @onclick="HandleClickAsync"
+         @attributes="AdditionalAttributes">
+        @if (StartIcon is not null)
+        {
+            <span class="@IconClass">@StartIcon</span>
+        }
+
+        <div class="min-w-0 flex-1">
+            <div class="@TitleClass">
+                @if (ChildContent is not null)
+                {
+                    @ChildContent
+                }
+                else
+                {
+                    @Title
+                }
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Description))
+            {
+                <div class="@DescriptionClass">@Description</div>
+            }
+        </div>
+
+        @if (Metadata is not null || !string.IsNullOrWhiteSpace(MetadataText))
+        {
+            <div class="@MetadataClass">
+                @if (Metadata is not null)
+                {
+                    @Metadata
+                }
+                else
+                {
+                    @MetadataText
+                }
+            </div>
+        }
+
+        @if (EndIcon is not null)
+        {
+            <span class="@IconClass">@EndIcon</span>
+        }
+    </div>
+}

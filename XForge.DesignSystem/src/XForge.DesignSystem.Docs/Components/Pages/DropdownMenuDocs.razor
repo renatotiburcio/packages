@@ -1,0 +1,836 @@
+@page "/overlays/dropdown-menu"
+@page "/components/dropdown-menu"
+@using XForge.DesignSystem.Components.Overlays.DropdownMenu
+@using XForge.DesignSystem.Services
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFDropdownMenu" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("WAI-ARIA", "WAI-ARIA")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Submenus", "Submenus")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Menu de ações contextual com grupos, submenus e navegação por teclado.",
+                               "Contextual action menu with groups, submenus and keyboard navigation.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFDropdownMenu renderiza menus com 5 tipos de itens (Action, Checkbox, Radio, Separator, Header), atalhos, badges, ícones, submenus e navegação WAI-ARIA por setas.",
+                               "XFDropdownMenu renders menus with 5 item types (Action, Checkbox, Radio, Separator, Header), shortcuts, badges, icons, submenus and WAI-ARIA arrow navigation.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light p-6">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependências JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente não utiliza JavaScript interop. É puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderização.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos são tratados via SignalR. Sem latência adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos são tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Básico", "1. Basic"),
+                T("Menu simples com 3 itens: Editar, Duplicar e Excluir.", "Simple menu with 3 items: Edit, Duplicate and Delete."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Tipos de itens", "2. Item Kinds"),
+                T("5 tipos: Action, Checkbox, Radio, Separator e Header.", "5 types: Action, Checkbox, Radio, Separator and Header."),
+                ExKinds(), CodeKinds)
+
+            @Example(T("3. Ícones", "3. Icons"),
+                T("Itens com ícones SVG via propriedade Icon (RenderFragment).", "Items with SVG icons via Icon property (RenderFragment)."),
+                ExIcons(), CodeIcons)
+
+            @Example(T("4. Descrição e atalhos", "4. Description & Shortcuts"),
+                T("Itens com descrição secundária e atalhos de teclado.", "Items with secondary description and keyboard shortcuts."),
+                ExDescription(), CodeDescription)
+
+            @Example(T("5. Submenus", "5. Submenus"),
+                T("Itens com Children abrem submenu lateral. Navegação por setas.", "Items with Children open side submenu. Arrow navigation."),
+                ExSubmenus(), CodeSubmenus)
+
+            @Example(T("6. Checkbox", "6. Checkbox"),
+                T("XFCheckbox para alternar estados com two-way binding.", "XFCheckbox to toggle states with two-way binding."),
+                ExCheckbox(), CodeCheckbox)
+
+            @Example(T("7. Radio groups", "7. Radio Groups"),
+                T("XFRadioGroup com XFRadio para seleção mutuamente exclusiva.", "XFRadioGroup with XFRadio for mutually exclusive selection."),
+                ExRadio(), CodeRadio)
+
+            @Example(T("8. Desabilitado", "8. Disabled"),
+                T("Itens desabilitados com Disabled=true.", "Disabled items with Disabled=true."),
+                ExDisabled(), CodeDisabled)
+
+            @Example(T("9. Posicionamento", "9. Placement"),
+                T("Placement (Top/Bottom/Left/Right) e Alignment (Start/Center/End).", "Placement (Top/Bottom/Left/Right) and Alignment (Start/Center/End)."),
+                ExPlacement(), CodePlacement)
+
+            @Example(T("10. Cenário enterprise", "10. Enterprise Scenario"),
+                T("Menu de ações da grid ERP com grupos, atalhos e submenus.", "ERP grid action menu with groups, shortcuts and submenus."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(ItemKindRows, T("Tipo", "Type"), T("Uso", "Usage"))</div>)
+            @Section("API — XFDropdownMenu", @<div>@ApiTable(ApiRows)</div>)
+            @Section("API — XFDropdownMenuItem", @<div>@ApiTable(ItemApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFDropdownMenu", "XFDropdownMenu");
+    private string PageStatusText => T("Documentação completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+
+    private bool _heroOpen = true;
+    private bool _basicOpen;
+    private bool _kindsOpen;
+    private bool _iconsOpen;
+    private bool _descOpen;
+    private bool _submenuOpen;
+    private bool _disabledOpen;
+    private bool _entOpen;
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Ações", "Actions")"
+                        Items="HeroItems"
+                        @bind-Open="_heroOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<XFDropdownMenuItem> HeroItems =>
+    [
+        new() { Text = T("Editar", "Edit"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("pencil"))</span>, Shortcut = "E", Tone = XFSemanticColor.Primary },
+        new() { Text = T("Duplicar", "Duplicate"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("copy"))</span>, Badge = "novo" },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Excluir", "Delete"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("trash"))</span>, Tone = XFSemanticColor.Danger }
+    ];
+
+    private IReadOnlyList<DocTile> QuickFacts =>
+    [
+        new(T("WAI-ARIA menu", "WAI-ARIA menu"), T("role=menu, menuitem, menuitemcheckbox, menuitemradio, aria-activedescendant.", "role=menu, menuitem, menuitemcheckbox, menuitemradio, aria-activedescendant."), "universal-access"),
+        new(T("5 tipos de itens", "5 item types"), T("Action, Checkbox, Radio, Separator e Header com ícones e atalhos.", "Action, Checkbox, Radio, Separator and Header with icons and shortcuts."), "list"),
+        new(T("Submenus", "Submenus"), T("Children recursivos com submenu lateral e navegação por setas.", "Recursive Children with side submenu and arrow navigation."), "code")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows =>
+    [
+        new("Component", "XFDropdownMenu"),
+        new("Namespace", "XForge.DesignSystem.Components.Overlays.DropdownMenu"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Overlays / DropdownMenu"),
+        new("Status", T("Estável", "Stable")),
+        new("Accessibility", T("WAI-ARIA menu, keyboard (arrows, Home, End, Enter, Escape), aria-activedescendant.", "WAI-ARIA menu, keyboard (arrows, Home, End, Enter, Escape), aria-activedescendant.")),
+        new("Theme support", T("Light, dark via CSS variables.", "Light, dark via CSS variables."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems =>
+    [
+        new(T("Menu contextual", "Contextual menu"), T("Renderiza menu de ações com botão trigger e popover.", "Renders action menu with trigger button and popover."), "bars"),
+        new(T("5 tipos de itens", "5 item types"), T("Action, Checkbox, Radio, Separator e Header para todos os cenários.", "Action, Checkbox, Radio, Separator and Header for all scenarios."), "list"),
+        new(T("Submenus", "Submenus"), T("Children recursivos para menus aninhados.", "Recursive Children for nested menus."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems =>
+    [
+        new(T("Ações agrupadas", "Grouped actions"), T("Agrupar múltiplas ações em um único trigger para economizar espaço.", "Group multiple actions into a single trigger to save space."), "bars"),
+        new(T("Seleção de opções", "Option selection"), T("Checkbox e Radio para seleção de colunas, modos e configurações.", "Checkbox and Radio for column, mode and settings selection."), "check-circle"),
+        new(T("Navegação por teclado", "Keyboard navigation"), T("Setas, Home, End, Enter e Escape para acesso completo via teclado.", "Arrows, Home, End, Enter and Escape for full keyboard access."), "keyboard")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems =>
+    [
+        new(T("Antes", "Before"), T("Botões de ação espalhados na tela, sem contexto visual.", "Action buttons scattered on screen, no visual context."), "xmark"),
+        new(T("Depois", "After"), T("Menu agrupado com atalhos, ícones e submenus. Um trigger abre todas as ações.", "Grouped menu with shortcuts, icons and submenus. One trigger opens all actions."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("WAI-ARIA menu, keyboard navigation, aria-activedescendant.", "WAI-ARIA menu, keyboard navigation, aria-activedescendant."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems =>
+    [
+        new(T("Ações de grid", "Grid actions"), T("Menu de contexto para linhas de tabela: editar, duplicar, excluir.", "Context menu for table rows: edit, duplicate, delete."), "table-cells"),
+        new(T("Filtros", "Filters"), T("Menu de filtros com checkbox para colunas visíveis.", "Filter menu with checkboxes for visible columns."), "filter"),
+        new(T("Configurações", "Settings"), T("Menu de opções com radio para modo de exibição.", "Options menu with radio for display mode."), "sliders"),
+        new(T("Ações de toolbar", "Toolbar actions"), T("Menu de ações agrupadas na toolbar.", "Grouped action menu in toolbar."), "bars")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems =>
+    [
+        new(T("Navegação principal", "Primary navigation"), T("Use Sidebar ou Rail para navegação entre páginas.", "Use Sidebar or Rail for page navigation."), "route"),
+        new(T("Formulários", "Forms"), T("Use select nativo ou XFSelect para campos de formulário.", "Use native select or XFSelect for form fields."), "file-lines"),
+        new(T("Ação única", "Single action"), T("Se há apenas uma ação, use um botão direto.", "If there is only one action, use a direct button."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems =>
+    [
+        new(T("Trigger", "Trigger"), T("Botão padrão com ButtonText e chevron. Suporta Trigger template.", "Default button with ButtonText and chevron. Supports Trigger template."), "hand-pointer"),
+        new(T("Popover", "Popover"), T("XFPopover controla posicionamento, fechamento e backdrop.", "XFPopover handles positioning, closing and backdrop."), "layer-group"),
+        new(T("Menu (role=menu)", "Menu (role=menu)"), T("Div com role=menu, aria-label e navegação por setas.", "Div with role=menu, aria-label and arrow navigation."), "bars"),
+        new(T("Menu item", "Menu item"), T("Botão com role=menuitem, icon, text, shortcut, badge.", "Button with role=menuitem, icon, text, shortcut, badge."), "square"),
+        new(T("Submenu", "Submenu"), T("Children recursivos com role=menu e chevron-right.", "Recursive Children with role=menu and chevron-right."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems =>
+    [
+        new(T("Action", "Action"), T("Item clicável padrão. Dispara ItemSelected e fecha (CloseOnSelect).", "Default clickable item. Fires ItemSelected and closes (CloseOnSelect)."), "hand-pointer"),
+        new(T("Checkbox/Radio", "Checkbox/Radio"), T("Indicador visual de estado marcado com aria-checked.", "Visual checked state indicator with aria-checked."), "check-circle"),
+        new(T("Header/Separator", "Header/Separator"), T("Header para títulos de seção, Separator para divisão visual.", "Header for section titles, Separator for visual division."), "minus")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems =>
+    [
+        new(T("Atalhos visíveis", "Visible shortcuts"), T("kbd com estilo para atalhos de teclado (Ctrl+S, etc.).", "Styled kbd for keyboard shortcuts (Ctrl+S, etc.)."), "keyboard"),
+        new(T("Tons semânticos", "Semantic tones"), T("Primary para destaque, Danger para exclusão, Warning para cancelamento.", "Primary for highlight, Danger for deletion, Warning for cancellation."), "swatchbook"),
+        new(T("Touch target", "Touch target"), T("py-2 em cada item garante altura mínima para toque.", "py-2 on each item ensures minimum touch height."), "hand-pointer"),
+        new(T("Overflow inteligente", "Smart overflow"), T("max-h-80 com scroll, submenus expandem sem corte.", "max-h-80 with scroll, submenus expand without clipping."), "arrows-left-right")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Ações", "Actions")"
+                        Items="BasicItems"
+                        @bind-Open="_basicOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<XFDropdownMenuItem> BasicItems =>
+    [
+        new() { Text = T("Editar", "Edit"), Shortcut = "E", Tone = XFSemanticColor.Primary },
+        new() { Text = T("Duplicar", "Duplicate") },
+        new() { Text = T("Excluir", "Delete"), Tone = XFSemanticColor.Danger }
+    ];
+
+    private RenderFragment ExKinds() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Tipos", "Types")"
+                        Items="KindsItems"
+                        @bind-Open="_kindsOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<XFDropdownMenuItem> KindsItems =>
+    [
+        new() { Text = T("Seção", "Section"), Kind = XFDropdownMenuItemKind.Header },
+        new() { Text = T("Ação", "Action"), Kind = XFDropdownMenuItemKind.Action },
+        new() { Text = T("Opção toggle", "Toggle option"), Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = true },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Opção A", "Option A"), Kind = XFDropdownMenuItemKind.XFRadio, Checked = true, Group = "view" },
+        new() { Text = T("Opção B", "Option B"), Kind = XFDropdownMenuItemKind.XFRadio, Group = "view" }
+    ];
+
+    private RenderFragment ExIcons() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Ações", "Actions")"
+                        Items="IconItems"
+                        @bind-Open="_iconsOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<XFDropdownMenuItem> IconItems =>
+    [
+        new() { Text = T("Editar", "Edit"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("pencil"))</span>, Tone = XFSemanticColor.Primary },
+        new() { Text = T("Duplicar", "Duplicate"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("copy"))</span> },
+        new() { Text = T("Imprimir", "Print"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("print"))</span> },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Excluir", "Delete"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("trash"))</span>, Tone = XFSemanticColor.Danger }
+    ];
+
+    private RenderFragment ExDescription() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Arquivo", "File")"
+                        Items="DescItems"
+                        @bind-Open="_descOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<XFDropdownMenuItem> DescItems =>
+    [
+        new() { Text = T("Salvar", "Save"), Description = T("Salva o arquivo atual", "Saves current file"), Shortcut = "Ctrl+S", Tone = XFSemanticColor.Primary },
+        new() { Text = T("Salvar como", "Save As"), Description = T("Salva com novo nome", "Saves with new name"), Shortcut = "Ctrl+Shift+S" },
+        new() { Text = T("Exportar PDF", "Export PDF"), Description = T("Exporta como documento PDF", "Exports as PDF document"), Badge = "novo" },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Fechar", "Close"), Description = T("Fecha sem salvar", "Closes without saving"), Shortcut = "Ctrl+W", Tone = XFSemanticColor.Warning }
+    ];
+
+    private RenderFragment ExSubmenus() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Exportar", "Export")"
+                        Items="SubmenuItems"
+                        @bind-Open="_submenuOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<XFDropdownMenuItem> SubmenuItems =>
+    [
+        new() { Text = T("Exportar como", "Export as"), Children = [
+            new() { Text = "PDF", Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("file-pdf"))</span> },
+            new() { Text = "Excel", Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("file-excel"))</span> },
+            new() { Text = "CSV", Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("file-csv"))</span> }
+        ]},
+        new() { Text = T("Enviar por", "Send via"), Children = [
+            new() { Text = "Email" },
+            new() { Text = "WhatsApp" },
+            new() { Text = T("Link compartilhável", "Shareable link") }
+        ]},
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Imprimir", "Print"), Shortcut = "Ctrl+P" }
+    ];
+
+    private bool _checkboxOpen;
+    private bool _radioOpen;
+
+    private RenderFragment ExCheckbox() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Colunas", "Columns")"
+                        Items="_checkboxItems"
+                        @bind-Open="_checkboxOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private readonly List<XFDropdownMenuItem> _checkboxItems =
+    [
+        new() { Text = "Mostrar colunas", Kind = XFDropdownMenuItemKind.Header },
+        new() { Text = "Número", Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = true },
+        new() { Text = "Cliente", Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = true },
+        new() { Text = "Valor", Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = true },
+        new() { Text = "Data", Kind = XFDropdownMenuItemKind.XFCheckbox },
+        new() { Text = "Status", Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = true }
+    ];
+
+    private string CodeCheckbox => @"<XFDropdownMenu ButtonText=""Colunas""
+              Items=""@_checkboxItems""
+              ActiveTone=""XFSemanticColor.Primary"" />
+
+@code {
+    private readonly List<XFDropdownMenuItem> _checkboxItems = [
+        new() { Text = ""Mostrar colunas"", Kind = Header },
+        new() { Text = ""Número"", Kind = XFCheckbox, Checked = true },
+        new() { Text = ""Cliente"", Kind = XFCheckbox, Checked = true },
+        new() { Text = ""Valor"", Kind = XFCheckbox, Checked = true },
+        new() { Text = ""Data"", Kind = XFCheckbox },
+        new() { Text = ""Status"", Kind = XFCheckbox, Checked = true }
+    ];
+}";
+
+    private RenderFragment ExRadio() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Visualização", "View")"
+                        Items="_radioItems"
+                        @bind-Open="_radioOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private readonly List<XFDropdownMenuItem> _radioItems =
+    [
+        new() { Text = "Modo de exibição", Kind = XFDropdownMenuItemKind.Header },
+        new() { Text = "Tabela", Kind = XFDropdownMenuItemKind.XFRadio, Checked = true, Group = "view" },
+        new() { Text = "Grade", Kind = XFDropdownMenuItemKind.XFRadio, Group = "view" },
+        new() { Text = "Lista", Kind = XFDropdownMenuItemKind.XFRadio, Group = "view" },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = "Densidade", Kind = XFDropdownMenuItemKind.Header },
+        new() { Text = "Compacto", Kind = XFDropdownMenuItemKind.XFRadio, Group = "density" },
+        new() { Text = "Normal", Kind = XFDropdownMenuItemKind.XFRadio, Checked = true, Group = "density" },
+        new() { Text = "Confortável", Kind = XFDropdownMenuItemKind.XFRadio, Group = "density" }
+    ];
+
+    private string CodeRadio => @"<XFDropdownMenu ButtonText=""Visualização""
+              Items=""@_radioItems""
+              ActiveTone=""XFSemanticColor.Primary"" />
+
+@code {
+    private readonly List<XFDropdownMenuItem> _radioItems = [
+        new() { Text = ""Modo de exibição"", Kind = Header },
+        new() { Text = ""Tabela"", Kind = XFRadio, Checked = true, Group = ""view"" },
+        new() { Text = ""Grade"", Kind = XFRadio, Group = ""view"" },
+        new() { Text = ""Lista"", Kind = XFRadio, Group = ""view"" },
+        new() { Kind = Separator },
+        new() { Text = ""Densidade"", Kind = Header },
+        new() { Text = ""Compacto"", Kind = XFRadio, Group = ""density"" },
+        new() { Text = ""Normal"", Kind = XFRadio, Checked = true, Group = ""density"" },
+        new() { Text = ""Confortável"", Kind = XFRadio, Group = ""density"" }
+    ];
+}";
+
+    private RenderFragment ExDisabled() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFDropdownMenu ButtonText="@T("Ações", "Actions")"
+                        Items="DisabledItems"
+                        @bind-Open="_disabledOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<XFDropdownMenuItem> DisabledItems =>
+    [
+        new() { Text = T("Editar", "Edit"), Tone = XFSemanticColor.Primary },
+        new() { Text = T("Aprovar", "Approve"), Disabled = true, Description = T("Sem permissão", "No permission") },
+        new() { Text = T("Excluir", "Delete"), Disabled = true, Description = T("Registro vinculado", "Linked record"), Tone = XFSemanticColor.Danger }
+    ];
+
+    private RenderFragment ExPlacement() => @<XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+        <div class="flex flex-wrap gap-4">
+            <div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Class="mb-1">Bottom + Start</XFTypography>
+                <XFDropdownMenu ButtonText="Bottom Start"
+                                Items="BasicItems"
+                                Placement="XFPopoverPlacement.Bottom"
+                                Alignment="XFPopoverAlignment.Start" />
+            </div>
+            <div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Class="mb-1">Bottom + Center</XFTypography>
+                <XFDropdownMenu ButtonText="Bottom Center"
+                                Items="BasicItems"
+                                Placement="XFPopoverPlacement.Bottom"
+                                Alignment="XFPopoverAlignment.Center" />
+            </div>
+            <div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Class="mb-1">Bottom + End</XFTypography>
+                <XFDropdownMenu ButtonText="Bottom End"
+                                Items="BasicItems"
+                                Placement="XFPopoverPlacement.Bottom"
+                                Alignment="XFPopoverAlignment.End" />
+            </div>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div class="flex items-center gap-2 mb-1">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Grid ERP — Linha NF-e #001.271", "ERP Grid — Row NF-e #001.271")" />
+        </div>
+        <XFDropdownMenu ButtonText="@T("Mais ações", "More actions")"
+                        Items="EnterpriseItems"
+                        @bind-Open="_entOpen"
+                        ActiveTone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<XFDropdownMenuItem> EnterpriseItems =>
+    [
+        new() { Text = T("Ações", "Actions"), Kind = XFDropdownMenuItemKind.Header },
+        new() { Text = T("Editar NF-e", "Edit NF-e"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("pencil"))</span>, Shortcut = "E", Tone = XFSemanticColor.Primary },
+        new() { Text = T("Duplicar NF-e", "Duplicate NF-e"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("copy"))</span>, Shortcut = "D" },
+        new() { Text = T("Cancelar NF-e", "Cancel NF-e"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("ban"))</span>, Tone = XFSemanticColor.Warning },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Exportar como", "Export as"), Children = [
+            new() { Text = "PDF" },
+            new() { Text = "DANFE" },
+            new() { Text = "XML" }
+        ]},
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Visualizar DANFE", "View DANFE"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("eye"))</span>, Shortcut = "V" },
+        new() { Text = T("Enviar por email", "Send by email"), Icon = @<span class="inline-block h-4 w-4">@((MarkupString)XFSvgIcons.Markup("envelope"))</span>, Badge = T("novo", "new") }
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === DATA ===
+    private IReadOnlyList<NameValueRow> ItemKindRows =>
+    [
+        new("Action", T("Ação clicável. Padrão. Dispara ItemSelected.", "Clickable action. Default. Fires ItemSelected.")),
+        new("XFCheckbox", T("Renderiza XFCheckbox real com two-way binding no Checked.", "Renders actual XFCheckbox with two-way binding on Checked.")),
+        new("XFRadio", T("Renderiza XFRadio agrupado por Group com XFRadioGroup.", "Renders XFRadio grouped by Group with XFRadioGroup.")),
+        new("Separator", T("Linha divisória entre grupos.", "Divider line between groups.")),
+        new("Header", T("Título de seção. Não clicável.", "Section title. Not clickable."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("Open", "bool", "false", T("Estado Aberto/Fechado. Two-way binding.", "Open/closed state. Two-way binding.")),
+        new("OpenChanged", "EventCallback<bool>", "default", T("Disparado quando Open muda.", "Fired when Open changes.")),
+        new("ButtonText", "string", "\"Menu\"", T("Texto do botão trigger.", "Trigger button text.")),
+        new("MenuAriaLabel", "string?", "null", T("Label acessível do menu. Padrão: ButtonText.", "Accessible menu label. Default: ButtonText.")),
+        new("SubmenuAriaLabelFormat", "string", "\"{0}\"", T("Formato do label do submenu.", "Submenu label format.")),
+        new("Items", "IReadOnlyList<XFDropdownMenuItem>", "[]", T("Itens do menu.", "Menu items.")),
+        new("ItemSelected", "EventCallback<XFDropdownMenuItem>", "default", T("Disparado ao clicar em item.", "Fired on item click.")),
+        new("Trigger", "RenderFragment<XFPopoverTriggerContext>?", "null", T("Template customizado do trigger.", "Custom trigger template.")),
+        new("Placement", "XFPopoverPlacement", "Bottom", T("Top, Bottom, Left ou Right.", "Top, Bottom, Left or Right.")),
+        new("Alignment", "XFPopoverAlignment", "Start", T("Start, Center ou End.", "Start, Center or End.")),
+        new("Size", "XFSize", "Md", T("Sm, Md ou Lg.", "Sm, Md or Lg.")),
+        new("ActiveTone", "XFSemanticColor", "Primary", T("Tom do item ativo/destacado.", "Active/highlighted item tone.")),
+        new("MaxHeightClass", "string?", "\"max-h-80\"", T("Classe Tailwind para altura máxima.", "Tailwind class for max height.")),
+        new("CloseOnSelect", "bool", "true", T("Fecha ao selecionar Action.", "Closes on Action selection.")),
+        new("CloseOnEscape", "bool", "true", T("Fecha ao pressionar Escape.", "Closes on Escape key.")),
+        new("CloseOnOutsideClick", "bool", "true", T("Fecha ao clicar fora.", "Closes on outside click."))
+    ];
+
+    private IReadOnlyList<ApiRow> ItemApiRows =>
+    [
+        new("Id", "string", "auto", T("Identificador único.", "Unique identifier.")),
+        new("Text", "string?", "null", T("Texto do item.", "Item text.")),
+        new("Description", "string?", "null", T("Descrição secundária.", "Secondary description.")),
+        new("Shortcut", "string?", "null", T("Atalho de teclado (ex: Ctrl+S).", "Keyboard shortcut (ex: Ctrl+S).")),
+        new("Badge", "string?", "null", T("Badge ao lado do texto.", "Badge next to text.")),
+        new("Value", "object?", "null", T("Valor associado ao item.", "Associated value.")),
+        new("Kind", "XFDropdownMenuItemKind", "Action", T("Action, XFCheckbox, XFRadio, Separator ou Header.", "Action, XFCheckbox, XFRadio, Separator or Header.")),
+        new("Tone", "XFSemanticColor", "Neutral", T("Tom semântico do item.", "Semantic tone.")),
+        new("Disabled", "bool", "false", T("Desabilita o item.", "Disables the item.")),
+        new("Checked", "bool", "false", T("Estado marcado (Checkbox/Radio).", "Checked state (Checkbox/Radio).")),
+        new("Group", "string?", "null", T("Grupo para Radio.", "Group for Radio.")),
+        new("Icon", "RenderFragment?", "null", T("Ícone do item.", "Item icon.")),
+        new("Children", "IReadOnlyList<XFDropdownMenuItem>", "[]", T("Sub-itens para submenu.", "Sub-items for submenu."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows =>
+    [
+        new("ItemSelected", T("Disparado ao clicar em item Action/Checkbox/Radio.", "Fired on Action/Checkbox/Radio item click.")),
+        new("OpenChanged", T("Two-way binding do parâmetro Open.", "Two-way binding for Open parameter."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems =>
+    [
+        new("WAI-ARIA", T("role=menu, menuitem, menuitemcheckbox, menuitemradio, separator.", "role=menu, menuitem, menuitemcheckbox, menuitemradio, separator."), "universal-access"),
+        new("aria-activedescendant", T("Foco virtual no item ativo. Não move DOM focus.", "Virtual focus on active item. Does not move DOM focus."), "eye"),
+        new("aria-haspopup", T("Trigger tem aria-haspopup=menu.", "Trigger has aria-haspopup=menu."), "hand-pointer"),
+        new("aria-expanded", T("Trigger tem aria-expanded=true/false.", "Trigger has aria-expanded=true/false."), "arrows-up-down"),
+        new("aria-checked", T("Checkbox e Radio tem aria-checked.", "Checkbox and Radio have aria-checked."), "check-circle"),
+        new("aria-disabled", T("Itens desabilitados tem aria-disabled.", "Disabled items have aria-disabled."), "eye-slash")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows =>
+    [
+        new("ArrowDown", T("Move foco para o próximo item selecionável.", "Moves focus to next selectable item.")),
+        new("ArrowUp", T("Move foco para o item selecionável anterior.", "Moves focus to previous selectable item.")),
+        new("Home", T("Move foco para o primeiro item selecionável.", "Moves focus to first selectable item.")),
+        new("End", T("Move foco para o último item selecionável.", "Moves focus to last selectable item.")),
+        new("Enter / Space", T("Ativa o item focado (Action, Checkbox, Radio).", "Activates focused item (Action, Checkbox, Radio).")),
+        new("Escape", T("Fecha o menu.", "Closes the menu."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems =>
+    [
+        new(T("Overflow auto", "Overflow auto"), T("max-h-80 com scroll vertical para menus longos.", "max-h-80 with vertical scroll for long menus."), "arrows-left-right"),
+        new(T("Submenus expansíveis", "Expandable submenus"), T("Submenus abrem à direita sem cortar conteúdo.", "Submenus open to the right without clipping content."), "code"),
+        new(T("Touch target", "Touch target"), T("py-2 em cada item garante altura mínima para toque.", "py-2 on each item ensures minimum touch height."), "hand-pointer"),
+        new(T("Tamanhos", "Sizes"), T("Sm, Md e Lg via parâmetro Size.", "Sm, Md and Lg via Size parameter."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems =>
+    [
+        new(T("Zero JS interop", "Zero JS interop"), T("Navegação por teclado é toda em C# via @onkeydown.", "Keyboard navigation is all C# via @onkeydown."), "bolt"),
+        new(T("Renderização condicional", "Conditional rendering"), T("Submenus renderizam apenas quando expandidos.", "Submenus render only when expanded."), "gauge"),
+        new(T("Popover reutilizado", "Popover reused"), T("XFPopover gerencia posicionamento e fechamento.", "XFPopover manages positioning and closing."), "code"),
+        new(T("Sem DOM manipulation", "No DOM manipulation"), T("aria-activedescendant gerencia foco virtual sem mover elementos.", "aria-activedescendant manages virtual focus without moving elements."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems =>
+    [
+        new("ERP", T("Ações de linha NF-e: editar, duplicar, cancelar, exportar.", "NF-e row actions: edit, duplicate, cancel, export."), "briefcase"),
+        new(T("Financeiro", "Finance"), T("Menu de ações financeiras com aprovação e rejeição.", "Financial action menu with approval and rejection."), "chart-line"),
+        new(T("Filtros", "Filters"), T("Colunas visíveis com checkbox, modo de exibição com radio.", "Visible columns with checkbox, display mode with radio."), "filter"),
+        new(T("RH", "HR"), T("Ações de funcionário: editar,-transferir, desabilitar.", "Employee actions: edit, transfer, disable."), "users"),
+        new(T("Configurações", "Settings"), T("Menu de configurações com opções toggle e radio.", "Settings menu with toggle and radio options."), "sliders"),
+        new(T("Toolbar", "Toolbar"), T("Ações agrupadas na toolbar: salvar, exportar, compartilhar.", "Grouped toolbar actions: save, export, share."), "bars")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems =>
+    [
+        new(T("XFButton + Menu", "XFButton + Menu"), T("Use Trigger template para botão customizado.", "Use Trigger template for custom button."), "hand-pointer"),
+        new(T("XFSplitButton", "XFSplitButton"), T("Botão principal + dropdown para ações secundárias.", "Primary button + dropdown for secondary actions."), "caret-down"),
+        new(T("XFContextMenu", "XFContextMenu"), T("Menu de contexto por clique direito.", "Right-click context menu."), "square"),
+        new(T("Tons semânticos", "Semantic tones"), T("Danger para exclusão, Warning para cancelamento.", "Danger for deletion, Warning for cancellation."), "swatchbook"),
+        new(T("Badges", "Badges"), T("Badge para indicar novos itens ou contadores.", "Badge for new items or counters."), "tag"),
+        new(T("Atalhos", "Shortcuts"), T("kbd para atalhos de teclado visíveis.", "kbd for visible keyboard shortcuts."), "keyboard")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems =>
+    [
+        new(T("Ícones nos itens", "Icons on items"), T("Ícones melhoram escaneamento visual. Use XFSvgIcons.", "Icons improve visual scanning. Use XFSvgIcons."), "font"),
+        new(T("Tons semânticos", "Semantic tones"), T("Danger para destrutivo, Warning para cautela, Primary para destaque.", "Danger for destructive, Warning for caution, Primary for highlight."), "swatchbook"),
+        new(T("Atalhos visíveis", "Visible shortcuts"), T("Mostre atalhos com <kbd> para descoberta.", "Show shortcuts with <kbd> for discoverability."), "keyboard"),
+        new(T("Agrupar com Header/Separator", "Group with Header/Separator"), T("Use Header para títulos e Separator para divisão visual.", "Use Header for titles and Separator for visual division."), "minus")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems =>
+    [
+        new(T("Menu como navegação", "Menu as navigation"), T("Use Sidebar ou Rail para navegação principal.", "Use Sidebar or Rail for primary navigation."), "xmark"),
+        new(T("Muitos itens sem agrupar", "Too many items without grouping"), T("Agrupe com Header e Separator acima de 6 itens.", "Group with Header and Separator above 6 items."), "triangle-exclamation"),
+        new(T("Sem ícones em ações destrutivas", "No icons on destructive actions"), T("Excluir e cancelar devem ter ícone e ton Danger.", "Delete and cancel must have icon and Danger tone."), "eye-slash"),
+        new(T("Submenus profundos", "Deep submenus"), T("Evite mais de 2 níveis de submenu.", "Avoid more than 2 levels of submenu."), "layer-group")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows =>
+    [
+        new("trigger", T("h-9 rounded-lg border bg-bg-surface px-3 text-sm.", "h-9 rounded-lg border bg-bg-surface px-3 text-sm.")),
+        new("menu", T("flex flex-col gap-0.5 overflow-y-auto.", "flex flex-col gap-0.5 overflow-y-auto.")),
+        new("item", T("flex items-center gap-2 rounded-md px-2 py-2 text-sm.", "flex items-center gap-2 rounded-md px-2 py-2 text-sm.")),
+        new("active", T("bg-primary/12% text-primary via color-mix.", "bg-primary/12% text-primary via color-mix.")),
+        new("indicator", T("h-5 w-5 rounded-md border (checkbox) / rounded-full (radio).", "h-5 w-5 rounded-md border (checkbox) / rounded-full (radio).")),
+        new("kbd", T("rounded bg-surface-100 px-1.5 py-0.5 text-[0.6875rem].", "rounded bg-surface-100 px-1.5 py-0.5 text-[0.6875rem]."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems =>
+    [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("ActiveTone", T("Primary, Secondary, Success, Warning, Danger, Neutral.", "Primary, Secondary, Success, Warning, Danger, Neutral."), "swatchbook"),
+        new("Hover tones", T("Cada ton tem hover color-mix próprio.", "Each tone has its own hover color-mix."), "eye"),
+        new("Motion", T("transition-colors duration-150 em itens.", "transition-colors duration-150 on items."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows =>
+    [
+        new("Unit", T("Render, props, events, keyboard, a11y, kinds, submenus.", "Render, props, events, keyboard, a11y, kinds, submenus.")),
+        new("Accessibility", T("role=menu, menuitem, aria-checked, aria-activedescendant.", "role=menu, menuitem, aria-checked, aria-activedescendant.")),
+        new("Keyboard", T("ArrowDown, ArrowUp, Home, End, Enter, Space, Escape.", "ArrowDown, ArrowUp, Home, End, Enter, Space, Escape."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows =>
+    [
+        new(T("Submenu positioning", "Submenu positioning"), T("Submenus abrem à direita. Não suporta abertura para esquerda.", "Submenus open right. Does not support left opening.")),
+        new(T("Nesting limit", "Nesting limit"), T("Suporta 1 nível de submenu. Recursão ilimitada no modelo.", "Supports 1 level of submenu. Unlimited model recursion.")),
+        new(T("CloseOnSelect behavior", "CloseOnSelect behavior"), T("Apenas Action fecha automaticamente. Checkbox/Radio mantém aberto.", "Only Action closes automatically. Checkbox/Radio stays open."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems =>
+    [
+        new("XFContextMenu", T("Menu de contexto por clique direito.", "Right-click context menu."), "square"),
+        new("XFPopover", T("Base de posicionamento do dropdown.", "Dropdown positioning base."), "layer-group"),
+        new("XFDrawer", T("Painel lateral para menus complexos.", "Side panel for complex menus."), "window-restore"),
+        new("XFSelect", T("Select com opções para campos de formulário.", "Select with options for form fields."), "list"),
+        new("XFSplitButton", T("Botão principal com ação + dropdown.", "Primary button with action + dropdown."), "caret-down"),
+        new("XFToolbar", T("Toolbar com ações agrupadas.", "Toolbar with grouped actions."), "bars")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows =>
+    [
+        new(T("Checkbox fecha o menu?", "Does checkbox close menu?"), T("Não. Apenas itens Action fecham com CloseOnSelect=true.", "No. Only Action items close with CloseOnSelect=true.")),
+        new(T("Como customizar o trigger?", "How to customize trigger?"), T("Use o parâmetro Trigger com RenderFragment<XFPopoverTriggerContext>.", "Use the Trigger parameter with RenderFragment<XFPopoverTriggerContext>.")),
+        new(T("Submenu abre para esquerda?", "Does submenu open left?"), T("Não. Submenus abrem à direita. Use Placement=Left no menu principal.", "No. Submenus open right. Use Placement=Left on main menu.")),
+        new(T("Itens desabilitados recebem clique?", "Do disabled items receive clicks?"), T("Não. Disabled=true impede Activation e mostra cursor-not-allowed.", "No. Disabled=true prevents Activation and shows cursor-not-allowed."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows =>
+    [
+        new("2026-06-11", T("Acentuação PT-BR corrigida, code strings limpas, seções adicionadas (Propósito, Hierarquia visual, Princípios, Tokens, Temas, Testes, Limitações, FAQ, Boas práticas).", "PT-BR accent fixes, clean code strings, sections added (Purpose, Visual Hierarchy, Design Principles, Tokens, Theming, Testing, Limitations, FAQ, Best Practices).")),
+        new("2026-06-02", T("10 exemplos: Básico, Tipos, Ícones, Descrição, Submenus, Checkbox, Radio, Desabilitado, Posicionamento, Enterprise.", "10 examples: Basic, Types, Icons, Description, Submenus, Checkbox, Radio, Disabled, Placement, Enterprise.")),
+        new("2026-05-20", T("Migração inicial do seed.", "Initial seed migration."))
+    ];
+
+    // === CODE STRINGS ===
+    private string CodeBasic => @"<XFDropdownMenu ButtonText=""Ações""
+              Items=""@BasicItems""
+              ActiveTone=""XFSemanticColor.Primary"" />
+
+@code {
+    private IReadOnlyList<XFDropdownMenuItem> BasicItems = [
+        new() { Text = ""Editar"", Shortcut = ""E"",
+                Tone = XFSemanticColor.Primary },
+        new() { Text = ""Duplicar"" },
+        new() { Text = ""Excluir"",
+                Tone = XFSemanticColor.Danger }
+    ];
+}";
+
+    private string CodeKinds => @"new() { Text = ""Seção"", Kind = Header },
+new() { Text = ""Ação"", Kind = Action },
+new() { Text = ""Opção toggle"", Kind = Checkbox, Checked = true },
+new() { Kind = Separator },
+new() { Text = ""Opção A"", Kind = Radio, Checked = true, Group = ""view"" },
+new() { Text = ""Opção B"", Kind = Radio, Group = ""view"" }";
+
+    private string CodeIcons => @"new() { Text = ""Editar"",
+    Icon = @<span class=""inline-block h-4 w-4"">
+        @((MarkupString)XFSvgIcons.Markup(""pencil""))
+    </span>,
+    Tone = XFSemanticColor.Primary },
+new() { Text = ""Excluir"",
+    Icon = @<span class=""inline-block h-4 w-4"">
+        @((MarkupString)XFSvgIcons.Markup(""trash""))
+    </span>,
+    Tone = XFSemanticColor.Danger }";
+
+    private string CodeDescription => @"new() { Text = ""Salvar"",
+    Description = ""Salva o arquivo atual"",
+    Shortcut = ""Ctrl+S"",
+    Tone = XFSemanticColor.Primary }";
+
+    private string CodeSubmenus => @"new() { Text = ""Exportar como"", Children = [
+    new() { Text = ""PDF"",
+        Icon = @<span>@((MarkupString)XFSvgIcons.Markup(""file-pdf""))</span> },
+    new() { Text = ""Excel"",
+        Icon = @<span>@((MarkupString)XFSvgIcons.Markup(""file-excel""))</span> },
+    new() { Text = ""CSV"",
+        Icon = @<span>@((MarkupString)XFSvgIcons.Markup(""file-csv""))</span> }
+] }";
+
+    private string CodeDisabled => @"new() { Text = ""Editar"",
+    Tone = XFSemanticColor.Primary },
+new() { Text = ""Aprovar"",
+    Disabled = true,
+    Description = ""Sem permissão"" },
+new() { Text = ""Excluir"",
+    Disabled = true,
+    Description = ""Registro vinculado"",
+    Tone = XFSemanticColor.Danger }";
+
+    private string CodePlacement => @"<XFDropdownMenu ButtonText=""Bottom Start""
+    Items=""@BasicItems""
+    Placement=""XFPopoverPlacement.Bottom""
+    Alignment=""XFPopoverAlignment.Start"" />
+
+<XFDropdownMenu ButtonText=""Bottom Center""
+    Items=""@BasicItems""
+    Placement=""XFPopoverPlacement.Bottom""
+    Alignment=""XFPopoverAlignment.Center"" />
+
+<XFDropdownMenu ButtonText=""Bottom End""
+    Items=""@BasicItems""
+    Placement=""XFPopoverPlacement.Bottom""
+    Alignment=""XFPopoverAlignment.End"" />";
+
+    private string CodeEnterprise => @"<XFDropdownMenu ButtonText=""Mais ações""
+              Items=""@EnterpriseItems""
+              ActiveTone=""XFSemanticColor.Primary"" />
+
+@code {
+    private IReadOnlyList<XFDropdownMenuItem> EnterpriseItems = [
+        new() { Text = ""Ações"", Kind = Header },
+        new() { Text = ""Editar NF-e"",
+            Icon = @<span>@((MarkupString)XFSvgIcons.Markup(""pencil""))</span>,
+            Shortcut = ""E"",
+            Tone = XFSemanticColor.Primary },
+        new() { Text = ""Duplicar NF-e"",
+            Icon = @<span>@((MarkupString)XFSvgIcons.Markup(""copy""))</span>,
+            Shortcut = ""D"" },
+        new() { Text = ""Cancelar NF-e"",
+            Icon = @<span>@((MarkupString)XFSvgIcons.Markup(""ban""))</span>,
+            Tone = XFSemanticColor.Warning },
+        new() { Kind = Separator },
+        new() { Text = ""Exportar como"", Children = [
+            new() { Text = ""PDF"" },
+            new() { Text = ""DANFE"" },
+            new() { Text = ""XML"" }
+        ]},
+        new() { Kind = Separator },
+        new() { Text = ""Visualizar DANFE"",
+            Icon = @<span>@((MarkupString)XFSvgIcons.Markup(""eye""))</span>,
+            Shortcut = ""V"" },
+        new() { Text = ""Enviar por email"",
+            Icon = @<span>@((MarkupString)XFSvgIcons.Markup(""envelope""))</span>,
+            Badge = ""novo"" }
+    ];
+}";
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

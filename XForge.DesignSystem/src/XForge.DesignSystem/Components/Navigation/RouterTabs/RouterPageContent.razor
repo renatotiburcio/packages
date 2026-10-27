@@ -1,0 +1,23 @@
+@inject NavigationManager Navigation
+
+<div class="xf-router-page-content">
+    <RouteView RouteData="@routeData" DefaultLayout="@typeof(object)" />
+</div>
+
+@code {
+    private RouteData? routeData;
+
+    [Parameter]
+    public string Route { get; set; } = "";
+
+    protected override void OnParametersSet()
+    {
+        // This is a simplified implementation
+        // In a real app, you'd resolve the route data from the Router
+        var currentUri = new Uri(Navigation.Uri).AbsolutePath;
+        if (currentUri.StartsWith(Route, StringComparison.OrdinalIgnoreCase))
+        {
+            // Route matches - in production, resolve actual page component
+        }
+    }
+}

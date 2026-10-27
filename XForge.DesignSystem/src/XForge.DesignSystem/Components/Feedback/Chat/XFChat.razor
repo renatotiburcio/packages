@@ -1,0 +1,52 @@
+@inherits XForgeComponentBase
+
+<section class="@RootClass" style="@Style" aria-busy="@AriaBusy">
+    @if (HeaderContent is not null || !string.IsNullOrWhiteSpace(Title) || !string.IsNullOrWhiteSpace(Subtitle))
+    {
+        <header class="@HeaderClass">
+            @if (HeaderContent is not null)
+            {
+                @HeaderContent
+            }
+            else
+            {
+                <div class="min-w-0">
+                    <div class="@TitleClass">@Title</div>
+                    @if (!string.IsNullOrWhiteSpace(Subtitle))
+                    {
+                        <div class="@SubtitleClass">@Subtitle</div>
+                    }
+                </div>
+            }
+        </header>
+    }
+
+    <XFMessageList Messages="@Messages"
+                   Users="@Users"
+                   CurrentUserId="@CurrentUserId"
+                   EmptyText="@EmptyText"
+                   EmptyContent="@EmptyContent"
+                   MessageTemplate="@MessageTemplate"
+                   ShowTypingIndicator="@ShowTypingIndicator"
+                   TypingText="@TypingText"
+                   MessageLoadingLabel="@MessageLoadingLabel" />
+
+    <footer class="@ComposerClass">
+        @ComposerStart
+        <textarea class="@TextareaClass"
+                  rows="@Rows"
+                  value="@Draft"
+                  placeholder="@Placeholder"
+                  disabled="@(Disabled || Loading)"
+                  readonly="@ReadOnly"
+                  aria-label="@ComposerLabel"
+                  @oninput="HandleInputAsync"
+                  @onkeydown="HandleKeyDownAsync"
+                  @onkeydown:preventDefault="@PreventEnterDefault"></textarea>
+        @ComposerEnd
+        <button type="button" class="@SendButtonClass" disabled="@(!CanSend)" aria-label="@SendLabel" @onclick="SendAsync">
+            <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("paper-plane")</span>
+        </button>
+    </footer>
+</section>
+

@@ -1,0 +1,195 @@
+@implements IDisposable
+
+<div class="@ContainerClass" style="@Style" @attributes="AdditionalAttributes">
+    @if (ChildContent is not null)
+    {
+        @ChildContent(new XFOfflineStorageContext(_entries.Count, _syncQueue.Count,
+            _conflicts.Count, _isOnline, _isSyncing, _stats))
+    }
+</div>
+
+@code {
+    private readonly Dictionary<string, XFStorageEntry> _entries = new(StringComparer.OrdinalIgnoreCase);
+    private readonly List<XFSyncQueueItem> _syncQueue = new();
+    private readonly List<XFSyncConflict> _conflicts = new();
+    private bool _isOnline = true;
+    private bool _isSyncing;
+    private XFStorageStats _stats = new();
+
+    [Parameter] public RenderFragment<XFOfflineStorageContext>? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    [Parameter] public string? Style { get; set; }
+
+    [Parameter] public long StorageQuotaBytes { get; set; } = 5 * 1024 * 1024; // 5 MB default
+
+    [Parameter] public XFSyncConflictStrategy ConflictStrategy { get; set; } = XFSyncConflictStrategy.LastWriteWins;
+
+    [Parameter] public EventCallback<XFSyncQueueItem> OnSyncItemProcessed { get; set; }
+
+    [Parameter] public EventCallback<XFSyncConflict> OnConflictDetected { get; set; }
+
+    [Parameter] public EventCallback<XFStorageStats> OnStatsChanged { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string ContainerClass => string.Join(" ", new[]
+    {
+        "xf-offline-storage",
+        _isOnline ? "xf-storage-online" : "xf-storage-offline",
+        _isSyncing ? "xf-storage-syncing" : null,
+        Class
+    }.Where(s => !string.IsNullOrEmpty(s)));
+
+    /// <summary>Store a key-value pair.</summary>
+    public void SetItem(string key, string value)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var entry = new XFStorageEntry
+        {
+            Key = key,
+            Value = value,
+            CreatedAt = _entries.ContainsKey(key) ? _entries[key].CreatedAt : now,
+            UpdatedAt = now,
+            SizeBytes = System.Text.Encoding.UTF8.GetByteCount(value)
+        };
+
+        var changeType = _entries.ContainsKey(key) ? XFStorageChangeType.Updated : XFStorageChangeType.Created;
+        _entries[key] = entry;
+
+        EnqueueSync(key, changeType, value);
+        UpdateStats();
+    }
+
+    /// <summary>Retrieve a value by key.</summary>
+    public string? GetItem(string key) =>
+        _entries.TryGetValue(key, out var entry) ? entry.Value : null;
+
+    /// <summary>Remove an entry by key.</summary>
+    public bool RemoveItem(string key)
+    {
+        if (!_entries.Remove(key))
+            return false;
+
+        EnqueueSync(key, XFStorageChangeType.Deleted);
+        UpdateStats();
+        return true;
+    }
+
+    /// <summary>Check if a key exists.</summary>
+    public bool HasItem(string key) => _entries.ContainsKey(key);
+
+    /// <summary>Get all keys.</summary>
+    public IReadOnlyList<string> GetKeys() => _entries.Keys.ToList().AsReadOnly();
+
+    /// <summary>Get all entries.</summary>
+    public IReadOnlyDictionary<string, XFStorageEntry> GetAllEntries() =>
+        new Dictionary<string, XFStorageEntry>(_entries).AsReadOnly();
+
+    /// <summary>Clear all entries.</summary>
+    public void Clear()
+    {
+        foreach (var key in _entries.Keys.ToList())
+        {
+            EnqueueSync(key, XFStorageChangeType.Deleted);
+        }
+        _entries.Clear();
+        UpdateStats();
+    }
+
+    /// <summary>Get pending sync items.</summary>
+    public IReadOnlyList<XFSyncQueueItem> GetPendingSyncItems() =>
+        _syncQueue.Where(i => i.Status == XFSyncItemStatus.Pending).ToList().AsReadOnly();
+
+    /// <summary>Get conflicts.</summary>
+    public IReadOnlyList<XFSyncConflict> GetConflicts() => _conflicts.AsReadOnly();
+
+    /// <summary>Resolve a conflict by choosing local or remote.</summary>
+    public void ResolveConflict(string key, bool useLocal)
+    {
+        var conflict = _conflicts.FirstOrDefault(c => c.Key == key);
+        if (conflict is null) return;
+
+        if (useLocal)
+        {
+            _entries[key] = conflict.LocalValue;
+        }
+        else
+        {
+            _entries[key] = conflict.RemoteValue;
+        }
+
+        _conflicts.Remove(conflict);
+        UpdateStats();
+    }
+
+    /// <summary>Simulate sync process (for demo/test).</summary>
+    public async Task<int> ProcessSyncQueueAsync()
+    {
+        if (!_isOnline || _isSyncing) return 0;
+
+        _isSyncing = true;
+        var processed = 0;
+
+        foreach (var item in _syncQueue.Where(i => i.Status == XFSyncItemStatus.Pending).ToList())
+        {
+            // Simulate sync — in production, this calls the server API
+            var updatedItem = item with { Status = XFSyncItemStatus.Synced };
+            var index = _syncQueue.IndexOf(item);
+            if (index >= 0) _syncQueue[index] = updatedItem;
+
+            if (OnSyncItemProcessed.HasDelegate)
+                await OnSyncItemProcessed.InvokeAsync(updatedItem);
+
+            processed++;
+        }
+
+        _isSyncing = false;
+        UpdateStats();
+        return processed;
+    }
+
+    /// <summary>Set online/offline status.</summary>
+    public void SetOnlineStatus(bool isOnline)
+    {
+        _isOnline = isOnline;
+        UpdateStats();
+    }
+
+    private void EnqueueSync(string key, XFStorageChangeType changeType, string? payload = null)
+    {
+        _syncQueue.Add(new XFSyncQueueItem
+        {
+            Key = key,
+            ChangeType = changeType,
+            Status = XFSyncItemStatus.Pending,
+            Payload = payload
+        });
+    }
+
+    private void UpdateStats()
+    {
+        _stats = new XFStorageStats
+        {
+            TotalEntries = _entries.Count,
+            TotalSizeBytes = _entries.Values.Sum(e => e.SizeBytes),
+            PendingSyncItems = _syncQueue.Count(i => i.Status == XFSyncItemStatus.Pending),
+            ConflictItems = _conflicts.Count,
+            LastSyncAt = _syncQueue.Where(i => i.Status == XFSyncItemStatus.Synced)
+                .Select(i => (DateTimeOffset?)i.Timestamp)
+                .LastOrDefault(),
+            StorageQuotaBytes = StorageQuotaBytes
+        };
+
+        if (OnStatsChanged.HasDelegate)
+            _ = OnStatsChanged.InvokeAsync(_stats);
+    }
+
+    public void Dispose()
+    {
+        _entries.Clear();
+        _syncQueue.Clear();
+        _conflicts.Clear();
+    }
+}

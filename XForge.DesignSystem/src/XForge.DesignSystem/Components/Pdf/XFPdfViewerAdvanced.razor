@@ -1,0 +1,12 @@
+@namespace XForge.Components.Pdf
+@inherits XForgeComponentBase
+
+<div class="xf-pdf-advanced" data-pages="@Pages">
+  <div class="xf-pdf-toolbar">
+    <input type="text" placeholder="Search..." @bind="SearchQuery" @onkeyup="() => OnSearch.InvokeAsync(SearchQuery)" />
+    <button @onclick="() => OnAnnotate.InvokeAsync()">Annotate</button>
+    <button @onclick="() => OnSign.InvokeAsync()">Sign</button>
+    <button @onclick="() => OnFormFill.InvokeAsync()">Form Fill</button>
+  </div>
+  <div class="xf-pdf-content">@ChildContent</div>
+</div>

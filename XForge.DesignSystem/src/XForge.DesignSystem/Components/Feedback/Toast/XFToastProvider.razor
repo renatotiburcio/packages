@@ -1,0 +1,22 @@
+@namespace XForge.DesignSystem.Components.Feedback.Toast
+@implements IDisposable
+@inject XFToastService ToastService
+
+<div class="@ProviderClass" style="@ProviderStyle" aria-live="@AriaLive" aria-atomic="false">
+    @for (var index = 0; index < RenderedToasts.Count; index++)
+    {
+        var item = RenderedToasts[index];
+        <XFToast @key="item.Id"
+                 Item="@item"
+                 Index="@index"
+                 Expanded="@Expand"
+                 IsTopPlacement="@IsTopPlacement"
+                 Gap="@Gap"
+                 ItemHeight="@ItemHeight"
+                 CloseButton="@(item.CloseButton ?? CloseButton)"
+                 RichColors="@(item.RichColors ?? RichColors)"
+                 SolidColors="@(item.SolidColors ?? SolidColors)"
+                 ColorMode="@(item.ColorMode ?? (SolidColors ? XFToastColorMode.Solid : RichColors ? XFToastColorMode.Rich : ColorMode))"
+                 OnDismiss="DismissAsync" />
+    }
+</div>

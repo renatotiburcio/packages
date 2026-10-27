@@ -1,0 +1,28 @@
+@namespace XForge.Components.Maps
+@inherits XForgeComponentBase
+
+<div class="xf-maps-advanced" data-markers="@Markers.Count" data-layers="@Layers.Count">
+  <div class="xf-maps-canvas" style="width:@(Width)px;height:@(Height)px">
+    @foreach (var m in Markers) { <div class="xf-maps-marker" style="left:@(m.Longitude)%;top:@(m.Latitude)%" @onclick="() => OnMarkerClick.InvokeAsync(m)">@m.Title</div> }
+    @foreach (var l in Layers) { <div class="xf-maps-layer" data-type="@l.Type">@l.Name</div> }
+  </div>
+</div>
+
+@code {
+  public class MapMarker
+  {
+    public string Title { get; set; } = "";
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public string? Icon { get; set; }
+    public string? Color { get; set; }
+    public IReadOnlyDictionary<string, object>? Data { get; set; }
+  }
+
+  public class MapLayer
+  {
+    public string Name { get; set; } = "";
+    public string Type { get; set; } = "marker";
+    public bool Visible { get; set; } = true;
+  }
+}

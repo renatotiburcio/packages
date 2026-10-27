@@ -1,0 +1,8 @@
+@if (Visible)
+{
+    <tr class="@RowClass" @onclick="OnClick" @attributes="AdditionalAttributes">
+        <CascadingValue Value="this">
+            @ChildContent
+        </CascadingValue>
+    </tr>
+}

@@ -1,0 +1,119 @@
+@typeparam TValue
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@FieldShellClass">
+        @if (ShowSteppers && ShowSplitButtons)
+        {
+            <button type="button" class="@StepperButtonClass @SplitAutoClass" aria-label="@DecrementLabel" disabled="@StepperDisabled"
+                    @onpointerdown="() => HandleStepperPointerDown(-1)"
+                    @onpointerup="HandleStepperPointerUp"
+                    @onpointerleave="HandleStepperPointerLeave"
+                    @onclick:preventDefault>
+                <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("minus")</span>
+            </button>
+        }
+
+        @if (ResolvedPrefixText is not null || StartIcon is not null)
+        {
+            <div class="@AdornmentClass">
+                @if (StartIcon is not null)
+                {
+                    @StartIcon
+                }
+                else
+                {
+                    <span>@ResolvedPrefixText</span>
+                }
+            </div>
+        }
+
+        <input @ref="InputRef"
+               @attributes="AdditionalAttributes"
+               id="@Id"
+               name="@Name"
+               class="@InputClass"
+               type="number"
+               inputmode="@InputMode"
+               placeholder="@Placeholder"
+               min="@MinString"
+               max="@MaxString"
+               step="@StepString"
+               disabled="@Disabled"
+               readonly="@ReadOnly"
+               required="@Required"
+               aria-label="@AriaLabel"
+               aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+               aria-invalid="@AriaInvalid"
+               aria-required="@Required.ToString().ToLowerInvariant()"
+               aria-readonly="@ReadOnly.ToString().ToLowerInvariant()"
+               aria-describedby="@DescribedBy"
+               aria-valuetext="@AriaValueText"
+               value="@CurrentValueAsString"
+               @oninput="HandleInputAsync"
+               @onchange="HandleChangeAsync"
+               @onkeydown="HandleKeyDownAsync" />
+
+        @if (ResolvedSuffixText is not null)
+        {
+            <div class="@AdornmentClass">
+                <span>@ResolvedSuffixText</span>
+            </div>
+        }
+
+        @if (ShowSteppers && ShowSplitButtons)
+        {
+            <button type="button" class="@StepperButtonClass @SplitAutoClass" aria-label="@IncrementLabel" disabled="@StepperDisabled"
+                    @onpointerdown="() => HandleStepperPointerDown(1)"
+                    @onpointerup="HandleStepperPointerUp"
+                    @onpointerleave="HandleStepperPointerLeave"
+                    @onclick:preventDefault>
+                <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("plus")</span>
+            </button>
+        }
+
+        @if (ShowSteppers && ShowStackedButtons)
+        {
+            <div class="@StepperWrapClass">
+                <button type="button" class="@StepperButtonClass" aria-label="@IncrementLabel" disabled="@StepperDisabled"
+                        @onpointerdown="() => HandleStepperPointerDown(1)"
+                        @onpointerup="HandleStepperPointerUp"
+                        @onpointerleave="HandleStepperPointerLeave"
+                        @onclick:preventDefault>
+                    <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("plus")</span>
+                </button>
+                <button type="button" class="@StepperButtonClass" aria-label="@DecrementLabel" disabled="@StepperDisabled"
+                        @onpointerdown="() => HandleStepperPointerDown(-1)"
+                        @onpointerup="HandleStepperPointerUp"
+                        @onpointerleave="HandleStepperPointerLeave"
+                        @onclick:preventDefault>
+                    <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("minus")</span>
+                </button>
+            </div>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+</div>

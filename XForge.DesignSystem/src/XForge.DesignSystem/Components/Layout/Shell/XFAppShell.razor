@@ -1,0 +1,12 @@
+@inherits XForgeComponentBase
+<div id="@Id" @attributes="AdditionalAttributes" class="@GetShellClass()" style="@Style" data-theme="@Theme" data-brand="@Brand">
+    <aside class="@AsideClass" aria-label="@NavigationAriaLabel">
+        @if (Rail != null) { @Rail }
+        @if (Sidebar != null) { @Sidebar }
+    </aside>
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+        @if (AppBar != null) { @AppBar }
+        <main id="@MainId" class="@MainClass" aria-label="@MainAriaLabel" tabindex="-1">@ChildContent</main>
+        @if (Footer != null) { @Footer }
+    </div>
+</div>

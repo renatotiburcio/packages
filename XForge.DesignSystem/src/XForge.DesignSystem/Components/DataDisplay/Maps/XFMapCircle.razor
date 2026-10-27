@@ -1,0 +1,42 @@
+@* XFMapCircle — Adds a circle shape to the parent XFMap *@
+
+@code {
+    [CascadingParameter] private XFMap ParentMap { get; set; } = default!;
+
+    /// <summary>
+    /// Circle center coordinate. Required.
+    /// </summary>
+    [Parameter, EditorRequired] public XFMapCoordinate Center { get; set; }
+
+    /// <summary>
+    /// Circle radius in meters. Required.
+    /// </summary>
+    [Parameter, EditorRequired] public double Radius { get; set; }
+
+    /// <summary>
+    /// Shape styling (stroke, fill, opacity).
+    /// </summary>
+    [Parameter] public XFMapShapeStyle Style { get; set; } = new();
+
+    private int _layerIndex = -1;
+    private bool _added;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ParentMap.IsReady && !_added)
+        {
+            _layerIndex = await ParentMap.AddCircleAsync(Center, Radius, Style);
+            _added = true;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_layerIndex >= 0 && ParentMap != null)
+        {
+            try { await ParentMap.RemoveLayerAsync(_layerIndex); }
+            catch (Microsoft.JSInterop.JSDisconnectedException) { }
+            catch (InvalidOperationException) { }
+        }
+    }
+}

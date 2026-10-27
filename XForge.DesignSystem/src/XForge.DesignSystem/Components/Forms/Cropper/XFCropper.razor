@@ -1,0 +1,159 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes"
+     role="group" aria-label="@AriaLabel">
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="xf-cropper-error rounded-lg bg-red-50 dark:bg-red-900/20 p-4 text-sm text-red-700 dark:text-red-300" role="alert">
+            @ErrorMessage
+        </div>
+    }
+    else if (IsLoading)
+    {
+        <div class="flex items-center justify-center p-8">
+            <div class="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-primary)] border-t-transparent"></div>
+            <span class="ml-3 text-sm text-text-secondary">@LoadingText</span>
+        </div>
+    }
+    else if (HasImage)
+    {
+        <div class="flex flex-col gap-4">
+            <!-- Main crop area -->
+            <div class="@CropAreaClass"
+                 @onpointerdown="OnCropPointerDown"
+                 @onpointermove="OnCropPointerMove"
+                 @onpointerup="OnCropPointerUp"
+                 @onpointerleave="OnCropPointerUp">
+
+                <!-- Source image -->
+                <img src="@Source"
+                     alt="@ImageAlt"
+                     class="pointer-events-none select-none"
+                     style="width: @(ImageDisplayWidth)px; height: @(ImageDisplayHeight)px; transform: rotate(@(_rotation)deg) scale(@(_zoom / 100.0)); transform-origin: center;" />
+
+                <!-- Crop overlay -->
+                <div class="absolute inset-0 pointer-events-none" style="background: rgba(0,0,0,0.5);">
+                    <!-- Clear area (crop region) -->
+                    <div class="absolute border-2 border-white shadow-lg"
+                         style="left: @(_cropX)px; top: @(_cropY)px; width: @(_cropWidth)px; height: @(_cropHeight)px; background: transparent;">
+                        <!-- Resize handles -->
+                            <div class="absolute -left-1.5 top-1/2 -translate-y-1/2 h-3 w-1.5 cursor-ew-resize bg-white rounded-sm pointer-events-auto"
+                                 @onpointerdown:stopPropagation="true"
+                                 @onpointerdown="() => StartResize(CropResizeDirection.Left)"></div>
+                            <div class="absolute -right-1.5 top-1/2 -translate-y-1/2 h-3 w-1.5 cursor-ew-resize bg-white rounded-sm pointer-events-auto"
+                                 @onpointerdown:stopPropagation="true"
+                                 @onpointerdown="() => StartResize(CropResizeDirection.Right)"></div>
+                            <div class="absolute left-1/2 -translate-x-1/2 -top-1.5 h-1.5 w-3 cursor-ns-resize bg-white rounded-sm pointer-events-auto"
+                                 @onpointerdown:stopPropagation="true"
+                                 @onpointerdown="() => StartResize(CropResizeDirection.Top)"></div>
+                            <div class="absolute left-1/2 -translate-x-1/2 -bottom-1.5 h-1.5 w-3 cursor-ns-resize bg-white rounded-sm pointer-events-auto"
+                                 @onpointerdown:stopPropagation="true"
+                                 @onpointerdown="() => StartResize(CropResizeDirection.Bottom)"></div>
+
+                        <!-- Grid lines (rule of thirds) -->
+                        @if (ShowGrid)
+                        {
+                            <div class="absolute left-1/3 top-0 bottom-0 w-px bg-white/40"></div>
+                            <div class="absolute left-2/3 top-0 bottom-0 w-px bg-white/40"></div>
+                            <div class="absolute top-1/3 left-0 right-0 h-px bg-white/40"></div>
+                            <div class="absolute top-2/3 left-0 right-0 h-px bg-white/40"></div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex flex-col gap-3">
+                <!-- Zoom -->
+                <div class="flex items-center gap-3">
+                    <button type="button" class="@ZoomButtonClass" @onclick="ZoomOut" aria-label="@ZoomOutText" disabled="@(_zoom <= MinZoom)">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("minus")</span>
+                    </button>
+                    <input type="range" min="@MinZoom" max="@MaxZoom" step="1"
+                           value="@_zoom" @oninput="OnZoomChanged"
+                           class="flex-1 h-2 rounded-lg appearance-none bg-surface-200 accent-[var(--color-primary)]"
+                           aria-label="@ZoomText" />
+                    <button type="button" class="@ZoomButtonClass" @onclick="ZoomIn" aria-label="@ZoomInText" disabled="@(_zoom >= MaxZoom)">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("plus")</span>
+                    </button>
+                    <span class="min-w-[3rem] text-center text-xs font-medium text-text-secondary">@($"{_zoom}%")</span>
+                </div>
+
+                <!-- Rotation -->
+                <div class="flex items-center gap-3">
+                    <button type="button" class="@RotateButtonClass" @onclick="RotateLeft" aria-label="@RotateLeftText">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("rotate-left")</span>
+                    </button>
+                    <input type="range" min="-180" max="180" step="1"
+                           value="@_rotation" @oninput="OnRotationChanged"
+                           class="flex-1 h-2 rounded-lg appearance-none bg-surface-200 accent-[var(--color-primary)]"
+                           aria-label="@RotationText" />
+                    <button type="button" class="@RotateButtonClass" @onclick="RotateRight" aria-label="@RotateRightText">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("rotate-right")</span>
+                    </button>
+                    <span class="min-w-[3rem] text-center text-xs font-medium text-text-secondary">@($"{_rotation}°")</span>
+                </div>
+
+                <!-- Aspect Ratio -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs font-medium text-text-secondary">@AspectRatioText:</span>
+                    @foreach (var ratio in AspectRatios)
+                    {
+                        <button type="button"
+                                class="@AspectRatioButtonClass(ratio)"
+                                @onclick="() => SetAspectRatio(ratio)">
+                            @ratio.Label
+                        </button>
+                    }
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-border-light">
+                    <button type="button" class="@CancelButtonClass" @onclick="OnCancel" disabled="@IsCropping">
+                        @CancelText
+                    </button>
+                    <button type="button" class="@CropButtonClass" @onclick="OnCrop" disabled="@IsCropping">
+                        @if (IsCropping)
+                        {
+                            <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-1"></div>
+                        }
+                        @CropText
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            @if (ShowPreview && _previewImageBytes != null)
+            {
+                <div class="rounded-lg border border-border-light bg-bg-surface p-3">
+                    <div class="text-xs font-medium text-text-secondary mb-2">@PreviewText</div>
+                    <div class="flex items-center gap-3">
+                        <img src="data:image/png;base64,@Convert.ToBase64String(_previewImageBytes)"
+                             alt="@PreviewText"
+                             class="rounded border border-border-light"
+                             style="max-width: 200px; max-height: 150px; object-fit: contain;" />
+                        <div class="text-xs text-text-muted">
+                            <div>@($"{_cropWidth:F0} × {_cropHeight:F0}")</div>
+                            <div>@FormatFileSize(_previewImageBytes.Length)</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <!-- Empty state -->
+        <div class="@EmptyStateClass">
+            <span class="inline-block h-12 w-12 text-text-muted">@XFSvgIcons.Markup("image")</span>
+            <div class="text-sm text-text-secondary">@NoImageText</div>
+            @if (!string.IsNullOrEmpty(Source))
+            {
+                <button type="button" class="@UploadButtonClass" @onclick="LoadImage">
+                    @UploadText
+                </button>
+            }
+        </div>
+    }
+</div>

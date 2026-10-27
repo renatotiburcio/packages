@@ -1,0 +1,56 @@
+@inherits XForgeComponentBase
+
+<nav @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     aria-label="@AriaLabel">
+    <ol class="@ListClass">
+        @foreach (var entry in Items.Select((item, index) => new { item, index }))
+        {
+            var ctx = new XFStepContext
+            {
+                Item = entry.item,
+                Index = entry.index,
+                Status = GetEffectiveStatus(entry.item),
+                Total = Items.Count,
+                IsCurrent = entry.item.Status == XFStepStatus.Current && !Disabled,
+                IsComplete = entry.item.Status == XFStepStatus.Complete && !Disabled,
+                IsError = entry.item.Status == XFStepStatus.Error && !Disabled,
+                IsDisabled = IsItemDisabled(entry.item) || Disabled,
+                IsPending = entry.item.Status == XFStepStatus.Pending && !Disabled
+            };
+            <li class="@ItemClass(entry.item, entry.index)"
+                aria-current="@(ctx.IsCurrent ? "step" : null)"
+                aria-disabled="@ctx.IsDisabled.ToString().ToLowerInvariant()"
+                aria-label="@GetStepAriaLabel(entry.item, entry.index)"
+                @onclick="() => HandleStepClickAsync(entry.item, entry.index)"
+                @onclick:preventDefault="true">
+                <div class="@MarkerShellClass">
+                    <span class="@ConnectorClass(entry.item, entry.index)" aria-hidden="true"></span>
+                    <span class="@MarkerClass(entry.item)">
+                        @if (MarkerTemplate is not null)
+                        {
+                            @MarkerTemplate(ctx)
+                        }
+                        else if (ItemTemplate is not null)
+                        {
+                            @ItemTemplate(ctx)
+                        }
+                        else
+                        {
+                            @DefaultMarker(ctx)
+                        }
+                    </span>
+                </div>
+                <div class="@TextClass">
+                    <span class="@LabelClass(entry.item)">@entry.item.Label</span>
+                    @if (!string.IsNullOrWhiteSpace(entry.item.Description))
+                    {
+                        <span class="@DescriptionClass">@entry.item.Description</span>
+                    }
+                </div>
+            </li>
+        }
+    </ol>
+</nav>

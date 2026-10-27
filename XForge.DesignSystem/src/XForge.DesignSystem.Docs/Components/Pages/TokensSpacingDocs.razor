@@ -1,0 +1,407 @@
+@page "/tokens/spacing"
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="@T("Tokens de Espaçamento", "Spacing Tokens")"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Design Tokens" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Ritmo visual", "Visual rhythm")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Layouts densos", "Dense layouts")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Responsivo", "Responsive")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Escala de Espaçamento para ritmo visual, layouts densos e composicao responsiva.",
+                               "Spacing scale for visual rhythm, dense layouts and responsive composition.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Os tokens de Espaçamento do XForge definem gap, padding e margin como Tailwind utilities baseadas numa escala consistente de 0 a 96. Eles garantem ritmo visual uniforme em grids, forms, toolbars e cards do ERP.",
+                               "XForge spacing tokens define gap, padding and margin as Tailwind utilities based on a consistent scale from 0 to 96. They ensure uniform visual rhythm in ERP grids, forms, toolbars and cards.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts) { @Tile(item) }</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente não utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Preview renderizado", "Live Preview"), T("Escala de Espaçamento aplicada a cards e stacks.", "Spacing scale applied to cards and stacks."), SpacingPreview(), SpacingCode)
+            @Example(T("Gap em stacks", "Gap in Stacks"), T("XFStack Gap usa a escala de Espaçamento.", "XFStack Gap uses the spacing scale."), GapPreview(), GapCode)
+            @Example(T("Padding em cards", "Padding in Cards"), T("XFPadding controla Espaçamento interno.", "XFPadding controls internal spacing."), PaddingPreview(), PaddingCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes/Valores", "Variants/Values"), @<div>@NameValueTable(VariantRows, T("Token", "Token"), T("Valor", "Value"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegação enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("cenários enterprise", "Enterprise Scenários"), @<div>@TileGrid(ScenárioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migração", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+            @Section(T("Mapa de escala", "Scale Map"), @<div>@NameValueTable(ScaleMapRows, T("Token", "Token"), T("Valor em rem", "Value in rem"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div class="flex items-end gap-2">
+            <div class="h-4 w-1 rounded bg-primary"></div><span class="text-[10px] text-text-muted">1</span>
+            <div class="h-6 w-2 rounded bg-primary"></div><span class="text-[10px] text-text-muted">2</span>
+            <div class="h-8 w-3 rounded bg-primary"></div><span class="text-[10px] text-text-muted">3</span>
+            <div class="h-10 w-4 rounded bg-primary"></div><span class="text-[10px] text-text-muted">4</span>
+            <div class="h-12 w-6 rounded bg-primary"></div><span class="text-[10px] text-text-muted">6</span>
+            <div class="h-14 w-8 rounded bg-primary"></div><span class="text-[10px] text-text-muted">8</span>
+            <div class="h-16 w-10 rounded bg-primary"></div><span class="text-[10px] text-text-muted">10</span>
+            <div class="h-20 w-12 rounded bg-primary"></div><span class="text-[10px] text-text-muted">12</span>
+            <div class="h-24 w-16 rounded bg-primary"></div><span class="text-[10px] text-text-muted">16</span>
+        </div>
+    </XFStack>;
+
+    private RenderFragment SpacingPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-4"><div class="h-6 w-6 rounded bg-primary"></div><div class="h-6 w-6 rounded bg-primary"></div><span class="text-xs text-text-muted">gap-4 (1rem)</span></div>
+            <div class="flex items-center gap-6"><div class="h-6 w-6 rounded bg-success"></div><div class="h-6 w-6 rounded bg-success"></div><span class="text-xs text-text-muted">gap-6 (1.5rem)</span></div>
+            <div class="flex items-center gap-8"><div class="h-6 w-6 rounded bg-warning"></div><div class="h-6 w-6 rounded bg-warning"></div><span class="text-xs text-text-muted">gap-8 (2rem)</span></div>
+        </div>
+    </XFStack>;
+
+    private RenderFragment GapPreview() => @<div class="grid grid-cols-3 gap-4">
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">gap-4</XFTypography></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">gap-4</XFTypography></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">gap-4</XFTypography></ChildContent></XFCard>
+    </div>;
+
+    private RenderFragment PaddingPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" Wrap="XFWrap.Wrap">
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Sm"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">Sm</XFTypography></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Md"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">Md</XFTypography></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">Lg</XFTypography></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Xl"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">Xl</XFTypography></ChildContent></XFCard>
+    </XFStack>;
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro","Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição","Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private string SpacingCode => @"<XFStack Gap=""4"">gap-4</XFStack>
+<XFStack Gap=""6"">gap-6</XFStack>
+<XFStack Gap=""8"">gap-8</XFStack>";
+
+    private string GapCode => @"<XFStack Orientation=""XFOrientation.Horizontal"" Gap=""4"">
+    <XFCard>Item 1</XFCard>
+    <XFCard>Item 2</XFCard>
+</XFStack>";
+
+    private string PaddingCode => @"<XFCard Padding=""XFPadding.Sm"">Small padding</XFCard>
+<XFCard Padding=""XFPadding.Md"">Medium padding</XFCard>
+<XFCard Padding=""XFPadding.Lg"">Large padding</XFCard>
+<XFCard Padding=""XFPadding.Xl"">Extra large</XFCard>";
+
+    private IReadOnlyList<DocTile> QuickFacts =>
+    [
+        new(T("Escala consistente", "Consistent scale"), T("De 0 a 96 em rem para ritmo visual uniforme.", "From 0 to 96 in rem for uniform visual rhythm."), "arrows-up-down"),
+        new(T("Tailwind-first", "Tailwind-first"), T("Usado via gap-*, p-*, m-* e classes de componentes XF.", "Used via gap-*, p-*, m-* and XF component classes."), "code"),
+        new(T("Responsivo", "Responsive"), T("Escala funciona em qualquer viewport.", "Scale works in any viewport."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows =>
+    [
+        new("Category", T("Design Tokens / Espaçamento", "Design Tokens / Spacing")),
+        new("Package", "XForge.DesignSystem"),
+        new("Status", T("Estavel", "Stable")),
+        new("Theme support", T("Funciona em light/dark.", "Works in light/dark."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems =>
+    [
+        new(T("Escala numerica", "Numeric scale"), T("0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 56, 64, 72, 80, 96.", "0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 56, 64, 72, 80, 96."), "list-ol"),
+        new(T("Unidade rem", "rem unit"), T("Baseada em 1rem = 16px por padrão.", "Based on 1rem = 16px by default."), "ruler"),
+        new(T("Componentes XF", "XF components"), T("XFStack, XFGrid e XFCard usam a escala internamente.", "XFStack, XFGrid and XFCard use the scale internally."), "puzzle-piece")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems =>
+    [
+        new(T("Ritmo visual", "Visual rhythm"), T("Espaçamento consistente entre elementos.", "Consistent spacing between elements."), "arrows-up-down"),
+        new(T("Densidade informacional", "Information density"), T("Compacto para telas enterprise, expansivo para dashboards.", "Compact for enterprise screens, expansive for dashboards."), "table-cells"),
+        new(T("Composicao responsiva", "Responsive composition"), T("Gap e padding escalam proporcionalmente.", "Gap and padding scale proportionally."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems =>
+    [
+        new(T("Antes", "Before"), T("Valores arbitrarios (3px, 7px, 13px) sem padrão.", "Arbitrary values (3px, 7px, 13px) without pattern."), "xmark"),
+        new(T("Depois", "After"), T("Escala numerica previsivel de 0 a 96.", "Predictable numeric scale from 0 to 96."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("Layout consistente sem ajuste manual.", "Consistent layout without manual adjustment."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems =>
+    [
+        new(T("Gap de stacks e grids", "Stack and grid gap"), T("Use Gap 2-6 para densidade media.", "Use Gap 2-6 for medium density."), "table-cells"),
+        new(T("Padding de cards", "Card padding"), T("Sm, Md, Lg, Xl controlam padding interno.", "Sm, Md, Lg, Xl control internal padding."), "square"),
+        new(T("Margem entre seções", "Section margin"), T("Use gap-8 a gap-12 entre seções de Página.", "Use gap-8 to gap-12 between page sections."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems =>
+    [
+        new(T("Valores arbitrarios", "Arbitrary values"), T("Nao use 3px ou 7px; use a escala.", "Do not use 3px or 7px; use the scale."), "xmark"),
+        new(T("Espaçamento excessivo", "Excessive spacing"), T("Em telas densas, evite gap > 8 em listas.", "On dense screens, avoid gap > 8 in lists."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems =>
+    [
+        new(T("Gap", "Gap"), T("Espaçamento entre elementos filhos dentro de um container.", "Spacing between child elements inside a container."), "arrows-up-down"),
+        new(T("Padding", "Padding"), T("Espaçamento interno entre a borda e o conteudo do elemento.", "Internal spacing between the border and the element content."), "expand"),
+        new(T("Margem", "Margin"), T("Espaçamento externo entre o elemento e seus vizinhos.", "External spacing between the element and its neighbors."), "minimize")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems =>
+    [
+        new(T("Consistencia", "Consistency"), T("Use sempre a mesma escala em todo o sistema.", "Always use the same scale throughout the system."), "circle-check"),
+        new(T("Densidade", "Density"), T("Ajuste a escala conforme a densidade informacional da tela.", "Adjust the scale according to the screen information density."), "table-cells"),
+        new(T("Ritmo visual", "Visual rhythm"), T("Espaçamento previsivel cria harmonia entre elementos.", "Predictable spacing creates harmony between elements."), "music")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows =>
+    [
+        new("gap-0..96", T("Espaçamento entre elementos filhos.", "Spacing between child elements.")),
+        new("p-0..96", T("Padding interno.", "Internal padding.")),
+        new("m-0..96", T("Margem externa.", "External margin.")),
+        new("XFPadding.Sm/Md/Lg/Xl", T("Padding de componentes XF.", "XF component padding."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("Gap", "int", "0", T("Espaçamento entre filhos em XFStack/XFGrid (0-12).", "Spacing between children in XFStack/XFGrid (0-12).")),
+        new("Padding", "XFPadding", "None", T("Padding interno do XFCard (None/Sm/Md/Lg/Xl).", "Internal padding of XFCard (None/Sm/Md/Lg/Xl).")),
+        new("FullWidth", "bool", "false", T("Ocupa largura total do container.", "Fills the full container width."))
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows =>
+    [
+        new("gap-0", T("0rem - Sem espaco.", "0rem - No space.")),
+        new("gap-0.5", T("0.125rem (2px) - Espaco minimo.", "0.125rem (2px) - Minimal space.")),
+        new("gap-1", T("0.25rem (4px) - Espaco extra pequeno.", "0.25rem (4px) - Extra small space.")),
+        new("gap-1.5", T("0.375rem (6px) - Espaco pequeno.", "0.375rem (6px) - Small space.")),
+        new("gap-2", T("0.5rem (8px) - Espaco compacto.", "0.5rem (8px) - Compact space.")),
+        new("gap-3", T("0.75rem (12px) - Espaco medio pequeno.", "0.75rem (12px) - Medium-small space.")),
+        new("gap-4", T("1rem (16px) - Espaco medio.", "1rem (16px) - Medium space.")),
+        new("gap-5", T("1.25rem (20px) - Espaco medio grande.", "1.25rem (20px) - Medium-large space.")),
+        new("gap-6", T("1.5rem (24px) - Espaco grande.", "1.5rem (24px) - Large space.")),
+        new("gap-8", T("2rem (32px) - Espaco extra grande.", "2rem (32px) - Extra large space.")),
+        new("gap-10", T("2.5rem (40px) - Espaco 2xl.", "2.5rem (40px) - 2xl space.")),
+        new("gap-12", T("3rem (48px) - Espaco 3xl.", "3rem (48px) - 3xl space."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems =>
+    [
+        new(T("Alvo touch", "Touch target"), T("Espaçamento minimo de 8 (2rem) entre elementos interativos.", "Minimum spacing of 8 (2rem) between interactive elements."), "hand-pointer"),
+        new(T("Legibilidade", "Readability"), T("Padding adequado melhora leitura em telas densas.", "Adequate padding improves readability on dense screens."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems =>
+    [
+        new(T("Viewport fluido", "Fluid viewport"), T("rem escala com font-size do root.", "rem scales with root font-size."), "mobile-screen"),
+        new(T("Gap responsivo", "Responsive gap"), T("Classes podem ser alteradas por breakpoint.", "Classes can be changed by breakpoint."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems =>
+    [
+        new(T("Zero overhead", "Zero overhead"), T("Classes CSS puras sem runtime.", "Pure CSS classes without runtime."), "bolt"),
+        new(T("Tree-shaking", "Tree-shaking"), T("Tailwind elimina classes não usadas.", "Tailwind eliminates unused classes."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> ScenárioItems =>
+    [
+        new("ERP", T("Forms densos com gap-3 e padding compacto.", "Dense forms with gap-3 and compact padding."), "briefcase"),
+        new("Dashboard", T("Cards com gap-6 e padding expansivo.", "Cards with gap-6 and expansive padding."), "chart-line-up"),
+        new("Tabelas", T("Linhas com padding minimo para densidade.", "Rows with minimum padding for density."), "table-cells")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems =>
+    [
+        new(T("Stacks", "Stacks"), T("XFStack com Gap para layouts flex.", "XFStack with Gap for flex layouts."), "layer-group"),
+        new(T("Grids", "Grids"), T("XFGrid com Gap para layouts em grade.", "XFGrid with Gap for grid layouts."), "table-cells"),
+        new(T("Cards", "Cards"), T("XFCard com Padding para conteudo interno.", "XFCard with Padding for internal content."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems =>
+    [
+        new(T("Uma escala", "One scale"), T("Nao invente valores fora da escala.", "Do not invent values outside the scale."), "circle-check"),
+        new(T("Densidade consistente", "Consistent density"), T("Mantenha densidade uniforme por tela.", "Keep uniform density per screen."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems =>
+    [
+        new(T("Pixel-hunting", "Pixel-hunting"), T("Valores como 5px ou 11px quebram o ritmo.", "Values like 5px or 11px break rhythm."), "xmark"),
+        new(T("Gap misto", "Mixed gap"), T("Diferentes gaps na mesma hierarquia visual.", "Different gaps in the same visual hierarchy."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems =>
+    [
+        new(T("Gap como hierarquia", "Gap as hierarchy"), T("Menor gap indica proximidade; maior gap indica separacao.", "Smaller gap indicates proximity; larger gap indicates separation."), "arrows-up-down"),
+        new(T("Padding como profundidade", "Padding as depth"), T("Mais padding = mais destaque visual.", "More padding = more visual emphasis."), "expand"),
+        new(T("Densidade informacional", "Information density"), T("Densidade ajustada por gap e padding.", "Density adjusted by gap and padding."), "table-cells")
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows =>
+    [
+        new("Default", T("Espacamento padrao do tema.", "Default theme spacing.")),
+        new("Compact", T("Espacamento reduzido para telas densas.", "Reduced spacing for dense screens."))
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems =>
+    [
+        new(T("Alvo touch 44px", "44px touch target"), T("gap-8 (2rem) entre elementos interativos.", "gap-8 (2rem) between interactive elements."), "hand-pointer"),
+        new(T("Navegacao por teclado", "Keyboard navigation"), T("Espacamento adequado melhora navegacao.", "Adequate spacing improves navigation."), "keyboard")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows =>
+    [
+        new("Tab", T("Navega entre elementos interativos.", "Navigates between interactive items.")),
+        new("Shift+Tab", T("Navega em reverso.", "Navigates in reverse."))
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems =>
+    [
+        new(T("Sem XSS", "No XSS"), T("Espacamento e CSS puro; sem risco de injecao.", "Spacing is pure CSS; no injection risk."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems =>
+    [
+        new(T("Valores arbitrarios", "Arbitrary values"), T("Substitua 3px, 7px por tokens da escala.", "Replace 3px, 7px with scale tokens."), "arrow-rotate-left"),
+        new(T("Margem negativa", "Negative margin"), T("Use gap em vez de margin negativa.", "Use gap instead of negative margin."), "arrow-rotate-left")
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [new("data-theme", T("Espaçamento e imutavel entre temas.", "Spacing is immutable between themes."), "moon")];
+    private IReadOnlyList<NameValueRow> TestingRows => [new("Visual regression", T("Snapshots verificam Espaçamento consistente.", "Snapshots verify consistent spacing."))];
+
+    private IReadOnlyList<NameValueRow> LimitationRows =>
+    [
+        new("Valores fracionarios", T("Apenas 0.5, 1.5 e 2.5 sao suportados na escala.", "Only 0.5, 1.5 and 2.5 are supported on the scale.")),
+        new("Maximo 96", T("A escala vai de 0 a 96. Valores maiores precisam de classes customizadas.", "The scale goes from 0 to 96. Larger values require custom classes.")),
+        new("Tailwind JIT", T("Classes como gap-7 ou gap-9 nao existem na escala padrao do Tailwind.", "Classes like gap-7 or gap-9 do not exist in the default Tailwind scale."))
+    ];
+    private IReadOnlyList<DocTile> RelatedComponentItems =>
+    [
+        new(T("Tokens de cores", "Color tokens"), T("Cores complementam Espaçamento.", "Colors complement spacing."), "palette"),
+        new(T("Tokens de borda", "Border tokens"), T("Bordas definem limites visuais.", "Borders define visual limits."), "border-all")
+    ];
+    private IReadOnlyList<NameValueRow> FaqRows =>
+    [
+        new(T("Qual valor usar entre cards?", "Which value between cards?"), T("gap-4 a gap-6 para maioria dos layouts.", "gap-4 to gap-6 for most layouts.")),
+        new(T("Posso usar valores fracionarios?", "Can I use fractional values?"), T("Sim; 0.5, 1.5 e 2.5 existem na escala.", "Yes; 0.5, 1.5 and 2.5 exist on the scale."))
+    ];
+    private IReadOnlyList<NameValueRow> ChangelogRows =>
+    [
+        new("2026-05-26", T("Página refeita no padrão enterprise.", "Page rebuilt in the enterprise standard.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ScaleMapRows =>
+    [
+        new("0", T("0rem", "0rem")),
+        new("0.5", T("0.125rem (2px)", "0.125rem (2px)")),
+        new("1", T("0.25rem (4px)", "0.25rem (4px)")),
+        new("1.5", T("0.375rem (6px)", "0.375rem (6px)")),
+        new("2", T("0.5rem (8px)", "0.5rem (8px)")),
+        new("3", T("0.75rem (12px)", "0.75rem (12px)")),
+        new("4", T("1rem (16px)", "1rem (16px)")),
+        new("5", T("1.25rem (20px)", "1.25rem (20px)")),
+        new("6", T("1.5rem (24px)", "1.5rem (24px)")),
+        new("8", T("2rem (32px)", "2rem (32px)")),
+        new("10", T("2.5rem (40px)", "2.5rem (40px)")),
+        new("12", T("3rem (48px)", "3rem (48px)")),
+        new("16", T("4rem (64px)", "4rem (64px)")),
+        new("20", T("5rem (80px)", "5rem (80px)")),
+        new("24", T("6rem (96px)", "6rem (96px)")),
+        new("32", T("8rem (128px)", "8rem (128px)")),
+        new("40", T("10rem (160px)", "10rem (160px)")),
+        new("48", T("12rem (192px)", "12rem (192px)")),
+        new("56", T("14rem (224px)", "14rem (224px)")),
+        new("64", T("16rem (256px)", "16rem (256px)")),
+        new("72", T("18rem (288px)", "18rem (288px)")),
+        new("80", T("20rem (320px)", "20rem (320px)")),
+        new("96", T("24rem (384px)", "24rem (384px)"))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

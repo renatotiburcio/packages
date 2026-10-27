@@ -1,0 +1,141 @@
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
+@inject IJSRuntime JSRuntime
+
+<div @ref="_elementRef" class="@ContainerClass" style="@Style"
+     @attributes="AdditionalAttributes">
+    @if (ChildContent is not null)
+    {
+        @ChildContent(new XFGestureContext(_lastGesture, _state))
+    }
+</div>
+
+@code {
+    private ElementReference _elementRef;
+    private IJSObjectReference? _module;
+    private XFGestureEvent? _lastGesture;
+    private XFGestureState _state = XFGestureState.Idle;
+
+    [Parameter] public RenderFragment<XFGestureContext>? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    [Parameter] public string? Style { get; set; }
+
+    [Parameter] public XFGestureOptions Options { get; set; } = new();
+
+    [Parameter] public EventCallback<XFGestureEvent> OnGesture { get; set; }
+
+    [Parameter] public EventCallback<XFGestureEvent> OnSwipeLeft { get; set; }
+
+    [Parameter] public EventCallback<XFGestureEvent> OnSwipeRight { get; set; }
+
+    [Parameter] public EventCallback<XFGestureEvent> OnSwipeUp { get; set; }
+
+    [Parameter] public EventCallback<XFGestureEvent> OnSwipeDown { get; set; }
+
+    [Parameter] public EventCallback<XFGestureEvent> OnTap { get; set; }
+
+    [Parameter] public EventCallback<XFGestureEvent> OnDoubleTap { get; set; }
+
+    [Parameter] public EventCallback<XFGestureEvent> OnLongPress { get; set; }
+
+    [Parameter] public EventCallback<XFGestureEvent> OnPinch { get; set; }
+
+    [Parameter] public bool Disabled { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string ContainerClass => string.Join(" ", new[]
+    {
+        "xf-gesture-handler",
+        Disabled ? "pointer-events-none opacity-50" : "touch-none select-none",
+        Class
+    }.Where(s => !string.IsNullOrEmpty(s)));
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !Disabled)
+        {
+            try
+            {
+                _module = await JSRuntime.InvokeAsync<IJSObjectReference>(
+                    "import", "./_content/XForge.DesignSystem/js/xf-gesture-handler.js");
+                await _module.InvokeVoidAsync("initialize", _elementRef, DotNetObjectReference.Create(this),
+                    Options.SwipeThreshold, Options.SwipeVelocityThreshold,
+                    Options.LongPressDurationMs, Options.DoubleTapWindowMs,
+                    Options.EnableSwipe, Options.EnablePinch, Options.EnableLongPress,
+                    Options.EnableDoubleTap, Options.EnableRotate);
+            }
+            catch (InvalidOperationException) { }
+            catch (JSDisconnectedException) { }
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnGestureDetected(string type, double startX, double startY, double currentX, double currentY,
+        double deltaX, double deltaY, double distance, double velocityX, double velocityY,
+        double scale, double rotation, long durationMs, int pointerCount)
+    {
+        if (!Enum.TryParse<XFGestureType>(type, ignoreCase: true, out var gestureType))
+            return;
+
+        var gesture = new XFGestureEvent
+        {
+            Type = gestureType,
+            State = XFGestureState.Recognized,
+            StartX = startX, StartY = startY,
+            CurrentX = currentX, CurrentY = currentY,
+            DeltaX = deltaX, DeltaY = deltaY,
+            Distance = distance,
+            VelocityX = velocityX, VelocityY = velocityY,
+            Scale = scale, Rotation = rotation,
+            DurationMs = durationMs,
+            PointerCount = pointerCount
+        };
+
+        _lastGesture = gesture;
+        _state = XFGestureState.Recognized;
+
+        if (OnGesture.HasDelegate) await OnGesture.InvokeAsync(gesture);
+
+        var specificCallback = gestureType switch
+        {
+            XFGestureType.SwipeLeft => OnSwipeLeft,
+            XFGestureType.SwipeRight => OnSwipeRight,
+            XFGestureType.SwipeUp => OnSwipeUp,
+            XFGestureType.SwipeDown => OnSwipeDown,
+            XFGestureType.Tap => OnTap,
+            XFGestureType.DoubleTap => OnDoubleTap,
+            XFGestureType.LongPress => OnLongPress,
+            XFGestureType.PinchIn or XFGestureType.PinchOut => OnPinch,
+            _ => default
+        };
+
+        if (specificCallback.HasDelegate) await specificCallback.InvokeAsync(gesture);
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnGestureStateChanged(string state)
+    {
+        if (Enum.TryParse<XFGestureState>(state, ignoreCase: true, out var parsed))
+        {
+            _state = parsed;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (_module is not null)
+            {
+                await _module.InvokeVoidAsync("dispose", _elementRef);
+                await _module.DisposeAsync();
+            }
+        }
+        catch (InvalidOperationException) { }
+        catch (JSDisconnectedException) { }
+    }
+}

@@ -1,0 +1,25 @@
+@inherits XForgeComponentBase
+
+<span @attributes="AdditionalAttributes"
+      id="@Id"
+      class="@GetComponentClass()"
+      style="@Style"
+      data-value="@Value"
+      data-disabled="@Disabled.ToString().ToLowerInvariant()"
+      aria-disabled="@Disabled.ToString().ToLowerInvariant()">
+    @if (Icon is not null)
+    {
+        <span class="inline-flex shrink-0 items-center justify-center" aria-hidden="true">@Icon</span>
+    }
+    @Text
+</span>
+
+@code {
+    /// <summary>
+    /// Computes the final CSS class list for the component's root element.
+    /// </summary>
+    protected override string GetComponentClass()
+    {
+        return GetClass($"{BaseClass} inline-flex items-center justify-center gap-1.5 text-sm font-medium whitespace-nowrap");
+    }
+}

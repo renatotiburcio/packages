@@ -1,0 +1,12 @@
+@namespace XForge.Components.Editors
+@inherits XForgeComponentBase
+
+<div class="xf-imageeditor" style="width:@(Width)px;height:@(Height)px">
+  <img src="@Source" alt="Image editor canvas" />
+  <div class="xf-ie-tools">
+    <button type="button" @onclick="() => Rotate(-90)">Rotate Left</button>
+    <button type="button" @onclick="() => Rotate(90)">Rotate Right</button>
+    <button type="button" @onclick="Crop">Crop</button>
+    <button type="button" @onclick="() => OnSave.InvokeAsync()">Save</button>
+  </div>
+</div>

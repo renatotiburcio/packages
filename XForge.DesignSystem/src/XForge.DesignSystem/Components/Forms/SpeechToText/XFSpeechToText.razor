@@ -1,0 +1,35 @@
+@inherits XFInputComponentBase
+
+<button @ref="InputRef"
+        type="button"
+        id="@Id"
+        class="@ButtonClass"
+        style="@Style"
+        disabled="@(Disabled || (!_micAvailable && _moduleLoaded))"
+        aria-label="@(_isRecording ? StopLabel : StartLabel)"
+        aria-pressed="@_isRecording.ToString().ToLowerInvariant()"
+        @attributes="AdditionalAttributes"
+        @onclick="ToggleRecordingAsync">
+    @if (_isRecording && RecordingContent is not null)
+    {
+        @RecordingContent
+    }
+    else if (_isRecording)
+    {
+        <span class="inline-flex items-center gap-1.5">
+            <span class="recording-pulse inline-block h-2 w-2 rounded-full bg-danger"></span>
+            @StopLabel
+        </span>
+    }
+    else if (StartContent is not null)
+    {
+        @StartContent
+    }
+    else
+    {
+        <span class="inline-flex items-center gap-1.5">
+            <span class="inline-block h-4 w-4 shrink-0">@XFSvgIcons.Markup("microphone")</span>
+            @StartLabel
+        </span>
+    }
+</button>

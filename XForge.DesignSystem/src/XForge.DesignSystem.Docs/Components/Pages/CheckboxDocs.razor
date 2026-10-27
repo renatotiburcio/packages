@@ -1,0 +1,595 @@
+@page "/forms/checkbox"
+@page "/forms/checkboxes"
+@using XForge.DesignSystem.Core.Primitives
+@using Microsoft.AspNetCore.Components.Forms
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFCheckbox" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Tri-state", "Tri-state")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Validacao", "Validation")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Controle booleano e tri-state para permissoes, selecao parcial e aceite em formularios.",
+                               "Boolean and tri-state control for permissions, partial selection and form acceptance.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFCheckbox oferece controle booleano com suporte a tri-state, tons semanticos, tamanhos, posicao de label configuravel, validacao com EditForm e acessibilidade WCAG AAA.",
+                               "XFCheckbox offers boolean control with tri-state support, semantic tones, sizes, configurable label position, EditForm validation and WCAG AAA accessibility.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 9 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("XFCheckbox simples com Value e Label.", "Simple XFCheckbox with Value and Label."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Tamanhos", "2. Sizes"),
+                T("Sm, Md e Lg com touch target 44px minimo.", "Sm, Md and Lg with 44px minimum touch target."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("3. Tons semanticos", "3. Semantic Tones"),
+                T("Primary, Secondary, Success, Warning e Danger.", "Primary, Secondary, Success, Warning and Danger."),
+                ExTones(), CodeTones)
+
+            @Example(T("4. Posicao do label", "4. Label Position"),
+                T("Label a direita (End) ou a esquerda (Start).", "Label on right (End) or left (Start)."),
+                ExLabelPosition(), CodeLabelPosition)
+
+            @Example(T("5. Tri-state", "5. Tri-state"),
+                T("ThreeState=true permite false, true e null (parcial).", "ThreeState=true allows false, true and null (mixed)."),
+                ExTriState(), CodeTriState)
+
+            @Example(T("6. Descricao e textos de estado", "6. Description and State Texts"),
+                T("Description fornece contexto adicional; textos de estado descrevem o valor atual.", "Description provides additional context; state texts describe the current value."),
+                ExDescription(), CodeDescription)
+
+            @Example(T("7. Estados", "7. States"),
+                T("Disabled, ReadOnly e Required com asterisco vermelho.", "Disabled, ReadOnly and Required with red asterisk."),
+                ExStates(), CodeStates)
+
+            @Example(T("8. Validacao com EditForm", "8. EditForm Validation"),
+                T("Integracao com DataAnnotations para validacao obrigatoria.", "Integration with DataAnnotations for required validation."),
+                ExValidation(), CodeValidation)
+
+            @Example(T("9. Cenario enterprise", "9. Enterprise Scenario"),
+                T("Formulario de permissoes ERP com tri-state para grupos e checkboxes individuais.", "ERP permissions form with tri-state for groups and individual checkboxes."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Checkbox", "Checkbox");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // --- State for interactive examples ---
+    private bool? _basicValue = true;
+    private bool? _groupFinanceiro = true;
+    private bool? _groupFiscal = true;
+    private bool? _groupEstoque = false;
+    private bool? _groupRH = null;
+    private bool? _groupValue = null;
+    private bool? _descriptionValue = true;
+    private bool? _requiredValue;
+    private bool _formSubmitted;
+    private bool? _grpUsuarios = null;
+    private bool? _grpRelatorios = true;
+
+    // --- Validation model ---
+    private CheckboxFormModel _formModel = new();
+    private Microsoft.AspNetCore.Components.Forms.EditContext? _editContext;
+
+    protected override void OnInitialized()
+    {
+        _editContext = new Microsoft.AspNetCore.Components.Forms.EditContext(_formModel);
+    }
+
+    private void HandleValidSubmit()
+    {
+        _formSubmitted = true;
+    }
+
+    private void HandleGroupValueChanged(bool? value)
+    {
+        _groupValue = value;
+        if (value == true) { _groupFinanceiro = true; _groupFiscal = true; _groupEstoque = true; _groupRH = true; }
+        else if (value == false) { _groupFinanceiro = false; _groupFiscal = false; _groupEstoque = false; _groupRH = false; }
+    }
+
+    private void RecalcGroup()
+    {
+        int trueCount = new[] { _groupFinanceiro, _groupFiscal, _groupEstoque, _groupRH }.Count(v => v == true);
+        int falseCount = new[] { _groupFinanceiro, _groupFiscal, _groupEstoque, _groupRH }.Count(v => v == false);
+        if (trueCount == 4) _groupValue = true;
+        else if (falseCount == 4) _groupValue = false;
+        else _groupValue = null;
+    }
+
+    private string TriStateLabel(bool? v) => v == true ? T("Sim", "Yes") : v == false ? T("Nao", "No") : T("Parcial", "Mixed");
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== HERO ====================
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCheckbox Label="@T("Aprovar automaticamente notas sem divergencia", "Auto-approve invoices without discrepancy")" Value="true" Description="@T("Regra aplicada apenas a lotes validos.", "Rule applied only to valid batches.")" />
+        <XFCheckbox Label="@T("Exigir aprovacao dupla para valores acima de R$ 50.000", "Require dual approval for amounts over R$ 50,000")" Value="false" />
+        <XFCheckbox Label="@T("Selecionar grupo parcial", "Select partial group")" Value="@((bool?)null)" ThreeState="true" MixedStateText="@T("Parcial", "Mixed")" />
+    </XFStack>;
+
+    // ==================== 1. BASIC ====================
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCheckbox Label="@T("Aceito os termos de uso", "I accept the terms of use")" Value="@_basicValue" ValueChanged="@(v => _basicValue = v)" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Valor atual: ", "Current value: ") @_basicValue
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 2. SIZES ====================
+    private RenderFragment ExSizes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div class="flex items-center gap-2">
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Sm" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Compacto - h-4 w-4, text-sm.", "Compact - h-4 w-4, text-sm.")</XFTypography>
+        </div>
+        <XFCheckbox Size="XFSize.Sm" Label="@T("Tamanho pequeno", "Small size")" Value="true" />
+        <div class="flex items-center gap-2">
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Md" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Padrao - h-5 w-5, text-sm.", "Default - h-5 w-5, text-sm.")</XFTypography>
+        </div>
+        <XFCheckbox Size="XFSize.Md" Label="@T("Tamanho medio", "Medium size")" Value="true" />
+        <div class="flex items-center gap-2">
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Lg" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Touch-first - h-5.5 w-5.5, text-base.", "Touch-first - h-5.5 w-5.5, text-base.")</XFTypography>
+        </div>
+        <XFCheckbox Size="XFSize.Lg" Label="@T("Tamanho grande", "Large size")" Value="true" />
+    </XFStack>;
+
+    // ==================== 3. TONES ====================
+    private RenderFragment ExTones() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCheckbox Tone="XFSemanticColor.Primary" Label="Primary" Value="true" />
+        <XFCheckbox Tone="XFSemanticColor.Secondary" Label="Secondary" Value="true" />
+        <XFCheckbox Tone="XFSemanticColor.Success" Label="Success" Value="true" />
+        <XFCheckbox Tone="XFSemanticColor.Warning" Label="Warning" Value="true" />
+        <XFCheckbox Tone="XFSemanticColor.Danger" Label="Danger" Value="true" />
+    </XFStack>;
+
+    // ==================== 4. LABEL POSITION ====================
+    private RenderFragment ExLabelPosition() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="End (padrao)" />
+            <div class="mt-2">
+                <XFCheckbox LabelPosition="XFCheckboxLabelPosition.End" Label="@T("Label a direita do checkbox", "Label on right of checkbox")" Value="true" />
+            </div>
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="Start" />
+            <div class="mt-2">
+                <XFCheckbox LabelPosition="XFCheckboxLabelPosition.Start" Label="@T("Label a esquerda do checkbox", "Label on left of checkbox")" Value="true" />
+            </div>
+        </div>
+    </XFStack>;
+
+    // ==================== 5. TRI-STATE ====================
+    private RenderFragment ExTriState() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-50/50 p-4">
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3">
+                <XFCheckbox Size="XFSize.Lg" Label="@T("Selecionar todos os modulos", "Select all modules")" ThreeState="true" Value="@_groupValue" ValueChanged="HandleGroupValueChanged" MixedStateText="@T("Parcial", "Mixed")" />
+                <div class="ml-8 grid gap-2 pt-1 border-t border-border-light/60">
+                    <XFCheckbox Label="Financeiro" Value="@_groupFinanceiro" ValueChanged="@(v => { _groupFinanceiro = v; RecalcGroup(); })" />
+                    <XFCheckbox Label="Fiscal" Value="@_groupFiscal" ValueChanged="@(v => { _groupFiscal = v; RecalcGroup(); })" />
+                    <XFCheckbox Label="Estoque" Value="@_groupEstoque" ValueChanged="@(v => { _groupEstoque = v; RecalcGroup(); })" />
+                    <XFCheckbox Label="RH" Value="@_groupRH" ValueChanged="@(v => { _groupRH = v; RecalcGroup(); })" />
+                </div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                    @T("Estado do grupo: ", "Group state: ") <span class="font-semibold">@TriStateLabel(_groupValue)</span>
+                </XFTypography>
+            </XFStack>
+        </div>
+    </XFStack>;
+
+    // ==================== 6. DESCRIPTION ====================
+    private RenderFragment ExDescription() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCheckbox Label="@T("Notificacoes por email", "Email notifications")" Description="@T("Receber alertas de aprovacao, vencimento e rejeicao por email.", "Receive approval, due date and rejection alerts by email.")" Value="@_descriptionValue" ValueChanged="@(v => _descriptionValue = v)" />
+        <XFCheckbox Label="@T("Exportar com assinatura digital", "Export with digital signature")" Description="@T("NF-e, CT-e e demais documentos fiscais.", "NF-e, CT-e and other tax documents.")" Value="false" />
+        <XFCheckbox Label="@T("Modo compacto", "Compact mode")" CheckedStateText="@T("Ativo - interface densa", "Active - dense interface")" UncheckedStateText="@T("Inativo - interface confortavel", "Inactive - comfortable interface")" Value="true" />
+    </XFStack>;
+
+    // ==================== 7. STATES ====================
+    private RenderFragment ExStates() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCheckbox Label="@T("Desabilitado (false)", "Disabled (false)")" Disabled="true" Value="false" />
+        <XFCheckbox Label="@T("Desabilitado (true)", "Disabled (true)")" Disabled="true" Value="true" />
+        <XFCheckbox Label="@T("Somente leitura", "Read only")" ReadOnly="true" Value="true" />
+        <XFCheckbox Label="@T("Campo obrigatorio", "Required field")" Required="true" Value="@_requiredValue" ValueChanged="@(v => _requiredValue = v)" />
+    </XFStack>;
+
+    // ==================== 8. VALIDATION ====================
+    private RenderFragment ExValidation() => @<div>
+        <EditForm EditContext="@_editContext" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFCheckbox Label="@T("Aceito os termos de uso e politica de privacidade", "I accept the terms of use and privacy policy")" @bind-Value="_formModel.AcceptTerms" />
+                <XFCheckbox Label="@T("Autorizo o tratamento de dados pessoais (LGPD)", "I authorize personal data processing (LGPD)")" @bind-Value="_formModel.AcceptLGPD" />
+                <XFButton Type="XFButtonType.Submit" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary">@T("Enviar", "Submit")</XFButton>
+                @if (_formSubmitted)
+                {
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="@T("Formulario valido!", "Form valid!")" />
+                }
+            </XFStack>
+        </EditForm>
+    </div>;
+
+    // ==================== 9. ENTERPRISE ====================
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Permissoes do modulo Financeiro", "Finance module permissions")</XFTypography>
+        <div class="grid gap-3 rounded-lg border border-border-light p-4">
+            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold" Color="XFTypographyColor.Secondary">@T("Usuarios", "Users")</XFTypography>
+            <XFCheckbox Size="XFSize.Lg" ThreeState="true" Value="@_grpUsuarios" ValueChanged="@(v => _grpUsuarios = v)" Label="@T("Selecionar todos", "Select all")" MixedStateText="@T("Parcial", "Mixed")" />
+            <div class="ml-8 grid gap-2 pt-1 border-t border-border-light/60">
+                <XFCheckbox Label="@T("Visualizar usuarios", "View users")" Value="true" Tone="XFSemanticColor.Success" />
+                <XFCheckbox Label="@T("Criar/editar usuarios", "Create/edit users")" Value="false" />
+                <XFCheckbox Label="@T("Excluir usuarios", "Delete users")" Value="false" Tone="XFSemanticColor.Danger" />
+            </div>
+        </div>
+        <div class="grid gap-3 rounded-lg border border-border-light p-4">
+            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold" Color="XFTypographyColor.Secondary">@T("Relatorios", "Reports")</XFTypography>
+            <XFCheckbox Label="@T("Acesso a relatorios gerenciais", "Access to management reports")" Value="@_grpRelatorios" ValueChanged="@(v => _grpRelatorios = v)" />
+            <XFCheckbox Label="@T("Exportar relatorios em PDF", "Export reports to PDF")" Value="true" />
+            @if (_grpRelatorios == true)
+            {
+                <XFCheckbox Label="@T("Acesso a relatorios financeiros confidenciais", "Access to confidential financial reports")" Value="false" Tone="XFSemanticColor.Warning" Description="@T("Requer aprovacao do diretor financeiro.", "Requires CFO approval.")" />
+            }
+        </div>
+    </XFStack>;
+
+    // ==================== QUICK FACTS ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Tri-state nativo", "Native tri-state"), T("false, true e null para selecao parcial.", "false, true and null for partial selection."), "layer-group"),
+        new(T("Validacao EditForm", "EditForm validation"), T("DataAnnotations e ValidationMessage nativos.", "Native DataAnnotations and ValidationMessage."), "shield-check"),
+        new(T("WCAG AAA", "WCAG AAA"), T("aria-checked, aria-describedby, touch 44px, focus 40%.", "aria-checked, aria-describedby, 44px touch, 40% focus."), "universal-access")
+    ];
+
+    // ==================== METADATA ====================
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFCheckbox"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.Checkbox"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Forms / Checkbox"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("aria-checked tri-state, aria-describedby, aria-invalid, touch 44px AAA, focus 40%.", "aria-checked tri-state, aria-describedby, aria-invalid, 44px AAA touch, 40% focus.")),
+        new("Theme support", T("Light, dark via tokens.", "Light, dark via tokens."))
+    ];
+
+    // ==================== STATIC DATA ====================
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Controle booleano", "Boolean control"), T("Marcacao simples com Value e ValueChanged.", "Simple check with Value and ValueChanged."), "check"),
+        new(T("Tri-state", "Tri-state"), T("Permite estado parcial (null) para selecao de grupo.", "Allows mixed state (null) for group selection."), "layer-group"),
+        new(T("Validacao", "Validation"), T("Integracao com EditContext e DataAnnotations.", "Integration with EditContext and DataAnnotations."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Aceite de termos", "Terms acceptance"), T("Checkbox obrigatoria para LGPD, termos de uso e politicas.", "Required checkbox for LGPD, terms of use and policies."), "file-lines"),
+        new(T("Permissoes", "Permissions"), T("Controle de acesso granular com tri-state para grupos.", "Granular access control with tri-state for groups."), "key"),
+        new(T("Filtros", "Filters"), T("Selecao multipla em listas e relatorios.", "Multi-select in lists and reports."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("HTML checkbox basico sem tri-state, sem validacao, sem acessibilidade completa.", "Basic HTML checkbox without tri-state, validation or complete accessibility."), "xmark"),
+        new(T("Depois", "After"), T("XFCheckbox com tri-state, validacao, tons, tamanhos e WCAG AAA.", "XFCheckbox with tri-state, validation, tones, sizes and WCAG AAA."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("aria-checked mixed, aria-describedby, touch 44px, focus 40%.", "aria-checked mixed, aria-describedby, 44px touch, 40% focus."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Formularios", "Forms"), T("Aceite de termos, opt-in, confirmacoes.", "Terms acceptance, opt-in, confirmations."), "file-lines"),
+        new(T("Permissoes", "Permissions"), T("Controle de acesso com grupos e tri-state.", "Access control with groups and tri-state."), "key"),
+        new(T("Filtros", "Filters"), T("Multi-selecao em listas, relatorios e dashboards.", "Multi-select in lists, reports and dashboards."), "filter"),
+        new(T("Configuracoes", "Settings"), T("Toggle de funcionalidades e preferencias.", "Feature toggles and preferences."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Acao primaria", "Primary action"), T("Use XFButton para acoes como enviar, salvar, confirmar.", "Use XFButton for actions like send, save, confirm."), "triangle-exclamation"),
+        new(T("Selecao unica de lista", "Single list selection"), T("Use XFRadio ou XFSelect para opcoes mutuamente exclusivas.", "Use XFRadio or XFSelect for mutually exclusive options."), "triangle-exclamation"),
+        new(T("Toggle de interface", "UI toggle"), T("Use XFSwitch para alternar estados de funcionalidade.", "Use XFSwitch for toggling feature states."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("label com flex, gap-3, cursor-pointer.", "label with flex, gap-3, cursor-pointer."), "code"),
+        new("Input", T("input sr-only com peer, aria-checked, aria-describedby.", "input sr-only with peer, aria-checked, aria-describedby."), "code"),
+        new("Box", T("span visual com check icon ou mixed mark, border, bg, transition.", "visual span with check icon or mixed mark, border, bg, transition."), "square"),
+        new("Label text", T("span com text-sm font-medium text-text-primary.", "span with text-sm font-medium text-text-primary."), "font"),
+        new("Description", T("span com text-xs text-text-secondary, conectado via aria-describedby.", "span with text-xs text-text-secondary, connected via aria-describedby."), "font")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Primary como padrao", "Primary as default"), T("Tom primary para checkboxes de acao.", "Primary tone for action checkboxes."), "code"),
+        new(T("Semantic tones", "Semantic tones"), T("Success, Warning, Danger para contexto.", "Success, Warning, Danger for context."), "palette")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Touch target 44px", "44px touch target"), T("Area clicavel minima em todos os tamanhos.", "Minimum click area on all sizes."), "hand-pointer"),
+        new(T("Label always visible", "Label always visible"), T("Label associado via for/id implicito.", "Label associated via implicit for/id."), "eye"),
+        new(T("Feedback imediato", "Immediate feedback"), T("Mudanca visual instantanea ao clicar.", "Instant visual change on click."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("LabelPosition.End", T("Label a direita (padrao). Mais comum em formularios.", "Label on right (default). Most common in forms.")),
+        new("LabelPosition.Start", T("Label a esquerda. Para alinhamento com outros campos.", "Label on left. For alignment with other fields."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Unchecked", T("Value=false. Caixa vazia.", "Value=false. Empty box.")),
+        new("Checked", T("Value=true. Check icon.", "Value=true. Check icon.")),
+        new("Mixed", T("Value=null, ThreeState=true. Barra horizontal.", "Value=null, ThreeState=true. Horizontal bar.")),
+        new("Disabled", T("opacity-60, cursor-not-allowed, sem interacao.", "opacity-60, cursor-not-allowed, no interaction.")),
+        new("ReadOnly", T("cursor-default, visual mas nao editavel.", "cursor-default, visual but not editable.")),
+        new("Required", T("asterisco vermelho *, aria-required.", "Red asterisk *, aria-required."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "bool?", "false", T("Valor do checkbox. Tri-state: false/true/null.", "Checkbox value. Tri-state: false/true/null.")),
+        new("ValueChanged", "EventCallback<bool?>", "default", T("Two-way binding callback.", "Two-way binding callback.")),
+        new("ValueExpression", "Expression<Func<bool?>>", "null", T("Expressao para validacao EditForm.", "Expression for EditForm validation.")),
+        new("Change", "EventCallback<bool?>", "default", T("Fires ao mudar valor.", "Fires on value change.")),
+        new("Label", "string?", "null", T("Texto do label.", "Label text.")),
+        new("Description", "string?", "null", T("Texto secundario abaixo do label.", "Secondary text below label.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo customizado do label.", "Custom label content.")),
+        new("AriaLabel", "string?", "null", T("Nome acessivel alternativo.", "Alternative accessible name.")),
+        new("ThreeState", "bool", "false", T("Habilita modo tri-state.", "Enables tri-state mode.")),
+        new("Size", "XFSize", "Md", T("Sm, Md ou Lg.", "Sm, Md or Lg.")),
+        new("Tone", "XFSemanticColor", "Primary", T("Tom semantico.", "Semantic tone.")),
+        new("LabelPosition", "XFCheckboxLabelPosition", "End", T("Posicao do label: End ou Start.", "Label position: End or Start.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read only.")),
+        new("Required", "bool", "false", T("Obrigatorio com asterisco.", "Required with asterisk.")),
+        new("Disabled", "bool", "false", T("Desabilita interacao.", "Disables interaction.")),
+        new("FullWidth", "bool", "true", T("Ocupa largura total.", "Full width.")),
+        new("Name", "string?", "null", T("Nome do input HTML.", "HTML input name.")),
+        new("CheckedStateText", "string?", "null", T("Texto acessivel quando checked.", "Accessible text when checked.")),
+        new("UncheckedStateText", "string?", "null", T("Texto acessivel quando unchecked.", "Accessible text when unchecked.")),
+        new("MixedStateText", "string?", "null", T("Texto acessivel quando mixed.", "Accessible text when mixed."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ValueChanged", T("Two-way binding. Disparado ao mudar Value.", "Two-way binding. Fired when Value changes.")),
+        new("Change", T("Disparado ao mudar valor. bool? como payload.", "Fired on value change. bool? as payload."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("FocusAsync()", T("Foca o input do checkbox programaticamente.", "Focuses the checkbox input programmatically."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("aria-checked", T("true/false/mixed para tri-state.", "true/false/mixed for tri-state."), "universal-access"),
+        new("aria-describedby", T("Conecta a Description, Error e StateText.", "Connects to Description, Error and StateText."), "tag"),
+        new("aria-invalid", T("Quando ha erro de validacao.", "When validation error exists."), "check"),
+        new("aria-required", T("Quando Required=true.", "When Required=true."), "check"),
+        new(T("Touch target 44px", "44px touch target"), T("Area clicavel minima (WCAG 2.5.8 AAA).", "Minimum click area (WCAG 2.5.8 AAA)."), "hand-pointer"),
+        new(T("Foco visivel AAA", "AAA visible focus"), T("focus-visible ring com 40% primary.", "focus-visible ring with 40% primary."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Space", T("Alterna o estado do checkbox.", "Toggles checkbox state.")),
+        new("Enter", T("Alterna o estado (suporte adicional).", "Toggles state (additional support).")),
+        new("Tab", T("Move foco para o proximo elemento.", "Moves focus to the next element."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("FullWidth", "FullWidth"), T("Ocupa largura total do container por padrao.", "Fills full container width by default."), "arrows-up-down"),
+        new(T("inline-flex", "inline-flex"), T("FullWidth=false para alinhamento horizontal.", "FullWidth=false for horizontal alignment."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Sem JS interop", "No JS interop"), T("Puramente Blazor, exceto FocusAsync.", "Purely Blazor, except FocusAsync."), "bolt"),
+        new(T("Render leve", "Light render"), T("label + input sr-only + span visual.", "label + input sr-only + visual span."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Permissoes ERP", "ERP permissions"), T("Controle de acesso por modulo com tri-state.", "Access control per module with tri-state."), "key"),
+        new(T("LGPD", "LGPD"), T("Aceite de tratamento de dados pessoais.", "Personal data processing consent."), "shield-check"),
+        new(T("Filtros de relatorio", "Report filters"), T("Multi-selecao de categorias e status.", "Multi-select categories and status."), "filter"),
+        new(T("Configuracoes", "Settings"), T("Toggle de funcionalidades do sistema.", "System feature toggles."), "sliders"),
+        new(T("RH", "HR"), T("Beneficios e declaracoes do funcionario.", "Employee benefits and declarations."), "users"),
+        new(T("Fiscal", "Tax"), T("Optante por regime tributario.", "Tax regime election."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("EditForm", T("Use @bind-Value para validacao automatica.", "Use @bind-Value for automatic validation."), "file-lines"),
+        new("XFStack", T("Alinhe checkboxes verticalmente.", "Align checkboxes vertically."), "layer-group"),
+        new("XFCard", T("Agrupe em cards por secao.", "Group in cards by section."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Label claro", "Clear label"), T("Use verbos: Aceitar, Autorizar, Confirmar.", "Use verbs: Accept, Authorize, Confirm."), "circle-check"),
+        new(T("Tri-state para grupos", "Tri-state for groups"), T("Pai tri-state com filhos individuais.", "Tri-state parent with individual children."), "layer-group"),
+        new(T("Description util", "Useful description"), T("Explique consequencias da marcacao.", "Explain consequences of checking."), "info")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Label ausente", "Missing label"), T("Checkbox sem Label ou AriaLabel e inacessivel.", "Checkbox without Label or AriaLabel is inaccessible."), "xmark"),
+        new(T("Checkbox como toggle", "Checkbox as toggle"), T("Use XFSwitch para alternar estados de funcionalidade.", "Use XFSwitch for feature state toggles."), "triangle-exclamation"),
+        new(T("Muitos checkboxes", "Too many checkboxes"), T("Mais de 7 opcoes: use XFMultiSelect ou XFTransferList.", "More than 7 options: use XFMultiSelect or XFTransferList."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("border-surface-300, bg-[var(--color-{tone})], text-white.", "border-surface-300, bg-[var(--color-{tone})], text-white.")),
+        new("typography", T("text-sm (Sm/Md), text-base (Lg).", "text-sm (Sm/Md), text-base (Lg).")),
+        new("radius", T("rounded-[0.35rem] (Sm), rounded-md (Md), rounded-lg (Lg).", "rounded-[0.35rem] (Sm), rounded-md (Md), rounded-lg (Lg).")),
+        new("spacing", T("h-4/h-5/h-5.5 por Size, gap-3.", "h-4/h-5/h-5.5 per Size, gap-3.")),
+        new("focus", T("focus-visible ring-4 40% primary.", "focus-visible ring-4 40% primary."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFSwitch", T("Toggle de funcionalidade on/off.", "Feature toggle on/off."), "toggle-on"),
+        new("XFRadio", T("Selecao unica de lista.", "Single list selection."), "circle"),
+        new("XFSelect", T("Dropdown de opcoes.", "Options dropdown."), "chevron-down"),
+        new("XFMultiSelect", T("Multi-selecao com busca.", "Multi-select with search."), "list")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Como usar com EditForm?", "How to use with EditForm?"), T("Use @bind-Value e ValueExpression automaticamente via EditContext.", "Use @bind-Value and ValueExpression automatically via EditContext.")),
+        new(T("Tri-state funciona sozinho?", "Does tri-state work alone?"), T("Sim, ThreeState=true permite ciclar entre false/null/true.", "Yes, ThreeState=true allows cycling between false/null/true.")),
+        new(T("Como mudar o tom da cor?", "How to change the color tone?"), T("Use Tone com XFSemanticColor: Primary, Success, Warning, Danger.", "Use Tone with XFSemanticColor: Primary, Success, Warning, Danger."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-05-28", T("Pagina refeita no padrao enterprise com 9 exemplos renderizados e cenarios ERP.", "Page rebuilt in enterprise standard with 9 rendered examples and ERP scenarios."))
+    ];
+
+    // ==================== CODE STRINGS ====================
+    private string CodeBasic =>
+        "<XFCheckbox Label=\"Aceito os termos\" Value=\"@value\" ValueChanged=\"@OnChanged\" />";
+
+    private string CodeSizes =>
+        "<XFCheckbox Size=\"XFSize.Sm\" Label=\"Small\" Value=\"true\" />\n" +
+        "<XFCheckbox Size=\"XFSize.Md\" Label=\"Medium\" Value=\"true\" />\n" +
+        "<XFCheckbox Size=\"XFSize.Lg\" Label=\"Large\" Value=\"true\" />";
+
+    private string CodeTones =>
+        "<XFCheckbox Tone=\"XFSemanticColor.Primary\" Label=\"Primary\" Value=\"true\" />\n" +
+        "<XFCheckbox Tone=\"XFSemanticColor.Success\" Label=\"Success\" Value=\"true\" />\n" +
+        "<XFCheckbox Tone=\"XFSemanticColor.Warning\" Label=\"Warning\" Value=\"true\" />\n" +
+        "<XFCheckbox Tone=\"XFSemanticColor.Danger\" Label=\"Danger\" Value=\"true\" />";
+
+    private string CodeLabelPosition =>
+        "<XFCheckbox LabelPosition=\"XFCheckboxLabelPosition.End\" Label=\"Right\" Value=\"true\" />\n" +
+        "<XFCheckbox LabelPosition=\"XFCheckboxLabelPosition.Start\" Label=\"Left\" Value=\"true\" />";
+
+    private string CodeTriState =>
+        "<XFCheckbox ThreeState=\"true\" Value=\"@groupValue\" ValueChanged=\"@OnGroupChanged\" MixedStateText=\"Parcial\" />\n" +
+        "<div class=\"ml-6\">\n" +
+        "  <XFCheckbox Label=\"Financeiro\" Value=\"@v1\" />\n" +
+        "  <XFCheckbox Label=\"Fiscal\" Value=\"@v2\" />\n" +
+        "</div>";
+
+    private string CodeDescription =>
+        "<XFCheckbox Label=\"Notificacoes\" Description=\"Receber alertas por email.\" Value=\"true\" />\n" +
+        "<XFCheckbox Label=\"Compacto\" CheckedStateText=\"Ativo\" UncheckedStateText=\"Inativo\" Value=\"true\" />";
+
+    private string CodeStates =>
+        "<XFCheckbox Label=\"Disabled\" Disabled=\"true\" Value=\"false\" />\n" +
+        "<XFCheckbox Label=\"Read Only\" ReadOnly=\"true\" Value=\"true\" />\n" +
+        "<XFCheckbox Label=\"Required\" Required=\"true\" Value=\"@val\" />";
+
+    private string CodeValidation =>
+        "<EditForm EditContext=\"@ctx\" OnValidSubmit=\"@OnSubmit\">\n" +
+        "  <DataAnnotationsValidator />\n" +
+        "  <XFCheckbox Label=\"Aceito\" @bind-Value=\"model.Accept\" />\n" +
+        "  <XFButton Type=\"XFButtonType.Submit\">Enviar</XFButton>\n" +
+        "</EditForm>";
+
+    private string CodeEnterprise =>
+        "<XFCheckbox ThreeState=\"true\" Value=\"@grp\" Label=\"Selecionar todos\" />\n" +
+        "<XFCheckbox Label=\"Visualizar\" Value=\"true\" Tone=\"Success\" />\n" +
+        "<XFCheckbox Label=\"Excluir\" Value=\"false\" Tone=\"Danger\" />";
+
+    // ==================== RECORDS ====================
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+
+    // ==================== VALIDATION MODEL ====================
+    private sealed class CheckboxFormModel
+    {
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Obrigatorio")]
+        public bool? AcceptTerms { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Obrigatorio")]
+        public bool? AcceptLGPD { get; set; }
+    }
+}

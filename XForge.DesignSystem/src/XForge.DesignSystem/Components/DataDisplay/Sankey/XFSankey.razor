@@ -1,0 +1,162 @@
+@using Microsoft.AspNetCore.Components.Web
+@typeparam TItem
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <div @ref="ContainerRef"
+         @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@ContainerClass"
+         style="@Style"
+         role="img"
+         aria-label="@(AriaLabel ?? "Diagrama Sankey")"
+         data-theme="@Theme">
+
+        @if (_computedNodes != null && _computedNodes.Count > 0 && _computedLinks != null && _width > 0 && _height > 0)
+        {
+            <svg style="width:100%;height:100%;overflow:hidden"
+                 viewBox="@($"0 0 {F(_width)} {F(_height)}")"
+                 preserveAspectRatio="xMidYMid meet"
+                 role="presentation"
+                 aria-hidden="true">
+
+                @if (Animated)
+                {
+                    <defs>
+                        @for (int i = 0; i < _computedLinks.Count; i++)
+                        {
+                            var link = _computedLinks[i];
+                            var baseColor = GetLinkBaseColor(link);
+                            var gid = $"xf-sankey-flow-{Id}-{i}";
+                            var delay = $"{(link.SourceNode?.Layer ?? 0) * 0.5}s";
+
+                            <linearGradient id="@gid" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="transparent" stop-opacity="0">
+                                    <animate attributeName="offset" values="-0.15;1.0" dur="3s" begin="@delay" repeatCount="indefinite" />
+                                </stop>
+                                <stop offset="5%" stop-color="@baseColor" stop-opacity="0.3">
+                                    <animate attributeName="offset" values="-0.10;1.05" dur="3s" begin="@delay" repeatCount="indefinite" />
+                                </stop>
+                                <stop offset="10%" stop-color="@baseColor" stop-opacity="0.6">
+                                    <animate attributeName="offset" values="-0.05;1.10" dur="3s" begin="@delay" repeatCount="indefinite" />
+                                </stop>
+                                <stop offset="10.5%" stop-color="transparent" stop-opacity="0">
+                                    <animate attributeName="offset" values="-0.045;1.105" dur="3s" begin="@delay" repeatCount="indefinite" />
+                                </stop>
+                            </linearGradient>
+                        }
+                    </defs>
+                }
+
+                <g transform="@($"translate({F(_marginLeft)}, {F(_marginTop)})")">
+                    @* Links *@
+                    @for (int li = 0; li < _computedLinks.Count; li++)
+                    {
+                        var link = _computedLinks[li];
+                        var linkFill = GetLinkFill(link, li);
+                        var linkClass = string.IsNullOrEmpty(linkFill)
+                            ? $"xf-sankey-link xf-sankey-series-{link.SourceNode?.ColorIndex ?? 0}"
+                            : "xf-sankey-link";
+
+                        <path d="@link.Path"
+                              fill="@(linkFill ?? "currentColor")"
+                              class="@linkClass"
+                              @onclick="() => HandleLinkClick(link)"
+                              @onmouseover="args => HandleLinkMouseOver(args, link)"
+                              @onmouseout="() => HandleMouseOut()" />
+
+                        @if (Animated)
+                        {
+                            <path d="@link.Path"
+                                  fill="url(#xf-sankey-flow-{Id}-{li})"
+                                  class="xf-sankey-flow-gradient"
+                                  style="pointer-events:none" />
+                        }
+                    }
+
+                    @* Nodes *@
+                    @foreach (var node in _computedNodes)
+                    {
+                        var nodeFill = GetNodeFill(node);
+                        var nodeClass = string.IsNullOrEmpty(nodeFill)
+                            ? $"xf-sankey-node xf-sankey-series-{node.ColorIndex}"
+                            : "xf-sankey-node";
+
+                        <g class="@nodeClass"
+                           @onclick="() => HandleNodeClick(node)"
+                           @onmouseover="args => HandleNodeMouseOver(args, node)"
+                           @onmouseout="() => HandleMouseOut()">
+                            <rect x="@F(node.X)"
+                                  y="@F(node.Y)"
+                                  width="@F(node.Width)"
+                                  height="@F(node.Height)"
+                                  fill="@(nodeFill ?? "currentColor")"
+                                  rx="2"
+                                  style="cursor:pointer;pointer-events:all" />
+                        </g>
+                    }
+
+                    @* Labels *@
+                    @foreach (var node in _computedNodes)
+                    {
+                        @if (!string.IsNullOrEmpty(node.Label))
+                        {
+                            var maxLayer = _computedNodes.Max(n => n.Layer);
+                            var isLeft = node.Layer == 0;
+                            var isRight = node.Layer == maxLayer;
+                            var labelPad = LabelPadding;
+
+                            double textX;
+                            string anchor;
+
+                            if (isLeft)
+                            {
+                                textX = Math.Max(labelPad, node.X - labelPad);
+                                anchor = node.X - labelPad < labelPad ? "start" : "end";
+                            }
+                            else if (isRight)
+                            {
+                                var rightPos = node.X + node.Width + labelPad;
+                                var maxX = _width - _marginLeft - _marginRight - labelPad;
+                                textX = Math.Min(maxX, rightPos);
+                                anchor = rightPos > maxX ? "end" : "start";
+                            }
+                            else
+                            {
+                                textX = node.X + node.Width / 2;
+                                anchor = "middle";
+                            }
+
+                            <g class="xf-sankey-label"
+                               @onclick="() => HandleNodeClick(node)"
+                               @onmouseover="args => HandleNodeMouseOver(args, node)"
+                               @onmouseout="() => HandleMouseOut()">
+                                <text x="@F(textX)"
+                                      y="@F(node.Y + node.Height / 2)"
+                                      text-anchor="@anchor"
+                                      dominant-baseline="central"
+                                      style="font-size:@(LabelFontSize)px;fill:var(--color-text-secondary,#6b7280)">@node.Label</text>
+                            </g>
+                        }
+                    }
+                </g>
+            </svg>
+        }
+        else
+        {
+            <div class="flex items-center justify-center h-full text-sm text-gray-400 dark:text-gray-500">
+                @(EmptyText ?? "Nenhum dado para exibir")
+            </div>
+        }
+    </div>
+
+    @if (_showTooltip && _tooltipContent != null)
+    {
+        <div class="xf-sankey-tooltip"
+             style="position:absolute;left:@(_tooltipX)px;top:@(_tooltipY)px;pointer-events:none;z-index:50"
+             data-theme="@Theme">
+            @_tooltipContent
+        </div>
+    }
+}

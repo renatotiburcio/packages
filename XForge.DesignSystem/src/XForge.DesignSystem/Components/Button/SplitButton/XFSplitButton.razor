@@ -1,0 +1,80 @@
+@inherits XForgeComponentBase
+@using XForge.DesignSystem.Components.Icon
+@using XForge.DesignSystem.Components.Overlays.DropdownMenu
+
+<div @attributes="AdditionalAttributes" id="@Id" class="@RootClass">
+    <button class="@PrimaryButtonClass"
+            type="@ButtonTypeValue"
+            disabled="@IsDisabled"
+            aria-disabled="@IsDisabled.ToString().ToLowerInvariant()"
+            @onclick="HandlePrimaryClickAsync">
+        @if (StartIcon is not null)
+        {
+            <span class="@IconClass" aria-hidden="true">@StartIcon</span>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Text))
+        {
+            <span>@Text</span>
+        }
+        else
+        {
+            @ChildContent
+        }
+    </button>
+
+    <button class="@TriggerButtonClass"
+            id="@TriggerId"
+            type="button"
+            disabled="@IsDisabled"
+            aria-label="@MenuAriaLabel"
+            aria-haspopup="menu"
+            aria-controls="@PanelId"
+            aria-expanded="@Open"
+            @onclick="ToggleMenuAsync"
+            @onkeydown="HandleTriggerKeyDownAsync">
+        <span class="@ChevronClass" aria-hidden="true">@XFSvgIcons.MarkupWithSize("chevron-down", 14)</span>
+    </button>
+
+    @if (Open)
+    {
+        <div id="@PanelId" class="@MenuPanelClass" role="menu" aria-label="@EffectiveMenuPanelAriaLabel" aria-orientation="vertical" @onkeydown="HandleMenuKeyDownAsync">
+            @foreach (var indexed in Items.Select((item, index) => new { item, index }))
+            {
+                if (indexed.item.Kind == XFDropdownMenuItemKind.Separator)
+                {
+                    <div class="my-1 h-px bg-border-light" role="separator"></div>
+                }
+                else if (indexed.item.Kind == XFDropdownMenuItemKind.Header)
+                {
+                    <div class="px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted">@indexed.item.Text</div>
+                }
+                else
+                {
+                    <button class="@GetItemClass(indexed.index)"
+                            type="button"
+                            role="@GetItemRole(indexed.item)"
+                            aria-checked="@GetAriaChecked(indexed.item)"
+                            disabled="@indexed.item.Disabled"
+                            @onclick="@(() => SelectItemAsync(indexed.item))">
+                        @if (indexed.item.Icon is not null)
+                        {
+                            <span class="@IndicatorClass(indexed.item)">@indexed.item.Icon</span>
+                        }
+                        <span class="min-w-0 flex-1 text-left">
+                            <span class="block truncate">@indexed.item.Text</span>
+                            @if (!string.IsNullOrWhiteSpace(indexed.item.Description))
+                            {
+                                <span class="block truncate text-xs text-text-muted">@indexed.item.Description</span>
+                            }
+                        </span>
+                        @if (!string.IsNullOrWhiteSpace(indexed.item.Shortcut))
+                        {
+                            <kbd class="ml-3 rounded bg-surface-100 px-1.5 py-0.5 text-[0.6875rem] font-semibold text-text-muted">@indexed.item.Shortcut</kbd>
+                        }
+                    </button>
+                }
+            }
+        </div>
+    }
+</div>

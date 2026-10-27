@@ -1,0 +1,121 @@
+@inherits XForgeComponentBase
+
+<div class="@RootClass" style="@Style" id="@Id" @attributes="AdditionalAttributes" aria-busy="@AriaBusy">
+
+    @* -- Textarea -- *@
+    <textarea class="@TextareaClass"
+              rows="@Rows"
+              value="@Value"
+              placeholder="@Placeholder"
+              disabled="@Disabled"
+              readonly="@ReadOnly"
+              aria-label="@Placeholder"
+              aria-describedby="@(ShowFooter ? $"{Id}-footer" : null)"
+              @ref="_textareaRef"
+              @oninput="HandleInputAsync"
+              @onkeydown="HandleKeyDownAsync"
+              @onkeydown:preventDefault="@_preventKeyDefault"></textarea>
+
+    @* -- Footer: templates + counts + send -- *@
+    @if (ShowFooter || (ShowTemplates && HasTemplates) || ShowSendButton)
+    {
+        <div class="@FooterClass" id="@($"{Id}-footer")">
+
+            @* -- Left side: templates button -- *@
+            <div class="relative inline-flex items-center gap-2">
+                @if (ShowTemplates && HasTemplates)
+                {
+                    <button type="button"
+                            class="@TemplatesButtonClass"
+                            disabled="@Disabled"
+                            aria-haspopup="listbox"
+                            aria-expanded="@_templatesOpen"
+                            aria-label="@TemplatesLabel"
+                            @onclick="ToggleTemplates">
+                        <span class="inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("rectangle-list")</span>
+                        <span>@TemplatesLabel</span>
+                        <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("chevron-down")</span>
+                    </button>
+
+                    @if (_templatesOpen)
+                    {
+                        <div class="@DropdownClass" role="listbox" aria-label="@TemplatesLabel">
+                            @foreach (var group in GroupedTemplates)
+                            {
+                                <div class="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">@group.Key</div>
+                                @foreach (var template in group)
+                                {
+                                    var idx = Templates.ToList().IndexOf(template);
+                                    @if (TemplateContent is not null)
+                                    {
+                                        <div class="@DropdownItemClass(idx)"
+                                             role="option"
+                                             aria-selected="@(idx == _highlightedTemplateIndex)"
+                                             @onclick="() => SelectTemplateAsync(template)"
+                                             @onmouseenter="() => _highlightedTemplateIndex = idx">
+                                            @TemplateContent(template)
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="@DropdownItemClass(idx)"
+                                             role="option"
+                                             aria-selected="@(idx == _highlightedTemplateIndex)"
+                                             @onclick="() => SelectTemplateAsync(template)"
+                                             @onmouseenter="() => _highlightedTemplateIndex = idx">
+                                            <span class="font-medium">@template.Name</span>
+                                            @if (!string.IsNullOrWhiteSpace(template.Description))
+                                            {
+                                                <span class="text-xs text-text-muted line-clamp-1">@template.Description</span>
+                                            }
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    }
+                }
+            </div>
+
+            @* -- Right side: token/char counts + send -- *@
+            <div class="inline-flex items-center gap-3">
+                @if (ShowTokenEstimate)
+                {
+                    <span class="@TokenCountClass" aria-live="polite">
+                        @if (IsMaxTokensExceeded)
+                        {
+                            <span class="inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("triangle-exclamation")</span>
+                        }
+                        <span>@TokenEstimateLabel: @EstimatedTokens</span>
+                        @if (MaxTokens.HasValue)
+                        {
+                            <span class="text-text-muted">/ @MaxTokens</span>
+                        }
+                    </span>
+                }
+
+                @if (ShowCharCount)
+                {
+                    <span class="@CharCountClass" aria-live="polite">
+                        @CharCount
+                        @if (MaxLength.HasValue)
+                        {
+                            <span class="text-text-muted">/ @MaxLength</span>
+                        }
+                    </span>
+                }
+
+                @if (ShowSendButton)
+                {
+                    <button type="button"
+                            class="@SendButtonClass"
+                            disabled="@(!CanSend)"
+                            aria-label="@SendLabel"
+                            @onclick="SendAsync">
+                        <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("paper-plane")</span>
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</div>

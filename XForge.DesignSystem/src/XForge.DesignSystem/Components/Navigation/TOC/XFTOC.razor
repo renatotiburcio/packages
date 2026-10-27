@@ -1,0 +1,84 @@
+@inherits XForgeComponentBase
+
+<nav @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@RootClass"
+     aria-label="@AriaLabel">
+    @if (!string.IsNullOrWhiteSpace(Title))
+    {
+        <div class="@TitleClass">@Title</div>
+    }
+
+    @if (Items.Count == 0)
+    {
+        <div class="text-sm text-text-secondary">@EmptyText</div>
+    }
+    else
+    {
+        _renderCounter = StartNumber;
+        <ol class="@ListClass">
+            @foreach (var item in Items)
+            {
+                @RenderItem(item, 1)
+            }
+        </ol>
+    }
+</nav>
+
+@code {
+    private int _renderCounter;
+
+    private RenderFragment RenderItem(XFTOCItem item, int level) => @<li class="@ItemShellClass(level)">
+        <a class="@GetItemClass(item, level)"
+           href="@GetHref(item)"
+           aria-label="@GetItemAriaLabel(item)"
+           aria-current="@(IsActive(item) ? "location" : null)"
+           aria-disabled="@(item.Disabled ? "true" : null)"
+           tabindex="@(item.Disabled ? "-1" : null)"
+           @onclick:preventDefault="true"
+           @onclick="@(() => HandleItemClickAsync(item))">
+            @if (ItemTemplate is not null)
+            {
+                @ItemTemplate(item)
+            }
+            else
+            {
+                @RenderMarker(item)
+                <span class="truncate">@item.Text</span>
+            }
+        </a>
+
+        @if (item.Children.Count > 0 && Orientation == XFTOCOrientation.Vertical)
+        {
+            <ol class="mt-1 grid gap-1">
+                @foreach (var child in item.Children)
+                {
+                    @RenderItem(child, level + 1)
+                }
+            </ol>
+        }
+    </li>;
+
+    private RenderFragment RenderMarker(XFTOCItem item) => @<span class="inline-flex shrink-0 items-center justify-center">
+        @if (MarkerTemplate is not null)
+        {
+            @MarkerTemplate(item)
+        }
+        else if (Marker == XFTOCMarker.Number)
+        {
+            var currentNumber = _renderCounter;
+            _renderCounter++;
+            <span class="@NumberMarkerClass(item)">@currentNumber</span>
+        }
+        else if (Marker == XFTOCMarker.Icon && !string.IsNullOrWhiteSpace(item.Icon))
+        {
+            <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center text-xs" aria-hidden="true">
+                @((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 14))
+            </span>
+        }
+        else if (Marker == XFTOCMarker.Dot)
+        {
+            <span class="@MarkerClass(item)"></span>
+        }
+    </span>;
+}

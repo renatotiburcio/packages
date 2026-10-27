@@ -1,0 +1,14 @@
+@namespace XForge.DesignSystem.Components.Feedback.Skeleton
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <div id="@Id"
+         class="@GetComponentClass()"
+         role="@Role"
+         aria-label="@ResolvedAriaLabel"
+         aria-hidden="@AriaHidden"
+         @attributes="AdditionalAttributes">
+        @ChildContent
+    </div>
+}

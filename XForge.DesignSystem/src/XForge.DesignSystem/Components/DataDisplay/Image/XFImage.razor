@@ -1,0 +1,43 @@
+@using Microsoft.AspNetCore.Components.Web
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <div class="@GetComponentClass()" style="@Style">
+        @if (ShouldRenderImage)
+        {
+            <img id="@Id"
+                 class="@ImageClass"
+                 src="@CurrentSource"
+                 alt="@AltValue"
+                 loading="@LoadingValue"
+                 decoding="@Decoding"
+                 role="@ImageRole"
+                 tabindex="@TabIndexValue"
+                 @onclick="HandleClickAsync"
+                 @onkeydown="HandleKeyDownAsync"
+                 @onerror="HandleImageError"
+                 @attributes="AdditionalAttributes" />
+        }
+        else
+        {
+            <div id="@Id"
+                 class="@FallbackClass"
+                 role="@ImageRole"
+                 aria-label="@AriaLabelValue"
+                 tabindex="@TabIndexValue"
+                 @onclick="HandleClickAsync"
+                 @onkeydown="HandleKeyDownAsync"
+                 @attributes="AdditionalAttributes">
+                @if (FallbackContent is not null)
+                {
+                    @FallbackContent
+                }
+                else
+                {
+                    <span aria-hidden="true" class="text-lg font-semibold">@FallbackText</span>
+                }
+            </div>
+        }
+    </div>
+}

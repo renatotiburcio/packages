@@ -1,0 +1,18 @@
+@namespace XForge.DesignSystem.Components.DataDisplay.Avatar
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <div id="@Id"
+         class="@GetComponentClass()"
+         role="group"
+         aria-label="@AriaLabel"
+         @attributes="AdditionalAttributes">
+        @ChildContent
+
+        @if (OverflowCount > 0)
+        {
+            <span class="@OverflowClass" aria-label="@ResolvedOverflowLabel">+@OverflowCount</span>
+        }
+    </div>
+}

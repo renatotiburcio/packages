@@ -1,0 +1,56 @@
+@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <div class="@RootClass" style="@Style">
+        @if (HasVideo)
+        {
+            <video @attributes="AdditionalAttributes"
+                   id="@Id"
+                   class="@VideoClass"
+                   poster="@Poster"
+                   controls="@Controls"
+                   autoplay="@Autoplay"
+                   muted="@Muted"
+                   loop="@Loop"
+                   playsinline="@PlaysInline"
+                   preload="@Preload"
+                   aria-label="@AriaLabel">
+                @if (!string.IsNullOrWhiteSpace(Src))
+                {
+                    <source src="@Src" type="@Type" />
+                }
+                @foreach (var source in Sources)
+                {
+                    <source src="@source.Src" type="@source.Type" />
+                }
+                @foreach (var track in Tracks)
+                {
+                    <track src="@track.Src"
+                           kind="@track.Kind"
+                           srclang="@track.SrcLang"
+                           label="@track.Label"
+                           default="@track.Default" />
+                }
+                @FallbackText
+            </video>
+        }
+        else
+        {
+            <div @attributes="AdditionalAttributes"
+                 id="@Id"
+                 class="@FallbackClass"
+                 role="img"
+                 aria-label="@AriaLabel">
+                @if (FallbackContent is not null)
+                {
+                    @FallbackContent
+                }
+                else
+                {
+                    <span class="text-sm font-semibold">@FallbackText</span>
+                }
+            </div>
+        }
+    </div>
+}

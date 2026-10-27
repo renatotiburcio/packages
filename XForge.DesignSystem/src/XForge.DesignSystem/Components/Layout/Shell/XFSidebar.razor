@@ -1,0 +1,27 @@
+@inherits XForgeComponentBase
+<aside id="@Id"
+       @attributes="AdditionalAttributes"
+       style="@Style"
+       aria-label="@AriaLabel"
+       aria-expanded="@Expanded.ToString().ToLowerInvariant()"
+       class="@GetSidebarClass()">
+    <div class="flex flex-col h-full min-w-60">
+        @if (Header != null)
+        {
+            <div class="@HeaderClass">
+                @Header
+            </div>
+        }
+
+        <div class="@ContentClass">
+            @ChildContent
+        </div>
+
+        @if (Footer != null)
+        {
+            <div class="@FooterClass">
+                @Footer
+            </div>
+        }
+    </div>
+</aside>

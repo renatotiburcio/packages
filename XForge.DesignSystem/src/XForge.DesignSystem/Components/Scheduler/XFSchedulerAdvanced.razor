@@ -1,0 +1,423 @@
+@namespace XForge.Components.Scheduler
+@inherits XForgeComponentBase
+
+<div class="xf-scheduler-advanced" data-view="@_currentView"
+     @onpointermove="OnGridPointerMove"
+     @onpointerup="OnGridPointerUp"
+     @ontouchstart="OnTouchStart"
+     @ontouchmove="OnTouchMove"
+     @ontouchend="OnTouchEnd">
+    @* Header *@
+    <div class="xf-scheduler-header">
+        <div class="flex items-center gap-2">
+            <button class="xf-scheduler-nav-btn" @onclick="NavigateToday">Today</button>
+            <button class="xf-scheduler-nav-btn" @onclick="NavigatePrevious">←</button>
+            <button class="xf-scheduler-nav-btn" @onclick="NavigateNext">→</button>
+            <h3 class="xf-scheduler-title">@GetTitle()</h3>
+        </div>
+        <div class="xf-scheduler-view-switcher">
+            @foreach (var view in Enum.GetValues<SchedulerView>())
+            {
+                <button class="xf-scheduler-view-btn @(_currentView == view ? "active" : "")" @onclick="() => SwitchView(view)">@GetViewLabel(view)</button>
+            }
+        </div>
+    </div>
+
+    @* Month View *@
+    @if (_currentView == SchedulerView.Month)
+    {
+        <div class="xf-scheduler-month-grid">
+            <div class="xf-scheduler-month-header">
+                @foreach (var dayName in new[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" })
+                {
+                    <div class="xf-scheduler-month-day-name">@dayName</div>
+                }
+            </div>
+            @foreach (var week in _monthGrid)
+            {
+                <div class="xf-scheduler-month-week">
+                    @foreach (var day in week)
+                    {
+                        <div class="xf-scheduler-month-day @(IsToday(day) ? "today" : "") @(IsCurrentMonth(day) ? "" : "other-month")"
+                             @onclick="() => OpenCreateModal(day.AddHours(9))">
+                            <span class="xf-scheduler-month-day-number">@day.Day</span>
+                            <div class="xf-scheduler-month-events">
+                                @foreach (var ev in GetEventsForDay(day).Take(3))
+                                {
+                                    @if (MonthEventTemplate != null)
+                                    {
+                                        @MonthEventTemplate(ev)
+                                    }
+                                    else
+                                    {
+                                        <div class="xf-scheduler-month-event" style="background-color:@(ev.Color ?? "var(--color-primary)")" @onclick:stopPropagation="true" @onclick="() => OpenEditModal(ev)">
+                                            @ev.Title
+                                        </div>
+                                    }
+                                }
+                                @if (GetEventsForDay(day).Count() > 3)
+                                {
+                                    <div class="xf-scheduler-month-more">+@(GetEventsForDay(day).Count() - 3) more</div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+@* Week View *@
+@if (_currentView == SchedulerView.Week)
+{
+    <div class="xf-scheduler-week-container">
+        @* All-day section *@
+        @if (ShowAllDaySection)
+        {
+            <div class="xf-scheduler-week-all-day">
+                <div class="xf-scheduler-week-time-gutter"></div>
+                @foreach (var day in _weekDays)
+                {
+                    <div class="xf-scheduler-week-all-day-cell @(IsToday(day) ? "today" : "")">
+                        @foreach (var ev in GetEventsForDay(day).Where(e => e.IsAllDay))
+                        {
+                            @if (EventTemplate != null)
+                            {
+                                @EventTemplate(ev)
+                            }
+                            else if (IsInlineEditing(ev))
+                            {
+                                <div class="xf-scheduler-week-all-day-event editing">
+                                    <input type="text" class="xf-scheduler-inline-input" @bind="_inlineEditTitle"
+                                           @onkeydown="e => OnInlineEditKeyDown(e, ev)"
+                                           @onblur="() => SaveInlineEdit(ev)" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="xf-scheduler-week-all-day-event" style="background-color:@(ev.Color ?? "var(--color-primary)")"
+                                     @onclick="() => OpenEditModal(ev)"
+                                     @ondblclick:stopPropagation="true" @ondblclick="() => StartInlineEdit(ev)">
+                                    @ev.Title
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        @* Time grid *@
+        <div class="xf-scheduler-week-grid">
+            <div class="xf-scheduler-week-time-gutter">
+                @for (var h = _dayStartHour; h < _dayEndHour; h++)
+                {
+                    <div class="xf-scheduler-week-time-label" style="height:@(HourHeight)px">@GetTimeLabel(h)</div>
+                }
+            </div>
+
+            @if (HasResources)
+            {
+                @* Resource swimlanes *@
+                @foreach (var resourceId in ResourceIds!)
+                {
+                    <div class="xf-scheduler-resource-lane">
+                        <div class="xf-scheduler-resource-header">
+                            <span class="xf-scheduler-resource-label">@GetResourceLabel(resourceId)</span>
+                        </div>
+                        <div class="xf-scheduler-resource-days">
+                            @foreach (var day in _weekDays)
+                            {
+                                <div class="xf-scheduler-week-day-column @(IsToday(day) ? "today" : "")" style="position:relative">
+                                    @for (var h = _dayStartHour; h < _dayEndHour; h++)
+                                    {
+                                        var slotTime = day.Date.AddHours(h);
+                                        <div class="xf-scheduler-week-hour-slot" style="height:@(HourHeight)px"
+                                             @onclick="() => OpenCreateModal(slotTime)"
+                                             @onpointerdown="e => OnSlotPointerDown(slotTime, e)"></div>
+                                    }
+                                    @foreach (var ev in GetEventsForDayAndResource(day, resourceId).Where(e => !e.IsAllDay))
+                                    {
+                                        @if (EventTemplate != null)
+                                        {
+                                            @EventTemplate(ev)
+                                        }
+                                        else if (IsInlineEditing(ev))
+                                        {
+                                            <div class="xf-scheduler-week-event editing"
+                                                 style="@GetEventStyle(ev, Array.IndexOf(_weekDays, day))"
+                                                 @onclick:stopPropagation="true">
+                                                <input type="text" class="xf-scheduler-inline-input" @bind="_inlineEditTitle"
+                                                       @onkeydown="e => OnInlineEditKeyDown(e, ev)"
+                                                       @onblur="() => SaveInlineEdit(ev)" />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="xf-scheduler-week-event"
+                                                 style="@GetEventStyle(ev, Array.IndexOf(_weekDays, day))"
+                                                 @onclick:stopPropagation="true"
+                                                 @onclick="() => OpenEditModal(ev)"
+                                                 @ondblclick:stopPropagation="true" @ondblclick="() => StartInlineEdit(ev)"
+                                                 @onpointerdown="e => OnEventPointerDown(ev, e)">
+                                                <div class="xf-scheduler-week-event-title">@ev.Title</div>
+                                                <div class="xf-scheduler-week-event-time">@ev.Start.ToString("HH:mm") - @ev.End.ToString("HH:mm")</div>
+                                            </div>
+                                        }
+                                    }
+                                    @if (IsToday(day))
+                                    {
+                                        var currentTime = DateTime.Now;
+                                        var top = (currentTime.Hour - _dayStartHour) * HourHeight + (currentTime.Minute / 60.0) * HourHeight;
+                                        if (top >= 0 && top < (_dayEndHour - _dayStartHour) * HourHeight)
+                                        {
+                                            <div class="xf-scheduler-week-now-indicator" style="top:@(top)px"></div>
+                                        }
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                @* Regular week view without resources *@
+                @foreach (var day in _weekDays)
+                {
+                    <div class="xf-scheduler-week-day-column @(IsToday(day) ? "today" : "")" style="position:relative">
+                        @for (var h = _dayStartHour; h < _dayEndHour; h++)
+                        {
+                            var slotTime = day.Date.AddHours(h);
+                            <div class="xf-scheduler-week-hour-slot" style="height:@(HourHeight)px"
+                                 @onclick="() => OpenCreateModal(slotTime)"
+                                 @onpointerdown="e => OnSlotPointerDown(slotTime, e)"></div>
+                        }
+                        @* Events *@
+                        @foreach (var ev in GetEventsForDay(day).Where(e => !e.IsAllDay))
+                        {
+                            @if (EventTemplate != null)
+                            {
+                                @EventTemplate(ev)
+                            }
+                            else if (IsInlineEditing(ev))
+                            {
+                                <div class="xf-scheduler-week-event editing"
+                                     style="@GetEventStyle(ev, Array.IndexOf(_weekDays, day))"
+                                     @onclick:stopPropagation="true">
+                                    <input type="text" class="xf-scheduler-inline-input" @bind="_inlineEditTitle"
+                                           @onkeydown="e => OnInlineEditKeyDown(e, ev)"
+                                           @onblur="() => SaveInlineEdit(ev)" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="xf-scheduler-week-event"
+                                     style="@GetEventStyle(ev, Array.IndexOf(_weekDays, day))"
+                                     @onclick:stopPropagation="true"
+                                     @onclick="() => OpenEditModal(ev)"
+                                     @ondblclick:stopPropagation="true" @ondblclick="() => StartInlineEdit(ev)"
+                                     @onpointerdown="e => OnEventPointerDown(ev, e)">
+                                    <div class="xf-scheduler-week-event-title">@ev.Title</div>
+                                    <div class="xf-scheduler-week-event-time">@ev.Start.ToString("HH:mm") - @ev.End.ToString("HH:mm")</div>
+                                </div>
+                            }
+                        }
+                        @* Current time indicator *@
+                        @if (IsToday(day))
+                        {
+                            var currentTime = DateTime.Now;
+                            var top = (currentTime.Hour - _dayStartHour) * HourHeight + (currentTime.Minute / 60.0) * HourHeight;
+                            if (top >= 0 && top < (_dayEndHour - _dayStartHour) * HourHeight)
+                            {
+                                <div class="xf-scheduler-week-now-indicator" style="top:@(top)px"></div>
+                            }
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@* Day View *@
+else if (_currentView == SchedulerView.Day)
+{
+    <div class="xf-scheduler-day-container">
+        <div class="xf-scheduler-day-time-gutter">
+            @for (var h = _dayStartHour; h < _dayEndHour; h++)
+            {
+                <div class="xf-scheduler-day-time-label" style="height:@(HourHeight)px">@GetTimeLabel(h)</div>
+            }
+        </div>
+        <div class="xf-scheduler-day-column" style="position:relative">
+            @for (var h = _dayStartHour; h < _dayEndHour; h++)
+            {
+                var slotTime = _currentDate.Date.AddHours(h);
+                <div class="xf-scheduler-day-hour-slot" style="height:@(HourHeight)px"
+                     @onclick="() => OpenCreateModal(slotTime)"
+                     @onpointerdown="e => OnSlotPointerDown(slotTime, e)"></div>
+            }
+            @foreach (var ev in GetEventsForDay(_currentDate).Where(e => !e.IsAllDay))
+            {
+                @if (EventTemplate != null)
+                {
+                    @EventTemplate(ev)
+                }
+                else if (IsInlineEditing(ev))
+                {
+                    <div class="xf-scheduler-day-event editing"
+                         style="@GetEventStyle(ev, 0)"
+                         @onclick:stopPropagation="true">
+                        <input type="text" class="xf-scheduler-inline-input" @bind="_inlineEditTitle"
+                               @onkeydown="e => OnInlineEditKeyDown(e, ev)"
+                               @onblur="() => SaveInlineEdit(ev)" />
+                    </div>
+                }
+                else
+                {
+                    <div class="xf-scheduler-day-event"
+                         style="@GetEventStyle(ev, 0)"
+                         @onclick:stopPropagation="true"
+                         @onclick="() => OpenEditModal(ev)"
+                         @ondblclick:stopPropagation="true" @ondblclick="() => StartInlineEdit(ev)"
+                         @onpointerdown="e => OnEventPointerDown(ev, e)">
+                        <div class="xf-scheduler-day-event-title">@ev.Title</div>
+                        <div class="xf-scheduler-day-event-time">@ev.Start.ToString("HH:mm") - @ev.End.ToString("HH:mm")</div>
+                    </div>
+                }
+            }
+            @* Current time indicator *@
+            @{
+                var currentTime = DateTime.Now;
+                var todayTop = (currentTime.Hour - _dayStartHour) * HourHeight + (currentTime.Minute / 60.0) * HourHeight;
+                if (todayTop >= 0 && todayTop < (_dayEndHour - _dayStartHour) * HourHeight)
+                {
+                    <div class="xf-scheduler-day-now-indicator" style="top:@(todayTop)px"></div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@* Agenda View *@
+else if (_currentView == SchedulerView.Agenda)
+{
+    <div class="xf-scheduler-agenda">
+        @* Export button *@
+        @if (AllowExport)
+        {
+            <div class="flex justify-end mb-4 gap-2">
+                <button class="xf-scheduler-btn xf-scheduler-btn-secondary" @onclick="() => ExportEventsAsync(SchedulerExportFormat.Json)">Export JSON</button>
+                <button class="xf-scheduler-btn xf-scheduler-btn-secondary" @onclick="() => ExportEventsAsync(SchedulerExportFormat.Csv)">Export CSV</button>
+                <button class="xf-scheduler-btn xf-scheduler-btn-secondary" @onclick="() => ExportEventsAsync(SchedulerExportFormat.Ics)">Export ICS</button>
+            </div>
+        }
+
+        @{
+            var agendaStart = _currentDate;
+            var agendaEnd = _currentDate.AddDays(14);
+        }
+        @for (var d = agendaStart; d < agendaEnd; d = d.AddDays(1))
+        {
+            var dayEvents = GetEventsForDay(d).ToList();
+            if (dayEvents.Any())
+            {
+                <div class="xf-scheduler-agenda-day">
+                    <div class="xf-scheduler-agenda-day-header @(IsToday(d) ? "today" : "")">
+                        <span class="xf-scheduler-agenda-day-name">@d.ToString("dddd")</span>
+                        <span class="xf-scheduler-agenda-day-number">@d.ToString("MMM d")</span>
+                    </div>
+                    <div class="xf-scheduler-agenda-day-events">
+                        @foreach (var ev in dayEvents)
+                        {
+                            @if (AgendaEventTemplate != null)
+                            {
+                                @AgendaEventTemplate(ev)
+                            }
+                            else if (IsInlineEditing(ev))
+                            {
+                                <div class="xf-scheduler-agenda-event editing" style="border-left: 4px solid @(ev.Color ?? "var(--color-primary)")">
+                                    <input type="text" class="xf-scheduler-inline-input" @bind="_inlineEditTitle"
+                                           @onkeydown="e => OnInlineEditKeyDown(e, ev)"
+                                           @onblur="() => SaveInlineEdit(ev)" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="xf-scheduler-agenda-event" style="border-left: 4px solid @(ev.Color ?? "var(--color-primary)")"
+                                     @onclick="() => OpenEditModal(ev)"
+                                     @ondblclick:stopPropagation="true" @ondblclick="() => StartInlineEdit(ev)">
+                                    <div class="xf-scheduler-agenda-event-title">@ev.Title</div>
+                                    <div class="xf-scheduler-agenda-event-time">@ev.Start.ToString("HH:mm") - @ev.End.ToString("HH:mm")</div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}
+</div>
+
+@* Event Modal *@
+@if (_showEventModal)
+{
+    <div class="xf-scheduler-modal-overlay" @onclick="CloseModal">
+        <div class="xf-scheduler-modal" @onclick:stopPropagation="true">
+            <div class="xf-scheduler-modal-header">
+                <h3>@(_editingEvent != null ? "Edit Event" : "New Event")</h3>
+                <button class="xf-scheduler-modal-close" @onclick="CloseModal">×</button>
+            </div>
+            <div class="xf-scheduler-modal-body">
+                <div class="xf-scheduler-form-group">
+                    <label>Title</label>
+                    <input type="text" class="xf-scheduler-input" @bind="_modalEvent.Title" placeholder="Event title" />
+                </div>
+                <div class="xf-scheduler-form-row">
+                    <div class="xf-scheduler-form-group">
+                        <label>Start</label>
+                        <input type="datetime-local" class="xf-scheduler-input" @bind="_modalEvent.Start" />
+                    </div>
+                    <div class="xf-scheduler-form-group">
+                        <label>End</label>
+                        <input type="datetime-local" class="xf-scheduler-input" @bind="_modalEvent.End" />
+                    </div>
+                </div>
+                <div class="xf-scheduler-form-group">
+                    <label>Color</label>
+                    <input type="color" class="xf-scheduler-color-input" @bind="_modalEvent.Color" />
+                </div>
+                <div class="xf-scheduler-form-group">
+                    <label>
+                        <input type="checkbox" @bind="_modalEvent.IsAllDay" />
+                        All day event
+                    </label>
+                </div>
+                @if (AllowResourceGrouping && ResourceIds?.Any() == true)
+                {
+                    <div class="xf-scheduler-form-group">
+                        <label>Resource</label>
+                        <select class="xf-scheduler-input" @bind="_modalEvent.ResourceId">
+                            <option value="">None</option>
+                            @foreach (var rid in ResourceIds)
+                            {
+                                <option value="@rid">@(ResourceLabels?.GetValueOrDefault(rid) ?? rid)</option>
+                            }
+                        </select>
+                    </div>
+                }
+            </div>
+            <div class="xf-scheduler-modal-footer">
+                @if (_editingEvent != null)
+                {
+                    <button class="xf-scheduler-btn xf-scheduler-btn-danger" @onclick="DeleteEvent">Delete</button>
+                }
+                <div class="flex-1"></div>
+                <button class="xf-scheduler-btn xf-scheduler-btn-secondary" @onclick="CloseModal">Cancel</button>
+                <button class="xf-scheduler-btn xf-scheduler-btn-primary" @onclick="SaveEvent">Save</button>
+            </div>
+        </div>
+    </div>
+}

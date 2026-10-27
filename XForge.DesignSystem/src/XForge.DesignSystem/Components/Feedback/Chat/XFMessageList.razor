@@ -1,0 +1,93 @@
+@inherits XForgeComponentBase
+
+<div class="@RootClass" style="@Style" role="log" aria-live="polite" aria-relevant="additions text">
+    @if (Messages.Count == 0)
+    {
+        <div class="@EmptyClass">
+            @if (EmptyContent is not null)
+            {
+                @EmptyContent
+            }
+            else
+            {
+                @EmptyText
+            }
+        </div>
+    }
+    else
+    {
+        DateTime? previousDate = null;
+        @foreach (var message in Messages)
+        {
+            if (ShowDateSeparators && (previousDate is null || previousDate.Value.Date != message.Timestamp.Date))
+            {
+                <div class="@DateSeparatorClass" role="separator">
+                    @if (DateSeparatorTemplate is not null)
+                    {
+                        @DateSeparatorTemplate(message.Timestamp)
+                    }
+                    else
+                    {
+                        @message.Timestamp.ToString(DateSeparatorFormat)
+                    }
+                </div>
+            }
+
+            previousDate = message.Timestamp;
+
+            if (MessageTemplate is not null)
+            {
+                @MessageTemplate(message)
+            }
+            else
+            {
+                var user = GetUser(message.UserId);
+                <div class="@MessageRowClass(message)" @key="message.Id">
+                    @if (!IsCurrentUser(message))
+                    {
+                        <div class="@AvatarClass" title="@user?.Name">
+                            @if (!string.IsNullOrWhiteSpace(user?.AvatarUrl))
+                            {
+                                <img src="@user.AvatarUrl" alt="@user.Name" class="h-full w-full rounded-full object-cover" />
+                            }
+                            else
+                            {
+                                @(user?.Initials ?? "AI")
+                            }
+                        </div>
+                    }
+                    <div class="min-w-0">
+                        <div class="@MetaClass(message)">
+                            @if (!IsCurrentUser(message) && ShowUserNames)
+                            {
+                                <span>@(user?.Name ?? message.Role.ToString())</span>
+                            }
+                            <time datetime="@message.Timestamp.ToString("O")">@message.Timestamp.ToString(TimestampFormat)</time>
+                        </div>
+                        <div class="@BubbleClass(message)">
+                            @message.Content
+                            @if (message.IsStreaming || message.IsLoading)
+                            {
+                                <span class="ml-1 inline-flex animate-pulse" aria-label="@MessageLoadingLabel">...</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+    @if (ShowTypingIndicator)
+    {
+        <div class="@TypingClass" role="status">
+            @if (TypingTemplate is not null)
+            {
+                @TypingTemplate
+            }
+            else
+            {
+                @TypingText
+            }
+        </div>
+    }
+</div>

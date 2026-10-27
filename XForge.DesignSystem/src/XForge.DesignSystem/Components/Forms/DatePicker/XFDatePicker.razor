@@ -1,0 +1,238 @@
+﻿@inherits XForgeComponentBase
+
+<div class="@RootClass" style="@Style" @onkeydown="HandleRootKeyDownAsync">
+    @if (!Inline)
+    {
+        @if (!string.IsNullOrWhiteSpace(Label))
+        {
+            <label for="@Id" class="@LabelClass">
+                @Label
+                @if (Required)
+                {
+                    <span class="text-danger" aria-hidden="true">*</span>
+                }
+            </label>
+        }
+
+        <div class="@PickerShellClass">
+            <div class="@FieldShellClass">
+                @if (StartIcon is not null || !string.IsNullOrWhiteSpace(PrefixText))
+                {
+                    <div class="@AdornmentClass">
+                        @if (StartIcon is not null)
+                        {
+                            @StartIcon
+                        }
+                        else
+                        {
+                            <span>@PrefixText</span>
+                        }
+                    </div>
+                }
+
+                <input @attributes="AdditionalAttributes"
+                       id="@Id"
+                       name="@Name"
+                       class="@InputClass"
+                       type="text"
+                       inputmode="text"
+                       autocomplete="off"
+                       placeholder="@Placeholder"
+                       disabled="@Disabled"
+                       readonly="@ReadOnly"
+                       required="@Required"
+                       aria-label="@AriaLabel"
+                       aria-invalid="@AriaInvalid"
+                       aria-required="@Required"
+                       aria-readonly="@ReadOnly"
+                       aria-describedby="@DescribedBy"
+                       aria-expanded="@IsOpen"
+                       aria-haspopup="dialog"
+                       value="@DisplayValue"
+                       @oninput="HandleInputAsync"
+                       @onchange="HandleChangeAsync"
+                       @onfocus="HandleFocusAsync" />
+
+                @if (!string.IsNullOrWhiteSpace(SuffixText))
+                {
+                    <div class="@AdornmentClass">
+                        <span>@SuffixText</span>
+                    </div>
+                }
+
+                @if (Clearable && CurrentValue is not null && !Disabled && !ReadOnly)
+                {
+                    <button type="button" class="@IconButtonClass" aria-label="@ClearLabel" @onclick="ClearAsync">
+                        <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("xmark")</span>
+                    </button>
+                }
+
+                <button type="button" class="@IconButtonClass" aria-label="@ToggleLabel" aria-expanded="@IsOpen" disabled="@ToggleDisabled" @onclick="ToggleAsync">
+                    <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("calendar")</span>
+                </button>
+            </div>
+
+            @if (IsOpen)
+            {
+                @RenderCalendar()
+            }
+        </div>
+    }
+    else
+    {
+        @if (!string.IsNullOrWhiteSpace(Label))
+        {
+            <label class="@LabelClass">
+                @Label
+                @if (Required)
+                {
+                    <span class="text-danger" aria-hidden="true">*</span>
+                }
+            </label>
+        }
+
+        @RenderCalendar()
+    }
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText) && !Inline)
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+</div>
+
+@code {
+    private RenderFragment RenderCalendar() => __builder =>
+    {
+        <div class="@CalendarContainerClass" role="dialog" aria-label="@CalendarLabel">
+            @if (View == XFDatePickerView.Month)
+            {
+                @* --- Month view header --- *@
+                <div class="flex items-center justify-between gap-2">
+                    <button type="button" class="@NavButtonClass" aria-label="@PreviousMonthLabel" @onclick="PreviousMonthAsync">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-left")</span>
+                    </button>
+                    <button type="button" class="text-sm font-semibold text-text-primary outline-none hover:text-primary focus-visible:ring-2 focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_24%,transparent)] rounded-md px-2 py-1" @onclick="SwitchToYearView" aria-live="polite">@MonthTitle</button>
+                    <button type="button" class="@NavButtonClass" aria-label="@NextMonthLabel" @onclick="NextMonthAsync">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-right")</span>
+                    </button>
+                </div>
+
+                @* --- Weekday headers --- *@
+                <div class="grid gap-1 pt-3 text-center text-[11px] font-semibold uppercase tracking-wide text-text-muted" style="grid-template-columns: @(ShowWeekNumbers ? "2rem " : "")repeat(7, 1fr)">
+                    @if (ShowWeekNumbers)
+                    {
+                        <div class="flex items-center justify-center" aria-hidden="true"></div>
+                    }
+                    @foreach (var dayName in WeekdayNames)
+                    {
+                        <div>@dayName</div>
+                    }
+                </div>
+
+                @* --- Day grid --- *@
+                <div class="grid gap-1 pt-1" role="grid" aria-label="@MonthTitle" style="grid-template-columns: @(ShowWeekNumbers ? "2rem " : "")repeat(7, 1fr)">
+                    @for (var row = 0; row < 6; row++)
+                    {
+                        @if (ShowWeekNumbers)
+                        {
+                            var weekDate = CalendarDays[row * 7].Date;
+                            var weekNum = GetIsoWeekNumber(weekDate);
+                            <div class="@GetWeekNumberClass()" aria-label="@string.Format(WeekNumberLabelFormat, weekNum)">@weekNum</div>
+                        }
+
+                        @for (var col = 0; col < 7; col++)
+                        {
+                            var day = CalendarDays[row * 7 + col];
+                            <button type="button"
+                                    class="@GetDayClass(day)"
+                                    disabled="@day.IsDisabled"
+                                    aria-label="@GetDayAriaLabel(day)"
+                                    aria-selected="@day.IsSelected"
+                                    @onclick="@(() => SelectDateAsync(day.Date))"
+                                    @onkeydown="@((args) => HandleDayKeyDownAsync(args, day.Date))">
+                                @day.Date.Day
+                            </button>
+                        }
+                    }
+                </div>
+
+                @* --- Footer --- *@
+                @if (FooterTemplate is not null)
+                {
+                    <div class="mt-3 border-t border-border-light pt-3">
+                        @FooterTemplate(FooterContext)
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-3 flex items-center justify-between gap-2 border-t border-border-light pt-3">
+                        <button type="button" class="@FooterButtonClass" @onclick="SelectTodayAsync" disabled="@IsTodayDisabled">@TodayLabel</button>
+                        @if (Clearable)
+                        {
+                            <button type="button" class="@FooterButtonClass" @onclick="ClearAsync" disabled="@(Disabled || ReadOnly || CurrentValue is null)">@ClearLabel</button>
+                        }
+                    </div>
+                }
+            }
+            else if (View == XFDatePickerView.Year)
+            {
+                @* --- Year view header --- *@
+                <div class="flex items-center justify-between gap-2">
+                    <button type="button" class="@NavButtonClass" aria-label="@PreviousYearLabel" @onclick="PreviousYearAsync">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-left")</span>
+                    </button>
+                    <button type="button" class="text-sm font-semibold text-text-primary outline-none hover:text-primary focus-visible:ring-2 focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_24%,transparent)] rounded-md px-2 py-1" @onclick="SwitchToDecadeView">@VisibleMonth.Year</button>
+                    <button type="button" class="@NavButtonClass" aria-label="@NextYearLabel" @onclick="NextYearAsync">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-right")</span>
+                    </button>
+                </div>
+
+                @* --- Month grid --- *@
+                <div class="grid grid-cols-3 gap-2 pt-3">
+                    @foreach (var month in MonthRange)
+                    {
+                        var monthName = Culture.DateTimeFormat.GetAbbreviatedMonthName(month);
+                        <button type="button"
+                                class="@GetMonthCellClass(month)"
+                                @onclick="@(() => SelectMonthAsync(month))">
+                            @monthName
+                        </button>
+                    }
+                </div>
+            }
+            else if (View == XFDatePickerView.Decade)
+            {
+                @* --- Decade view header --- *@
+                <div class="flex items-center justify-between gap-2">
+                    <button type="button" class="@NavButtonClass" aria-label="@PreviousDecadeLabel" @onclick="PreviousDecadeAsync">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-left")</span>
+                    </button>
+                    <div class="text-sm font-semibold text-text-primary" aria-live="polite">@DecadeStart - @(DecadeStart + 9)</div>
+                    <button type="button" class="@NavButtonClass" aria-label="@NextDecadeLabel" @onclick="NextDecadeAsync">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-right")</span>
+                    </button>
+                </div>
+
+                @* --- Year grid --- *@
+                <div class="grid grid-cols-3 gap-2 pt-3">
+                    @foreach (var year in DecadeYears)
+                    {
+                        <button type="button"
+                                class="@GetYearCellClass(year)"
+                                @onclick="@(() => SelectYearAsync(year))">
+                            @year
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    };
+}

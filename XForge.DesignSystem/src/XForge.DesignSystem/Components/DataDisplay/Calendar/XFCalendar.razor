@@ -1,0 +1,121 @@
+@using XForge.DesignSystem.Components.Shared
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <section id="@Id" class="@GetComponentClass()" aria-label="@AriaLabel" @attributes="AdditionalAttributes">
+        <header class="@HeaderClass">
+            <button type="button" class="@NavButtonClass" aria-label="@PreviousLabel" @onclick="GoPreviousAsync">
+                <span class="@NavIconClass">@XFSvgIcons.Markup("chevron-left")</span>
+            </button>
+            <div class="min-w-0 text-center">
+                <div class="@TitleClass">@Title</div>
+                <div class="@SubtitleClass">@Subtitle</div>
+            </div>
+            <button type="button" class="@NavButtonClass" aria-label="@NextLabel" @onclick="GoNextAsync">
+                <span class="@NavIconClass">@XFSvgIcons.Markup("chevron-right")</span>
+            </button>
+        </header>
+
+        @if (View == XFCalendarView.Month)
+        {
+            <div class="@WeekdayGridClass" aria-hidden="true">
+                @foreach (var dayName in WeekdayNames)
+                {
+                    <span>@dayName</span>
+                }
+            </div>
+            <div class="@DayGridClass" role="grid" aria-label="@Title">
+                @foreach (var week in MonthWeeks)
+                {
+                    @foreach (var day in week)
+                    {
+                        var context = CreateContext(day);
+                        <button type="button"
+                                class="@DayButtonClass(context)"
+                                disabled="@context.IsDisabled"
+                                data-xf-calendar-date="@context.Date.ToString("yyyy-MM-dd")"
+                                aria-label="@GetDayAriaLabel(context.Date)"
+                                aria-pressed="@context.IsSelected.ToString().ToLowerInvariant()"
+                                aria-current="@(context.IsToday ? "date" : null)"
+                                @onclick="() => SelectDateAsync(context.Date)"
+                                @onmouseover="() => HandleDayHover(context.Date)"
+                                @onmouseout="HandleDayHoverLeave">
+                            @if (DayTemplate is not null)
+                            {
+                                @DayTemplate(context)
+                            }
+                            else
+                            {
+                                <span class="font-semibold">@context.Date.Day</span>
+                                @if (context.Highlights.Count > 0)
+                                {
+                                    <span class="flex gap-0.5" aria-label="@string.Join(", ", context.Highlights.Select(h => h.Label))">
+                                        @foreach (var h in context.Highlights.Take(3))
+                                        {
+                                            <XFTooltip Text="@h.Label" Position="XFTooltipPosition.Top" Theme="@GetHighlightTheme(h.Color)">
+                                                <span class="@GetHighlightDotClass(h.Color)"></span>
+                                            </XFTooltip>
+                                        }
+                                    </span>
+                                }
+                            }
+                        </button>
+                    }
+                }
+            </div>
+        }
+        else if (View == XFCalendarView.Week)
+        {
+            <div class="@WeekViewClass" role="list" aria-label="@Title">
+                @foreach (var day in WeekDays)
+                {
+                    var context = CreateContext(day);
+                    <button type="button" class="@WeekDayClass(context)" disabled="@context.IsDisabled" data-xf-calendar-date="@context.Date.ToString("yyyy-MM-dd")" aria-label="@GetDayAriaLabel(context.Date)" @onclick="() => SelectDateAsync(context.Date)">
+                        <span class="@WeekDayNameClass(context)">@GetWeekdayName(day)</span>
+                        <span class="@WeekDayNumberClass(context)">@day.Day</span>
+                        @if (context.Highlights.Count > 0)
+                        {
+                            <span class="mt-1 flex gap-0.5">
+                                @foreach (var h in context.Highlights.Take(4))
+                                {
+                                    <XFTooltip Text="@h.Label" Position="XFTooltipPosition.Top" Theme="@GetHighlightTheme(h.Color)">
+                                        <span class="@GetHighlightDotClass(h.Color)"></span>
+                                    </XFTooltip>
+                                }
+                            </span>
+                        }
+                        @if (DayTemplate is not null)
+                        {
+                            @DayTemplate(context)
+                        }
+                    </button>
+                }
+            </div>
+        }
+        else
+        {
+            var context = CreateContext(CurrentDate);
+            <button type="button" class="@SingleDayClass(context)" disabled="@context.IsDisabled" data-xf-calendar-date="@context.Date.ToString("yyyy-MM-dd")" aria-label="@GetDayAriaLabel(context.Date)" @onclick="() => SelectDateAsync(context.Date)">
+                <span class="text-sm font-semibold text-text-muted">@GetWeekdayName(CurrentDate)</span>
+                <span class="text-5xl font-black">@CurrentDate.Day</span>
+                <span class="text-sm font-medium text-text-secondary">@GetMonthYear(CurrentDate)</span>
+                @if (context.Highlights.Count > 0)
+                {
+                    <span class="mt-2 flex gap-1">
+                        @foreach (var h in context.Highlights.Take(5))
+                        {
+                            <XFTooltip Text="@h.Label" Position="XFTooltipPosition.Top" Theme="@GetHighlightTheme(h.Color)">
+                                <span class="@GetHighlightDotClassLg(h.Color)"></span>
+                            </XFTooltip>
+                        }
+                    </span>
+                }
+                @if (DayTemplate is not null)
+                {
+                    @DayTemplate(context)
+                }
+            </button>
+        }
+    </section>
+}

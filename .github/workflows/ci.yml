@@ -60,6 +60,10 @@ jobs:
           dotnet build samples/CleanArchitecture/CleanArchitecture.sln -c Release
           dotnet test samples/CleanArchitecture/CleanArchitecture.sln -c Release --no-build
 
+      - name: Build XForge.DesignSystem (core)
+        run: |
+          dotnet build XForge.DesignSystem/src/XForge.DesignSystem/XForge.DesignSystem.csproj -c Release
+
       - name: Build & test XForge.Mediator.Behaviors
         run: |
           dotnet build XForge.Mediator.Behaviors/XForge.Mediator.Behaviors.sln -c Release

@@ -1,0 +1,1321 @@
+{
+    "experts":  [
+                    {
+                        "id":  "accessibility-a11y-expert",
+                        "name":  "accessibility-a11y-expert",
+                        "title":  "accessibility-a11y-expert",
+                        "description":  "Especialista em acessibilidade, teclado, ARIA, contraste, screen readers e UX inclusiva.",
+                        "path":  ".kilo/skills/accessibility-a11y-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "accounting-expert",
+                        "name":  "accounting-expert",
+                        "title":  "accounting-expert",
+                        "description":  "Especialista contábil em plano de contas, lançamentos, DRE, balanço, conciliação, SPED Contábil e obrigações.",
+                        "path":  ".kilo/skills/accounting-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "ai-console",
+                        "name":  "ai-console",
+                        "title":  "ai-console",
+                        "description":  "Use when configuring AI providers, OpenRouter, Gemini, Ollama, local/server/cloud routing, environment variables, provider safety, or generating Kilo commands/prompts from a user intent.",
+                        "path":  ".kilo/skills/ai-console/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "ai-gateway-architect",
+                        "name":  "ai-gateway-architect",
+                        "title":  "ai-gateway-architect",
+                        "description":  "Especialista em roteamento de IA, providers, fallback, custos, privacidade e RAG.",
+                        "path":  ".kilo/skills/ai-gateway-architect/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "ai-provider-router",
+                        "name":  "ai-provider-router",
+                        "title":  "ai-provider-router",
+                        "description":  "Roteador de providers: local, server, OpenRouter e cloud.",
+                        "path":  ".kilo/agents/ai-provider-router.md",
+                        "type":  "agent",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "api-integration-expert",
+                        "name":  "api-integration-expert",
+                        "title":  "api-integration-expert",
+                        "description":  "Expert in APIs, integrations, contracts, OpenAPI, authentication, idempotency, retries, outbox/inbox and external systems.",
+                        "path":  ".kilo/skills/api-integration-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "architecture-enterprise-expert",
+                        "name":  "architecture-enterprise-expert",
+                        "title":  "architecture-enterprise-expert",
+                        "description":  "Expert in enterprise architecture, Clean Architecture, DDD, modularity, bounded contexts, integration boundaries and long-term maintainability.",
+                        "path":  ".kilo/skills/architecture-enterprise-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "auth-security-expert",
+                        "name":  "auth-security-expert",
+                        "title":  "auth-security-expert",
+                        "description":  "Expert em autenticação, MFA, JWT, cookies, sessão e brute force.",
+                        "path":  ".kilo/skills/auth-security-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "authorization-access-control-expert",
+                        "name":  "authorization-access-control-expert",
+                        "title":  "authorization-access-control-expert",
+                        "description":  "Expert em autorização, RBAC, claims, policies e multi-tenant isolation.",
+                        "path":  ".kilo/skills/authorization-access-control-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "automapper-mapping-expert",
+                        "name":  "automapper-mapping-expert",
+                        "title":  "automapper-mapping-expert",
+                        "description":  "Expert in AutoMapper, mapping profiles, DTO/entity transformations and Mapster migration/removal.",
+                        "path":  ".kilo/skills/automapper-mapping-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Operação e Migração"
+                    },
+                    {
+                        "id":  "automapper-standard",
+                        "name":  "automapper-standard",
+                        "title":  "automapper-standard",
+                        "description":  "Use when implementing object mapping, DTO mapping, entity mapping, mapping profiles, replacing Mapster, or validating that AutoMapper is used as the XForge standard.",
+                        "path":  ".kilo/skills/automapper-standard/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "autonomy-levels",
+                        "name":  "autonomy-levels",
+                        "title":  "autonomy-levels",
+                        "description":  "Select and enforce the correct autonomy level for each task.",
+                        "path":  ".kilo/skills/autonomy-levels/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "backup-restore-expert",
+                        "name":  "backup-restore-expert",
+                        "title":  "backup-restore-expert",
+                        "description":  "Expert in backup, restore, migration safety and knowledge preservation.",
+                        "path":  ".kilo/skills/backup-restore-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Operação e Migração"
+                    },
+                    {
+                        "id":  "benchmarks",
+                        "name":  "benchmarks",
+                        "title":  "benchmarks",
+                        "description":  "Use when comparing prompts, models, providers, workflows, cost, latency, accuracy, or quality for a task.",
+                        "path":  ".kilo/skills/benchmarks/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "blazor-enterprise-expert",
+                        "name":  "blazor-enterprise-expert",
+                        "title":  "blazor-enterprise-expert",
+                        "description":  "Expert in Blazor Server, WebAssembly, WebApp, Hybrid, component architecture, state, lifecycle, rendering and enterprise UI.",
+                        "path":  ".kilo/skills/blazor-enterprise-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "blazor-tailwind",
+                        "name":  "blazor-tailwind",
+                        "title":  "blazor-tailwind",
+                        "description":  "Use when configuring Blazor frontend projects, Tailwind CSS v4, themes, responsive UI, accessibility, design systems or reusable enterprise components.",
+                        "path":  ".kilo/skills/blazor-tailwind/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "brazil-software-market-intelligence-expert",
+                        "name":  "brazil-software-market-intelligence-expert",
+                        "title":  "brazil-software-market-intelligence-expert",
+                        "description":  "Specialist in Brazilian ERP, accounting, payroll, fiscal, inventory, financial, agro, point, e-commerce, payments and investment software market intelligence.",
+                        "path":  ".kilo/skills/brazil-software-market-intelligence-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "business-analysis-expert",
+                        "name":  "business-analysis-expert",
+                        "title":  "business-analysis-expert",
+                        "description":  "Expert in business analysis, requirements, user stories, acceptance criteria, process mapping and product discovery.",
+                        "path":  ".kilo/skills/business-analysis-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "change-impact-analysis",
+                        "name":  "change-impact-analysis",
+                        "title":  "change-impact-analysis",
+                        "description":  "Use before changing entities, modules, APIs, fiscal features, database schemas, integrations, reports, or shared packages.",
+                        "path":  ".kilo/skills/change-impact-analysis/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Backend .NET"
+                    },
+                    {
+                        "id":  "chief-architect-orchestrator",
+                        "name":  "chief-architect-orchestrator",
+                        "title":  "chief-architect-orchestrator",
+                        "description":  "Orquestrador maximo do Engineer. Decide estrategia, priorizacao, delegacao, governanca e qualidade final. Classifica solicitacoes, seleciona agentes canonicos, skills, workflows e gates de validacao.",
+                        "path":  ".kilo/agents/chief-architect-orchestrator.md",
+                        "type":  "agent",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "context-window-strategy",
+                        "name":  "context-window-strategy",
+                        "title":  "context-window-strategy",
+                        "description":  "Use when the task needs context compression, token budgeting, hierarchical retrieval, summarization, or selection of relevant memory.",
+                        "path":  ".kilo/skills/context-window-strategy/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "continuous-security-architect",
+                        "name":  "continuous-security-architect",
+                        "title":  "continuous-security-architect",
+                        "description":  "Expert em segurança contínua, OWASP, ASVS, NIST CSF, LGPD, release gates e governança.",
+                        "path":  ".kilo/skills/continuous-security-architect/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "cost-aware-intelligence",
+                        "name":  "cost-aware-intelligence",
+                        "title":  "cost-aware-intelligence",
+                        "description":  "Optimize model/provider usage, token budgeting, caching, summaries and local-first execution.",
+                        "path":  ".kilo/skills/cost-aware-intelligence/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "cost-management",
+                        "name":  "cost-management",
+                        "title":  "cost-management",
+                        "description":  "Use when selecting cloud/local providers, estimating spend, enforcing budget, tracking token cost, or optimizing model usage.",
+                        "path":  ".kilo/skills/cost-management/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "cross-expert-orchestrator",
+                        "name":  "cross-expert-orchestrator",
+                        "title":  "cross-expert-orchestrator",
+                        "description":  "Especialista em orquestrar múltiplos experts para desenvolvimento premium.",
+                        "path":  ".kilo/skills/cross-expert-orchestrator/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "cross-project-learning",
+                        "name":  "cross-project-learning",
+                        "title":  "cross-project-learning",
+                        "description":  "Reuse validated knowledge across projects without violating semantic boundaries.",
+                        "path":  ".kilo/skills/cross-project-learning/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "csharp-clean-code-expert",
+                        "name":  "csharp-clean-code-expert",
+                        "title":  "csharp-clean-code-expert",
+                        "description":  "Expert in C#, Clean Code, SOLID, SRP, refactoring, maintainability and file-level responsibility.",
+                        "path":  ".kilo/skills/csharp-clean-code-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Backend .NET"
+                    },
+                    {
+                        "id":  "curated-operational-knowledge-expert",
+                        "name":  "curated-operational-knowledge-expert",
+                        "title":  "curated-operational-knowledge-expert",
+                        "description":  "Specialist in creating curated operational knowledge bases with rejection codes, edge cases, UF divergences, incident playbooks and validated real-world scenarios.",
+                        "path":  ".kilo/skills/curated-operational-knowledge-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "customer-success-director",
+                        "name":  "customer-success-director",
+                        "title":  "customer-success-director",
+                        "description":  "Diretor de sucesso do cliente, suporte, treinamento, adoção e usabilidade.",
+                        "path":  ".kilo/agents/customer-success-director.md",
+                        "type":  "agent",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "data-migration-expert",
+                        "name":  "data-migration-expert",
+                        "title":  "data-migration-expert",
+                        "description":  "Especialista em migração de dados, legado, ETL, limpeza, validação e conciliação.",
+                        "path":  ".kilo/skills/data-migration-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Operação e Migração"
+                    },
+                    {
+                        "id":  "data-platform-director",
+                        "name":  "data-platform-director",
+                        "title":  "data-platform-director",
+                        "description":  "Diretor de banco, EF Core, MySQL/Pomelo, performance e integridade de dados.",
+                        "path":  ".kilo/agents/data-platform-director.md",
+                        "type":  "agent",
+                        "category":  "Banco de Dados"
+                    },
+                    {
+                        "id":  "data-protection-lgpd-expert",
+                        "name":  "data-protection-lgpd-expert",
+                        "title":  "data-protection-lgpd-expert",
+                        "description":  "Expert em proteção de dados, LGPD, criptografia e privacidade.",
+                        "path":  ".kilo/skills/data-protection-lgpd-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "database-efcore-expert",
+                        "name":  "database-efcore-expert",
+                        "title":  "database-efcore-expert",
+                        "description":  "Expert in EF Core, relational modeling, migrations, repositories, Unit of Work, query performance and database integrity.",
+                        "path":  ".kilo/skills/database-efcore-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Operação e Migração"
+                    },
+                    {
+                        "id":  "development-feature",
+                        "name":  "development-feature",
+                        "title":  "development-feature",
+                        "description":  "Use when the user asks to create, change, refactor, or complete a feature, CRUD, API, Blazor screen, package, component, or integration.",
+                        "path":  ".kilo/skills/development-feature/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "development-feature-engineer",
+                        "name":  "development-feature-engineer",
+                        "title":  "development-feature-engineer",
+                        "description":  "Desenvolve features respeitando arquitetura e evitando duplicação.",
+                        "path":  ".kilo/agents/development-feature-engineer.md",
+                        "type":  "agent",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "development-intelligence-architect",
+                        "name":  "development-intelligence-architect",
+                        "title":  "development-intelligence-architect",
+                        "description":  "Especialista em transformar conhecimento amplo em desenvolvimento premium.",
+                        "path":  ".kilo/skills/development-intelligence-architect/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "devops-ci-cd-expert",
+                        "name":  "devops-ci-cd-expert",
+                        "title":  "devops-ci-cd-expert",
+                        "description":  "Expert in CI/CD, GitHub Actions, Docker, releases, environments, deployment automation and operational reliability.",
+                        "path":  ".kilo/skills/devops-ci-cd-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "director-architecture",
+                        "name":  "director-architecture",
+                        "title":  "director-architecture",
+                        "description":  "Diretor de arquitetura. Garante coerência estrutural, desacoplamento, decisões arquiteturais e evolução técnica.",
+                        "path":  ".kilo/agents/director-architecture.md",
+                        "type":  "agent",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "director-governance",
+                        "name":  "director-governance",
+                        "title":  "director-governance",
+                        "description":  "Diretor de governança. Aplica políticas, RBAC, auditoria, promoção de conhecimento e aprovação humana.",
+                        "path":  ".kilo/agents/director-governance.md",
+                        "type":  "agent",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "director-quality",
+                        "name":  "director-quality",
+                        "title":  "director-quality",
+                        "description":  "Diretor de qualidade. Garante build limpo, testes, cobertura, documentação e quality score.",
+                        "path":  ".kilo/agents/director-quality.md",
+                        "type":  "agent",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "director-runtime",
+                        "name":  "director-runtime",
+                        "title":  "director-runtime",
+                        "description":  "Diretor de runtime learning. Aprende com logs, incidentes, telemetria, exceptions e produção.",
+                        "path":  ".kilo/agents/director-runtime.md",
+                        "type":  "agent",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "documentation-director",
+                        "name":  "documentation-director",
+                        "title":  "documentation-director",
+                        "description":  "Diretor de documentação enterprise PT-BR/EN-US, manuais, HTML docs e onboarding.",
+                        "path":  ".kilo/agents/documentation-director.md",
+                        "type":  "agent",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "domain-board-orchestrator",
+                        "name":  "domain-board-orchestrator",
+                        "title":  "domain-board-orchestrator",
+                        "description":  "Orquestrador dos experts de domínio ERP.",
+                        "path":  ".kilo/agents/domain-board-orchestrator.md",
+                        "type":  "agent",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "dotnet-architecture-director",
+                        "name":  "dotnet-architecture-director",
+                        "title":  "dotnet-architecture-director",
+                        "description":  "Diretor técnico de .NET enterprise, arquitetura, padrões e pacotes.",
+                        "path":  ".kilo/agents/dotnet-architecture-director.md",
+                        "type":  "agent",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "dotnet-enterprise-expert",
+                        "name":  "dotnet-enterprise-expert",
+                        "title":  "dotnet-enterprise-expert",
+                        "description":  "Expert in .NET enterprise architecture, ASP.NET Core, Minimal APIs, libraries, packages, SDK, dependency injection, configuration and production-ready backends.",
+                        "path":  ".kilo/skills/dotnet-enterprise-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Backend .NET"
+                    },
+                    {
+                        "id":  "dotnet-standards",
+                        "name":  "dotnet-standards",
+                        "title":  "dotnet-standards",
+                        "description":  "Use when creating new .NET projects, defining .NET project standards, applying Clean Architecture, CQRS, Result Pattern, Repository, UnitOfWork, Swagger/OpenAPI .NET 10, tests, build rules, or adopting standards in existing projects.",
+                        "path":  ".kilo/skills/dotnet-standards/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "e2e-visual-testing-expert",
+                        "name":  "e2e-visual-testing-expert",
+                        "title":  "e2e-visual-testing-expert",
+                        "description":  "Expert in real browser E2E testing, Playwright, MCP/browser automation, visual regression and UI/UX diagnostics.",
+                        "path":  ".kilo/skills/e2e-visual-testing-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "ecosystem-consolidation",
+                        "name":  "ecosystem-consolidation",
+                        "title":  "ecosystem-consolidation",
+                        "description":  "Use when analyzing multiple legacy applications, frameworks, component libraries, documents, agents, skills, prompts and packages to consolidate them into one standardized XForge ecosystem.",
+                        "path":  ".kilo/skills/ecosystem-consolidation/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "enterprise-dataset-curator",
+                        "name":  "enterprise-dataset-curator",
+                        "title":  "enterprise-dataset-curator",
+                        "description":  "Especialista em datasets internos: approved patterns, anti-patterns, examples e support cases.",
+                        "path":  ".kilo/skills/enterprise-dataset-curator/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "enterprise-product-director",
+                        "name":  "enterprise-product-director",
+                        "title":  "enterprise-product-director",
+                        "description":  "Diretor de produto para apps pequenos, médios e ERPs de grande porte.",
+                        "path":  ".kilo/agents/enterprise-product-director.md",
+                        "type":  "agent",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "enterprise-training-designer",
+                        "name":  "enterprise-training-designer",
+                        "title":  "enterprise-training-designer",
+                        "description":  "Especialista em trilhas didáticas para CEO, devs, suporte, contadores, operadores, ajudantes e usuários finais.",
+                        "path":  ".kilo/skills/enterprise-training-designer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "erp-large-scale-expert",
+                        "name":  "erp-large-scale-expert",
+                        "title":  "erp-large-scale-expert",
+                        "description":  "Expert in large ERP architecture, multi-module systems, fiscal/accounting/financial/inventory/RH integration and enterprise-grade evolution.",
+                        "path":  ".kilo/skills/erp-large-scale-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "erp-operations-expert",
+                        "name":  "erp-operations-expert",
+                        "title":  "erp-operations-expert",
+                        "description":  "Especialista em operação ERP, jornadas de usuário, rotina operacional, redução de erros e UX prática.",
+                        "path":  ".kilo/skills/erp-operations-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "event-bus",
+                        "name":  "event-bus",
+                        "title":  "event-bus",
+                        "description":  "Use when a workflow must emit, document, consume, or react to Engineer events such as MEMORY_UPDATED, PROJECT_RECOGNIZED, QUALITY_FAILED, or INCIDENT_RECORDED.",
+                        "path":  ".kilo/skills/event-bus/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "expert-evolution-architect",
+                        "name":  "expert-evolution-architect",
+                        "title":  "expert-evolution-architect",
+                        "description":  "Especialista em evolução contínua de experts com treinamento, incidentes, playbooks e produção.",
+                        "path":  ".kilo/skills/expert-evolution-architect/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "feedback-learning-engineer",
+                        "name":  "feedback-learning-engineer",
+                        "title":  "feedback-learning-engineer",
+                        "description":  "Especialista em aprender com aceite, rejeição, bugs, PRs, suporte e produção.",
+                        "path":  ".kilo/skills/feedback-learning-engineer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "financial-domain-expert",
+                        "name":  "financial-domain-expert",
+                        "title":  "financial-domain-expert",
+                        "description":  "Especialista financeiro em contas a pagar/receber, fluxo de caixa, cartões, boletos e conciliação bancária.",
+                        "path":  ".kilo/skills/financial-domain-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "fiscal-tax-expert",
+                        "name":  "fiscal-tax-expert",
+                        "title":  "fiscal-tax-expert",
+                        "description":  "Especialista em fiscal brasileiro, NFe, NFCe, CT-e, MDF-e, SPED, EFD, Reinf, CFOP, CST, CSOSN, NCM e compliance fiscal.",
+                        "path":  ".kilo/skills/fiscal-tax-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "frontend-designsystem-director",
+                        "name":  "frontend-designsystem-director",
+                        "title":  "frontend-designsystem-director",
+                        "description":  "Diretor de Blazor, Tailwind, UX/UI e Design System.",
+                        "path":  ".kilo/agents/frontend-designsystem-director.md",
+                        "type":  "agent",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "frontend-ux-ui-expert",
+                        "name":  "frontend-ux-ui-expert",
+                        "title":  "frontend-ux-ui-expert",
+                        "description":  "Expert in UX/UI, product usability, accessibility, responsive design, information architecture and premium user experience.",
+                        "path":  ".kilo/skills/frontend-ux-ui-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "github-automation",
+                        "name":  "github-automation",
+                        "title":  "github-automation",
+                        "description":  "Use when the task involves GitHub branches, commits, pull requests, issues, labels, releases, changelog, Actions, or repository governance.",
+                        "path":  ".kilo/skills/github-automation/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "github-devops-director",
+                        "name":  "github-devops-director",
+                        "title":  "github-devops-director",
+                        "description":  "Diretor de GitHub, Actions, release, CI/CD, CODEOWNERS, packages e governança.",
+                        "path":  ".kilo/agents/github-devops-director.md",
+                        "type":  "agent",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "github-enterprise-specialist",
+                        "name":  "github-enterprise-specialist",
+                        "title":  "github-enterprise-specialist",
+                        "description":  "Specialist for GitHub enterprise, GitHub Actions, GitFlow, releases, changelogs, CI/CD and governance.",
+                        "path":  ".kilo/skills/github-enterprise-specialist/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "golden-standards-curator",
+                        "name":  "golden-standards-curator",
+                        "title":  "golden-standards-curator",
+                        "description":  "Especialista em criar, validar e aplicar golden standards enterprise.",
+                        "path":  ".kilo/skills/golden-standards-curator/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "human-review",
+                        "name":  "human-review",
+                        "title":  "human-review",
+                        "description":  "Use when human approval is required for critical architecture, fiscal/legal, security, global memory, destructive migration, or enterprise-standard promotion.",
+                        "path":  ".kilo/skills/human-review/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "hybrid-rag-expert",
+                        "name":  "hybrid-rag-expert",
+                        "title":  "hybrid-rag-expert",
+                        "description":  "Especialista em RAG híbrido lexical, semântico, estrutural, graph e runtime.",
+                        "path":  ".kilo/skills/hybrid-rag-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "incident-analysis",
+                        "name":  "incident-analysis",
+                        "title":  "incident-analysis",
+                        "description":  "Use when analyzing production incidents, support incidents, logs, exceptions, slow queries, failures, rejected invoices, or outages.",
+                        "path":  ".kilo/skills/incident-analysis/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "incident-response-security-expert",
+                        "name":  "incident-response-security-expert",
+                        "title":  "incident-response-security-expert",
+                        "description":  "Expert em resposta a incidentes, contenção, logs, comunicação e postmortem.",
+                        "path":  ".kilo/skills/incident-response-security-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "inventory-domain-expert",
+                        "name":  "inventory-domain-expert",
+                        "title":  "inventory-domain-expert",
+                        "description":  "Especialista em estoque, produtos, movimentações, custo, reservas, compras, vendas e integração fiscal/financeira.",
+                        "path":  ".kilo/skills/inventory-domain-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "investment-domain-expert",
+                        "name":  "investment-domain-expert",
+                        "title":  "investment-domain-expert",
+                        "description":  "Especialista em investimentos, dividendos, JCP, FIIs, FIAGRO, carteira, rendimentos e fontes B3/CVM/StatusInvest.",
+                        "path":  ".kilo/skills/investment-domain-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "knowledge-governance-director",
+                        "name":  "knowledge-governance-director",
+                        "title":  "knowledge-governance-director",
+                        "description":  "Especialista em governança, curadoria, revisão e promoção de conhecimento.",
+                        "path":  ".kilo/skills/knowledge-governance-director/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "knowledge-graph-core",
+                        "name":  "knowledge-graph-core",
+                        "title":  "knowledge-graph-core",
+                        "description":  "Build, query, update and validate the living enterprise knowledge graph.",
+                        "path":  ".kilo/skills/knowledge-graph-core/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "knowledge-graph-engineer",
+                        "name":  "knowledge-graph-engineer",
+                        "title":  "knowledge-graph-engineer",
+                        "description":  "Especialista em knowledge graph, entidades, relações, impacto cross-project e busca semântica/híbrida.",
+                        "path":  ".kilo/skills/knowledge-graph-engineer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "knowledge-ingestion",
+                        "name":  "knowledge-ingestion",
+                        "title":  "knowledge-ingestion",
+                        "description":  "Use when the user asks to study documents, PDFs, Word, Excel, web pages, GitHub repositories, official documentation, or knowledge inbox files.",
+                        "path":  ".kilo/skills/knowledge-ingestion/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "knowledge-ingestion-engineer",
+                        "name":  "knowledge-ingestion-engineer",
+                        "title":  "knowledge-ingestion-engineer",
+                        "description":  "Estuda documentos e fontes online com rastreabilidade.",
+                        "path":  ".kilo/agents/knowledge-ingestion-engineer.md",
+                        "type":  "agent",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "knowledge-packs-engineer",
+                        "name":  "knowledge-packs-engineer",
+                        "title":  "knowledge-packs-engineer",
+                        "description":  "Especialista em organizar, estudar e promover knowledge packs por domínio.",
+                        "path":  ".kilo/skills/knowledge-packs-engineer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "labor-law-expert",
+                        "name":  "labor-law-expert",
+                        "title":  "labor-law-expert",
+                        "description":  "Especialista em legislação trabalhista brasileira, RH, folha, ponto, benefícios, admissões, desligamentos e eSocial.",
+                        "path":  ".kilo/skills/labor-law-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "legacy-import",
+                        "name":  "legacy-import",
+                        "title":  "legacy-import",
+                        "description":  "Use when the project already has previous engineers, agents, skills, rules, workflows, documentation, memory, SDD, harness, prompts, or legacy ZIPs.",
+                        "path":  ".kilo/skills/legacy-import/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "legacy-knowledge-curator",
+                        "name":  "legacy-knowledge-curator",
+                        "title":  "legacy-knowledge-curator",
+                        "description":  "Estuda e reaproveita engineers, memórias, docs e agentes antigos.",
+                        "path":  ".kilo/agents/legacy-knowledge-curator.md",
+                        "type":  "agent",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "legal-compliance-director",
+                        "name":  "legal-compliance-director",
+                        "title":  "legal-compliance-director",
+                        "description":  "Diretor de legal, fiscal, trabalhista, LGPD e compliance.",
+                        "path":  ".kilo/agents/legal-compliance-director.md",
+                        "type":  "agent",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "logical-reasoning-expert",
+                        "name":  "logical-reasoning-expert",
+                        "title":  "logical-reasoning-expert",
+                        "description":  "Expert in logic, reasoning, problem decomposition, invariants, edge cases, algorithms and decision quality.",
+                        "path":  ".kilo/skills/logical-reasoning-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "manager-event-bus",
+                        "name":  "manager-event-bus",
+                        "title":  "manager-event-bus",
+                        "description":  "Gerente do barramento de eventos interno.",
+                        "path":  ".kilo/agents/manager-event-bus.md",
+                        "type":  "agent",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "manager-memory",
+                        "name":  "manager-memory",
+                        "title":  "manager-memory",
+                        "description":  "Gerente de memória viva. Coordena recuperação, uso, atualização, conflito, TTL, compressão e promoção.",
+                        "path":  ".kilo/agents/manager-memory.md",
+                        "type":  "agent",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "manager-state-machine",
+                        "name":  "manager-state-machine",
+                        "title":  "manager-state-machine",
+                        "description":  "Gerente da máquina de estados do Engineer.",
+                        "path":  ".kilo/agents/manager-state-machine.md",
+                        "type":  "agent",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "memory-curator-engineer",
+                        "name":  "memory-curator-engineer",
+                        "title":  "memory-curator-engineer",
+                        "description":  "Recupera, usa, atualiza, audita, salva e reindexa memória viva.",
+                        "path":  ".kilo/agents/memory-curator-engineer.md",
+                        "type":  "agent",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "memory-curator-expert",
+                        "name":  "memory-curator-expert",
+                        "title":  "memory-curator-expert",
+                        "description":  "Especialista em curadoria de memória, deduplicação, conflitos, trust score, TTL, decay e promoção de conhecimento.",
+                        "path":  ".kilo/skills/memory-curator-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "memory-intelligence",
+                        "name":  "memory-intelligence",
+                        "title":  "memory-intelligence",
+                        "description":  "Classify, score, compress, promote, expire and retrieve memory intelligently.",
+                        "path":  ".kilo/skills/memory-intelligence/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "memory-management",
+                        "name":  "memory-management",
+                        "title":  "memory-management",
+                        "description":  "Use when the task needs to recover, use, update, save, audit, merge, compress, reindex, or promote Engineer memory.",
+                        "path":  ".kilo/skills/memory-management/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "memory-sharding",
+                        "name":  "memory-sharding",
+                        "title":  "memory-sharding",
+                        "description":  "Use when memory must be partitioned by project, domain, client, module, feature, time, trust, or hot/cold status.",
+                        "path":  ".kilo/skills/memory-sharding/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "migration-engine-architect",
+                        "name":  "migration-engine-architect",
+                        "title":  "migration-engine-architect",
+                        "description":  "Especialista em migração sem perda de conhecimento, memória e customizações.",
+                        "path":  ".kilo/skills/migration-engine-architect/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Operação e Migração"
+                    },
+                    {
+                        "id":  "migration-upgrade-expert",
+                        "name":  "migration-upgrade-expert",
+                        "title":  "migration-upgrade-expert",
+                        "description":  "Especialista em migração segura do Engineer e de sistemas sem perda de memória, histórico, docs e customizações.",
+                        "path":  ".kilo/skills/migration-upgrade-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "multilingual-manual-engineer",
+                        "name":  "multilingual-manual-engineer",
+                        "title":  "multilingual-manual-engineer",
+                        "description":  "Specialist for PT-BR and EN-US manuals, onboarding, architecture docs, APIs, components and operational documentation.",
+                        "path":  ".kilo/skills/multilingual-manual-engineer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "mysql-pomelo-expert",
+                        "name":  "mysql-pomelo-expert",
+                        "title":  "mysql-pomelo-expert",
+                        "description":  "Expert in MySQL with Pomelo.EntityFrameworkCore.MySql, compatibility, provider versions and production constraints.",
+                        "path":  ".kilo/skills/mysql-pomelo-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Banco de Dados"
+                    },
+                    {
+                        "id":  "observability-runtime-expert",
+                        "name":  "observability-runtime-expert",
+                        "title":  "observability-runtime-expert",
+                        "description":  "Especialista em logs, métricas, tracing, telemetria, incidentes e aprendizado em runtime.",
+                        "path":  ".kilo/skills/observability-runtime-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "official-source-ingestion-expert",
+                        "name":  "official-source-ingestion-expert",
+                        "title":  "official-source-ingestion-expert",
+                        "description":  "Specialist in ingesting official documentation, web pages, PDFs, repositories and versioned sources into knowledge packs with trust score and retrocompatibility.",
+                        "path":  ".kilo/skills/official-source-ingestion-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "operational-simplicity",
+                        "name":  "operational-simplicity",
+                        "title":  "operational-simplicity",
+                        "description":  "Expose simple human commands while orchestrating complex internal workflows.",
+                        "path":  ".kilo/skills/operational-simplicity/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "package-governance",
+                        "name":  "package-governance",
+                        "title":  "package-governance",
+                        "description":  "Use when installing, updating, validating or documenting NuGet/npm packages, stable versions, EF Core, Pomelo, QuestPDF, Swashbuckle, Tailwind, OpenTelemetry, Serilog, or package compatibility.",
+                        "path":  ".kilo/skills/package-governance/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "pdf-questpdf-expert",
+                        "name":  "pdf-questpdf-expert",
+                        "title":  "pdf-questpdf-expert",
+                        "description":  "Expert in PDF generation with QuestPDF as XForge standard for reports, invoices, statements and enterprise documents.",
+                        "path":  ".kilo/skills/pdf-questpdf-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "performance-scalability-expert",
+                        "name":  "performance-scalability-expert",
+                        "title":  "performance-scalability-expert",
+                        "description":  "Expert in performance, scalability, profiling, memory, database optimization, caching and large ERP workloads.",
+                        "path":  ".kilo/skills/performance-scalability-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "persistent-memory-architect",
+                        "name":  "persistent-memory-architect",
+                        "title":  "persistent-memory-architect",
+                        "description":  "Especialista em memória persistente, versionamento, imutabilidade, snapshots e preservação de conhecimento.",
+                        "path":  ".kilo/skills/persistent-memory-architect/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "policy-engine",
+                        "name":  "policy-engine",
+                        "title":  "policy-engine",
+                        "description":  "Use when a task must enforce enterprise policies, module policies, fiscal policies, customer policies, security constraints, or approval gates.",
+                        "path":  ".kilo/skills/policy-engine/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "postgresql-efcore-expert",
+                        "name":  "postgresql-efcore-expert",
+                        "title":  "postgresql-efcore-expert",
+                        "description":  "Expert in PostgreSQL with EF Core, Npgsql, migrations, performance, indexes and production-ready database architecture.",
+                        "path":  ".kilo/skills/postgresql-efcore-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Operação e Migração"
+                    },
+                    {
+                        "id":  "product-competitor-intelligence",
+                        "name":  "product-competitor-intelligence",
+                        "title":  "product-competitor-intelligence",
+                        "description":  "Use when analyzing competitors, market references, local documents, web sources, GitHub repositories, screenshots, PDFs, product pages, or both local and web information to design or improve a new product.",
+                        "path":  ".kilo/skills/product-competitor-intelligence/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "product-owner-expert",
+                        "name":  "product-owner-expert",
+                        "title":  "product-owner-expert",
+                        "description":  "Especialista em produto, discovery, MVP, roadmap, priorização, concorrentes e valor de negócio.",
+                        "path":  ".kilo/skills/product-owner-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "production-learning-engineer",
+                        "name":  "production-learning-engineer",
+                        "title":  "production-learning-engineer",
+                        "description":  "Especialista em aprender com produção, logs, métricas e telemetria.",
+                        "path":  ".kilo/skills/production-learning-engineer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "production-reinforcement-expert",
+                        "name":  "production-reinforcement-expert",
+                        "title":  "production-reinforcement-expert",
+                        "description":  "Especialista em fechar o loop desenvolvimento → produção → suporte → aprendizado.",
+                        "path":  ".kilo/skills/production-reinforcement-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "project-recognition",
+                        "name":  "project-recognition",
+                        "title":  "project-recognition",
+                        "description":  "Use when the user asks to analyze, recognize, map, reverse engineer, or learn an existing or new project before making changes.",
+                        "path":  ".kilo/skills/project-recognition/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "project-recognition-engineer",
+                        "name":  "project-recognition-engineer",
+                        "title":  "project-recognition-engineer",
+                        "description":  "Reconhece profundamente qualquer projeto, novo ou legado.",
+                        "path":  ".kilo/agents/project-recognition-engineer.md",
+                        "type":  "agent",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "prompt-engineering-expert",
+                        "name":  "prompt-engineering-expert",
+                        "title":  "prompt-engineering-expert",
+                        "description":  "Especialista em criar, revisar, versionar e melhorar prompts, commands, workflows e instruções de IA com clareza e segurança.",
+                        "path":  ".kilo/skills/prompt-engineering-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "quality-engineering-director",
+                        "name":  "quality-engineering-director",
+                        "title":  "quality-engineering-director",
+                        "description":  "Diretor de QA, testes, cobertura, quality gates e release readiness.",
+                        "path":  ".kilo/agents/quality-engineering-director.md",
+                        "type":  "agent",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "quality-gates",
+                        "name":  "quality-gates",
+                        "title":  "quality-gates",
+                        "description":  "Use before finishing development to validate build, warnings, tests, coverage, documentation, memory, security, and release readiness.",
+                        "path":  ".kilo/skills/quality-gates/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "quality-gates-engineer",
+                        "name":  "quality-gates-engineer",
+                        "title":  "quality-gates-engineer",
+                        "description":  "Garante build limpo, testes, cobertura, documentação e zero warnings.",
+                        "path":  ".kilo/agents/quality-gates-engineer.md",
+                        "type":  "agent",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "rbac",
+                        "name":  "rbac",
+                        "title":  "rbac",
+                        "description":  "Use when validating who can alter global memory, promote knowledge, approve workflows, change governance, run dangerous commands, or execute critical actions.",
+                        "path":  ".kilo/skills/rbac/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "release-manager-expert",
+                        "name":  "release-manager-expert",
+                        "title":  "release-manager-expert",
+                        "description":  "Especialista em releases, changelog, versionamento, SemVer, rollback, migration notes e readiness.",
+                        "path":  ".kilo/skills/release-manager-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Operação e Migração"
+                    },
+                    {
+                        "id":  "runtime-learning-expert",
+                        "name":  "runtime-learning-expert",
+                        "title":  "runtime-learning-expert",
+                        "description":  "Especialista em aprender com logs, métricas, traces, incidentes e telemetria.",
+                        "path":  ".kilo/skills/runtime-learning-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "search-engine",
+                        "name":  "search-engine",
+                        "title":  "search-engine",
+                        "description":  "Use when searching across code, memory, documentation, knowledge graph, semantic index, lexical index, GitHub history, or multiple repositories.",
+                        "path":  ".kilo/skills/search-engine/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "secure-api-expert",
+                        "name":  "secure-api-expert",
+                        "title":  "secure-api-expert",
+                        "description":  "Expert em segurança de APIs, CORS, rate limiting, Swagger protegido e idempotência.",
+                        "path":  ".kilo/skills/secure-api-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "security-lgpd-expert",
+                        "name":  "security-lgpd-expert",
+                        "title":  "security-lgpd-expert",
+                        "description":  "Expert in application security, LGPD, secrets, authorization, privacy, auditability and secure coding.",
+                        "path":  ".kilo/skills/security-lgpd-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "self-healing-engineer",
+                        "name":  "self-healing-engineer",
+                        "title":  "self-healing-engineer",
+                        "description":  "Especialista em autocorreção baseada em incidentes recorrentes.",
+                        "path":  ".kilo/skills/self-healing-engineer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "simulation",
+                        "name":  "simulation",
+                        "title":  "simulation",
+                        "description":  "Use before risky refactors, migrations, package updates, breaking changes, architecture changes, or integration changes.",
+                        "path":  ".kilo/skills/simulation/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Operação e Migração"
+                    },
+                    {
+                        "id":  "small-app-product-expert",
+                        "name":  "small-app-product-expert",
+                        "title":  "small-app-product-expert",
+                        "description":  "Expert in small apps, MVPs, lean architecture, fast delivery, low cost and progressive evolution into enterprise systems.",
+                        "path":  ".kilo/skills/small-app-product-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "snapshots",
+                        "name":  "snapshots",
+                        "title":  "snapshots",
+                        "description":  "Use when creating, validating, restoring, or comparing snapshots of memory, prompts, workflows, project state, or Engineer configuration.",
+                        "path":  ".kilo/skills/snapshots/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "software-development-expert",
+                        "name":  "software-development-expert",
+                        "title":  "software-development-expert",
+                        "description":  "Generalist senior software development expert for implementing complete enterprise applications end-to-end.",
+                        "path":  ".kilo/skills/software-development-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "specialist-benchmark",
+                        "name":  "specialist-benchmark",
+                        "title":  "specialist-benchmark",
+                        "description":  "Especialista em benchmark de prompts, modelos, providers e workflows.",
+                        "path":  ".kilo/agents/specialist-benchmark.md",
+                        "type":  "agent",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "specialist-erp-domain",
+                        "name":  "specialist-erp-domain",
+                        "title":  "specialist-erp-domain",
+                        "description":  "Especialista em domínio ERP brasileiro: financeiro, estoque, fiscal, contábil, NFe, SPED e eSocial.",
+                        "path":  ".kilo/agents/specialist-erp-domain.md",
+                        "type":  "agent",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "specialist-knowledge-curation",
+                        "name":  "specialist-knowledge-curation",
+                        "title":  "specialist-knowledge-curation",
+                        "description":  "Especialista em curadoria, compressão, promoção e descarte de conhecimento.",
+                        "path":  ".kilo/agents/specialist-knowledge-curation.md",
+                        "type":  "agent",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "specialist-policy-engine",
+                        "name":  "specialist-policy-engine",
+                        "title":  "specialist-policy-engine",
+                        "description":  "Especialista em políticas executáveis do Engineer.",
+                        "path":  ".kilo/agents/specialist-policy-engine.md",
+                        "type":  "agent",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "specialist-rbac",
+                        "name":  "specialist-rbac",
+                        "title":  "specialist-rbac",
+                        "description":  "Especialista em papéis e permissões.",
+                        "path":  ".kilo/agents/specialist-rbac.md",
+                        "type":  "agent",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "specialist-reverse-engineering",
+                        "name":  "specialist-reverse-engineering",
+                        "title":  "specialist-reverse-engineering",
+                        "description":  "Especialista em engenharia reversa de sistemas legados, código antigo e documentação dispersa.",
+                        "path":  ".kilo/agents/specialist-reverse-engineering.md",
+                        "type":  "agent",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "specialist-support",
+                        "name":  "specialist-support",
+                        "title":  "specialist-support",
+                        "description":  "Especialista em suporte técnico, incidentes, erros conhecidos e playbooks.",
+                        "path":  ".kilo/agents/specialist-support.md",
+                        "type":  "agent",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "state-machine",
+                        "name":  "state-machine",
+                        "title":  "state-machine",
+                        "description":  "Use when tracking or validating Engineer workflow states such as recognizing, learning, planning, developing, testing, reviewing, memorizing, indexing, failed, or done.",
+                        "path":  ".kilo/skills/state-machine/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Qualidade e Testes"
+                    },
+                    {
+                        "id":  "strategic-roadmap",
+                        "name":  "strategic-roadmap",
+                        "title":  "strategic-roadmap",
+                        "description":  "Guide phased evolution from foundation to intelligence, operations and semi-autonomy.",
+                        "path":  ".kilo/skills/strategic-roadmap/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "supply-chain-security-expert",
+                        "name":  "supply-chain-security-expert",
+                        "title":  "supply-chain-security-expert",
+                        "description":  "Expert em dependências, NuGet/npm, GitHub Actions, secrets scan e licenças.",
+                        "path":  ".kilo/skills/supply-chain-security-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "support-intelligence-engineer",
+                        "name":  "support-intelligence-engineer",
+                        "title":  "support-intelligence-engineer",
+                        "description":  "Gera playbooks, troubleshooting e guias de suporte.",
+                        "path":  ".kilo/agents/support-intelligence-engineer.md",
+                        "type":  "agent",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "support-learning-engineer",
+                        "name":  "support-learning-engineer",
+                        "title":  "support-learning-engineer",
+                        "description":  "Especialista em converter suporte em conhecimento permanente.",
+                        "path":  ".kilo/skills/support-learning-engineer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "support-playbook",
+                        "name":  "support-playbook",
+                        "title":  "support-playbook",
+                        "description":  "Use when the output must help support diagnose, explain, or solve user errors, incidents, bad registrations, operational problems, or known failures.",
+                        "path":  ".kilo/skills/support-playbook/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "tailwind-design-system-expert",
+                        "name":  "tailwind-design-system-expert",
+                        "title":  "tailwind-design-system-expert",
+                        "description":  "Expert in Tailwind CSS v4, design systems, utility-first architecture, tokens, themes, responsive UI and premium frontend polish.",
+                        "path":  ".kilo/skills/tailwind-design-system-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Frontend e UX"
+                    },
+                    {
+                        "id":  "technical-board-orchestrator",
+                        "name":  "technical-board-orchestrator",
+                        "title":  "technical-board-orchestrator",
+                        "description":  "Orquestra experts técnicos: .NET, C#, arquitetura, Blazor, Tailwind, banco, QA, segurança, performance e DevOps.",
+                        "path":  ".kilo/agents/technical-board-orchestrator.md",
+                        "type":  "agent",
+                        "category":  "Segurança"
+                    },
+                    {
+                        "id":  "testing-qa-expert",
+                        "name":  "testing-qa-expert",
+                        "title":  "testing-qa-expert",
+                        "description":  "Expert in testing, coverage, unit/integration/architecture/contract tests, QA strategy and quality gates.",
+                        "path":  ".kilo/skills/testing-qa-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "thinking-modes",
+                        "name":  "thinking-modes",
+                        "title":  "thinking-modes",
+                        "description":  "Use when selecting FAST, CHEAP, SAFE, DEEP, ENTERPRISE, OFFLINE, or RESEARCH execution mode.",
+                        "path":  ".kilo/skills/thinking-modes/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "training-academy-director",
+                        "name":  "training-academy-director",
+                        "title":  "training-academy-director",
+                        "description":  "Diretor da academia de treinamento: do CEO ao ajudante.",
+                        "path":  ".kilo/agents/training-academy-director.md",
+                        "type":  "agent",
+                        "category":  "Geral"
+                    },
+                    {
+                        "id":  "trust-confidence-engineer",
+                        "name":  "trust-confidence-engineer",
+                        "title":  "trust-confidence-engineer",
+                        "description":  "Especialista em trust score, confidence, TTL, decay, fonte e validade.",
+                        "path":  ".kilo/skills/trust-confidence-engineer/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "trust-score",
+                        "name":  "trust-score",
+                        "title":  "trust-score",
+                        "description":  "Use when assigning or validating confidence, source reliability, knowledge trust, decay score, or promotion readiness.",
+                        "path":  ".kilo/skills/trust-score/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Conhecimento e Memória"
+                    },
+                    {
+                        "id":  "user-training-expert",
+                        "name":  "user-training-expert",
+                        "title":  "user-training-expert",
+                        "description":  "Especialista em treinamento do CEO ao ajudante, suporte, operadores, contadores e usuários finais.",
+                        "path":  ".kilo/skills/user-training-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    },
+                    {
+                        "id":  "xforge-mediatr-cqrs-expert",
+                        "name":  "xforge-mediatr-cqrs-expert",
+                        "title":  "xforge-mediatr-cqrs-expert",
+                        "description":  "Expert in CQRS with XForge.MediatR, commands, queries, handlers, pipelines and request/result patterns.",
+                        "path":  ".kilo/skills/xforge-mediatr-cqrs-expert/SKILL.md",
+                        "type":  "skill",
+                        "category":  "Backend .NET"
+                    },
+                    {
+                        "id":  "xforge-mediatr-standard",
+                        "name":  "xforge-mediatr-standard",
+                        "title":  "xforge-mediatr-standard",
+                        "description":  "Use when implementing CQRS, mediator, commands, queries, handlers, pipelines, request/response patterns, or replacing MediatR with XForge.MediatR.",
+                        "path":  ".kilo/skills/xforge-mediatr-standard/SKILL.md",
+                        "type":  "skill",
+                        "category":  "DevOps"
+                    }
+                ],
+    "categories":  [
+
+                   ]
+}

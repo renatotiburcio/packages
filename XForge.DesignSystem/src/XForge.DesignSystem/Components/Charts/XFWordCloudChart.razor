@@ -1,0 +1,13 @@
+@namespace XForge.Components.Charts
+@inherits XForgeComponentBase
+
+<div class="xf-wordcloud" style="height:@(Height)px;width:@(Width)px">
+  @foreach (var w in Words)
+  {
+    <span style="font-size:@(Math.Min(MaxFontSize, w.Weight*MaxFontSize))px;color:@w.Color;position:absolute;left:@(w.X*100)%;top:@(w.Y*100)%">@w.Text</span>
+  }
+</div>
+
+@code {
+  public record WordCloudItem(string Text, double Weight, double X, double Y, string Color = "#333");
+}

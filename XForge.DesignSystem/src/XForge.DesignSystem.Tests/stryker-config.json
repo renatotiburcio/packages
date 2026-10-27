@@ -1,0 +1,43 @@
+{
+  "stryker-config": {
+    "mutation-level": "Standard",
+    "language-version": "latest",
+    "target-framework": "net10.0",
+    "thresholds": {
+      "high": 95,
+      "low": 80,
+      "break": 70
+    },
+    "reporters": [
+      "html",
+      "json",
+      "markdown",
+      "progress"
+    ],
+    "project": "XForge.DesignSystem.csproj",
+    "mutate": [
+      "!**/*.razor",
+      "!**/XFSvgIcons.cs",
+      "!**/obj/**",
+      "!**/bin/**",
+      "!**/XFDataGridColumn.razor.cs",
+      "!**/XFMultiSplitter.razor.cs",
+      "!**/XFRadio.razor.cs"
+    ],
+    "ignore-methods": [
+      "Dispose",
+      "DisposeAsync",
+      "ToString",
+      "GetHashCode",
+      "Equals",
+      "OnInitialized",
+      "OnParametersSet",
+      "OnAfterRender",
+      "PaneClass",
+      "PaneStyle"
+    ],
+    "coverage-analysis": "perTest",
+    "disable-bail": false,
+    "concurrency": 4
+  }
+}

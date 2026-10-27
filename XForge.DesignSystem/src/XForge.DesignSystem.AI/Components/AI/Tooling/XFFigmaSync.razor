@@ -1,0 +1,165 @@
+@inherits XForgeComponentBase
+@implements IDisposable
+
+<div class="@RootClass"
+     role="region"
+     aria-label="@AriaLabel"
+     @attributes="AdditionalAttributes">
+
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between border-b border-border-light px-4 py-2.5">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-text-primary">@Title</span>
+                <span class="rounded-full px-2 py-0.5 text-xs @GetStatusBadgeClass()">
+                    @GetStatusLabel()
+                </span>
+            </div>
+            <div class="flex items-center gap-2">
+                @if (_status == XFFigmaSyncStatus.Disconnected)
+                {
+                    <button class="rounded bg-primary px-3 py-1 text-xs font-medium text-white hover:bg-primary/90 transition-colors"
+                            @onclick="Connect">
+                        Conectar
+                    </button>
+                }
+                else if (_status == XFFigmaSyncStatus.Connected || _status == XFFigmaSyncStatus.Synced)
+                {
+                    <button class="rounded border border-border-light px-3 py-1 text-xs font-medium text-text-secondary hover:bg-surface-100 transition-colors"
+                            @onclick="Disconnect">
+                        Desconectar
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+    @if (_status == XFFigmaSyncStatus.Disconnected)
+    {
+        <div class="p-4">
+            <div class="grid gap-3">
+                <div>
+                    <label class="mb-1 block text-xs font-semibold text-text-secondary">Figma Access Token</label>
+                    <input type="password"
+                           value="@_accessToken"
+                           @onchange="HandleAccessTokenChanged"
+                           class="w-full rounded border border-border-light bg-bg-surface px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted"
+                           placeholder="figd_xxxxxxxxxxxx" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold text-text-secondary">File Key</label>
+                    <input type="text"
+                           value="@_fileKey"
+                           @onchange="HandleFileKeyChanged"
+                           class="w-full rounded border border-border-light bg-bg-surface px-3 py-1.5 text-sm text-text-primary font-mono"
+                           placeholder="AbCdEfGhIjKl" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold text-text-secondary">Direcao</label>
+                    <select class="w-full rounded border border-border-light bg-bg-surface px-3 py-1.5 text-sm text-text-secondary"
+                            @onchange="HandleDirectionChanged">
+                        <option value="Import">Importar do Figma</option>
+                        <option value="Export">Exportar para Figma</option>
+                        <option value="Bidirectional">Bidirecional</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        @if (ShowStatusPanel)
+        {
+            <div class="grid grid-cols-3 gap-3 p-4">
+                <div class="flex flex-col gap-1 rounded-lg border border-border-light bg-bg-surface p-3">
+                    <span class="text-xs text-text-muted">Importados</span>
+                    <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400">@(_lastResult?.TokensImported ?? 0)</span>
+                </div>
+                <div class="flex flex-col gap-1 rounded-lg border border-border-light bg-bg-surface p-3">
+                    <span class="text-xs text-text-muted">Exportados</span>
+                    <span class="text-lg font-bold text-blue-600 dark:text-blue-400">@(_lastResult?.TokensExported ?? 0)</span>
+                </div>
+                <div class="flex flex-col gap-1 rounded-lg border border-border-light bg-bg-surface p-3">
+                    <span class="text-xs text-text-muted">Conflitos</span>
+                    <span class="text-lg font-bold @((_lastResult?.Conflicts ?? 0) > 0 ? "text-red-500" : "text-text-primary")">@(_lastResult?.Conflicts ?? 0)</span>
+                </div>
+            </div>
+        }
+
+        @if (ShowTokenList && _tokens.Any())
+        {
+            <div class="border-t border-border-light px-4 py-3">
+                <div class="mb-2 flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wide text-text-secondary">Tokens Sincronizados</span>
+                    <span class="text-xs text-text-muted">@_tokens.Count tokens</span>
+                </div>
+                <div class="max-h-48 overflow-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-border-light">
+                                <th class="py-1.5 text-left text-xs font-semibold text-text-secondary">Token</th>
+                                <th class="py-1.5 text-left text-xs font-semibold text-text-secondary">Valor</th>
+                                <th class="py-1.5 text-center text-xs font-semibold text-text-secondary">Categoria</th>
+                                <th class="py-1.5 text-center text-xs font-semibold text-text-secondary">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var token in _tokens.Take(MaxVisibleTokens))
+                            {
+                                <tr class="border-b border-border-light/50">
+                                    <td class="py-1.5 font-mono text-xs text-text-primary">@token.Name</td>
+                                    <td class="py-1.5 text-xs text-text-secondary">
+                                        <div class="flex items-center gap-2">
+                                            @if (token.Category == XFDesignTokenCategory.Color)
+                                            {
+                                                <div class="h-3 w-3 rounded border border-border-light" style="background: @token.Value"></div>
+                                            }
+                                            @token.Value
+                                        </div>
+                                    </td>
+                                    <td class="py-1.5 text-center text-xs text-text-muted">@GetCategoryLabel(token.Category)</td>
+                                    <td class="py-1.5 text-center">
+                                        @if (token.HasConflict)
+                                        {
+                                            <span class="text-xs text-red-500" title="Conflito">⚠</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-xs text-emerald-500" title="Sincronizado">✓</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <div class="flex items-center gap-2 border-t border-border-light px-4 py-2.5">
+            <button class="rounded bg-primary px-4 py-1.5 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+                    @onclick="SyncAsync"
+                    disabled="@(_status == XFFigmaSyncStatus.Syncing)">
+                @if (_status == XFFigmaSyncStatus.Syncing)
+                {
+                    <span class="flex items-center gap-1">
+                        <svg class="h-3 w-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        Sincronizando...
+                    </span>
+                }
+                else
+                {
+                    <span>Sincronizar</span>
+                }
+            </button>
+            @if (_lastResult?.SyncedAt is not null)
+            {
+                <span class="text-xs text-text-muted">Ultima sincronizacao: @_lastResult.SyncedAt.ToString("HH:mm:ss")</span>
+            }
+            @if (_status == XFFigmaSyncStatus.Error && !string.IsNullOrEmpty(_lastResult?.ErrorMessage))
+            {
+                <span class="text-xs text-red-500">@_lastResult.ErrorMessage</span>
+            }
+        </div>
+    }
+</div>

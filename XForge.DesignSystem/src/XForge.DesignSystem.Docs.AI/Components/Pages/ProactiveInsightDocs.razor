@@ -1,0 +1,419 @@
+@page "/ai/proactive-insight"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiProactiveInsight" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("6 tipos, 4 prioridades, dismiss/action", "6 types, 4 priorities, dismiss/action")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Sugestoes e alertas gerados antes da solicitacao explicita do usuario.",
+                               "Suggestions and alerts generated before the user's explicit request.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Painel de insights proativos com 6 tipos (Suggestion, Warning, Info, Optimization, Anomaly, Reminder), 4 prioridades, acoes, dismiss e timestamps.",
+                               "Proactive insights panel with 6 types (Suggestion, Warning, Info, Optimization, Anomaly, Reminder), 4 priorities, actions, dismiss and timestamps.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Tipos variados", "1. Varied Types"), L.Text("Insights com diferentes tipos e prioridades.", "Insights with different types and priorities."), ExTypes(), Code1)
+            @Example(L.Text("2. Estado vazio", "2. Empty State"), L.Text("Painel sem insights com mensagem de vazio.", "Panel without insights with empty message."), ExEmpty(), Code2)
+            @Example(L.Text("3. Com acoes", "3. With Actions"), L.Text("Insights com botoes de acao e dismiss.", "Insights with action buttons and dismiss."), ExActions(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => L.Text("AI Commercial", "AI Commercial");
+    private string PageTitleText => L.Text("XFAiProactiveInsight", "XFAiProactiveInsight");
+    private string PageStatusText => L.Text("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    private static IReadOnlyList<XFAiProactiveInsightItem> SampleInsights => new XFAiProactiveInsightItem[]
+    {
+        new()
+        {
+            Id = "1",
+            Type = XFAiInsightType.Warning,
+            Priority = XFAiInsightPriority.High,
+            Title = "NF-e com erro de validacao",
+            Description = "3 notas fiscais pendentes de correcao no lote #4521.",
+            ActionLabel = "Ver detalhes",
+            Confidence = 0.95,
+            GeneratedAt = DateTimeOffset.UtcNow.AddMinutes(-5)
+        },
+        new()
+        {
+            Id = "2",
+            Type = XFAiInsightType.Suggestion,
+            Priority = XFAiInsightPriority.Medium,
+            Title = "Otimizar query de relatorio",
+            Description = "A query do relatorio mensal pode ser 40% mais rapida com indice proposto.",
+            ActionLabel = "Aplicar otimizacao",
+            Confidence = 0.82,
+            GeneratedAt = DateTimeOffset.UtcNow.AddMinutes(-15)
+        },
+        new()
+        {
+            Id = "3",
+            Type = XFAiInsightType.Info,
+            Priority = XFAiInsightPriority.Low,
+            Title = "Backup concluido",
+            Description = "Backup semanal do banco de dados finalizado com sucesso.",
+            Confidence = 1.0,
+            GeneratedAt = DateTimeOffset.UtcNow.AddHours(-2)
+        },
+        new()
+        {
+            Id = "4",
+            Type = XFAiInsightType.Anomaly,
+            Priority = XFAiInsightPriority.Critical,
+            Title = "Pico de consumo de API",
+            Description = "Consumo da API OpenAI aumentou 300% nas ultimas 2 horas.",
+            ActionLabel = "Investigar",
+            Confidence = 0.91,
+            GeneratedAt = DateTimeOffset.UtcNow.AddMinutes(-1)
+        }
+    };
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiProactiveInsight Title="Insights Proativos" Insights="@SampleInsights" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("6 tipos de insight", "6 insight types"), L.Text("Suggestion, Warning, Info, Optimization, Anomaly, Reminder.", "Suggestion, Warning, Info, Optimization, Anomaly, Reminder."), "lightbulb"),
+        new(L.Text("4 prioridades", "4 priorities"), L.Text("Low, Medium, High, Critical.", "Low, Medium, High, Critical."), "signal"),
+        new(L.Text("Dismiss + Action", "Dismiss + Action"), L.Text("Botoes de acao e dismiss para cada insight.", "Action and dismiss buttons for each insight."), "hand-pointer")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiProactiveInsight"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Avatars"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Avatars"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-live=polite.", "role=region, aria-label, aria-live=polite.")),
+        new("Theme support", L.Text("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Insights proativos", "Proactive insights"), L.Text("Sugestoes e alertas gerados antes da solicitacao do usuario.", "Suggestions and alerts generated before user request."), "lightbulb"),
+        new(L.Text("6 tipos", "6 types"), L.Text("Suggestion, Warning, Info, Optimization, Anomaly, Reminder.", "Suggestion, Warning, Info, Optimization, Anomaly, Reminder."), "tags"),
+        new(L.Text("Dismiss + Action", "Dismiss + Action"), L.Text("Cada insight pode ter acao e ser dispensado.", "Each insight can have action and be dismissed."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Alertas proativos", "Proactive alerts"), L.Text("Notificar usuario sobre problemas antes que ele peca.", "Notify user about problems before they ask."), "triangle-exclamation"),
+        new(L.Text("Otimizacao", "Optimization"), L.Text("Sugerir melhorias baseadas em comportamento.", "Suggest improvements based on behavior."), "gauge"),
+        new(L.Text("Lembretes", "Reminders"), L.Text("Lembrete de tarefas pendentes e acoes futuras.", "Reminder of pending tasks and future actions."), "bell")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Usuario precisa procurar ativamente por problemas.", "User needs to actively search for problems."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Insights chegam antes com tipo, prioridade e acao.", "Insights arrive before with type, priority and action."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=region, aria-label, aria-live=polite.", "role=region, aria-label, aria-live=polite."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Dashboard AI", "AI dashboard"), L.Text("Insights proativos no painel principal.", "Proactive insights on main dashboard."), "gauge"),
+        new(L.Text("Sidebar de agentes", "Agent sidebar"), L.Text("Insights do agente na barra lateral.", "Agent insights in sidebar."), "sidebar"),
+        new(L.Text("Monitoramento", "Monitoring"), L.Text("Alertas de anomalias e comportamento suspeito.", "Anomaly and suspicious behavior alerts."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Feedback reativo", "Reactive feedback"), L.Text("Use XFAlert para feedback ja solicitado.", "Use XFAlert for already requested feedback."), "bell"),
+        new(L.Text("Notificacoes push", "Push notifications"), L.Text("Use servico externo para notificacoes push.", "Use external service for push notifications."), "envelope")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Header", L.Text("Titulo do painel e badge de contagem.", "Panel title and count badge."), "heading"),
+        new("Insight Row", L.Text("Icon, titulo, descricao, prioridade e timestamp.", "Icon, title, description, priority and timestamp."), "rows"),
+        new("Action Button", L.Text("Botao de acao contextual do insight.", "Insight contextual action button."), "hand-pointer"),
+        new("Dismiss Button", L.Text("Botao X para dispensar insight.", "X button to dismiss insight."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Proatividade", "Proactivity"), L.Text("Insights chegam antes da solicitacao do usuario.", "Insights arrive before user request."), "bolt"),
+        new(L.Text("Prioridade visual", "Visual priority"), L.Text("Borda e cor indicam nivel de urgencia.", "Border and color indicate urgency level."), "signal"),
+        new(L.Text("Acao contextual", "Contextual action"), L.Text("Cada insight oferece acao relevante.", "Each insight offers relevant action."), "hand-pointer")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExTypes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiProactiveInsight Title="Insights Variados" Insights="@SampleInsights" />
+    </XFStack>;
+
+    private RenderFragment ExEmpty() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiProactiveInsight Title="Insights Proativos" EmptyText="Nenhum insight no momento. Tudo esta funcionando bem!" />
+    </XFStack>;
+
+    private RenderFragment ExActions() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiProactiveInsight Title="Insights com Acoes" Insights="@SampleInsights.Take(2).ToList()" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFAiProactiveInsight Title=""Insights Variados""
+    Insights=""@insightsList"" />";
+    private const string Code2 = @"<XFAiProactiveInsight Title=""Insights Proativos""
+    EmptyText=""Nenhum insight no momento. Tudo esta funcionando bem!"" />";
+    private const string Code3 = @"<XFAiProactiveInsight Title=""Insights com Acoes""
+    Insights=""@insightsList""
+    OnAction=""@HandleAction""
+    OnDismiss=""@HandleDismiss"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Title", "string", "\"Insights Proativos\"", L.Text("Titulo exibido no header.", "Title displayed in header.")),
+        new("ShowHeader", "bool", "true", L.Text("Exibe o header do painel.", "Shows panel header.")),
+        new("EmptyText", "string", "\"Nenhum insight no momento.\"", L.Text("Texto exibido quando nao ha insights.", "Text shown when no insights.")),
+        new("AriaLabel", "string", "\"Insights proativos do agente IA\"", L.Text("Label ARIA para leitores de tela.", "ARIA label for screen readers.")),
+        new("Insights", "IReadOnlyList<XFAiProactiveInsightItem>", "[]", L.Text("Lista externa de insights (two-way binding).", "External insights list (two-way binding).")),
+        new("HeaderContent", "RenderFragment?", "null", L.Text("Conteudo customizado no header.", "Custom content in header.")),
+        new("ChildContent", "RenderFragment?", "null", L.Text("Conteudo customizado abaixo da lista.", "Custom content below the list."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnAction", L.Text("Disparado quando o botao de acao de um insight e clicado.", "Fired when an insight action button is clicked.")),
+        new("OnDismiss", L.Text("Disparado quando um insight e dispensado.", "Fired when an insight is dismissed.")),
+        new("InsightsChanged", L.Text("Disparado quando a lista de insights muda.", "Fired when the insights list changes."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Componente usa role=region para leitores de tela.", "Component uses role=region for screen readers."), "universal-access"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Label descritivo dos insights proativos.", "Descriptive proactive insights label."), "tag"),
+        new(L.Text("aria-live=polite", "aria-live=polite"), L.Text("Notifica mudancas na lista de insights.", "Notifies changes in insights list."), "volume-high"),
+        new(L.Text("Botoes acessiveis", "Accessible buttons"), L.Text("Acao e dismiss com aria-label descritivo.", "Action and dismiss with descriptive aria-label."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega entre botoes de acao e dismiss.", "Navigates between action and dismiss buttons.")),
+        new("Enter / Space", L.Text("Ativa a acao ou dismiss do insight.", "Activates insight action or dismiss."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Largura total", "Full width"), L.Text("Painel ocupa 100% do container.", "Panel occupies 100% of container."), "maximize"),
+        new(L.Text("Overflow scroll", "Overflow scroll"), L.Text("Lista com max-h-96 e overflow-y-auto.", "List with max-h-96 and overflow-y-auto."), "arrows-up-down")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Virtual scroll", "Virtual scroll"), L.Text("Para listas grandes, combine com XFAiVirtualScroller.", "For large lists, combine with XFAiVirtualScroller."), "scroll")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Dashboard ERP", "ERP dashboard"), L.Text("Alertas de NF-e com erro e otimizacoes pendentes.", "NF-e error alerts and pending optimizations."), "gauge"),
+        new(L.Text("Monitoramento AI", "AI monitoring"), L.Text("Anomalias de consumo de API e custos.", "API consumption anomalies and costs."), "eye"),
+        new(L.Text("Compliance", "Compliance"), L.Text("Lembretes de vencimento de obrigatoriedades.", "Obligation expiration reminders."), "shield-halved")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("Insight + Card", "Insight + Card"), L.Text("Painel dentro de XFCard para contexto.", "Panel inside XFCard for context."), "square"),
+        new(L.Text("Insight + Sidebar", "Insight + Sidebar"), L.Text("Insights na barra lateral de agentes.", "Insights in agent sidebar."), "sidebar"),
+        new(L.Text("Insight + Chat", "Insight + Chat"), L.Text("Insights contextualizados no chat AI.", "Contextual insights in AI chat."), "comments")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("Max 5 visiveis", "Max 5 visible"), L.Text("Limite a 5 insights visiveis para nao sobrecarregar.", "Limit to 5 visible insights to avoid overload."), "ban"),
+        new(L.Text("Prioridade clara", "Clear priority"), L.Text("Use borda e cor para indicar High e Critical.", "Use border and color to indicate High and Critical."), "signal"),
+        new(L.Text("Acao relevante", "Relevant action"), L.Text("Cada insight High/Critical deve ter ActionLabel.", "Each High/Critical insight should have ActionLabel."), "hand-pointer"),
+        new(L.Text("Timestamp util", "Useful timestamp"), L.Text("Mostrar ha quanto tempo o insight foi gerado.", "Show how long ago the insight was generated."), "clock")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Muitos insights", "Too many insights"), L.Text("Mais de 10 insights visiveis e overwhelming.", "More than 10 visible insights is overwhelming."), "ban"),
+        new(L.Text("Sem acao", "No action"), L.Text("Insights Critical sem ActionLabel perdem valor.", "Critical insights without ActionLabel lose value."), "xmark"),
+        new(L.Text("Sem dismiss", "No dismiss"), L.Text("Insights sem botao de dismiss irritam usuario.", "Insights without dismiss button frustrate user."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("card", L.Text("rounded-lg border border-border-light bg-bg-surface shadow.", "rounded-lg border border-border-light bg-bg-surface shadow.")),
+        new("insight-row", L.Text("px-4 py-3 border-b border-b-surface-100.", "px-4 py-3 border-b border-b-surface-100.")),
+        new("priority-critical", L.Text("border-l-2 border-l-danger-500.", "border-l-2 border-l-danger-500.")),
+        new("action-btn", L.Text("rounded-md bg-primary px-2.5 py-1 text-xs.", "rounded-md bg-primary px-2.5 py-1 text-xs."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Priority colors", L.Text("Cores de prioridade acompanham tema ativo.", "Priority colors follow active theme."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Testes de render, tipos, prioridades, dismiss, acoes, vazio.", "Render, types, priorities, dismiss, actions, empty tests.")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-live=polite, keyboard.", "role=region, aria-label, aria-live=polite, keyboard."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Max height", L.Text("Lista com max-h-96 pode precisar de scroll para muitos itens.", "List with max-h-96 may need scroll for many items.")),
+        new("Expiracao", L.Text("Insights expirados sao filtrados, mas permanecem na lista interna.", "Expired insights are filtered but remain in internal list.")),
+        new("Virtual scroll", L.Text("Para 100+ insights, combine com XFAiVirtualScroller.", "For 100+ insights, combine with XFAiVirtualScroller."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAlert", L.Text("Alerta reativo para feedback ja solicitado.", "Reactive alert for already requested feedback."), "triangle-exclamation"),
+        new("XFAiSuggestionPanel", L.Text("Painel de sugestoes do agente.", "Agent suggestion panel."), "lightbulb"),
+        new("XFAiDashboardInsight", L.Text("Insights em formato de card no dashboard.", "Insights in card format on dashboard."), "gauge")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Proativo vs Reativo?", "Proactive vs Reactive?"), L.Text("Proactive = antes da solicitacao. Reactive = XFAlert apos solicitacao.", "Proactive = before request. Reactive = XFAlert after request.")),
+        new(L.Text("Como adicionar insight?", "How to add insight?"), L.Text("Use AddInsight() ou atualize a lista Insights.", "Use AddInsight() or update the Insights list.")),
+        new(L.Text("Expiracao automatica?", "Automatic expiry?"), L.Text("Defina ExpiresAt no item. Insights expirados sao filtrados.", "Set ExpiresAt on item. Expired insights are filtered."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", L.Text("Componente criado com 6 tipos e 4 prioridades.", "Component created with 6 types and 4 priorities.")),
+        new("2026-06-12", L.Text("Documentacao completa no padrao AppShellDocs com 26 secoes.", "Complete docs in AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

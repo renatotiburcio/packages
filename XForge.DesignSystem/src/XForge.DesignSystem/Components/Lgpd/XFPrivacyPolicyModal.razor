@@ -1,0 +1,26 @@
+﻿@namespace XForge.Components.Lgpd
+@if (Visible)
+{
+  <div class="xf-lgpd-policy-modal" role="dialog">
+    <div class="xf-lgpd-policy-content">
+      <h2>Politica de Privacidade (LGPD)</h2>
+      <p>Versao @Version - Ultima atualizacao: @LastUpdated.ToString("dd/MM/yyyy")</p>
+      <div>@((MarkupString)Content)</div>
+      <div class="xf-lgpd-actions">
+        <button @onclick="() => Accept(false)">Aceitar apenas essenciais</button>
+        <button @onclick="() => Accept(true)">Aceitar todos</button>
+        <button @onclick="Reject">Recusar</button>
+      </div>
+    </div>
+  </div>
+}
+@code {
+  [Parameter] public bool Visible { get; set; } = true;
+  [Parameter] public string Version { get; set; } = "1.0";
+  [Parameter] public DateTime LastUpdated { get; set; } = DateTime.Today;
+  [Parameter] public string Content { get; set; } = "<p>Conteudo da politica de privacidade...</p>";
+  [Parameter] public EventCallback<bool> OnAccept { get; set; }
+  [Parameter] public EventCallback OnReject { get; set; }
+  void Accept(bool all) => OnAccept.InvokeAsync(all);
+  void Reject() => OnReject.InvokeAsync();
+}

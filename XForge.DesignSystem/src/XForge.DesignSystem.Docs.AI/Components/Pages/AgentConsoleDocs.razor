@@ -1,0 +1,424 @@
+@page "/ai/agent-console"
+@using XForge.DesignSystem.Components.AI.Orchestration
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="@L.Text("Agent Console", "Agent Console")"
+                 Status="@L.Text("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiAgentConsole" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("Orquestracao multi-agente", "Multi-agent orchestration")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Console enterprise para monitorar agentes, hierarquia, logs, custo, tokens e execucao de ferramentas.",
+                                   "Enterprise console to monitor agents, hierarchy, logs, cost, tokens and tool execution.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Console de orquestracao com hierarquia CEO/Diretor/Especialista/Worker, painel de logs com filtros, resumo de custos e execucao de ferramentas em tempo real.",
+                                   "Orchestration console with CEO/Director/Specialist/Worker hierarchy, log panel with filters, cost summary and real-time tool execution.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@L.Text("Parcial", "Partial")" /></XFTableCell><XFTableCell>@L.Text("Renderiza sem filtros interativos.", "Renders without interactive filters.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Basico", "1. Basic"), L.Text("Console com agentes e logs.", "Console with agents and logs."), ExBasic(), Code1)
+            @Example(L.Text("2. Multi-agente", "2. Multi-agent"), L.Text("Hierarquia completa CEO + Especialista.", "Full CEO + Specialist hierarchy."), ExMultiAgent(), Code2)
+            @Example(L.Text("3. Sem Logs", "3. Without Logs"), L.Text("Apenas painel de agentes.", "Agents panel only."), ExNoLogs(), Code3)
+            @Example(L.Text("4. Sem Agents", "4. Without Agents"), L.Text("Apenas painel de logs.", "Logs panel only."), ExNoAgents(), Code4)
+            @Example(L.Text("5. MaxLogs", "5. MaxLogs"), L.Text("Limite de 10 entradas de log.", "Limit of 10 log entries."), ExMaxLogs(), Code5)
+            @Example(L.Text("6. Custom Template", "6. Custom Template"), L.Text("Template customizado para agentes.", "Custom template for agents."), ExCustomTemplate(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Tipos", "Types"), @<div>@NameValueTable(TypeRows, L.Text("Tipo", "Type"), L.Text("Descricao", "Description"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    private static readonly IReadOnlyList<XFAiAgentInfo> DemoAgents = [
+        new() { Name = "Fiscal CEO", Role = XFAiAgentRole.CEO, Status = XFAiAgentStatus.Running, TotalTokens = 8400, CostUsd = 1.42m, ToolCalls = 12, Model = "gpt-4o", QueueDepth = 3, CurrentTask = "Analisando NF-e lote 42" },
+        new() { Name = "Analista SPED", Role = XFAiAgentRole.Specialist, Status = XFAiAgentStatus.Idle, TotalTokens = 2100, CostUsd = 0.31m, ToolCalls = 4, Model = "claude-3.5-sonnet" },
+        new() { Name = "Worker XML", Role = XFAiAgentRole.Worker, Status = XFAiAgentStatus.Running, TotalTokens = 540, CostUsd = 0.08m, ToolCalls = 2, CurrentTask = "Parse XML nota 1001" },
+        new() { Name = "Diretor Fiscal", Role = XFAiAgentRole.Director, Status = XFAiAgentStatus.Error, TotalTokens = 3200, CostUsd = 0.55m, ToolCalls = 8, Model = "gpt-4o" }
+    ];
+
+    private static readonly IReadOnlyList<XFAiAgentLogEntry> DemoLogs = [
+        new() { AgentName = "Fiscal CEO", Level = XFAiAgentLogLevel.Info, Message = "Plano de auditoria gerado para lote 42.", TokensUsed = 120, DurationMs = 340 },
+        new() { AgentName = "Analista SPED", Level = XFAiAgentLogLevel.Tool, Message = "Consulta de divergencias executada.", ToolName = "sped.query", TokensUsed = 85, DurationMs = 210 },
+        new() { AgentName = "Worker XML", Level = XFAiAgentLogLevel.Debug, Message = "XML parse concluido com 15 itens.", TokensUsed = 0, DurationMs = 45 },
+        new() { AgentName = "Diretor Fiscal", Level = XFAiAgentLogLevel.Error, Message = "Timeout ao conectar com SEFAZ.", DurationMs = 5000 },
+        new() { AgentName = "Fiscal CEO", Level = XFAiAgentLogLevel.Memory, Message = "Memoria atualizada: padrao CFOP 5102 detectado.", TokensUsed = 10 }
+    ];
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFAiAgentConsole Agents="DemoAgents" Logs="DemoLogs" Title="@L.Text("Operacao multiagente", "Multi-agent operation")" MaxLogs="10" />;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("Hierarquia de agentes", "Agent hierarchy"), L.Text("CEO, Diretor, Especialista e Worker.", "CEO, Director, Specialist and Worker."), "network-wired"),
+        new(L.Text("Logs e filtros", "Logs and filters"), L.Text("Filtro por nivel, busca e selecao de agente.", "Filter by level, search and agent selection."), "list"),
+        new(L.Text("Custo e tokens", "Cost and tokens"), L.Text("Resumo de custo USD, tokens e tool calls.", "Summary of USD cost, tokens and tool calls."), "coins")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiAgentConsole"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Orchestration"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Orchestration"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, role=button, role=log, aria-label, aria-live=polite.", "role=region, role=button, role=log, aria-label, aria-live=polite.")),
+        new("Theme support", L.Text("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Console multi-agente", "Multi-agent console"), L.Text("Monitoramento em tempo real de agentes IA.", "Real-time AI agent monitoring."), "network-wired"),
+        new(L.Text("Hierarquia visual", "Visual hierarchy"), L.Text("Ordenacao CEO > Diretor > Especialista > Worker.", "Ordering CEO > Director > Specialist > Worker."), "layer-group"),
+        new(L.Text("Logs e filtros", "Logs and filters"), L.Text("Filtro por nivel, busca textual e selecao.", "Filter by level, text search and selection."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Observabilidade", "Observability"), L.Text("Monitorar execucao e status de agentes.", "Monitor agent execution and status."), "eye"),
+        new(L.Text("Custo operacional", "Operational cost"), L.Text("Acompanhar custo USD e tokens consumidos.", "Track USD cost and consumed tokens."), "coins"),
+        new(L.Text("Debug de agentes", "Agent debugging"), L.Text("Logs detalhados com ferramentas e duracao.", "Detailed logs with tools and duration."), "bug")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Sem visibilidade sobre agentes e custos.", "No visibility into agents and costs."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Console completo com logs, custo e hierarquia.", "Complete console with logs, cost and hierarchy."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=button, role=log, aria-live para logs.", "role=button, role=log, aria-live for logs."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Orquestracao multi-agente", "Multi-agent orchestration"), L.Text("Quando varios agentes trabalham juntos.", "When multiple agents work together."), "network-wired"),
+        new(L.Text("Debug de pipelines", "Pipeline debugging"), L.Text("Monitorar execucao e erros em tempo real.", "Monitor execution and errors in real time."), "bug")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Chat simples", "Simple chat"), L.Text("Use XFAiChat para conversacao 1:1.", "Use XFAiChat for 1:1 conversation."), "comments"),
+        new(L.Text("Audit trail completo", "Full audit trail"), L.Text("Use XFAiAuditTimeline para historico.", "Use XFAiAuditTimeline for history."), "clipboard")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Header", L.Text("Titulo, contagem de agentes e status ativo/erro.", "Title, agent count and active/error status."), "heading"),
+        new("Cost Summary", L.Text("Tiles de custo, tokens, tool calls, memorias e fila.", "Cost, tokens, tool calls, memories and queue tiles."), "chart-bar"),
+        new("Agent Panel", L.Text("Lista de agentes com hierarquia, role, status e modelo.", "Agent list with hierarchy, role, status and model."), "network-wired"),
+        new("Log Panel", L.Text("Logs com filtro por nivel, busca e selecao de agente.", "Logs with level filter, search and agent selection."), "list"),
+        new("Filter Bar", L.Text("Select de nivel e input de busca com limpeza de filtro.", "Level select and search input with filter clearing."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Hierarquia natural", "Natural hierarchy"), L.Text("Agentes ordenados por papel na organizacao.", "Agents ordered by organizational role."), "layer-group"),
+        new(L.Text("Filtros rapidos", "Quick filters"), L.Text("Filtro por nivel e busca textual em tempo real.", "Level filter and real-time text search."), "filter"),
+        new(L.Text("Custo visivel", "Visible cost"), L.Text("Tokens e custo USD sempre visiveis.", "Tokens and USD cost always visible."), "coins")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFAiAgentConsole Agents="DemoAgents" Logs="DemoLogs" Title="@L.Text("Console Basico", "Basic Console")" MaxLogs="5" />;
+
+    private RenderFragment ExMultiAgent() => @<XFAiAgentConsole Agents="DemoAgents" Logs="DemoLogs" Title="@L.Text("Operacao Completa", "Full Operation")" ShowCostSummary="true" ShowToolStats="true" />;
+
+    private RenderFragment ExNoLogs() => @<XFAiAgentConsole Agents="DemoAgents" Title="@L.Text("Apenas Agentes", "Agents Only")" ShowLogs="false" />;
+
+    private RenderFragment ExNoAgents() => @<XFAiAgentConsole Logs="DemoLogs" Title="@L.Text("Apenas Logs", "Logs Only")" ShowAgents="false" />;
+
+    private RenderFragment ExMaxLogs() => @<XFAiAgentConsole Agents="DemoAgents" Logs="DemoLogs" Title="@L.Text("Limite de Logs", "Log Limit")" MaxLogs="3" />;
+
+    private RenderFragment ExCustomTemplate() => @<XFAiAgentConsole Agents="DemoAgents" Logs="DemoLogs" Title="@L.Text("Template Custom", "Custom Template")">
+        <AgentTemplate>
+            <div class="rounded-lg border border-purple-200 bg-purple-50 p-3">
+                <div class="text-sm font-bold text-purple-700">@context.Name</div>
+                <div class="text-xs text-purple-500">@context.Role - @context.Status</div>
+            </div>
+        </AgentTemplate>
+    </XFAiAgentConsole>;
+
+    private const string Code1 = @"<XFAiAgentConsole Agents=""@Agents"" Logs=""@Logs""
+                      Title=""Console Basico""
+                      MaxLogs=""5"" />";
+    private const string Code2 = @"<XFAiAgentConsole Agents=""@Agents"" Logs=""@Logs""
+                      Title=""Operacao Completa""
+                      ShowCostSummary=""true""
+                      ShowToolStats=""true"" />";
+    private const string Code3 = @"<XFAiAgentConsole Agents=""@Agents""
+                      Title=""Apenas Agentes""
+                      ShowLogs=""false"" />";
+    private const string Code4 = @"<XFAiAgentConsole Logs=""@Logs""
+                      Title=""Apenas Logs""
+                      ShowAgents=""false"" />";
+    private const string Code5 = @"<XFAiAgentConsole Agents=""@Agents"" Logs=""@Logs""
+                      Title=""Limite de Logs""
+                      MaxLogs=""3"" />";
+    private const string Code6 = @"<XFAiAgentConsole Agents=""@Agents"" Logs=""@Logs""
+                      Title=""Template Custom"">
+    <AgentTemplate>
+        <div class=""rounded-lg border border-purple-200 bg-purple-50 p-3"">
+            <div class=""text-sm font-bold text-purple-700"">@context.Name</div>
+            <div class=""text-xs text-purple-500"">@context.Role - @context.Status</div>
+        </div>
+    </AgentTemplate>
+</XFAiAgentConsole>";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Agents", "IReadOnlyList<XFAiAgentInfo>", "[]", L.Text("Lista de agentes para exibir no console.", "List of agents to display in console.")),
+        new("Logs", "IReadOnlyList<XFAiAgentLogEntry>", "[]", L.Text("Entradas de log para exibir.", "Log entries to display.")),
+        new("Title", "string", "\"Console de Agentes\"", L.Text("Titulo do console.", "Console title.")),
+        new("ShowHeader", "bool", "true", L.Text("Exibe barra de cabecalho.", "Displays header bar.")),
+        new("ShowAgents", "bool", "true", L.Text("Exibe painel de hierarquia de agentes.", "Displays agent hierarchy panel.")),
+        new("ShowLogs", "bool", "true", L.Text("Exibe painel de logs.", "Displays log panel.")),
+        new("ShowCostSummary", "bool", "true", L.Text("Exibe resumo de custo e tokens.", "Displays cost and token summary.")),
+        new("ShowToolStats", "bool", "true", L.Text("Exibe estatisticas de ferramentas.", "Displays tool execution stats.")),
+        new("MaxLogs", "int", "200", L.Text("Maximo de entradas de log exibidas.", "Maximum log entries displayed.")),
+        new("EmptyAgentsText", "string", "\"Nenhum agente registrado.\"", L.Text("Texto de estado vazio para agentes.", "Empty state text for agents.")),
+        new("EmptyLogsText", "string", "\"Nenhum log de agente.\"", L.Text("Texto de estado vazio para logs.", "Empty state text for logs."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnAgentSelected", L.Text("Disparado quando um agente e selecionado. Retorna XFAiAgentInfo.", "Fired when an agent is selected. Returns XFAiAgentInfo.")),
+        new("OnLogEntryClick", L.Text("Disparado quando uma entrada de log e clicada. Retorna XFAiAgentLogEntry.", "Fired when a log entry is clicked. Returns XFAiAgentLogEntry."))
+    ];
+
+    private IReadOnlyList<NameValueRow> TypeRows => [
+        new("XFAiAgentInfo", L.Text("Record com Id, Name, Role, Status, TotalTokens, CostUsd, ToolCalls, Model, QueueDepth.", "Record with Id, Name, Role, Status, TotalTokens, CostUsd, ToolCalls, Model, QueueDepth.")),
+        new("XFAiAgentLogEntry", L.Text("Record com Id, Timestamp, AgentName, Level, Message, ToolName, TokensUsed, DurationMs.", "Record with Id, Timestamp, AgentName, Level, Message, ToolName, TokensUsed, DurationMs.")),
+        new("XFAiAgentRole", L.Text("Enum: CEO, Director, Specialist, Worker.", "Enum: CEO, Director, Specialist, Worker.")),
+        new("XFAiAgentStatus", L.Text("Enum: Idle, Running, Error, Stopped.", "Enum: Idle, Running, Error, Stopped.")),
+        new("XFAiAgentLogLevel", L.Text("Enum: Debug, Info, Warning, Error, Tool, Memory.", "Enum: Debug, Info, Warning, Error, Tool, Memory."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Container principal usa role=region.", "Main container uses role=region."), "universal-access"),
+        new(L.Text("role=button", "role=button"), L.Text("Cards de agente e log sao clicaveis com role=button.", "Agent and log cards are clickable with role=button."), "hand-pointer"),
+        new(L.Text("role=log", "role=log"), L.Text("Painel de logs usa role=log com aria-live=polite.", "Log panel uses role=log with aria-live=polite."), "volume-high"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Labels descritivos para todos os paineis.", "Descriptive labels for all panels."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega entre agentes, filtros e botoes.", "Navigates between agents, filters and buttons.")),
+        new("Enter/Space", L.Text("Seleciona agente ou ativa filtro.", "Selects agent or activates filter.")),
+        new("Escape", L.Text("Limpa selecao de agente.", "Clears agent selection."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Layout adaptativo", "Adaptive layout"), L.Text("Grid responsivo: agentes a esquerda, logs a direita.", "Responsive grid: agents left, logs right."), "arrows-left-right"),
+        new(L.Text("Resumo responsivo", "Responsive summary"), L.Text("Tiles de custo em 2/4/6 colunas.", "Cost tiles in 2/4/6 columns."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("MaxLogs", "MaxLogs"), L.Text("Limita entradas de log para performance.", "Limits log entries for performance."), "gauge")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Auditoria fiscal", "Fiscal audit"), L.Text("Monitorar agentes de analise de NF-e.", "Monitor NF-e analysis agents."), "file-invoice"),
+        new(L.Text("Pipeline ETL", "ETL pipeline"), L.Text("Observar extracao, transformacao e carga.", "Observe extraction, transform and load."), "database"),
+        new(L.Text("Atendimento", "Service"), L.Text("Multi-agente para suporte ao cliente.", "Multi-agent for customer support."), "headset")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("Console + XFCard", "Console + XFCard"), L.Text("Envolver em XFCard para contexto de pagina.", "Wrap in XFCard for page context."), "square"),
+        new(L.Text("Console + Timeline", "Console + Timeline"), L.Text("Combinar com XFAiAuditTimeline.", "Combine with XFAiAuditTimeline."), "clipboard"),
+        new(L.Text("Console + Dashboard", "Console + Dashboard"), L.Text("Integrar com XFDashboardInsight.", "Integrate with XFDashboardInsight."), "chart-line")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("MaxLogs para performance", "MaxLogs for performance"), L.Text("Limitar logs em 200 para evitar lag.", "Limit logs to 200 to prevent lag."), "gauge"),
+        new(L.Text("Filtros ativos", "Active filters"), L.Text("Usar nivel e busca para filtrar rapidamente.", "Use level and search to filter quickly."), "filter"),
+        new(L.Text("Cost summary visivel", "Visible cost summary"), L.Text("Manter ShowCostSummary=true para monitoring.", "Keep ShowCostSummary=true for monitoring."), "coins"),
+        new(L.Text("Templates customizados", "Custom templates"), L.Text("Usar AgentTemplate para layouts especiais.", "Use AgentTemplate for special layouts."), "palette")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Logs ilimitados", "Unlimited logs"), L.Text("Sem MaxLogs, performance degrada com muitos dados.", "Without MaxLogs, performance degrades with lots of data."), "xmark"),
+        new(L.Text("Sem filtro", "No filter"), L.Text("Nao usar filtros em consoles com muitos agentes.", "Not using filters in consoles with many agents."), "ban"),
+        new(L.Text("Custo oculto", "Hidden cost"), L.Text("Desligar ShowCostSummary esconde custos reais.", "Disabling ShowCostSummary hides real costs."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", L.Text("rounded-lg border border-border-light bg-bg-surface shadow.", "rounded-lg border border-border-light bg-bg-surface shadow.")),
+        new("header", L.Text("flex items-center justify-between border-b px-4 py-3.", "flex items-center justify-between border-b px-4 py-3.")),
+        new("summary", L.Text("grid grid-cols-2 gap-2 border-b px-4 py-3 sm:grid-cols-4 lg:grid-cols-6.", "grid grid-cols-2 gap-2 border-b px-4 py-3 sm:grid-cols-4 lg:grid-cols-6.")),
+        new("agent-card", L.Text("flex flex-col gap-1.5 rounded-lg border p-3 transition-colors.", "flex flex-col gap-1.5 rounded-lg border p-3 transition-colors."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", L.Text("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Render, props, agents, logs, filtros, selecao, templates.", "Render, props, agents, logs, filters, selection, templates.")),
+        new("Accessibility", L.Text("role=region, role=button, role=log, aria-label, aria-live.", "role=region, role=button, role=log, aria-label, aria-live."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(L.Text("Sem persistencia", "No persistence"), L.Text("Logs sao apenas renderizacao, nao persiste.", "Logs are display only, not persisted.")),
+        new(L.Text("MaxLogs fixo", "Fixed MaxLogs"), L.Text("MaxLogs e estatico apos renderizacao.", "MaxLogs is static after render."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiAuditTimeline", L.Text("Timeline de auditoria IA.", "AI audit timeline."), "clipboard"),
+        new("XFAiWorkflowDesigner", L.Text("Designer visual de workflows.", "Visual workflow designer."), "diagram-project"),
+        new("XFAiChat", L.Text("Chat conversacional com IA.", "Conversational AI chat."), "comments")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Ordem dos agentes?", "Agent ordering?"), L.Text("CEO > Diretor > Especialista > Worker, depois por nome.", "CEO > Director > Specialist > Worker, then by name.")),
+        new(L.Text("Filtro por nivel funciona como?", "How does level filter work?"), L.Text("Select com Debug, Info, Warning, Error, Tool, Memory.", "Select with Debug, Info, Warning, Error, Tool, Memory.")),
+        new(L.Text("MaxLogs padrao?", "Default MaxLogs?"), L.Text("200 entradas. Ajuste conforme necessidade.", "200 entries. Adjust as needed.")),
+        new(L.Text("Templates customizados?", "Custom templates?"), L.Text("Use AgentTemplate e LogTemplate para layouts proprios.", "Use AgentTemplate and LogTemplate for custom layouts."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", L.Text("Componente criado com console multi-agente basico.", "Component created with basic multi-agent console.")),
+        new("2026-06-12", L.Text("Documentacao completa AppShellDocs com 26 secoes.", "Complete AppShellDocs documentation with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

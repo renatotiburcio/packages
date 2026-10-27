@@ -1,0 +1,178 @@
+@page "/display/qrcode"
+@using Microsoft.AspNetCore.Components.Web
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="QR Code"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFQRCode" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("PIX", "PIX")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Links", "Links")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Download SVG", "Download SVG")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">@T("Gerador de QR Code para pagamentos, links, autenticacao e integracoes enterprise.","QR Code generator for payments, links, authentication and enterprise integrations.")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("XFQRCode gera codigos QR em SVG puro com conteudo centralizado opcional, download e texto descritivo. Ideal para PIX, URLs, 2FA e integracao com sistemas ERP.","XFQRCode generates pure SVG QR codes with optional center content, download and descriptive text. Ideal for PIX, URLs, 2FA and ERP system integration.")</XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts){@Tile(item)}</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+        @Section(T("Metadados","Metadata"),@<div>@NameValueTable(MetadataRows,T("Campo","Field"),T("Valor","Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral","Overview"),@<div>@TileGrid(OverviewItems,3)</div>)
+            @Section(T("Proposito","Purpose"),@<div>@TileGrid(PurposeItems,3)</div>)
+            @Section(T("Problema resolvido","Problem Solved"),@<div>@TileGrid(ProblemItems,3)</div>)
+            @Section(T("Quando usar","When To Use"),@<div>@TileGrid(UseItems,2)</div>)
+            @Section(T("Quando nao usar","When Not To Use"),@<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia","Anatomy"),@<div>@TileGrid(AnatomyItems,2)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual","Visual Hierarchy"),@<div>@TileGrid(VisualHierarchyItems,3)</div>)
+            @Section(T("Principios de design","Design Principles"),@<div>@TileGrid(DesignPrincipleItems,3)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Preview renderizado","Live Preview"),T("QR codes para PIX, URLs e 2FA.","QR codes for PIX, URLs and 2FA."),BasicPreview(),BasicCode)
+            @Example(T("Conteudo centralizado","Center Content"),T("Logo ou icone sobreposto ao QR code.","Logo or icon overlaid on the QR code."),CenterPreview(),CenterCode)
+            @Example(T("Download e configuracao","Download and Config"),T("Download SVG, texto e configuracao visual.","Download SVG, text and visual config."),DownloadPreview(),DownloadCode)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes","Variants"),@<div>@NameValueTable(VariantRows,T("Variante","Variant"),T("Caso de uso","Use case"))</div>)
+            @Section(T("Estados","States"),@<div>@NameValueTable(StateRows,T("Estado","State"),T("Comportamento","Behavior"))</div>)
+            @Section("API",@<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos","Events"),@<div>@NameValueTable(EventRows,T("Evento","Event"),T("Comportamento","Behavior"))</div>)
+            @Section(T("Metodos","Methods"),@<div>@NameValueTable(MethodRows,T("Metodo","Method"),T("Comportamento","Behavior"))</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade","Accessibility"),@<div>@TileGrid(AccessibilityItems,2)</div>)
+            @Section(T("Navegacao enterprise por teclado","Enterprise Keyboard Navigation"),@<div>@TileGrid(EnterpriseKeyboardItems,2)</div>)
+            @Section(T("Suporte de teclado","Keyboard Support"),@<div>@NameValueTable(KeyboardRows,T("Tecla","Key"),T("Comportamento","Behavior"))</div>)
+            @Section(T("Responsividade","Responsiveness"),@<div>@TileGrid(ResponsivenessItems,2)</div>)
+            @Section(T("Performance","Performance"),@<div>@TileGrid(PerformanceItems,2)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise","Enterprise Scenarios"),@<div>@TileGrid(ScenarioItems,3)</div>)
+            @Section(T("Padroes de composicao","Composition Patterns"),@<div>@TileGrid(CompositionItems,3)</div>)
+            @Section(T("Exemplos de integracao","Integration Examples"),@<div>@TileGrid(IntegrationItems,2)</div>)
+            @Section(T("Boas praticas de UX","UX Best Practices"),@<div>@TileGrid(BestPracticeItems,2)</div>)
+            @Section(T("Anti-padroes","Anti-patterns"),@<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens",@<div>@NameValueTable(TokenRows,"Token",T("Proposito","Purpose"))</div>)
+            @Section(T("Temas","Theming"),@<div>@TileGrid(ThemeItems,2)</div>)
+            @Section(T("Seguranca","Security Considerations"),@<div>@TileGrid(SecurityItems,2)</div>)
+            @Section(T("Testes","Testing"),@<div>@NameValueTable(TestingRows,T("Cobertura","Coverage"),T("Evidencia","Evidence"))</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas","Known Limitations"),@<div>@NameValueTable(LimitationRows,T("Limitacao","Limitation"),T("Status","Status"))</div>)
+            @Section(T("Notas de migracao","Migration Notes"),@<div>@TileGrid(MigrationItems,2)</div>)
+            @Section(T("Componentes relacionados","Related Components"),@<div>@TileGrid(RelatedComponentItems,3)</div>)
+            @Section("FAQ",@<div>@NameValueTable(FaqRows,T("Pergunta","Question"),T("Resposta","Answer"))</div>)
+            @Section("Changelog",@<div>@NameValueTable(ChangelogRows,T("Versao","Version"),T("Mudanca","Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="4" Wrap="XFWrap.Wrap">
+            <XFQRCode Value="https://xforge.com.br/pix/00020126..." ShowText="true" ShowDownload="true" />
+            <XFQRCode Value="https://xforge.com.br/docs" CenterContent="@LogoFragment" />
+        </XFStack>
+        <XFGrid Cols="1" Md="3" Gap="3">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">PIX</XFTypography><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Pagamento","Payment")</XFTypography><div class="mt-2"><XFQRCode Value="00020126580014br.gov.bcb.pix0136..." ModuleSize="4" /></div></ChildContent></XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">2FA</XFTypography><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Autenticacao","Authentication")</XFTypography><div class="mt-2"><XFQRCode Value="otpauth://totp/XForge:user@email.com?secret=JBSWY3DPEHPK3PXP&issuer=XForge" ModuleSize="4" /></div></ChildContent></XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("NF-e","Invoice")</XFTypography><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Consulta","Query")</XFTypography><div class="mt-2"><XFQRCode Value="https://www.nfe.fazenda.gov.br/portal/consultanfe.aspx?p=3526..." ModuleSize="4" /></div></ChildContent></XFCard>
+        </XFGrid>
+    </XFStack>;
+    private RenderFragment LogoFragment => @<span class="text-xs font-bold text-primary">XF</span>;
+    private RenderFragment BasicPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" Wrap="XFWrap.Wrap">
+        <XFQRCode Value="https://xforge.com.br" />
+        <XFQRCode Value="PIX: 00020126..." ModuleSize="6" ForegroundColor="#1e40af" />
+    </XFStack>;
+    private RenderFragment CenterPreview() => @<XFQRCode Value="https://xforge.com.br" CenterContent="@LogoFragment" ShowDownload="true" />;
+    private RenderFragment DownloadPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFQRCode Value="https://xforge.com.br/docs" ShowText="true" ShowDownload="true" DownloadFileName="xforge-docs-qr.svg" />
+        <XFQRCode Value="https://xforge.com.br" ForegroundColor="#166534" BackgroundColor="#f0fdf4" ModuleSize="10" />
+    </XFStack>;
+    private string BasicCode => """<XFQRCode Value="https://xforge.com.br" /><XFQRCode Value="PIX: 00020126..." ModuleSize="6" ForegroundColor="#1e40af" />""";
+    private string CenterCode => """<XFQRCode Value="https://xforge.com.br" CenterContent="@LogoFragment" ShowDownload="true" />""";
+    private string DownloadCode => """<XFQRCode Value="https://xforge.com.br/docs" ShowText="true" ShowDownload="true" DownloadFileName="xforge-docs-qr.svg" /><XFQRCode Value="https://xforge.com.br" ForegroundColor="#166534" BackgroundColor="#f0fdf4" ModuleSize="10" />""";
+    private IReadOnlyList<DocTile> QuickFacts => [new(T("SVG puro","Pure SVG"),T("Renderiza como SVG sem canvas ou JS.","Renders as SVG without canvas or JS."),"code"),new(T("Centro customizavel","Customizable center"),T("CenterContent para logo ou icone central.","CenterContent for center logo or icon."),"sparkles"),new(T("Download","Download"),T("Download SVG inline como data URI.","Inline SVG download as data URI."),"download")];
+    private IReadOnlyList<NameValueRow> MetadataRows => [new("Component","XFQRCode"),new("Namespace","XForge.DesignSystem.Components.DataDisplay.QRCode"),new("Package","XForge.DesignSystem"),new("Category","DataDisplay / QRCode"),new("Status",T("Estavel","Stable")),new("Accessibility","role=img, aria-label.")];
+    private IReadOnlyList<DocTile> OverviewItems => [new(T("QR Code","QR Code"),T("Gera codigos QR em SVG com Reed-Solomon e mascara otimizada.","Generates QR codes in SVG with Reed-Solomon and optimized mask."),"qrcode"),new(T("Multi-versao","Multi-version"),T("Suporta versoes 1-4 com capacity crescente.","Supports versions 1-4 with increasing capacity."),"layer-group"),new(T("Customizavel","Customizable"),T("Cores, tamanho de modulo, quiet zone e conteudo central.","Colors, module size, quiet zone and center content."),"sliders")];
+    private IReadOnlyList<DocTile> PurposeItems => [new("PIX",T("Gerar QR codes para pagamentos PIX estaticos e dinamicos.","Generate QR codes for static and dynamic PIX payments."),"money-bill"),new(T("Links","Links"),T("Encurtar e compartilhar URLs como QR code.","Shorten and share URLs as QR code."),"link"),new("2FA",T("Codigos TOTP para autenticacao de dois fatores.","TOTP codes for two-factor authentication."),"shield-check")];
+    private IReadOnlyList<DocTile> ProblemItems => [new(T("Antes","Before"),T("Libs JS pesadas e imagens PNG com baixa resolucao.","Heavy JS libs and low-resolution PNG images."),"xmark"),new(T("Depois","After"),T("SVG puro, multi-versao, download e centro customizavel.","Pure SVG, multi-version, download and custom center."),"check")];
+    private IReadOnlyList<DocTile> UseItems => [new("PIX",T("Pagamentos com QR code no PDV e e-commerce.","Payments with QR code at POS and e-commerce."),"money-bill"),new("2FA",T("Autenticacao por QR code em configuracoes de seguranca.","Authentication via QR code in security settings."),"shield-check"),new(T("Compartilhamento","Sharing"),T("Links para documentos, relatorios e dashboards.","Links to documents, reports and dashboards."),"share-nodes"),new(T("Rastreamento","Tracking"),T("QR codes para rastreamento de ativos e pedidos.","QR codes for asset and order tracking."),"route")];
+    private IReadOnlyList<DocTile> AvoidItems => [new(T("Texto longo","Long text"),T("QR codes tem limite de bytes por versao.","QR codes have byte limits per version."),"text"),new(T("Impressao termica","Thermal print"),T("SVG nao e ideal para impressao termica direta.","SVG is not ideal for direct thermal printing."),"printer")];
+    private IReadOnlyList<DocTile> AnatomyItems => [new("Root",T("Div com role=img e aria-label.","Div with role=img and aria-label."),"code"),new("SVG",T("ViewBox calculado com modules e quiet zone.","ViewBox calculated with modules and quiet zone."),"layer-group"),new("Center",T("Overlay absoluto para logo/icone central.","Absolute overlay for center logo/icon."),"sparkles"),new(T("Download","Download"),T("Link inline com data URI do SVG.","Inline link with SVG data URI."),"download")];
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [new(T("Contraste maximo","Maximum contrast"),T("Padrao: fundo branco e modulos escuros.","Default: white background and dark modules."),"eye"),new(T("Centro sutil","Subtle center"),T("Logo/icone com fundo branco e ring para legibilidade.","Logo/icon with white background and ring for readability."),"circle-check"),new(T("Download discreto","Discreet download"),T("Link abaixo do codigo sem competir visualmente.","Link below the code without visual competition."),"arrow-down")];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [new(T("Escaneabilidade","Scannability"),T("Quiet zone e contraste garantem leitura por apps de camera.","Quiet zone and contrast ensure reading by camera apps."),"circle-check"),new(T("SVG nativo","Native SVG"),T("Sem canvas, sem dependencia de terceiros.","No canvas, no third-party dependency."),"code"),new(T("Mascara otimizada","Optimized mask"),T("Algoritmo de penalidade escolhe a melhor mascara.","Penalty algorithm chooses the best mask."),"gauge")];
+    private IReadOnlyList<NameValueRow> VariantRows => [new("Version 1-4",T("Capacidade crescente de 17 a 33 modules.","Increasing capacity from 17 to 33 modules.")),new("Com centro",T("CenterContent sobrepoe logo/icone no centro.","CenterContent overlays logo/icon in the center.")),new("Com download",T("ShowDownload exibe link para baixar SVG.","ShowDownload displays link to download SVG."))];
+    private IReadOnlyList<NameValueRow> StateRows => [new("Valid",T("Valor compativel; QR code renderizado.","Compatible value; QR code rendered.")),new("Invalid",T("Valor muito longo; exibe EmptyText.","Value too long; displays EmptyText.")),new("Empty",T("Valor nulo ou vazio; exibe EmptyText.","Null or empty; displays EmptyText."))];
+    private IReadOnlyList<ApiRow> ApiRows => [new("Value","string?","null",T("Texto/payload a ser codificado.","Text/payload to be encoded.")),new("ModuleSize","int","8",T("Tamanho de cada modulo em pixels SVG.","Size of each module in SVG pixels.")),new("QuietZone","int","4",T("Modulos de margem ao redor.","Margin modules around the code.")),new("ShowText","bool","false",T("Exibe valor textual abaixo do QR code.","Displays text value below QR code.")),new("ForegroundColor","string","#111827",T("Cor dos modulos escuros.","Dark module color.")),new("BackgroundColor","string","#ffffff",T("Cor de fundo.","Background color.")),new("CenterContent","RenderFragment?","null",T("Conteudo central (logo/icone).","Center content (logo/icon).")),new("ShowDownload","bool","false",T("Exibe link de download SVG.","Displays SVG download link.")),new("DownloadText","string","\"Baixar SVG\"",T("Texto do link de download.","Download link text.")),new("DownloadFileName","string?","null",T("Nome do arquivo SVG.","SVG file name.")),new("EmptyText","string","\"Informe um texto...\"",T("Mensagem quando valor e invalido.","Message when value is invalid.")),new("AriaLabel","string?","null",T("Nome acessivel customizado.","Custom accessible name."))];
+    private IReadOnlyList<NameValueRow> EventRows => [new("Nenhum",T("Componente puramente visual.","Purely visual component."))];
+    private IReadOnlyList<NameValueRow> MethodRows => [new("Encode",T("Gera matriz booleana com Reed-Solomon e mascara otimizada.","Generates boolean matrix with Reed-Solomon and optimized mask.")),new("BuildSvgMarkup",T("Gera string SVG para download inline.","Generates SVG string for inline download."))];
+    private IReadOnlyList<DocTile> AccessibilityItems => [new("role=img",T("Container renderiza role=img.","Container renders role=img."),"universal-access"),new("aria-label",T("Formato: 'Codigo QR {valor}'.","Format: 'QR Code {value}'."),"tag")];
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [new(T("Nao interativo","Non-interactive"),T("QR Code e informativo; download e um link.","QR Code is informational; download is a link."),"keyboard")];
+    private IReadOnlyList<NameValueRow> KeyboardRows => [new("Tab",T("Move foco para o link de download quando presente.","Moves focus to the download link when present.")),new("Enter",T("Ativa download do SVG.","Activates SVG download."))];
+    private IReadOnlyList<DocTile> ResponsivenessItems => [new("max-w-56",T("max-w-56 por padrao para mobile.","max-w-56 by default for mobile."),"mobile-screen"),new(T("SVG fluido","Fluid SVG"),T("width=100% com viewBox mantem proporcionalidade.","width=100% with viewBox maintains proportionality."),"arrows-up-down")];
+    private IReadOnlyList<DocTile> PerformanceItems => [new(T("Sem JS","No JS"),T("Renderizacao pura em Blazor; download usa data URI.","Pure Blazor rendering; download uses data URI."),"bolt"),new(T("Mascara otimizada","Optimized mask"),T("8 mascaras testadas; penalidade minima.","8 masks tested; minimum penalty."),"gauge")];
+    private IReadOnlyList<DocTile> ScenarioItems => [new("ERP",T("QR codes em notas fiscais, pedidos e etiquetas.","QR codes on invoices, orders and labels."),"briefcase"),new("PIX",T("Pagamentos estaticos e dinamicos.","Static and dynamic payments."),"money-bill"),new("2FA",T("Configuracao de autenticacao em apps.","Authentication setup in apps."),"shield-check"),new(T("Marketing","Marketing"),T("QR codes em materiais promocionais.","QR codes on promotional materials."),"megaphone"),new(T("Logistica","Logistics"),T("Rastreamento de carga e volumes.","Cargo and package tracking."),"truck"),new(T("Saude","Healthcare"),T("Identificacao de pacientes e amostras.","Patient and sample identification."),"heart-pulse")];
+    private IReadOnlyList<DocTile> CompositionItems => [new("XFCard",T("QR code em card de pagamento ou documento.","QR code in payment or document card."),"square"),new("XFFigure",T("QR code com caption via XFFigure.","QR code with caption via XFFigure."),"file-image"),new("XFStack",T("Multiplos QR codes alinhados.","Multiple QR codes aligned."),"layer-group")];
+    private IReadOnlyList<DocTile> IntegrationItems => [new("PIX",T("Gere payload PIX e passe como Value.","Generate PIX payload and pass as Value."),"money-bill"),new("2FA",T("Gere otpauth:// URL para configuracao.","Generate otpauth:// URL for setup."),"shield-check"),new("CenterContent",T("Use RenderFragment para logo customizado.","Use RenderFragment for custom logo."),"sparkles")];
+    private IReadOnlyList<DocTile> BestPracticeItems => [new(T("Quiet zone","Quiet zone"),T("Nao remova; scanners de camera precisam dela.","Do not remove; camera scanners need it."),"shield-check"),new(T("Contraste","Contrast"),T("Use cores escuras em fundo claro.","Use dark colors on light background."),"eye"),new(T("Centro pequeno","Small center"),T("Logo central nao deve cobrir mais de 30% da area.","Center logo should not cover more than 30% of area."),"circle-check")];
+    private IReadOnlyList<DocTile> AntiPatternItems => [new(T("Logo grande","Large logo"),T("Logo muito grande impede leitura do QR code.","Too large logo prevents QR code reading."),"xmark"),new(T("Cor clara","Light color"),T("Modulos claros em fundo escuro reduzem contraste.","Light modules on dark background reduce contrast."),"eye-slash")];
+    private IReadOnlyList<NameValueRow> TokenRows => [new("colors",T("Foreground #111827 e Background #ffffff.","Foreground #111827 and Background #ffffff.")),new("spacing",T("ModuleSize=8, QuietZone=4.","ModuleSize=8, QuietZone=4."))];
+    private IReadOnlyList<DocTile> ThemeItems => [new("data-theme",T("Cores configuraveis para tema claro/escuro.","Configurable colors for light/dark theme."),"moon"),new("Branding",T("ForegroundColor segue marca ativa.","ForegroundColor follows active brand."),"swatchbook")];
+    private IReadOnlyList<DocTile> SecurityItems => [new(T("Validacao","Validation"),T("Valor validado antes de encode.","Value validated before encoding."),"lock"),new(T("Sem injecao","No injection"),T("Renderizado como SVG, nao HTML.","Rendered as SVG, not HTML."),"shield-check")];
+    private IReadOnlyList<NameValueRow> TestingRows => [new("Unit",T("Testes cobrem encode, mascaras, download e fallback.","Tests cover encode, masks, download and fallback.")),new("Snapshot",T("Snapshots para QR codes com e sem centro.","Snapshots for QR codes with and without center."))];
+    private IReadOnlyList<NameValueRow> LimitationRows => [new(T("Capacidade","Capacity"),T("Versao 4 suporta ate ~50 bytes (numeric ~78).","Version 4 supports up to ~50 bytes (numeric ~78).")),new(T("Impressao termica","Thermal printing"),T("SVG nao e ideal para impressao termica direta.","SVG is not ideal for direct thermal printing."))];
+    private IReadOnlyList<DocTile> MigrationItems => [new(T("Lib JS","JS library"),T("Troque qrcode.js ou similar por XFQRCode.","Replace qrcode.js or similar with XFQRCode."),"arrow-rotate-left")];
+    private IReadOnlyList<DocTile> RelatedComponentItems => [new("XFBarcode",T("Use para codigos de barras 1D como EAN-13 e Code128.","Use for 1D barcodes like EAN-13 and Code128."),"barcode"),new("XFImage",T("Use para imagens rasterizadas de QR codes.","Use for rasterized QR code images."),"image")];
+    private IReadOnlyList<NameValueRow> FaqRows => [new(T("Qual a capacidade maxima?","What is the maximum capacity?"),T("Versao 4: ~50 bytes UTF-8. Para textos longos, use URL encurtada.","Version 4: ~50 bytes UTF-8. For long texts, use a shortened URL.")),new(T("O centro afeta leitura?","Does the center affect reading?"),T("Sim se for muito grande; mantenha abaixo de 30% da area.","Yes if too large; keep below 30% of area.")),new(T("Download funciona offline?","Does download work offline?"),T("Sim; e um data URI inline, nao requer rede.","Yes; it is an inline data URI, does not require network."))];
+    private IReadOnlyList<NameValueRow> ChangelogRows => [new("2026-05-26",T("Pagina premium com API real, exemplos PIX/2FA, center content, download e tokens.","Premium page with real API, PIX/2FA examples, center content, download and tokens."))];
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Codigo copiavel","Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items){@Tile(item)}</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items){<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>}</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows){<XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow>}</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro","Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao","Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows){<XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow>}</XFTableBody></XFTable>;
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,0 +1,176 @@
+@page "/display/image"
+@using Microsoft.AspNetCore.Components.Web
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="Image"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFImage" />
+                    <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Responsiva", "Responsive")" />
+                    <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Fallback", "Fallback")" />
+                    <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("XFFigure", "XFFigure")" />
+                </XFStack>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">@T("Imagem responsiva com fallback, proporcao, ajuste e composicao editorial com XFFigure.","Responsive image with fallback, aspect ratio, fit and editorial composition with XFFigure.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("XFImage exibe imagens com fallback automatico, aspect ratio, object-fit, radius, lazy loading e interacao por clique. XFFigure adiciona caption, credito e moldura.","XFImage displays images with automatic fallback, aspect ratio, object-fit, radius, lazy loading and click interaction. XFFigure adds caption, credit and frame.")</XFTypography>
+                </XFStack>
+                <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                    <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts){@Tile(item)}</XFStack>
+                </div>
+            </XFStack></ChildContent>
+        </XFCard>
+        @Section(T("Metadados","Metadata"),@<div>@NameValueTable(MetadataRows,T("Campo","Field"),T("Valor","Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral","Overview"),@<div>@TileGrid(OverviewItems,3)</div>)
+            @Section(T("Proposito","Purpose"),@<div>@TileGrid(PurposeItems,3)</div>)
+            @Section(T("Problema resolvido","Problem Solved"),@<div>@TileGrid(ProblemItems,3)</div>)
+            @Section(T("Quando usar","When To Use"),@<div>@TileGrid(UseItems,2)</div>)
+            @Section(T("Quando nao usar","When Not To Use"),@<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia","Anatomy"),@<div>@TileGrid(AnatomyItems,2)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual","Visual Hierarchy"),@<div>@TileGrid(VisualHierarchyItems,3)</div>)
+            @Section(T("Principios de design","Design Principles"),@<div>@TileGrid(DesignPrincipleItems,3)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Preview renderizado","Live Preview"),T("Imagens com fallback e aspect ratio em contexto ERP.","Images with fallback and aspect ratio in ERP context."),BasicPreview(),BasicCode)
+            @Example(T("Aspect Ratios","Aspect Ratios"),T("Auto, Square, Video, Wide e Portrait.","Auto, Square, Video, Wide and Portrait."),RatioPreview(),RatioCode)
+            @Example(T("XFFigure com caption","XFFigure with Caption"),T("Composicao editorial com imagem, caption e credito.","Editorial composition with image, caption and credit."),FigurePreview(),FigureCode)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes","Variants"),@<div>@NameValueTable(VariantRows,T("Variante","Variant"),T("Caso de uso","Use case"))</div>)
+            @Section(T("Estados","States"),@<div>@NameValueTable(StateRows,T("Estado","State"),T("Comportamento","Behavior"))</div>)
+            @Section("API",@<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos","Events"),@<div>@NameValueTable(EventRows,T("Evento","Event"),T("Comportamento","Behavior"))</div>)
+            @Section(T("Metodos","Methods"),@<div>@NameValueTable(MethodRows,T("Metodo","Method"),T("Comportamento","Behavior"))</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade","Accessibility"),@<div>@TileGrid(AccessibilityItems,2)</div>)
+            @Section(T("Navegacao enterprise por teclado","Enterprise Keyboard Navigation"),@<div>@TileGrid(EnterpriseKeyboardItems,2)</div>)
+            @Section(T("Suporte de teclado","Keyboard Support"),@<div>@NameValueTable(KeyboardRows,T("Tecla","Key"),T("Comportamento","Behavior"))</div>)
+            @Section(T("Responsividade","Responsiveness"),@<div>@TileGrid(ResponsivenessItems,2)</div>)
+            @Section(T("Performance","Performance"),@<div>@TileGrid(PerformanceItems,2)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise","Enterprise Scenarios"),@<div>@TileGrid(ScenarioItems,3)</div>)
+            @Section(T("Padroes de composicao","Composition Patterns"),@<div>@TileGrid(CompositionItems,3)</div>)
+            @Section(T("Exemplos de integracao","Integration Examples"),@<div>@TileGrid(IntegrationItems,2)</div>)
+            @Section(T("Boas praticas de UX","UX Best Practices"),@<div>@TileGrid(BestPracticeItems,2)</div>)
+            @Section(T("Anti-padroes","Anti-patterns"),@<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens",@<div>@NameValueTable(TokenRows,"Token",T("Proposito","Purpose"))</div>)
+            @Section(T("Temas","Theming"),@<div>@TileGrid(ThemeItems,2)</div>)
+            @Section(T("Seguranca","Security Considerations"),@<div>@TileGrid(SecurityItems,2)</div>)
+            @Section(T("Testes","Testing"),@<div>@NameValueTable(TestingRows,T("Cobertura","Coverage"),T("Evidencia","Evidence"))</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas","Known Limitations"),@<div>@NameValueTable(LimitationRows,T("Limitacao","Limitation"),T("Status","Status"))</div>)
+            @Section(T("Notas de migracao","Migration Notes"),@<div>@TileGrid(MigrationItems,2)</div>)
+            @Section(T("Componentes relacionados","Related Components"),@<div>@TileGrid(RelatedComponentItems,3)</div>)
+            @Section("FAQ",@<div>@NameValueTable(FaqRows,T("Pergunta","Question"),T("Resposta","Answer"))</div>)
+            @Section("Changelog",@<div>@NameValueTable(ChangelogRows,T("Versao","Version"),T("Mudanca","Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFGrid Cols="2" Md="3" Gap="3">
+            <XFImage Src="https://picsum.photos/seed/erp1/400/300" Alt="@T("Dashboard ERP","ERP Dashboard")" AspectRatio="XFImageAspectRatio.Square" />
+            <XFImage Src="https://picsum.photos/seed/erp2/400/300" Alt="@T("Relatorio","Report")" AspectRatio="XFImageAspectRatio.Video" Fit="XFImageFit.Contain" />
+            <XFImage Src="" FallbackSrc="" Alt="@T("Imagem indisponivel","Image unavailable")" FallbackText="@T("Sem imagem","No image")" AspectRatio="XFImageAspectRatio.Square" />
+        </XFGrid>
+    </XFStack>;
+    private RenderFragment BasicPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFImage Src="https://picsum.photos/seed/office/800/400" Alt="@T("Escritorio","Office")" Fluid="true" Radius="XFImageRadius.Lg" />
+        <XFImage Src="" Alt="@T("Fallback","Fallback")" FallbackText="@T("Imagem indisponivel","Image unavailable")" />
+    </XFStack>;
+    private RenderFragment RatioPreview() => @<XFGrid Cols="2" Md="4" Gap="3">
+        <XFImage Src="https://picsum.photos/seed/sq/200/200" Alt="Square" AspectRatio="XFImageAspectRatio.Square" Radius="XFImageRadius.Md" />
+        <XFImage Src="https://picsum.photos/seed/vid/400/225" Alt="Video" AspectRatio="XFImageAspectRatio.Video" Radius="XFImageRadius.Md" />
+        <XFImage Src="https://picsum.photos/seed/wide/400/171" Alt="Wide" AspectRatio="XFImageAspectRatio.Wide" Radius="XFImageRadius.Md" />
+        <XFImage Src="https://picsum.photos/seed/port/300/400" Alt="Portrait" AspectRatio="XFImageAspectRatio.Portrait" Radius="XFImageRadius.Md" />
+    </XFGrid>;
+    private RenderFragment FigurePreview() => @<XFFigure Caption="@T("Dashboard financeiro - Q1 2026","Financial dashboard - Q1 2026")" Credit="@T("XForge ERP","XForge ERP")" Framed="true">
+        <XFImage Src="https://picsum.photos/seed/dash/800/400" Alt="@T("Dashboard","Dashboard")" />
+    </XFFigure>;
+    private string BasicCode => """<XFImage Src="image.jpg" Alt="Descricao" Fluid="true" Radius="XFImageRadius.Lg" /><XFImage Src="" Alt="Fallback" FallbackText="Imagem indisponivel" />""";
+    private string RatioCode => """<XFImage Src="img.jpg" AspectRatio="XFImageAspectRatio.Square" /><XFImage Src="img.jpg" AspectRatio="XFImageAspectRatio.Video" /><XFImage Src="img.jpg" AspectRatio="XFImageAspectRatio.Wide" /><XFImage Src="img.jpg" AspectRatio="XFImageAspectRatio.Portrait" />""";
+    private string FigureCode => """<XFFigure Caption="Dashboard financeiro" Credit="XForge ERP" Framed="true"><XFImage Src="dashboard.jpg" Alt="Dashboard" /></XFFigure>""";
+    private IReadOnlyList<DocTile> QuickFacts => [new(T("Fallback automatico","Automatic fallback"),T("Src > FallbackSrc > FallbackContent > FallbackText.","Src > FallbackSrc > FallbackContent > FallbackText."),"arrow-rotate-left"),new(T("Aspect ratio","Aspect ratio"),T("Auto, Square, Video, Wide, Portrait.","Auto, Square, Video, Wide, Portrait."),"crop"),new(T("Interativa","Interactive"),T("OnClick com Enter/Space para imagens clicaveis.","OnClick with Enter/Space for clickable images."),"hand-pointer")];
+    private IReadOnlyList<NameValueRow> MetadataRows => [new("Component","XFImage / XFFigure"),new("Namespace","XForge.DesignSystem.Components.DataDisplay.Image"),new("Package","XForge.DesignSystem"),new("Category","DataDisplay / Image"),new("Status",T("Estavel","Stable")),new("Accessibility",T("alt, role=presentation (decorative), tabindex (interactive).","alt, role=presentation (decorative), tabindex (interactive)."))];
+    private IReadOnlyList<DocTile> OverviewItems => [new(T("Imagem responsiva","Responsive image"),T("Fluid ou inline com aspect ratio, fit e radius.","Fluid or inline with aspect ratio, fit and radius."),"image"),new(T("Fallback","Fallback"),T("Cadeia: Src > FallbackSrc > FallbackContent > FallbackText.","Chain: Src > FallbackSrc > FallbackContent > FallbackText."),"arrow-rotate-left"),new(T("XFFigure","XFFigure"),T("Composicao com caption, credito e moldura.","Composition with caption, credit and frame."),"file-image")];
+    private IReadOnlyList<DocTile> PurposeItems => [new(T("Fotos de produto","Product photos"),T("Exibir imagens de produtos com fallback e proporcao.","Display product images with fallback and ratio."),"image"),new(T("Dashboards","Dashboards"),T("Graficos, capturas e ilustracoes em cards.","Charts, captures and illustrations in cards."),"chart-line-up"),new(T("Documentacao","Documentation"),T("Screenshots com caption e credito.","Screenshots with caption and credit."),"book")];
+    private IReadOnlyList<DocTile> ProblemItems => [new(T("Antes","Before"),T("Imagens sem alt, sem fallback e sem proporcao.","Images without alt, fallback and ratio."),"xmark"),new(T("Depois","After"),T("Contrato unico com fallback, ratio, fit e acessibilidade.","One contract with fallback, ratio, fit and accessibility."),"check")];
+    private IReadOnlyList<DocTile> UseItems => [new("ERP",T("Fotos de produto, capturas de tela e logos.","Product photos, screenshots and logos."),"briefcase"),new(T("Documentacao","Documentation"),T("Screenshots com caption via XFFigure.","Screenshots with caption via XFFigure."),"book"),new(T("Avatar","Avatar"),T("Use XFAvatar para fotos de usuario pequenas.","Use XFAvatar for small user photos."),"user")];
+    private IReadOnlyList<DocTile> AvoidItems => [new(T("Avatar","Avatar"),T("Use XFAvatar para identidade de usuario.","Use XFAvatar for user identity."),"user"),new(T("Icone","Icon"),T("Use XFSvgIcons para icones vetoriais.","Use XFSvgIcons for vector icons."),"sparkles")];
+    private IReadOnlyList<DocTile> AnatomyItems => [new("Root",T("Div com overflow-hidden, ring e aspect ratio.","Div with overflow-hidden, ring and aspect ratio."),"code"),new("img",T("Tag img com object-fit, lazy e alt.","img tag with object-fit, lazy and alt."),"image"),new("Fallback",T("Div com FallbackContent ou FallbackText.","Div with FallbackContent or FallbackText."),"arrow-rotate-left"),new("Figure",T("Figure com figcaption para caption e credito.","Figure with figcaption for caption and credit."),"file-image")];
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [new(T("Fluid","Fluid"),T("Imagem ocupa largura total do container.","Image fills container width."),"arrows-maximize"),new(T("Radius","Radius"),T("None, Sm, Md, Lg, Xl, Full.","None, Sm, Md, Lg, Xl, Full."),"circle"),new(T("Frame","Frame"),T("XFFigure Framed=true adiciona bg e ring.","XFFigure Framed=true adds bg and ring."),"square")];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [new(T("Fallback sempre","Always fallback"),T("Nunca deixe um espaco vazio; sempre exiba alternativa.","Never leave empty space; always display alternative."),"circle-check"),new(T("Alt descritivo","Descriptive alt"),T("Alt deve descrever o conteudo, nao o arquivo.","Alt should describe content, not the file."),"tag"),new(T("Lazy por padrao","Lazy by default"),T("Lazy=true para performance em paginas longas.","Lazy=true for performance on long pages."),"gauge")];
+    private IReadOnlyList<NameValueRow> VariantRows => [new("Auto",T("Sem aspect ratio fixo.","No fixed aspect ratio.")),new("Square",T("aspect-square para avatares e thumbnails.","aspect-square for avatars and thumbnails.")),new("Video",T("aspect-video para capturas de video.","aspect-video for video captures.")),new("Wide",T("aspect-[21/9] para banners.","aspect-[21/9] for banners.")),new("Portrait",T("aspect-[3/4] para retratos.","aspect-[3/4] for portraits."))];
+    private IReadOnlyList<NameValueRow> StateRows => [new("Default",T("Imagem carregada com sucesso.","Image loaded successfully.")),new("Loading",T("Lazy loading ativo ate viewport.","Lazy loading active until viewport.")),new("Error",T("Fallback automatico: Src > FallbackSrc > Content > Text.","Automatic fallback: Src > FallbackSrc > Content > Text.")),new("Interactive",T("OnClick + tabindex=0 + role=button quando OnClick tem delegate.","OnClick + tabindex=0 + role=button when OnClick has delegate."))];
+    private IReadOnlyList<ApiRow> ApiRows => [new("Src","string?","null",T("URL da imagem primaria.","Primary image URL.")),new("FallbackSrc","string?","null",T("URL da imagem alternativa.","Alternative image URL.")),new("Alt","string?","null",T("Texto alternativo.","Alternative text.")),new("Decorative","bool","false",T("Remove alt e role para uso decorativo.","Removes alt and role for decorative use.")),new("Fluid","bool","true",T("Imagem ocupa largura total.","Image fills full width.")),new("Lazy","bool","true",T("loading=lazy nativo.","Native loading=lazy.")),new("AspectRatio","XFImageAspectRatio","Auto",T("Auto, Square, Video, Wide, Portrait.","Auto, Square, Video, Wide, Portrait.")),new("Fit","XFImageFit","Cover",T("Cover, Contain, Fill, None.","Cover, Contain, Fill, None.")),new("Radius","XFImageRadius","Lg",T("None, Sm, Md, Lg, Xl, Full.","None, Sm, Md, Lg, Xl, Full.")),new("FallbackContent","RenderFragment?","null",T("Conteudo customizado para fallback.","Custom fallback content.")),new("OnClick","EventCallback<MouseEventArgs>","default",T("Torna imagem interativa.","Makes image interactive."))];
+    private IReadOnlyList<NameValueRow> EventRows => [new("OnClick",T("Disparado ao clicar ou pressionar Enter/Space quando OnClick tem delegate.","Fired on click or Enter/Space press when OnClick has delegate.")),new("onerror",T("Fallback automatico quando imagem falha.","Automatic fallback when image fails."))];
+    private IReadOnlyList<NameValueRow> MethodRows => [new("HandleClickAsync",T("Chama OnClick se interativo.","Calls OnClick if interactive.")),new("HandleKeyDownAsync",T("Enter/Space dispara OnClick para acessibilidade.","Enter/Space fires OnClick for accessibility."))];
+    private IReadOnlyList<DocTile> AccessibilityItems => [new("alt",T("Alt obrigatorio; Decorative=true remove para decorativas.","Alt required; Decorative=true removes for decorative."),"universal-access"),new("role=presentation",T("Imagem decorativa nao e anunciada.","Decorative image is not announced."),"eye-slash"),new("role=button",T("Imagem interativa recebe role=button.","Interactive image receives role=button."),"hand-pointer"),new("tabindex",T("Imagem interativa recebe tabindex=0.","Interactive image receives tabindex=0."),"keyboard")];
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [new("Tab",T("Move foco para imagem interativa.","Moves focus to interactive image."),"keyboard"),new("Enter/Space",T("Ativa OnClick em imagem interativa.","Activates OnClick on interactive image."),"circle-check")];
+    private IReadOnlyList<NameValueRow> KeyboardRows => [new("Tab",T("Foco em imagem interativa (tabindex=0).","Focus on interactive image (tabindex=0).")),new("Enter/Space",T("Ativa OnClick.","Activates OnClick."))];
+    private IReadOnlyList<DocTile> ResponsivenessItems => [new("Fluid",T("w-full por padrao para container responsivo.","w-full by default for responsive container."),"mobile-screen"),new("AspectRatio",T("Mantem proporcao em qualquer largura.","Maintains ratio at any width."),"crop")];
+    private IReadOnlyList<DocTile> PerformanceItems => [new(T("Lazy loading","Lazy loading"),T("loading=lazy por padrao; carrega apenas no viewport.","loading=lazy by default; loads only in viewport."),"bolt"),new(T("Fallback leve","Light fallback"),T("Texto ou conteudo simples quando imagem falha.","Simple text or content when image fails."),"gauge"),new(T("Decoding async","Async decoding"),T("decoding=async por padrao.","decoding=async by default."),"code")];
+    private IReadOnlyList<DocTile> ScenarioItems => [new("ERP",T("Fotos de produto em catalogo e pedidos.","Product photos in catalog and orders."),"briefcase"),new("CRM",T("Fotos de contato e perfil.","Contact and profile photos."),"address-card"),new(T("Documentacao","Documentation"),T("Screenshots com caption e credito.","Screenshots with caption and credit."),"book"),new(T("Marketing","Marketing"),T("Banners e hero images responsivos.","Responsive banners and hero images."),"megaphone"),new(T("Relatorios","Reports"),T("Graficos e ilustracoes em relatorios.","Charts and illustrations in reports."),"chart-line-up"),new(T("E-commerce","E-commerce"),T("Galeria de produtos com zoom.","Product gallery with zoom."),"cart-shopping")];
+    private IReadOnlyList<DocTile> CompositionItems => [new("XFFigure",T("Envolve imagem com caption e credito.","Wraps image with caption and credit."),"file-image"),new("XFCard",T("Imagem dentro de card de produto ou documento.","Image inside product or document card."),"square"),new("XFGrid",T("Galeria de imagens com grid responsivo.","Image gallery with responsive grid."),"table-cells")];
+    private IReadOnlyList<DocTile> IntegrationItems => [new("XFFigure",T("Use para caption, credito e moldura.","Use for caption, credit and frame."),"file-image"),new("OnClick",T("Torna imagem clicavel para lightbox ou navegacao.","Makes image clickable for lightbox or navigation."),"hand-pointer")];
+    private IReadOnlyList<DocTile> BestPracticeItems => [new(T("Alt sempre","Always alt"),T("Nunca omita alt; use Decorative para decorativas.","Never omit alt; use Decorative for decorative."),"circle-check"),new(T("Fallback","Fallback"),T("Configure FallbackSrc ou FallbackContent para imagens criticas.","Configure FallbackSrc or FallbackContent for critical images."),"arrow-rotate-left"),new(T("Lazy","Lazy"),T("Mantenha Lazy=true para performance.","Keep Lazy=true for performance."),"gauge")];
+    private IReadOnlyList<DocTile> AntiPatternItems => [new(T("Alt vazio","Empty alt"),T("Use Decorative=true em vez de alt vazio para decorativas.","Use Decorative=true instead of empty alt for decorative."),"xmark"),new(T("Imagem como link","Image as link"),T("Use OnClick ou envolva em <a>; nao dependa de cursor:pointer visual.","Use OnClick or wrap in <a>; do not rely on visual cursor:pointer."),"eye-slash")];
+    private IReadOnlyList<NameValueRow> TokenRows => [new("colors",T("bg-surface-50, text-text-muted para placeholder.","bg-surface-50, text-text-muted for placeholder.")),new("radius",T("rounded-md/rounded-lg/rounded-xl/rounded-2xl/rounded-full.","rounded-md/rounded-lg/rounded-xl/rounded-2xl/rounded-full.")),new("borders",T("ring-1 ring-border-light.","ring-1 ring-border-light.")),new("motion",T("transition duration-200 hover:brightness-[0.98].","transition duration-200 hover:brightness-[0.98]."))];
+    private IReadOnlyList<DocTile> ThemeItems => [new("data-theme",T("Cores de placeholder e ring seguem tema.","Placeholder and ring colors follow theme."),"moon"),new("Branding",T("Primary ring no focus-visible.","Primary ring on focus-visible."),"swatchbook")];
+    private IReadOnlyList<DocTile> SecurityItems => [new(T("Sem HTML inseguro","No unsafe HTML"),T("Src e validado pelo navegador; fallback e Blazor-safe.","Src validated by browser; fallback is Blazor-safe."),"shield-check")];
+    private IReadOnlyList<NameValueRow> TestingRows => [new("Unit",T("Testes cobrem Src, FallbackSrc, AspectRatio, Fit, Radius, Decorative, OnClick, keyboard.","Tests cover Src, FallbackSrc, AspectRatio, Fit, Radius, Decorative, OnClick, keyboard.")),new("Snapshot",T("Snapshots para variantes de ratio e fit.","Snapshots for ratio and fit variants."))];
+    private IReadOnlyList<NameValueRow> LimitationRows => [new(T("Srcset","Srcset"),T("Nao suporta srcset/picture; use Fluid e CSS.","Does not support srcset/picture; use Fluid and CSS.")),new(T("Zoom","Zoom"),T("Nao possui zoom nativo; use overlay customizado.","No native zoom; use custom overlay."))];
+    private IReadOnlyList<DocTile> MigrationItems => [new(T("HTML img","HTML img"),T("Troque img por XFImage com Alt, Fluid e FallbackSrc.","Replace img with XFImage using Alt, Fluid and FallbackSrc."),"arrow-rotate-left"),new(T("Figure manual","Manual figure"),T("Use XFFigure com Caption e Credit.","Use XFFigure with Caption and Credit."),"file-image")];
+    private IReadOnlyList<DocTile> RelatedComponentItems => [new("XFAvatar",T("Use para fotos de usuario pequenas.","Use for small user photos."),"user"),new("XFBarcode",T("Use para codigos de barras.","Use for barcodes."),"barcode"),new("XFQRCode",T("Use para QR codes.","Use for QR codes."),"qrcode"),new("XFCard",T("Envolve imagem com detalhes.","Wraps image with details."),"square")];
+    private IReadOnlyList<NameValueRow> FaqRows => [new(T("FallbackSrc ou FallbackContent?","FallbackSrc or FallbackContent?"),T("FallbackSrc para outra imagem; FallbackContent para markup customizado.","FallbackSrc for another image; FallbackContent for custom markup.")),new(T("Decorative remove alt?","Does Decorative remove alt?"),T("Sim; alt fica vazio e role=presentation.","Yes; alt becomes empty and role=presentation.")),new(T("OnClick funciona com teclado?","Does OnClick work with keyboard?"),T("Sim; Enter e Space ativam OnClick.","Yes; Enter and Space activate OnClick."))];
+    private IReadOnlyList<NameValueRow> ChangelogRows => [new("2026-05-26",T("Pagina premium com API real, XFFigure, aspect ratios, fallback, exemplos ERP e tokens.","Premium page with real API, XFFigure, aspect ratios, fallback, ERP examples and tokens."))];
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Codigo copiavel","Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items){@Tile(item)}</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items){<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>}</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows){<XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow>}</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro","Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao","Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows){<XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow>}</XFTableBody></XFTable>;
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,0 +1,85 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label id="@(Id)-label" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@RatingShellClass"
+         role="radiogroup"
+         aria-label="@AriaLabel"
+         aria-labelledby="@(!string.IsNullOrWhiteSpace(Label) ? $"{Id}-label" : null)"
+         aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+         aria-invalid="@AriaInvalid"
+         aria-required="@AriaRequired"
+         aria-readonly="@AriaReadonly"
+         aria-describedby="@DescribedBy"
+         tabindex="@(IsInteractive ? "0" : null)"
+         @onkeydown="HandleKeyDownAsync"
+         @onmouseleave="() => SetHoverAsync(null)">
+        @if (AllowReset && !ReadOnly)
+        {
+            <button type="button"
+                    name="@Name"
+                    class="@ClearButtonClass"
+                    disabled="@Disabled"
+                    tabindex="-1"
+                    aria-label="@ClearLabel"
+                    @onclick="ClearAsync">
+                <span aria-hidden="true">×</span>
+            </button>
+        }
+
+        @for (var index = 1; index <= SafeMax; index++)
+        {
+            var itemIndex = index;
+            var context = CreateContext(itemIndex);
+
+            <button type="button"
+                    name="@Name"
+                    class="@GetItemClass(itemIndex)"
+                    disabled="@Disabled"
+                    tabindex="-1"
+                    role="radio"
+                    aria-label="@GetDefaultItemLabel(itemIndex)"
+                    aria-checked="@GetAriaChecked(itemIndex)"
+                    @onclick="() => SetValueAsync(itemIndex)"
+                    @onmouseenter="() => SetHoverAsync(itemIndex)"
+                    @onfocus="() => SetHoverAsync(itemIndex)">
+                @if (Icon is not null)
+                {
+                    @Icon(context)
+                }
+                else
+                {
+                    <span aria-hidden="true">@(context.Filled ? "★" : context.Half ? "★" : "☆")</span>
+                }
+            </button>
+        }
+
+        @if (ShowValue)
+        {
+            <span class="@ValueClass" aria-hidden="true">@FormatValue()</span>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+</div>

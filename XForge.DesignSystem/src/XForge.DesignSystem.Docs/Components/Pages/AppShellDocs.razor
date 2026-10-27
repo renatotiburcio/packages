@@ -1,0 +1,1234 @@
+﻿@page "/layout/app-shell"
+@using XForge.DesignSystem.Components.Layout.Shell
+@using XForge.DesignSystem.Components.Navigation.Breadcrumb
+@using XForge.DesignSystem.Components.Button
+@using XForge.DesignSystem.Components.DataDisplay.Avatar
+@using XForge.DesignSystem.Services
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAppShell" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Shell raiz", "Root shell")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Multi-app", "Multi-app")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("data-theme", "data-theme")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Shell raiz para aplicativos enterprise com rail, sidebar, app bar e conteúdo compartilhado.",
+                               "Root shell for enterprise apps with shared rail, sidebar, app bar and content.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFAppShell é o container estrutural que organiza rail de apps, sidebar contextual, barra superior, área principal e rodapé em um contrato visual único. Ele aplica data-theme e data-brand para suporte completo a light/dark e marcas corporativas.",
+                               "XFAppShell is the structural container that organizes app rail, contextual sidebar, top bar, main area and footer into one visual contract. It applies data-theme and data-brand for full light/dark and corporate brand support.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts)
+                            {
+                                @Tile(item)
+                            }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições. Layout puramente CSS.", "Works without restrictions. Purely CSS layout.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições em ambos os estágios.", "Works without restrictions in both stages.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base com layout flex. Interações dos slots requerem modo interativo.", "Renders base HTML with flex layout. Slot interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependências JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente não utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderização.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Exemplos de uso por modo", "Usage Examples by Mode")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("InteractiveServer", "InteractiveServer")</XFTypography>
+                    <XFCode Text="@InteractiveServerExample" Language="razor" Title="InteractiveServer" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                    <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("InteractiveWebAssembly", "InteractiveWebAssembly")</XFTypography>
+                    <XFCode Text="@InteractiveWasmExample" Language="razor" Title="InteractiveWebAssembly" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                    <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("InteractiveAuto", "InteractiveAuto")</XFTypography>
+                    <XFCode Text="@InteractiveAutoExample" Language="razor" Title="InteractiveAuto" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 9 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Shell completo", "1. Complete shell"),
+                T("XFAppShell com todos os slots: Rail, Sidebar, AppBar, ChildContent e Footer usando os componentes reais.",
+                 "XFAppShell with all slots: Rail, Sidebar, AppBar, ChildContent and Footer using real components."),
+                ExCompleteShell(), CodeCompleteShell)
+
+            @Example(T("2. Shell com tema escuro", "2. Dark theme shell"),
+                T("XFAppShell com Theme dark e Brand corporativo via data-brand.",
+                 "XFAppShell with dark Theme and corporate Brand via data-brand."),
+                ExDarkShell(), CodeDarkShell)
+
+            @Example(T("3. Shell minimalista", "3. Minimal shell"),
+                T("Apenas AppBar e ChildContent, sem Rail nem Sidebar.",
+                 "Only AppBar and ChildContent, no Rail or Sidebar."),
+                ExMinimalShell(), CodeMinimalShell)
+
+            @Example(T("4. Shell com footer", "4. Shell with footer"),
+                T("XFFooter com status, usuario, ambiente e versão do ERP.",
+                 "XFFooter with status, user, environment and ERP version."),
+                ExFooterShell(), CodeFooterShell)
+
+            @Example(T("5. Multi-app rail", "5. Multi-app rail"),
+                T("XFRail com multiplos apps: Financeiro, Fiscal, Estoque e RH usando RailNavItem.",
+                 "XFRail with multiple apps: Finance, Tax, Inventory and HR using RailNavItem."),
+                ExMultiApp(), CodeMultiApp)
+
+            @Example(T("6. Sidebar com menu", "6. Sidebar with menu"),
+                T("XFSidebar com navegação estruturada por módulos e XFSidebarVariant.Persistent.",
+                 "XFSidebar with structured module navigation and XFSidebarVariant.Persistent."),
+                ExSidebarMenu(), CodeSidebarMenu)
+
+            @Example(T("7. Brand corporativo", "7. Corporate brand"),
+                T("Brand acme ativa paleta corporativa via data-brand no XFAppShell.",
+                 "Brand acme activates corporate palette via data-brand on XFAppShell."),
+                ExBrand(), CodeBrand)
+
+            @Example(T("8. Sidebar Drawer", "8. Sidebar Drawer"),
+                T("XFSidebarVariant.Drawer com ContainerRelative=true para sidebar contida no container pai (position: relative). Botao abrir/fechar via ícone no AppBar e botao fechar no cabeçalho do drawer.",
+                 "XFSidebarVariant.Drawer with ContainerRelative=true for sidebar contained in parent container (position: relative). Open/close button via icon in AppBar and close button in drawer header."),
+                ExDrawer(), CodeDrawer)
+
+            @Example(T("9. Cenário enterprise completo", "9. Full enterprise scenário"),
+                T("ERP completo: XFRail com 4 apps, XFSidebar com menu, XFAppBar com breadcrumbs e XFFooter com status.",
+                 "Full ERP: XFRail with 4 apps, XFSidebar with menu, XFAppBar with breadcrumbs and XFFooter with status."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API - XFAppShell", @<div>@ApiTable(ApiRows)</div>)
+            @Section("API - XFRail", @<div>@ApiTable(RailApiRows)</div>)
+            @Section("API - XFSidebar", @<div>@ApiTable(SidebarApiRows)</div>)
+            @Section("API - XFAppBar", @<div>@ApiTable(AppBarApiRows)</div>)
+            @Section("API - XFFooter", @<div>@ApiTable(FooterApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Métodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Método", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegação enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenários"), @<div>@TileGrid(ScenárioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Exemplos de integração", "Integration Examples"), @<div>@TileGrid(IntegrationItems, 2)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migracao", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("App Shell", "App Shell");
+    private string PageStatusText => T("Documentação completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private bool _drawerOpen = false;
+
+    // ==================== BLRAZOR SECTION EXAMPLES ====================
+    private string InteractiveServerExample => @"@page ""/erp/financeiro""
+@rendermode InteractiveServer
+@using XForge.DesignSystem.Components.Layout.Shell
+
+<XFAppShell Theme=""light"" Brand=""erp"">
+    <Rail>
+        <XFRail Items=""@RailItems"" />
+    </Rail>
+    <Sidebar>
+        <XFSidebar>
+            <ChildContent>
+                <XFStack Orientation=""XFOrientation.Vertical"" Gap=""2"">
+                    <XFTypography Variant=""XFTypographyVariant.Body2"" Weight=""XFTypographyWeight.Bold"">
+                        Financeiro
+                    </XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFSidebar>
+    </Sidebar>
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Contas a receber
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFTypography>Conteúdo principal</XFTypography>
+    </ChildContent>
+    <Footer>
+        <XFFooter Environment=""Produção"" Version=""v2.1.0"" UserName=""Admin"" />
+    </Footer>
+</XFAppShell>";
+
+    private string InteractiveWasmExample => @"@page ""/erp/financeiro""
+@rendermode InteractiveWebAssembly
+@using XForge.DesignSystem.Components.Layout.Shell
+
+<XFAppShell Theme=""light"" Brand=""erp"">
+    <Rail>
+        <XFRail Items=""@RailItems"" />
+    </Rail>
+    <Sidebar>
+        <XFSidebar>
+            <ChildContent>
+                <XFStack Orientation=""XFOrientation.Vertical"" Gap=""2"">
+                    <XFTypography Variant=""XFTypographyVariant.Body2"" Weight=""XFTypographyWeight.Bold"">
+                        Financeiro
+                    </XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFSidebar>
+    </Sidebar>
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Contas a receber
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFTypography>Conteúdo principal</XFTypography>
+    </ChildContent>
+    <Footer>
+        <XFFooter Environment=""Produção"" Version=""v2.1.0"" UserName=""Admin"" />
+    </Footer>
+</XFAppShell>";
+
+    private string InteractiveAutoExample => @"@page ""/erp/financeiro""
+@rendermode InteractiveAuto
+@using XForge.DesignSystem.Components.Layout.Shell
+
+<XFAppShell Theme=""light"" Brand=""erp"">
+    <Rail>
+        <XFRail Items=""@RailItems"" />
+    </Rail>
+    <Sidebar>
+        <XFSidebar>
+            <ChildContent>
+                <XFStack Orientation=""XFOrientation.Vertical"" Gap=""2"">
+                    <XFTypography Variant=""XFTypographyVariant.Body2"" Weight=""XFTypographyWeight.Bold"">
+                        Financeiro
+                    </XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFSidebar>
+    </Sidebar>
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Contas a receber
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFTypography>Conteúdo principal</XFTypography>
+    </ChildContent>
+    <Footer>
+        <XFFooter Environment=""Produção"" Version=""v2.1.0"" UserName=""Admin"" />
+    </Footer>
+</XFAppShell>";
+
+    // ==================== HERO ====================
+    private RenderFragment HeroPreview() => @<div class="h-72 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell Brand="preview" MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <Rail>
+                <XFRail Items="@HeroRailItems" />
+            </Rail>
+            <Sidebar>
+                <XFSidebar>
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Bold">@T("Financeiro", "Finance")</XFTypography>
+                    </ChildContent>
+                </XFSidebar>
+            </Sidebar>
+            <AppBar>
+                <XFAppBar>
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Horizontal" AlignItems="XFAlignItems.Center" JustifyContent="XFJustifyContent.SpaceBetween" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Operações", "Operations")</XFTypography>
+                            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="Produção" />
+                        </XFStack>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("Conteúdo principal", "Main content")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+        </XFAppShell>
+    </div>;
+
+    // ==================== EXAMPLE 1: COMPLETE SHELL ====================
+    private RenderFragment ExCompleteShell() => @<div class="h-72 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell Brand="erp" MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <Rail>
+                <XFRail Items="@CompleteShellRailItems" />
+            </Rail>
+            <Sidebar>
+                <XFSidebar>
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Bold">@T("Financeiro", "Finance")</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Contas a receber", "Accounts Receivable")</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Contas a pagar", "Accounts Payable")</XFTypography>
+                        </XFStack>
+                    </ChildContent>
+                </XFSidebar>
+            </Sidebar>
+            <AppBar>
+                <XFAppBar>
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Horizontal" AlignItems="XFAlignItems.Center" JustifyContent="XFJustifyContent.SpaceBetween" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Contas a receber", "Accounts Receivable")</XFTypography>
+                            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="Produção" />
+                        </XFStack>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("12 títulos pendentes", "12 pending receivables")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+            <Footer>
+                <XFFooter Environment="Produção" Version="v2.1.0" UserName="Admin" />
+            </Footer>
+        </XFAppShell>
+    </div>;
+
+    private string CodeCompleteShell => @"<XFAppShell Brand=""erp"" MainClass=""flex-1 overflow-auto bg-surface-50 p-4"">
+    <Rail>
+        <XFRail Items=""@RailItems"" />
+    </Rail>
+    <Sidebar>
+        <XFSidebar>
+            <ChildContent>
+                <XFStack Orientation=""XFOrientation.Vertical"" Gap=""2"" FullWidth=""true"">
+                    <XFTypography Variant=""XFTypographyVariant.Body2"" Weight=""XFTypographyWeight.Bold"">
+                        Financeiro
+                    </XFTypography>
+                    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+                        Contas a receber
+                    </XFTypography>
+                    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+                        Contas a pagar
+                    </XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFSidebar>
+    </Sidebar>
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFStack Orientation=""XFOrientation.Horizontal""
+                         AlignItems=""XFAlignItems.Center""
+                         JustifyContent=""XFJustifyContent.SpaceBetween""
+                         FullWidth=""true"">
+                    <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                        Contas a receber
+                    </XFTypography>
+                    <XFBadge Variant=""XFBadgeVariant.Soft"" Color=""XFBadgeColor.Success"" Text=""Produção"" />
+                </XFStack>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"">12 títulos pendentes</XFTypography>
+            </ChildContent>
+        </XFCard>
+    </ChildContent>
+    <Footer>
+        <XFFooter Environment=""Produção"" Version=""v2.1.0"" UserName=""Admin"" />
+    </Footer>
+</XFAppShell>";
+
+    // ==================== EXAMPLE 2: DARK THEME ====================
+    private RenderFragment ExDarkShell() => @<div class="h-72 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell Theme="dark" Brand="corp" MainClass="flex-1 overflow-auto p-4">
+            <AppBar>
+                <XFAppBar Bordered="true">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Tema escuro", "Dark theme")</XFTypography>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("Conteúdo com fundo escuro via data-theme.", "Content with dark background via data-theme.")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+        </XFAppShell>
+    </div>;
+
+    private string CodeDarkShell => @"<XFAppShell Theme=""dark"" Brand=""corp"" MainClass=""flex-1 overflow-auto p-4"">
+    <AppBar>
+        <XFAppBar Bordered=""true"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Tema escuro
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"">
+                    Conteúdo com fundo escuro via data-theme.
+                </XFTypography>
+            </ChildContent>
+        </XFCard>
+    </ChildContent>
+</XFAppShell>";
+
+    // ==================== EXAMPLE 3: MINIMAL ====================
+    private RenderFragment ExMinimalShell() => @<div class="h-48 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <AppBar>
+                <XFAppBar>
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Shell minimalista", "Minimal shell")</XFTypography>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("Sem Rail nem Sidebar — apenas AppBar e conteudo.", "No Rail or Sidebar — only AppBar and content.")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+        </XFAppShell>
+    </div>;
+
+    private string CodeMinimalShell => @"<XFAppShell MainClass=""flex-1 overflow-auto bg-surface-50 p-4"">
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Shell minimalista
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"">
+                    Sem Rail nem Sidebar — apenas AppBar e conteudo.
+                </XFTypography>
+            </ChildContent>
+        </XFCard>
+    </ChildContent>
+</XFAppShell>";
+
+    // ==================== EXAMPLE 4: FOOTER ====================
+    private RenderFragment ExFooterShell() => @<div class="h-64 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell Brand="footer-demo" MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <AppBar>
+                <XFAppBar>
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Com footer", "With footer")</XFTypography>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("Conteúdo principal", "Main content")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+            <Footer>
+                <XFFooter Environment="Produção" Version="v2.1.0" UserName="Admin" Profile="Administrador" AppName="ERP" />
+            </Footer>
+        </XFAppShell>
+    </div>;
+
+    private string CodeFooterShell => @"<XFAppShell Brand=""footer-demo"" MainClass=""flex-1 overflow-auto bg-surface-50 p-4"">
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Com footer
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"">Conteúdo principal</XFTypography>
+            </ChildContent>
+        </XFCard>
+    </ChildContent>
+    <Footer>
+        <XFFooter Environment=""Produção"" Version=""v2.1.0"" UserName=""Admin"" Profile=""Administrador"" AppName=""ERP"" />
+    </Footer>
+</XFAppShell>";
+
+    // ==================== EXAMPLE 5: MULTI-APP RAIL ====================
+    private RenderFragment ExMultiApp() => @<div class="h-72 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell Brand="multi" MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <Rail>
+                <XFRail Items="@MultiAppRailItems" />
+            </Rail>
+            <AppBar>
+                <XFAppBar>
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Multi-app", "Multi-app")</XFTypography>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("Conteúdo do app ativo", "Active app content")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+        </XFAppShell>
+    </div>;
+
+    private string CodeMultiApp => @"<XFAppShell Brand=""multi"" MainClass=""flex-1 overflow-auto bg-surface-50 p-4"">
+    <Rail>
+        <XFRail Items=""@RailItems"" />
+    </Rail>
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Multi-app
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"">Conteúdo do app ativo</XFTypography>
+            </ChildContent>
+        </XFCard>
+    </ChildContent>
+</XFAppShell>";
+
+    // ==================== EXAMPLE 6: SIDEBAR MENU ====================
+    private RenderFragment ExSidebarMenu() => @<div class="h-72 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell Brand="menu" MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <Sidebar>
+                <XFSidebar Variant="XFSidebarVariant.Persistent">
+                    <Header>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Bold">@T("Menu", "Menu")</XFTypography>
+                    </Header>
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="1" FullWidth="true">
+                            <XFButton Text="@T("Dashboard", "Dashboard")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" FullWidth="true" />
+                            <XFButton Text="@T("Pedidos", "Orders")" Variant="XFButtonVariant.Ghost" FullWidth="true" />
+                            <XFButton Text="@T("Clientes", "Customers")" Variant="XFButtonVariant.Ghost" FullWidth="true" />
+                            <XFButton Text="@T("Relatórios", "Reports")" Variant="XFButtonVariant.Ghost" FullWidth="true" />
+                        </XFStack>
+                    </ChildContent>
+                </XFSidebar>
+            </Sidebar>
+            <AppBar>
+                <XFAppBar>
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Sidebar com menu", "Sidebar with menu")</XFTypography>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("Conteúdo do módulo selecionado", "Selected module content")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+        </XFAppShell>
+    </div>;
+
+    private string CodeSidebarMenu => @"<XFAppShell Brand=""menu"" MainClass=""flex-1 overflow-auto bg-surface-50 p-4"">
+    <Sidebar>
+        <XFSidebar Variant=""XFSidebarVariant.Persistent"">
+            <Header>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Bold"">
+                    Menu
+                </XFTypography>
+            </Header>
+            <ChildContent>
+                <XFStack Orientation=""XFOrientation.Vertical"" Gap=""1"" FullWidth=""true"">
+                    <XFButton Text=""Dashboard"" Variant=""XFButtonVariant.Primary"" FullWidth=""true"" />
+                    <XFButton Text=""Pedidos"" Variant=""XFButtonVariant.Ghost"" FullWidth=""true"" />
+                    <XFButton Text=""Clientes"" Variant=""XFButtonVariant.Ghost"" FullWidth=""true"" />
+                    <XFButton Text=""Relatórios"" Variant=""XFButtonVariant.Ghost"" FullWidth=""true"" />
+                </XFStack>
+            </ChildContent>
+        </XFSidebar>
+    </Sidebar>
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Sidebar com menu
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"">
+                    Conteúdo do módulo selecionado
+                </XFTypography>
+            </ChildContent>
+        </XFCard>
+    </ChildContent>
+</XFAppShell>";
+
+    // ==================== EXAMPLE 7: BRAND ====================
+    private RenderFragment ExBrand() => @<div class="h-64 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell Theme="light" Brand="acme" MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <AppBar>
+                <XFAppBar>
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Brand corporativo", "Corporate brand")</XFTypography>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("data-brand acme ativa paleta corporativa sem alterar status colors.", "data-brand acme activates corporate palette without changing status colors.")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+        </XFAppShell>
+    </div>;
+
+    private string CodeBrand => @"<XFAppShell Theme=""light"" Brand=""acme"" MainClass=""flex-1 overflow-auto bg-surface-50 p-4"">
+    <AppBar>
+        <XFAppBar>
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Semibold"">
+                    Brand corporativo
+                </XFTypography>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"">
+                    data-brand acme ativa paleta corporativa sem alterar status colors.
+                </XFTypography>
+            </ChildContent>
+        </XFCard>
+    </ChildContent>
+</XFAppShell>";
+
+    // ==================== EXAMPLE 8: DRAWER ====================
+    private RenderFragment ExDrawer() => @<div class="h-64 overflow-hidden rounded-lg border border-border-light relative">
+        <XFAppShell Brand="drawer" MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <Sidebar>
+                <XFSidebar Variant="XFSidebarVariant.Drawer" Expanded="@_drawerOpen" ContainerRelative="true">
+                    <Header>
+                        <XFStack Orientation="XFOrientation.Horizontal" Gap="2" AlignItems="XFAlignItems.Center" JustifyContent="XFJustifyContent.SpaceBetween" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Bold">@T("Navegação", "Navigation")</XFTypography>
+                            <XFButton Variant="XFButtonVariant.Ghost" OnClick="@(() => _drawerOpen = false)" AriaLabel="@T("Fechar navegação", "Close navigation")">
+                                <StartIcon><span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("xmark", 16))</span></StartIcon>
+                            </XFButton>
+                        </XFStack>
+                    </Header>
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="1" FullWidth="true">
+                            <XFButton Text="@T("Inicio", "Home")" Variant="XFButtonVariant.Ghost" FullWidth="true" />
+                            <XFButton Text="@T("Configurações", "Settings")" Variant="XFButtonVariant.Ghost" FullWidth="true" />
+                        </XFStack>
+                    </ChildContent>
+                </XFSidebar>
+            </Sidebar>
+            <AppBar>
+                <XFAppBar>
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Horizontal" AlignItems="XFAlignItems.Center" JustifyContent="XFJustifyContent.SpaceBetween" FullWidth="true">
+                            <XFStack Orientation="XFOrientation.Horizontal" Gap="2" AlignItems="XFAlignItems.Center">
+                                <XFButton Variant="XFButtonVariant.Ghost" OnClick="@(() => _drawerOpen = !_drawerOpen)" AriaLabel="@T("Abrir navegação", "Open navigation")">
+                                    <StartIcon><span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("align-justify", 16))</span></StartIcon>
+                                </XFButton>
+                                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Sidebar Drawer", "Drawer sidebar")</XFTypography>
+                            </XFStack>
+                        </XFStack>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("Sidebar Drawer com XFSidebarVariant.Drawer em modo overlay (fixed). Clique no ícone no AppBar para abrir/fechar.", "XFSidebarVariant.Drawer in overlay mode (fixed). Click the icon in the AppBar to open/close.")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+        </XFAppShell>
+    </div>;
+
+    private string CodeDrawer => @"@code {
+    private bool _drawerOpen = false;
+}
+
+<div class=""h-64 overflow-hidden rounded-lg border border-border-light relative"">
+    <XFAppShell Brand=""drawer"" MainClass=""flex-1 overflow-auto bg-surface-50 p-4"">
+        <Sidebar>
+            <XFSidebar Variant=""XFSidebarVariant.Drawer"" Expanded=""@_drawerOpen"" ContainerRelative=""true"">
+                <Header>
+                    <XFStack Orientation=""XFOrientation.Horizontal"" Gap=""2""
+                             AlignItems=""XFAlignItems.Center""
+                             JustifyContent=""XFJustifyContent.SpaceBetween""
+                             FullWidth=""true"">
+                        <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Bold"">
+                            Navegação
+                        </XFTypography>
+                        <XFButton Variant=""XFButtonVariant.Ghost""
+                                  OnClick=""@(() => _drawerOpen = false)""
+                                  AriaLabel=""Close navigation"">
+                            <StartIcon>
+                                <span class=""inline-flex h-4 w-4 items-center justify-center"" aria-hidden=""true"">@((MarkupString)XFSvgIcons.MarkupWithSize(""xmark"", 16))</span>
+                            </StartIcon>
+                        </XFButton>
+                    </XFStack>
+                </Header>
+                <ChildContent>
+                    <XFStack Orientation=""XFOrientation.Vertical"" Gap=""1"" FullWidth=""true"">
+                        <XFButton Text=""Inicio"" Variant=""XFButtonVariant.Ghost"" FullWidth=""true"" />
+                        <XFButton Text=""Configurações"" Variant=""XFButtonVariant.Ghost"" FullWidth=""true"" />
+                    </XFStack>
+                </ChildContent>
+            </XFSidebar>
+        </Sidebar>
+        <AppBar>
+            <XFAppBar>
+                <ChildContent>
+                    <XFStack Orientation=""XFOrientation.Horizontal""
+                             AlignItems=""XFAlignItems.Center""
+                             JustifyContent=""XFJustifyContent.SpaceBetween""
+                             FullWidth=""true"">
+                        <XFStack Orientation=""XFOrientation.Horizontal"" Gap=""2""
+                                 AlignItems=""XFAlignItems.Center"">
+                            <XFButton Variant=""XFButtonVariant.Ghost""
+                                      OnClick=""@(() => _drawerOpen = !_drawerOpen)""
+                                      AriaLabel=""Open navigation"">
+                                <StartIcon>
+                                    <span class=""inline-flex h-4 w-4 items-center justify-center"" aria-hidden=""true"">@((MarkupString)XFSvgIcons.MarkupWithSize(""align-justify"", 16))</span>
+                                </StartIcon>
+                            </XFButton>
+                            <XFTypography Variant=""XFTypographyVariant.Body1""
+                                          Weight=""XFTypographyWeight.Semibold"">
+                                Sidebar Drawer
+                            </XFTypography>
+                        </XFStack>
+                    </XFStack>
+                </ChildContent>
+            </XFAppBar>
+        </AppBar>
+        <ChildContent>
+            <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+                <ChildContent>
+                    <XFTypography Variant=""XFTypographyVariant.Body1"">
+                        Sidebar Drawer em modo overlay (fixed).
+                    </XFTypography>
+                </ChildContent>
+            </XFCard>
+        </ChildContent>
+    </XFAppShell>
+</div>";
+
+    // ==================== EXAMPLE 9: ENTERPRISE ====================
+    private RenderFragment ExEnterprise() => @<div class="h-80 overflow-hidden rounded-lg border border-border-light">
+        <XFAppShell Brand="erp" MainClass="flex-1 overflow-auto bg-surface-50 p-4">
+            <Rail>
+                <XFRail Items="@EnterpriseRailItems" />
+            </Rail>
+            <Sidebar>
+                <XFSidebar>
+                    <Header>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Bold">@T("Financeiro", "Finance")</XFTypography>
+                    </Header>
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="1" FullWidth="true">
+                            <XFButton Text="@T("Contas a receber", "Accounts Receivable")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" FullWidth="true" />
+                            <XFButton Text="@T("Contas a pagar", "Accounts Payable")" Variant="XFButtonVariant.Ghost" FullWidth="true" />
+                            <XFButton Text="@T("Fluxo de caixa", "Cash Flow")" Variant="XFButtonVariant.Ghost" FullWidth="true" />
+                            <XFButton Text="@T("Conciliacao", "Reconciliation")" Variant="XFButtonVariant.Ghost" FullWidth="true" />
+                        </XFStack>
+                    </ChildContent>
+                </XFSidebar>
+            </Sidebar>
+            <AppBar>
+                <XFAppBar Position="XFAppBarPosition.Fixed">
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Horizontal" AlignItems="XFAlignItems.Center" JustifyContent="XFJustifyContent.SpaceBetween" FullWidth="true">
+                            <XFBreadcrumb Items="BreadcrumbNavItems" />
+                            <XFStack Orientation="XFOrientation.Horizontal" Gap="3" AlignItems="XFAlignItems.Center">
+                                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Mai/2026" />
+                                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Danger" Text="5" />
+                                <XFAvatar Size="XFAvatarSize.Sm" Text="AD" />
+                            </XFStack>
+                        </XFStack>
+                    </ChildContent>
+                </XFAppBar>
+            </AppBar>
+            <ChildContent>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFTypography Variant="XFTypographyVariant.Body1">@T("Contas a receber — 12 títulos pendentes", "Accounts Receivable — 12 pending receivables")</XFTypography>
+                    </ChildContent>
+                </XFCard>
+            </ChildContent>
+            <Footer>
+                <XFFooter Environment="Produção" Version="v2.1.0" UserName="Admin" Profile="Administrador" AppName="ERP Financeiro" ShowStatusDot="true" />
+            </Footer>
+        </XFAppShell>
+    </div>;
+
+    private string CodeEnterprise => @"<XFAppShell Brand=""erp"" MainClass=""flex-1 overflow-auto bg-surface-50 p-4"">
+    <Rail>
+        <XFRail Items=""@RailItems"" />
+    </Rail>
+    <Sidebar>
+        <XFSidebar>
+            <Header>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Weight=""XFTypographyWeight.Bold"">
+                    Financeiro
+                </XFTypography>
+            </Header>
+            <ChildContent>
+                <XFStack Orientation=""XFOrientation.Vertical"" Gap=""1"" FullWidth=""true"">
+                    <XFButton Text=""Contas a receber"" Variant=""XFButtonVariant.Primary"" FullWidth=""true"" />
+                    <XFButton Text=""Contas a pagar"" Variant=""XFButtonVariant.Ghost"" FullWidth=""true"" />
+                    <XFButton Text=""Fluxo de caixa"" Variant=""XFButtonVariant.Ghost"" FullWidth=""true"" />
+                    <XFButton Text=""Conciliacao"" Variant=""XFButtonVariant.Ghost"" FullWidth=""true"" />
+                </XFStack>
+            </ChildContent>
+        </XFSidebar>
+    </Sidebar>
+    <AppBar>
+        <XFAppBar Position=""XFAppBarPosition.Fixed"">
+            <ChildContent>
+                <XFStack Orientation=""XFOrientation.Horizontal""
+                         AlignItems=""XFAlignItems.Center""
+                         JustifyContent=""XFJustifyContent.SpaceBetween""
+                         FullWidth=""true"">
+                    <XFBreadcrumb Items=""@BreadcrumbItems"" />
+                    <XFStack Orientation=""XFOrientation.Horizontal"" Gap=""3"" AlignItems=""XFAlignItems.Center"">
+                        <XFBadge Variant=""XFBadgeVariant.Soft"" Color=""XFBadgeColor.Info"" Text=""Mai/2026"" />
+                        <XFBadge Variant=""XFBadgeVariant.Solid"" Color=""XFBadgeColor.Danger"" Text=""5"" />
+                        <XFAvatar Size=""XFSize.Sm"" Text=""AD"" />
+                    </XFStack>
+                </XFStack>
+            </ChildContent>
+        </XFAppBar>
+    </AppBar>
+    <ChildContent>
+        <XFCard Variant=""XFCardVariant.Filled"" Padding=""XFPadding.Lg"">
+            <ChildContent>
+                <XFTypography Variant=""XFTypographyVariant.Body1"">
+                    Contas a receber — 12 títulos pendentes
+                </XFTypography>
+            </ChildContent>
+        </XFCard>
+    </ChildContent>
+    <Footer>
+        <XFFooter Environment=""Produção"" Version=""v2.1.0""
+                 UserName=""Admin"" Profile=""Administrador""
+                 AppName=""ERP Financeiro"" ShowStatusDot=""true"" />
+    </Footer>
+</XFAppShell>";
+
+    // ==================== HELPERS ====================
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== MOCK DATA ====================
+    private IReadOnlyList<RailNavItem> HeroRailItems => new List<RailNavItem>
+    {
+        new() { Brand = "financeiro", Label = T("Financeiro", "Finance"), Icon = "chart-line-up", IsDefault = true },
+        new() { Brand = "fiscal", Label = T("Fiscal", "Tax"), Icon = "file-invoice" },
+        new() { Brand = "estoque", Label = T("Estoque", "Inventory"), Icon = "boxes-stacked" }
+    };
+
+    private IReadOnlyList<RailNavItem> CompleteShellRailItems => new List<RailNavItem>
+    {
+        new() { Brand = "financeiro", Label = T("Financeiro", "Finance"), Icon = "chart-line-up", IsDefault = true },
+        new() { Brand = "fiscal", Label = T("Fiscal", "Tax"), Icon = "file-invoice" },
+        new() { Brand = "estoque", Label = T("Estoque", "Inventory"), Icon = "boxes-stacked" }
+    };
+
+    private IReadOnlyList<RailNavItem> MultiAppRailItems => new List<RailNavItem>
+    {
+        new() { Brand = "financeiro", Label = T("Financeiro", "Finance"), Icon = "chart-line-up", IsDefault = true },
+        new() { Brand = "fiscal", Label = T("Fiscal", "Tax"), Icon = "file-invoice" },
+        new() { Brand = "estoque", Label = T("Estoque", "Inventory"), Icon = "boxes-stacked" },
+        new() { Brand = "rh", Label = T("RH", "HR"), Icon = "users" }
+    };
+
+    private IReadOnlyList<RailNavItem> EnterpriseRailItems => new List<RailNavItem>
+    {
+        new() { Brand = "financeiro", Label = T("Financeiro", "Finance"), Icon = "chart-line-up", IsDefault = true },
+        new() { Brand = "fiscal", Label = T("Fiscal", "Tax"), Icon = "file-invoice" },
+        new() { Brand = "estoque", Label = T("Estoque", "Inventory"), Icon = "boxes-stacked" },
+        new() { Brand = "rh", Label = T("RH", "HR"), Icon = "users" }
+    };
+
+    private IReadOnlyList<XFBreadcrumbItemModel> BreadcrumbNavItems => [
+        new() { Text = T("Inicio", "Home") },
+        new() { Text = T("Financeiro", "Finance") },
+        new() { Text = T("Contas a receber", "Accounts Receivable") }
+    ];
+
+    // ==================== QUICK FACTS ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Cinco slots", "Five slots"), T("Rail, Sidebar, AppBar, ChildContent e Footer compoem o shell completo.", "Rail, Sidebar, AppBar, ChildContent and Footer compose the complete shell."), "layer-group"),
+        new(T("Tema e marca", "Theme and brand"), T("Theme controla light/dark; Brand ativa paleta corporativa via data-brand.", "Theme controls light/dark; Brand activates corporate palette via data-brand."), "swatchbook"),
+        new(T("Acessivel", "Accessible"), T("MainAriaLabel e NavigationAriaLabel garantem landmarks semânticos.", "MainAriaLabel and NavigationAriaLabel provide semantic landmarks."), "universal-access")
+    ];
+
+    // ==================== METADATA ====================
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAppShell"),
+        new("Namespace", "XForge.DesignSystem.Components.Layout.Shell"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Layout / Shell"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("Landmarks semânticos com main e nav.", "Semantic landmarks with main and nav.")),
+        new("Theme support", T("Light, dark e data-brand via atributos.", "Light, dark and data-brand via attributes."))
+    ];
+
+    // ==================== OVERVIEW ====================
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Container estrutural", "Structural container"), T("Organiza rail, sidebar, app bar, conteudo e footer em layout responsivo.", "Organizes rail, sidebar, app bar, content and footer in responsive layout."), "layer-group"),
+        new(T("Multi-app", "Multi-app"), T("Rail representa apps; Sidebar pertence ao app ativo.", "Rail represents apps; Sidebar belongs to the active app."), "code"),
+        new(T("Contrato visual", "Visual contract"), T("Mesma estrutura para Docs e ERP.", "Same structure for Docs and ERP."), "circle-check")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Padrão de shell", "Shell pattern"), T("Define estrutura raiz compartilhada entre todos os apps enterprise.", "Defines shared root structure across all enterprise apps."), "circle-check"),
+        new(T("Navegação consistente", "Consistent navigation"), T("Rail para apps, sidebar para contexto, app bar para comandos.", "Rail for apps, sidebar for context, app bar for commands."), "route"),
+        new(T("Identidade visual", "Visual identity"), T("Theme e Brand aplicam identidade sem CSS manual.", "Theme and Brand apply identity without manual CSS."), "swatchbook")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Layouts locais com sidebar duplicada, sem landmarks e sem tema.", "Local layouts with duplicated sidebar, no landmarks and no theme."), "xmark"),
+        new(T("Depois", "After"), T("Estrutura única com slots nomeados, tema e acessibilidade.", "One structure with named slots, theme and accessibility."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("Navegação e layout compartilhados reduzem inconsistência entre apps.", "Shared navigation and layout reduce inconsistency across apps."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new("ERP", T("Shell principal do sistema com rail de apps, sidebar e footer.", "Main system shell with app rail, sidebar and footer."), "briefcase"),
+        new(T("Docs", "Docs"), T("Documentação e playground compartilhando mesmo layout base.", "Documentation and playground sharing the same base layout."), "file-lines"),
+        new(T("Dashboard", "Dashboard"), T("Aplicações com navegação lateral e barra superior.", "Applications with side navigation and top bar."), "chart-line-up")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Páginas simples", "Simple pages"), T("Páginas únicas sem navegação lateral não precisam de shell completo.", "Single pages without side navigation do not need a full shell."), "xmark"),
+        new(T("Layout inline", "Inline layout"), T("Use XFStack/XFGrid para layouts de conteudo interno.", "Use XFStack/XFGrid for internal content layouts."), "circle"),
+        new(T("Navegação de rota", "Route navigation"), T("Shell não substitui navegação por URL ou tabs.", "Shell does not replace URL or tab navigation."), "route")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("div com data-theme, data-brand e flex layout.", "div with data-theme, data-brand and flex layout."), "code"),
+        new("Rail", T("Slot para XFRail com navegação de apps.", "Slot for XFRail with app navigation."), "bars-staggered"),
+        new("Sidebar", T("Slot para XFSidebar com navegação contextual.", "Slot for XFSidebar with contextual navigation."), "bars"),
+        new("AppBar", T("Slot para XFAppBar com comandos globais.", "Slot for XFAppBar with global commands."), "window-restore"),
+        new("ChildContent", T("Elemento main com id e aria-label configuráveis.", "Main element with configurable id and aria-label."), "square"),
+        new("Footer", T("Slot para XFFooter com metadados do sistema.", "Slot for XFFooter with system metadata."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Rail primário", "Primary rail"), T("Navegação de apps mais a esquerda.", "App navigation leftmost."), "bars-staggered"),
+        new(T("Sidebar secundária", "Secondary sidebar"), T("Contexto do app ativo ao lado do rail.", "Active app context next to rail."), "bars"),
+        new(T("Conteúdo principal", "Main content"), T("Area de trabalho ocupa o espaco restante.", "Workspace fills remaining space."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Estrutura fixa", "Fixed structure"), T("Shell não muda entre telas do mesmo app.", "Shell does not change between screens of the same app."), "circle-check"),
+        new(T("Slots semânticos", "Semantic slots"), T("Cada slot tem função clara e nome acessivel.", "Each slot has clear function and accessible name."), "universal-access"),
+        new(T("Tema global", "Global theme"), T("Theme e Brand sao propagados automaticamente.", "Theme and Brand are propagated automatically."), "swatchbook")
+    ];
+
+    // ==================== VARIANTS ====================
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Theme=light", T("Tema claro padrão.", "Default light theme.")),
+        new("Theme=dark", T("Tema escuro para ambientes corporativos.", "Dark theme for corporate environments.")),
+        new("Brand", T("Ativa paleta corporativa via data-brand.", "Activates corporate palette via data-brand."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Shell renderiza todos os slots disponíveis.", "Shell renders all available slots.")),
+        new(T("Sem rail", "No rail"), T("Quando Rail não e fornecido, sidebar ocupa a borda.", "When Rail is not provided, sidebar takes the edge.")),
+        new(T("Sem sidebar", "No sidebar"), T("Conteúdo se expande para toda a largura.", "Content expands to full width.")),
+        new(T("Sem footer", "No footer"), T("Area principal usa todo o espaco vertical.", "Main area uses all vertical space."))
+    ];
+
+    // ==================== API: XFAppShell ====================
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Rail", "RenderFragment?", "null", T("Slot para XFRail ou navegação de apps.", "Slot for XFRail or app navigation.")),
+        new("Sidebar", "RenderFragment?", "null", T("Slot para XFSidebar ou navegação contextual.", "Slot for XFSidebar or contextual navigation.")),
+        new("AppBar", "RenderFragment?", "null", T("Slot para XFAppBar ou barra superior.", "Slot for XFAppBar or top bar.")),
+        new("ChildContent", "RenderFragment?", "null", T("Area principal de conteudo.", "Main content area.")),
+        new("Footer", "RenderFragment?", "null", T("Slot para rodapé do aplicativo.", "Slot for application footer.")),
+        new("Theme", "string", "\"light\"", T("Tema ativo: light ou dark.", "Active theme: light or dark.")),
+        new("Brand", "string?", "null", T("Marca corporativa para data-brand.", "Corporate brand for data-brand.")),
+        new("MainId", "string", "\"main-content\"", T("Id do elemento main para landmarks.", "Id of main element for landmarks.")),
+        new("MainAriaLabel", "string?", "\"Conteúdo principal\"", T("Aria-label do main.", "Aria-label for main.")),
+        new("NavigationAriaLabel", "string?", "\"Navegação do aplicativo\"", T("Aria-label da navegação.", "Aria-label for navigation.")),
+        new("MainClass", "string", "\"flex-1 overflow-y-auto overflow-x-hidden p-6 relative\"", T("Classes CSS do container principal.", "CSS classes for main container.")),
+        new("AsideClass", "string", "\"flex h-full shrink-0 z-50\"", T("Classes CSS do aside lateral.", "CSS classes for lateral aside.")),
+        new("FullViewport", "bool", "false", T("Se true, usa h-dvh w-screen (viewport). Se false (padrão), usa h-full w-full (container pai).", "If true, uses h-dvh w-screen (viewport). If false (default), uses h-full w-full (parent container)."))
+    ];
+
+    // ==================== API: XFRail ====================
+    private IReadOnlyList<ApiRow> RailApiRows => [
+        new("Items", "IReadOnlyList<RailNavItem>?", "null", T("Colecao de itens de navegação.", "Navigation item collection.")),
+        new("ChildContent", "RenderFragment?", "null", T("Markup manual dos itens.", "Manual item markup.")),
+        new("Footer", "RenderFragment?", "null", T("Conteúdo do rodapé do rail.", "Rail footer content.")),
+        new("Header", "RenderFragment?", "null", T("Conteúdo do cabeçalho do rail.", "Rail header content.")),
+        new("AriaLabel", "string", "\"Navegação principal\"", T("Aria-label do nav.", "Nav aria-label.")),
+        new("ActiveIndex", "int", "-1", T("Indice ativo manual.", "Manual active index.")),
+        new("AutoTrackActiveItem", "bool", "true", T("Rastreia item ativo automaticamente.", "Auto-tracks active item.")),
+        new("ShowActiveIndicator", "bool", "true", T("Exibe indicador visual de item ativo.", "Shows active item visual indicator.")),
+        new("RenderItemsWhenEmpty", "bool", "true", T("Renderiza itens do modelo sem ChildContent.", "Renders model items when ChildContent is null."))
+    ];
+
+    // ==================== API: XFSidebar ====================
+    private IReadOnlyList<ApiRow> SidebarApiRows => [
+        new("Header", "RenderFragment?", "null", T("Conteúdo do cabeçalho.", "Header content.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteúdo principal da sidebar.", "Sidebar main content.")),
+        new("Footer", "RenderFragment?", "null", T("Conteúdo do rodapé.", "Footer content.")),
+        new("Expanded", "bool", "true", T("Se a sidebar esta expandida.", "Whether sidebar is expanded.")),
+        new("Variant", "XFSidebarVariant", "Persistent", T("Variante: Persistent, Mini ou Drawer.", "Variant: Persistent, Mini or Drawer.")),
+        new("ContainerRelative", "bool", "false", T("Quando true no modo Drawer, usa absolute em vez de fixed para ficar contido no container pai (que precisa ter position: relative). Default false = overlay (fixed).", "When true in Drawer mode, uses absolute instead of fixed to stay contained in the parent container (must have position: relative). Default false = overlay (fixed).")),
+        new("AriaLabel", "string?", "\"Navegação secundária\"", T("Aria-label da sidebar.", "Sidebar aria-label."))
+    ];
+
+    // ==================== API: XFAppBar ====================
+    private IReadOnlyList<ApiRow> AppBarApiRows => [
+        new("ChildContent", "RenderFragment?", "null", T("Conteúdo interno da app bar.", "App bar inner content.")),
+        new("Position", "XFAppBarPosition", "Static", T("Posicao: Static ou Fixed.", "Position: Static or Fixed.")),
+        new("Bordered", "bool", "true", T("Exibe borda inferior.", "Shows bottom border.")),
+        new("AriaLabel", "string?", "\"Barra do aplicativo\"", T("Aria-label da app bar.", "App bar aria-label.")),
+        new("InnerClass", "string", "\"flex items-center justify-between w-full px-6\"", T("Classes CSS do wrapper interno.", "Inner wrapper CSS classes."))
+    ];
+
+    // ==================== API: XFFooter ====================
+    private IReadOnlyList<ApiRow> FooterApiRows => [
+        new("StatusText", "string", "\"Estavel\"", T("Texto de status.", "Status text.")),
+        new("UserName", "string?", "null", T("Nome do usuario atual.", "Current user name.")),
+        new("Profile", "string?", "null", T("Perfil do usuario.", "User profile.")),
+        new("AppName", "string?", "null", T("Nome do aplicativo atual.", "Current app name.")),
+        new("Environment", "string", "\"Produção\"", T("Ambiente: Produção, Homologação, Desenvolvimento.", "Environment: Production, Staging, Development.")),
+        new("Version", "string", "\"v1.0.0\"", T("Versão do sistema.", "System version.")),
+        new("ShowStatusDot", "bool", "true", T("Exibe ponto de status verde.", "Shows green status dot.")),
+        new("StartContent", "RenderFragment?", "null", T("Conteúdo inicial personalizado.", "Custom start content.")),
+        new("EndContent", "RenderFragment?", "null", T("Conteúdo final personalizado.", "Custom end content."))
+    ];
+
+    // ==================== EVENTS ====================
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("-", T("XFAppShell não dispara eventos proprios. Eventos sao dos slots internos (XFRail, XFSidebar, etc.).", "XFAppShell does not fire its own events. Events come from internal slots (XFRail, XFSidebar, etc.)."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("-", T("XFAppShell não expõe métodos públicos.", "XFAppShell exposes no public methods."))
+    ];
+
+    // ==================== ACCESSIBILITY ====================
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Landmark main", "Main landmark"), T("Elemento main com id e aria-label para leitores de tela.", "Main element with id and aria-label for screen readers."), "universal-access"),
+        new(T("Landmark nav", "Nav landmark"), T("Navegação com aria-label distinto.", "Navigation with distinct aria-label."), "tag"),
+        new(T("Tema via atributo", "Theme via attribute"), T("data-theme permite CSS adaptativo sem JS.", "data-theme allows adaptive CSS without JS."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [
+        new(T("Tab order", "Tab order"), T("Rail, sidebar e conteudo seguem ordem lógica.", "Rail, sidebar and content follow lógical order."), "keyboard"),
+        new(T("Foco no main", "Focus on main"), T("Skip link deve apontar para MainId.", "Skip link should point to MainId."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre rail, sidebar e conteudo.", "Navigates between rail, sidebar and content.")),
+        new("Shift+Tab", T("Retorna ao controle anterior.", "Returns to previous control."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Layout flex", "Flex layout"), T("Shell usa flex para ocupar viewport inteiro.", "Shell uses flex to fill the entire viewport."), "arrows-up-down"),
+        new(T("Slots condicionais", "Conditional slots"), T("Slots vazios não ocupam espaco.", "Empty slots do not take space."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Sem JS", "No JS"), T("Layout e puramente CSS com flex.", "Layout is purely CSS with flex."), "bolt"),
+        new(T("Render condicional", "Conditional render"), T("Slots vazios não geram DOM.", "Empty slots do not generate DOM."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> ScenárioItems => [
+        new("ERP", T("Shell com rail de 10 apps, sidebar por app e footer com status.", "Shell with 10-app rail, per-app sidebar and status footer."), "briefcase"),
+        new(T("Financeiro", "Finance"), T("App ativo com sidebar de módulos financeiros.", "Active app with financial module sidebar."), "chart-line-up"),
+        new(T("Multi-tenant", "Multi-tenant"), T("Brand muda paleta por tenant.", "Brand changes palette per tenant."), "users")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("XFRail", T("Slot Rail para navegação de apps.", "Rail slot for app navigation."), "bars-staggered"),
+        new("XFSidebar", T("Slot Sidebar para navegação do app ativo.", "Sidebar slot for active app navigation."), "bars"),
+        new("XFAppBar", T("Slot AppBar para comandos globais.", "AppBar slot for global commands."), "window-restore"),
+        new("XFFooter", T("Slot Footer para metadados do sistema.", "Footer slot for system metadata."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> IntegrationItems => [
+        new("NavigationStateService", T("Integra com servico de navegação para rastrear app ativo.", "Integrates with navigation service to track active app."), "route"),
+        new("data-brand", T("XFAppShell aplica data-brand no elemento raiz.", "XFAppShell applies data-brand on root element."), "swatchbook")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Um shell por app", "One shell per app"), T("Não aninhe shells; use um por aplicativo.", "Do not nest shells; use one per application."), "circle-check"),
+        new(T("Sempre main landmark", "Always main landmark"), T("MainId e MainAriaLabel devem estar presentes.", "MainId and MainAriaLabel must be present."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Shell aninhado", "Nested shell"), T("Não coloque XFAppShell dentro de outro XFAppShell.", "Do not place XFAppShell inside another XFAppShell."), "xmark"),
+        new(T("Tema inline", "Inline theme"), T("Não sobrescreva data-theme com CSS inline.", "Do not override data-theme with inline CSS."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("bg-bg-surface, bg-surface-50, text-text-primary, border-border-light.", "bg-bg-surface, bg-surface-50, text-text-primary, border-border-light.")),
+        new("spacing", T("p-4, p-6, gap-2, gap-4, w-14, w-44.", "p-4, p-6, gap-2, gap-4, w-14, w-44.")),
+        new("borders", T("border-border-light para separadores.", "border-border-light for separators."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Light e dark via atributo no elemento raiz.", "Light and dark via attribute on root element."), "moon"),
+        new("data-brand", T("Paleta corporativa sem alterar status colors.", "Corporate palette without changing status colors."), "swatchbook")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [
+        new(T("Sem XSS", "No XSS"), T("Slots sao Blazor render fragments, não HTML bruto.", "Slots are Blazor render fragments, not raw HTML."), "shield-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de renderização com slots preenchidos e vazios.", "Rendering tests with filled and empty slots.")),
+        new("Snapshot", T("Snapshots para light e dark theme.", "Snapshots for light and dark theme."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Responsividade", T("Não colapsa rail/sidebar automaticamente; use XFSidebarVariant.Drawer.", "Does not auto-collapse rail/sidebar; use XFSidebarVariant.Drawer.")),
+        new("Transicoes", T("Animações de abertura do sidebar devem ser manuais.", "Sidebar open animations must be manual."))
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("Layout local", "Local layout"), T("Troque divs locais por XFAppShell com slots.", "Replace local divs with XFAppShell using slots."), "arrow-rotate-left"),
+        new(T("Sidebar duplicada", "Duplicated sidebar"), T("Centralize sidebar no shell.", "Centralize sidebar in the shell."), "bars")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFRail", T("Navegação de apps no slot Rail.", "App navigation in the Rail slot."), "bars-staggered"),
+        new("XFSidebar", T("Navegação contextual no slot Sidebar.", "Contextual navigation in the Sidebar slot."), "bars"),
+        new("XFAppBar", T("Barra superior no slot AppBar.", "Top bar in the AppBar slot."), "window-restore"),
+        new("XFFooter", T("Rodapé no slot Footer.", "Footer in the Footer slot."), "code")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Posso usar sem rail?", "Can I use without rail?"), T("Sim, omita o slot Rail.", "Yes, omit the Rail slot.")),
+        new(T("Como mudar tema?", "How to change theme?"), T("Altere o parâmetro Theme para dark ou light.", "Change the Theme parameter to dark or light.")),
+        new(T("Brand afeta cores de status?", "Does Brand affect status colors?"), T("Nao, apenas a cor primary.", "No, only the primary color.")),
+        new(T("Posso aninhar shells?", "Can I nest shells?"), T("Nao. Use um XFAppShell por aplicativo.", "No. Use one XFAppShell per application."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-09", T("Exemplos refeitos com componentes reais (XFRail, XFSidebar, XFAppBar, XFFooter). API expandida com todos os slots. 9 exemplos renderizados.", "Examples rebuilt with real components (XFRail, XFSidebar, XFAppBar, XFFooter). API expanded with all slots. 9 rendered examples.")),
+        new("2026-05-28", T("Página refeita no padrão enterprise com 9 exemplos renderizados e cenários ERP.", "Page rebuilt in enterprise standard with 9 rendered examples and ERP scenarios."))
+    ];
+
+    // ==================== RECORDS ====================
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

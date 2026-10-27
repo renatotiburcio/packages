@@ -1,0 +1,14 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div @ref="_containerRef"
+     id="@Id"
+     data-map-id="@Id"
+     class="@GetComponentClass()"
+     style="@_containerStyle"
+     role="application"
+     aria-label="@(AriaLabel ?? "Mapa interativo")"
+     @attributes="AdditionalAttributes">
+    <CascadingValue Value="this" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
+</div>

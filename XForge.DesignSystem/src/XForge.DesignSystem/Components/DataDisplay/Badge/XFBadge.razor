@@ -1,0 +1,52 @@
+@inherits XForgeComponentBase
+<span @attributes="AdditionalAttributes"
+      id="@Id"
+      role="@Role"
+      aria-label="@AriaLabel"
+      class="@GetComponentClass()"
+      style="@Style"
+      @onclick="HandleClickAsync">
+    @if (Dot)
+    {
+        <span class="@DotClass" aria-hidden="true"></span>
+    }
+
+    @if (StartIcon is not null)
+    {
+        <span class="@IconClass" aria-hidden="true">@StartIcon</span>
+    }
+
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+    else if (!string.IsNullOrWhiteSpace(Text))
+    {
+        <span class="truncate">@Text</span>
+    }
+
+    @if (EndIcon is not null)
+    {
+        <span class="@IconClass" aria-hidden="true">@EndIcon</span>
+    }
+
+    @if (OnDismiss.HasDelegate)
+    {
+        <button type="button"
+                class="@DismissClass"
+                aria-label="@ResolvedDismissAriaLabel"
+                title="@ResolvedDismissTitle"
+                @onclick="HandleDismissAsync"
+                @onclick:stopPropagation="true"
+                @onkeydown="HandleDismissKeyDownAsync">
+            @if (DismissIcon is not null)
+            {
+                @DismissIcon
+            }
+            else
+            {
+                <span aria-hidden="true">x</span>
+            }
+        </button>
+    }
+</span>

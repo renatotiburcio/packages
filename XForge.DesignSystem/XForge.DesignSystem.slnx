@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src\XForge.DesignSystem\XForge.DesignSystem.csproj" />
+    <Project Path="src\XForge.DesignSystem.AI\XForge.DesignSystem.AI.csproj" />
+    <Project Path="src\XForge.DesignSystem.AI.Tests\XForge.DesignSystem.AI.Tests.csproj" />
+    <Project Path="src\XForge.DesignSystem.Analyzers\XForge.DesignSystem.Analyzers.csproj" />
+    <Project Path="src\XForge.DesignSystem.Benchmarks\XFBenchmarkProject.csproj" />
+    <Project Path="src\XForge.DesignSystem.Docs\XForge.DesignSystem.Docs.csproj" />
+    <Project Path="src\XForge.DesignSystem.Docs.AI\XForge.DesignSystem.Docs.AI.csproj" />
+    <Project Path="src\XForge.DesignSystem.Docs.Shared\XForge.DesignSystem.Docs.Shared.csproj" />
+    <Project Path="src\XForge.DesignSystem.Generators\DocsCompiler\XForge.DesignSystem.Generators.DocsCompiler.csproj" />
+    <Project Path="src\XForge.DesignSystem.Shared\XForge.DesignSystem.Shared.csproj" />
+    <Project Path="src\XForge.Docs.MCP\XForge.Docs.MCP.csproj" />
+    <Project Path="src\XForge.DesignSystem.Generators\AssetsGenerator\XForge.AssetsGenerator.csproj" />
+  </Folder>
+  <Folder Name="/src/XForge.DesignSystem.Tests/">
+    <Project Path="src\XForge.DesignSystem.Tests\XForge.DesignSystem.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/XForge.DesignSystem.Tests/DocsQualityTests/">
+    <Project Path="src\XForge.DesignSystem.Tests\DocsQualityTests\XForge.DesignSystem.Docs.QualityTests.csproj" />
+  </Folder>
+
+</Solution>

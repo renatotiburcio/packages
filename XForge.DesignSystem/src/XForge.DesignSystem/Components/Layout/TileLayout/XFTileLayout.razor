@@ -1,0 +1,108 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes"
+     role="region" aria-label="@AriaLabel">
+
+    @if (ShowHeader && (TitleTemplate != null || !string.IsNullOrEmpty(Title)))
+    {
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                @if (TitleTemplate != null)
+                {
+                    @TitleTemplate
+                }
+                else
+                {
+                    <h2 class="text-lg font-bold text-text-primary">@Title</h2>
+                }
+            </div>
+            <div class="flex items-center gap-2">
+                @if (AllowEdit)
+                {
+                    <button type="button" class="@HeaderButtonClass" @onclick="ToggleEditMode" aria-label="@EditModeText">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("pencil")</span>
+                    </button>
+                }
+                @HeaderActions
+            </div>
+        </div>
+    }
+
+    <!-- Tile grid -->
+    <div class="@GridClass"
+         style="grid-template-columns: repeat(@Columns, minmax(0, 1fr)); gap: @(Gap)px;"
+         @ondragover:preventDefault="true">
+
+        @foreach (var tile in _tiles)
+        {
+            var isActive = tile.Id == _selectedTileId;
+            <div class="@TileClass(tile, isActive)"
+                 style="grid-column: @(tile.ColumnSpan); grid-row: @(tile.RowSpan);"
+                 draggable="@(_isEditMode ? "true" : null)"
+                 @ondragstart="() => OnTileDragStart(tile)"
+                 @ondrop="() => OnTileDrop(tile)"
+                 @onclick="() => HandleTileClick(tile)"
+                 @ondblclick="() => HandleTileDoubleClick(tile)">
+
+                <!-- Tile header -->
+                @if (tile.ShowHeader)
+                {
+                    <div class="@TileHeaderClass">
+                        <div class="flex items-center gap-2 min-w-0">
+                            @if (tile.Icon != null)
+                            {
+                                <span class="@("inline-block h-4 w-4 shrink-0 " + (tile.IconColor ?? "text-text-muted"))">@((MarkupString)tile.Icon)</span>
+                            }
+                            <span class="text-sm font-semibold text-text-primary truncate">@tile.Title</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            @if (tile.ShowMenu)
+                            {
+                                <button type="button" class="@TileMenuButtonClass"
+                                        @onclick:stopPropagation="true"
+                                        @onclick="() => ToggleTileMenu(tile)">
+                                    <span class="text-xs">&#8942;</span>
+                                </button>
+                            }
+                            @if (_isEditMode && AllowRemove)
+                            {
+                                <button type="button" class="@TileMenuButtonClass"
+                                        @onclick:stopPropagation="true"
+                                        @onclick="() => RemoveTile(tile)"
+                                        aria-label="@RemoveTileText">
+                                    <span class="text-xs">&times;</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Tile content -->
+                <div class="@TileContentClass">
+                    @if (tile.Content != null)
+                    {
+                        @tile.Content
+                    }
+                </div>
+
+                <!-- Resize handle -->
+                @if (_isEditMode && tile.Resizable)
+                {
+                    <div class="@ResizeHandleClass"
+                         @ondragstart:stopPropagation="true"
+                         @onmousedown:stopPropagation="true"
+                         @onmousedown="() => StartResize(tile)"></div>
+                }
+            </div>
+        }
+
+        <!-- Add tile button -->
+        @if (_isEditMode && AllowAdd)
+        {
+            <div class="@AddTileClass" @onclick="AddTile">
+                <span class="inline-block h-8 w-8 text-text-muted">@XFSvgIcons.Markup("plus")</span>
+                <div class="text-xs font-medium text-text-secondary mt-1">@AddTileText</div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XForge Enterprise Development OS — Manual Completo v54.0</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+.nav{transition:all .15s ease;border-left:3px solid transparent}
+.nav:hover{background:#1e293b;border-left-color:#60a5fa}
+.nav.on{background:#1e293b;color:white;border-left-color:#3b82f6}
+.sec{display:none}.sec.on{display:block}
+pre{background:#0f172a;color:#e2e8f0;padding:1rem;border-radius:.5rem;overflow-x:auto;font-size:.8rem;line-height:1.6;white-space:pre-wrap;word-wrap:break-word}
+code{font-family:'Cascadia Code','Fira Code','Consolas',monospace}
+.ic{background:#e2e8f0;color:#1e293b;padding:.1rem .3rem;border-radius:.25rem;font-size:.8rem}
+.box{border-left:4px solid;padding:.75rem 1rem;border-radius:0 .5rem .5rem 0;margin:.5rem 0}
+.blue{background:#eff6ff;border-color:#3b82f6}
+.green{background:#f0fdf4;border-color:#22c55e}
+.red{background:#fef2f2;border-color:#ef4444}
+.yellow{background:#fffbeb;border-color:#f59e0b}
+.purple{background:#f5f3ff;border-color:#8b5cf6}
+.code-block{background:#0f172a;color:#e2e8f0;padding:1rem;border-radius:.5rem;font-family:monospace;font-size:.8rem;line-height:1.5}
+@media(max-width:1023px){#sb{-webkit-transform:translateX(-100%);transform:translateX(-100%)}#sb.open{-webkit-transform:translateX(0);transform:translateX(0)}}
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+<aside id="sb" class="fixed inset-y-0 left-0 w-72 bg-gray-900 text-gray-300 overflow-y-auto z-50 transition-transform lg:translate-x-0">
+<div class="p-4 border-b border-gray-700">
+<h1 class="text-white text-lg font-bold">XForge Engineer</h1>
+<p class="text-xs text-gray-500 mt-1">v54.0 · 535+ arquivos · Split Architecture · Inteligência + AutoResearch · 100% Kilo Compatible</p>
+</div>
+<nav class="p-2 text-sm" id="nv">
+<div class="px-2 py-1 text-xs font-semibold text-gray-500 uppercase">INÍCIO</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="inicio">Visão Geral</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="instalacao">Instalação</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="primeiros">Primeiros Passos</a>
+<div class="px-2 py-1 mt-2 text-xs font-semibold text-gray-500 uppercase">CONCEITOS</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="arquitetura">Arquitetura</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="kilo">Compatibilidade Kilo</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="providers">Providers de IA</a>
+<div class="px-2 py-1 mt-2 text-xs font-semibold text-gray-500 uppercase">COMPONENTES</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="agents">Agents (43)</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="skills">Skills (151)</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="commands">Commands (129)</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="regras">Regras (30)</a>
+<div class="px-2 py-1 mt-2 text-xs font-semibold text-gray-500 uppercase">SISTEMAS</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="memoria">Memória</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="conhecimento">Conhecimento</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="performance">Performance</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="inteligencia">Inteligência</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="interacao">Interação</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="autoresearch">AutoResearch</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="offline">Modo Offline</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="ferramentas">Ferramentas</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="seguranca">Segurança</a>
+<div class="px-2 py-1 mt-2 text-xs font-semibold text-gray-500 uppercase">ONBOARDING</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="onboarding">Prompts Prontos</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="starter">Starter Kits</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="dashboard-s">Dashboard</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="updates">Atualizações</a>
+<div class="px-2 py-1 mt-2 text-xs font-semibold text-gray-500 uppercase">CASOS DE USO</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu1">Criar Projeto</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu2">Analisar Projeto</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu3">Feature/Bug/Refactor</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu4">Release/Deploy</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu5">Segurança/LGPD</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu6">Folha de Pagamento</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu7">Escrituração Fiscal</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu8">ERP/Estoque/Financeiro</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="cu9">App Blazor/MAUI</a>
+<div class="px-2 py-1 mt-2 text-xs font-semibold text-gray-500 uppercase">REFERÊNCIA TÉCNICA</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="t1">.NET/C#/ASP.NET</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="t2">Blazor/MAUI/EF Core</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="t3">SQL/MySQL/Redis</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="t4">Bibliotecas (Hangfire/MediatR/etc)</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="t5">DevOps/Docker/K8s</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="t6">Tailwind/SignalR/gRPC</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="t7">Desktop (Tauri/WPF)</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="t8">Testes/BDD</a>
+<div class="px-2 py-1 mt-2 text-xs font-semibold text-gray-500 uppercase">DOMÍNIOS</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="d1">Folha de Pagamento</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="d2">Contabilidade</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="d3">Fiscal/Tributos</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="d4">Escrituração Fiscal</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="d5">Estoque/ERP</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="d6">Financeiro</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="d7">RH/DP/eSocial</a>
+<div class="px-2 py-1 mt-2 text-xs font-semibold text-gray-500 uppercase">REFERÊNCIA</div>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="ext">Estender</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="estrutura">Estrutura</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="troubleshoot">Troubleshooting</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="quickref">Referência Rápida</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="faq">FAQ</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="golden">Golden Command</a>
+<a class="nav block px-3 py-1.5 rounded" href="#" data-s="glossario">Glossário</a>
+</nav>
+</aside>
+<main class="lg:ml-72 min-h-screen">
+<header class="bg-white border-b sticky top-0 z-40 px-4 py-3 flex items-center gap-4">
+<button onclick="document.getElementById('sb').classList.toggle('open')" class="lg:hidden p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<input type="text" placeholder="Buscar..." class="flex-1 max-w-lg px-3 py-1.5 border rounded-lg text-sm" oninput="search(this.value)">
+<span class="text-xs text-gray-400 hidden sm:block">v54.0</span>
+</header>
+<div class="p-6 max-w-5xl">
+
+<!-- ========== VISÃO GERAL ========== -->
+<div id="s-inicio" class="sec on">
+<h1 class="text-3xl font-bold mb-2">XForge Enterprise Development OS</h1>
+<p class="text-lg text-gray-500 mb-6">Template operacional que transforma KiloCode em assistente enterprise completo.</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+<div class="bg-white p-3 rounded-lg border text-center"><div class="text-2xl font-bold text-blue-600">151</div><div class="text-xs text-gray-500">Skills</div></div>
+<div class="bg-white p-3 rounded-lg border text-center"><div class="text-2xl font-bold text-green-600">43</div><div class="text-xs text-gray-500">Agents</div></div>
+<div class="bg-white p-3 rounded-lg border text-center"><div class="text-2xl font-bold text-purple-600">129</div><div class="text-xs text-gray-500">Commands</div></div>
+<div class="bg-white p-3 rounded-lg border text-center"><div class="text-2xl font-bold text-orange-600">172</div><div class="text-xs text-gray-500">Knowledge</div></div>
+</div>
+<p class="mb-4">Conhecimento profundo em: <strong>ERP</strong>, <strong>Contabilidade</strong>, <strong>Fiscal</strong>, <strong>Folha</strong>, <strong>Financeiro</strong>, <strong>.NET 10</strong>, <strong>ASP.NET Core</strong>, <strong>Blazor</strong>, <strong>MAUI</strong>, <strong>EF Core</strong>, <strong>Segurança</strong>, <strong>DevOps</strong>, <strong>Tailwind</strong>, <strong>Tauri</strong>.</p>
+<div class="box green"><strong>Princípio:</strong> <code class="ic">.kilo</code> = camada operacional (substituível). <code class="ic">.xforge</code> = camada persistente (NUNCA deletar).</div>
+</div>
+
+<!-- ========== INSTALAÇÃO ========== -->
+<div id="s-instalacao" class="sec">
+<h1 class="text-3xl font-bold mb-4">Instalação</h1>
+<div class="box yellow"><strong>⚠️</strong> Copie TODOS os arquivos incluindo ocultos (.kilo, .xforge, .kilocodeignore).</div>
+<h3 class="font-bold mt-4 mb-2">Projeto Novo</h3>
+<ol class="list-decimal list-inside space-y-1 text-sm mb-4"><li>Criar pasta e copiar template</li><li>Rodar <code class="ic">.\.kilo\automation\scripts\bootstrap-project.ps1</code></li><li>No KiloCode: <code class="ic">/create-project</code></li></ol>
+<h3 class="font-bold mb-2">Projeto Existente</h3>
+<ol class="list-decimal list-inside space-y-1 text-sm mb-4"><li>Backup: <code class="ic">.\.kilo\automation\scripts\backup-engineer.ps1</code></li><li>Copiar template (sem apagar .xforge)</li><li>Rodar bootstrap</li><li>No KiloCode: <code class="ic">/analyze-project</code></li></ol>
+<h3 class="font-bold mb-2">Atualização</h3>
+<pre>.\.kilo\automation\scripts\backup-engineer.ps1  # antes
+# atualizar .kilo com nova versão
+.\.kilo\automation\scripts\doctor.ps1           # depois</pre>
+</div>
+
+<!-- ========== PRIMEIROS PASSOS ========== -->
+<div id="s-primeiros" class="sec">
+<h1 class="text-3xl font-bold mb-4">Primeiros Passos</h1>
+<ol class="list-decimal list-inside space-y-2 text-sm mb-4">
+<li><strong>Abra no VS Code</strong> — KiloCode detecta AGENTS.md e kilo.jsonc</li>
+<li><strong>Valide</strong> — <code class="ic">.\.kilo\automation\scripts\doctor.ps1</code></li>
+<li><strong>Teste</strong> — <code class="ic">/xforge olá! estou começando</code></li>
+</ol>
+<h3 class="font-bold mb-2">Comandos Essenciais</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+<div class="bg-white border rounded p-1.5"><code class="text-blue-600 font-bold">/xforge [tarefa]</code> Roteamento universal</div>
+<div class="bg-white border rounded p-1.5"><code class="text-blue-600 font-bold">/analyze-project</code> Análise completa</div>
+<div class="bg-white border rounded p-1.5"><code class="text-blue-600 font-bold">/develop [feature]</code> Criar código</div>
+<div class="bg-white border rounded p-1.5"><code class="text-blue-600 font-bold">/quality</code> Quality gates</div>
+<div class="bg-white border rounded p-1.5"><code class="text-blue-600 font-bold">/security</code> Auditoria segurança</div>
+<div class="bg-white border rounded p-1.5"><code class="text-blue-600 font-bold">/memory</code> Gerenciar memória</div>
+<div class="bg-white border rounded p-1.5"><code class="text-blue-600 font-bold">/release</code> Preparar deploy</div>
+<div class="bg-white border rounded p-1.5"><code class="text-blue-600 font-bold">/knowledge</code> Base de conhecimento</div>
+</div>
+</div>
+
+<!-- ========== ARQUITETURA ========== -->
+<div id="s-arquitetura" class="sec">
+<h1 class="text-3xl font-bold mb-4">Arquitetura</h1>
+<pre>┌─────────────────────────────────────────────┐
+│  AGENTS.md → Instruções gerais              │
+│  kilo.jsonc → instructions, agent, skills   │
+├─────────────────────────────────────────────┤
+│  .kilo/ → Camada Operacional               │
+│    agents/   → 43 especialistas             │
+│    skills/   → 151 habilidades              │
+│    commands/ → 129 comandos                 │
+│    rules/    → 30 regras                    │
+│    core/     → Roteadores e registries      │
+├─────────────────────────────────────────────┤
+│  .xforge/ → Camada Persistente             │
+│    knowledge/ → 172 arquivos               │
+│    memory/    → Memória do projeto          │
+│    rag/       → Índice busca semântica      │
+│    decisions/ → ADRs                        │
+└─────────────────────────────────────────────┘</pre>
+<p class="text-sm text-gray-600 mt-2"><strong>Fluxo:</strong> Usuário → /comando → KiloCode lê AGENTS.md → aplica rules → seleciona agent → seleciona skills → valida policies → executa → valida resultado → atualiza .xforge/</p>
+</div>
+
+<!-- ========== COMPATIBILIDADE KILO ========== -->
+<div id="s-kilo" class="sec">
+<h1 class="text-3xl font-bold mb-4">Compatibilidade Kilo Code</h1>
+<h3 class="font-bold mb-2">kilo.jsonc — Chaves Permitidas</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Chave</th><th class="p-2 text-left">Tipo</th><th class="p-2 text-left">Descrição</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2"><code>instructions</code></td><td class="p-2">array</td><td class="p-2">Paths para regras (.md)</td></tr>
+<tr class="border-t"><td class="p-2"><code>agent</code></td><td class="p-2">object</td><td class="p-2">Definições de agents (name, model, permission)</td></tr>
+<tr class="border-t"><td class="p-2"><code>skills</code></td><td class="p-2">object</td><td class="p-2">Paths para diretórios de skills</td></tr>
+</tbody></table>
+</div>
+<div class="box red"><strong>Proibido em kilo.jsonc:</strong> routing, contextWindow, tools, mcpServers. Estas chaves ficam em <code class="ic">.xforge/config/xforge-engineer.config.json</code></div>
+<h3 class="font-bold mt-4 mb-2">Nomes Padronizados</h3>
+<ul class="list-disc list-inside text-sm space-y-1">
+<li>Skills: <code class="ic">kebab-case</code> dir + frontmatter <code class="ic">name</code> match</li>
+<li>Agents: <code class="ic">kebab-case</code> .md + frontmatter <code class="ic">name</code> match</li>
+<li>Commands: <code class="ic">kebab-case</code> .md + <code class="ic">description</code> + <code class="ic">agent</code></li>
+</ul>
+<h3 class="font-bold mt-4 mb-2">Validação</h3>
+<pre>.\.kilo\automation\scripts\doctor.ps1              # 0 errors, 0 warnings
+.\.kilo\automation\scripts\validate-kilo-strict.ps1  # strict validation
+.\.kilo\automation\scripts\validate-engineer.ps1      # full validation</pre>
+</div>
+
+<!-- ========== PROVIDERS ========== -->
+<div id="s-providers" class="sec">
+<h1 class="text-3xl font-bold mb-4">Providers de IA</h1>
+<div class="box green text-sm mb-4">
+<p><strong>Recomendado:</strong> Ollama (local, gratuito, 100% offline)</p>
+<p>O sistema detecta automaticamente os modelos instalados. O usuário seleciona o modelo no momento do prompt.</p>
+</div>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Provider</th><th class="p-2">Custo</th><th class="p-2">Contexto</th><th class="p-2">Como Funciona</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2 font-semibold">Ollama (Local) ✅</td><td class="p-2 text-green-600">Grátis</td><td class="p-2">128k</td><td class="p-2">Detecta modelos automaticamente</td></tr>
+</tbody></table>
+<h3 class="font-bold mb-2">Como Funciona a Detecção</h3>
+<div class="box blue text-sm mb-4">
+<ol class="list-decimal list-inside">
+<li><strong>Usuário seleciona modelo</strong> no prompt do KiloCode</li>
+<li><strong>Agente detecta</strong> qual modelo está sendo usado</li>
+<li><strong>Adapta comportamento</strong> baseado na capacidade do modelo</li>
+<li><strong>Se precisa de mais</strong>, pede ao usuário para selecionar modelo maior</li>
+</ol>
+<p class="mt-2"><strong>NÃO fixar modelos no config</strong> — o sistema adapta ao que está disponível.</p>
+</div>
+<h3 class="font-bold mb-2">Detecção de Capacidade</h3>
+<table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2">Capacidade</th><th class="p-2">Modelos Exemplo</th><th class="p-2">Uso</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2 font-semibold">Pequeno</td><td class="p-2">&lt; 7B params</td><td class="p-2">Perguntas rápidas, formatação</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">Médio</td><td class="p-2">7B-14B params</td><td class="p-2">Features, refactor, docs</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">Grande</td><td class="p-2">14B-70B params</td><td class="p-2">Código complexo, arquitetura</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">Muito Grande</td><td class="p-2">70B+ params</td><td class="p-2">Tudo, tarefas críticas</td></tr>
+</tbody></table>
+</div>
+
+<!-- ========== AGENTS ========== -->
+<div id="s-agents" class="sec">
+<h1 class="text-3xl font-bold mb-4">Agents (43)</h1>
+<p class="text-sm mb-3">Todos padronizados EN kebab-case. Cada um com frontmatter (name, description, mode, permission) e instruções específicas.</p>
+<h3 class="font-bold mb-2">Orquestrador Principal</h3>
+<div class="bg-blue-50 border border-blue-200 rounded p-3 mb-3 text-sm"><code class="font-bold">chief-architect-orchestrator</code> — Agente primário padrão. Classifica solicitações, seleciona especialistas, orquestra execução.</div>
+<h3 class="font-bold mb-2">Diretores (Primary — 10)</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+<div class="bg-white border rounded p-1.5"><code>director-architecture</code> Arquitetura, SOLID, ADRs</div>
+<div class="bg-white border rounded p-1.5"><code>director-quality</code> Quality gates, testes, coverage</div>
+<div class="bg-white border rounded p-1.5"><code>director-runtime</code> Incidentes, logs, produção</div>
+<div class="bg-white border rounded p-1.5"><code>director-governance</code> Políticas, RBAC, auditoria</div>
+<div class="bg-white border rounded p-1.5"><code>legal-compliance-director</code> LGPD, fiscal, trabalhista</div>
+<div class="bg-white border rounded p-1.5"><code>documentation-director</code> Manuais, docs, changelog</div>
+<div class="bg-white border rounded p-1.5"><code>customer-success-director</code> Suporte, treinamento</div>
+<div class="bg-white border rounded p-1.5"><code>data-platform-director</code> Banco, EF Core, performance</div>
+<div class="bg-white border rounded p-1.5"><code>dotnet-architecture-director</code> .NET, padrões, packages</div>
+<div class="bg-white border rounded p-1.5"><code>github-devops-director</code> GitHub, CI/CD, releases</div>
+</div>
+<h3 class="font-bold mt-3 mb-2">Engenheiros (Subagent — 7)</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+<div class="bg-white border rounded p-1.5"><code>quality-gates-engineer</code> Build, testes, coverage</div>
+<div class="bg-white border rounded p-1.5"><code>memory-curator-engineer</code> Memória, reindexação</div>
+<div class="bg-white border rounded p-1.5"><code>project-recognition-engineer</code> Reconhecimento de projeto</div>
+<div class="bg-white border rounded p-1.5"><code>development-feature-engineer</code> Features, CRUD</div>
+<div class="bg-white border rounded p-1.5"><code>knowledge-ingestion-engineer</code> Ingestão de conhecimento</div>
+<div class="bg-white border rounded p-1.5"><code>support-intelligence-engineer</code> Suporte, playbooks</div>
+<div class="bg-white border rounded p-1.5"><code>legacy-knowledge-curator</code> Conhecimento legado</div>
+</div>
+<h3 class="font-bold mt-3 mb-2">Especialistas (Subagent — 8)</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+<div class="bg-white border rounded p-1.5"><code>specialist-rbac</code> Permissões</div>
+<div class="bg-white border rounded p-1.5"><code>specialist-erp-domain</code> Domínio ERP</div>
+<div class="bg-white border rounded p-1.5"><code>specialist-knowledge-curation</code> Curadoria</div>
+<div class="bg-white border rounded p-1.5"><code>specialist-policy-engine</code> Políticas</div>
+<div class="bg-white border rounded p-1.5"><code>specialist-reverse-engineering</code> Engenharia reversa</div>
+<div class="bg-white border rounded p-1.5"><code>specialist-support</code> Suporte técnico</div>
+<div class="bg-white border rounded p-1.5"><code>specialist-benchmark</code> Benchmarks</div>
+<div class="bg-white border rounded p-1.5"><code>ai-provider-router</code> Provider routing</div>
+</div>
+<h3 class="font-bold mt-3 mb-2">Gerentes e Orquestradores (Subagent — 8)</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+<div class="bg-white border rounded p-1.5"><code>manager-memory</code> Memória viva</div>
+<div class="bg-white border rounded p-1.5"><code>manager-event-bus</code> Eventos</div>
+<div class="bg-white border rounded p-1.5"><code>manager-state-machine</code> Estados</div>
+<div class="bg-white border rounded p-1.5"><code>domain-board-orchestrator</code> Conselho domínio</div>
+<div class="bg-white border rounded p-1.5"><code>technical-board-orchestrator</code> Conselho técnico</div>
+<div class="bg-white border rounded p-1.5"><code>task-decomposer</code> Decomposição</div>
+<div class="bg-white border rounded p-1.5"><code>task-executor</code> Execução</div>
+<div class="bg-white border rounded p-1.5"><code>sdd-generator</code> Geração SDD</div>
+</div>
+<h3 class="font-bold mt-3 mb-2">Outros Agents</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+<div class="bg-white border rounded p-1.5"><code>complexity-classifier</code> Classificação de complexidade</div>
+<div class="bg-white border rounded p-1.5"><code>deep-request-analyzer</code> Análise profunda</div>
+<div class="bg-white border rounded p-1.5"><code>lesson-applier</code> Aplicação de lições</div>
+<div class="bg-white border rounded p-1.5"><code>lesson-extractor</code> Extração de lições</div>
+<div class="bg-white border rounded p-1.5"><code>feedback-capture</code> Captura de feedback</div>
+</div>
+</div>
+
+<!-- ========== SKILLS ========== -->
+<div id="s-skills" class="sec">
+<h1 class="text-3xl font-bold mb-4">Skills (151)</h1>
+<p class="text-sm mb-3">Skills seguem padrão Agent Skills (agentskills.io). Cada uma com SKILL.md (frontmatter + instruções).</p>
+<h3 class="font-bold mb-2">Por Categoria</h3>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Categoria</th><th class="p-2 text-center">Qtd</th><th class="p-2">Exemplos</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">enterprise-engineer</td><td class="p-2 text-center">40+</td><td class="p-2">quality-gates, memory-management, snapshots, rbac</td></tr>
+<tr class="border-t"><td class="p-2">technical-expert</td><td class="p-2 text-center">15+</td><td class="p-2">dotnet-enterprise, blazor-tailwind, postgresql-efcore</td></tr>
+<tr class="border-t"><td class="p-2">domain-expert</td><td class="p-2 text-center">10+</td><td class="p-2">fiscal-tax, accounting, inventory, labor-law</td></tr>
+<tr class="border-t"><td class="p-2">continuous-security</td><td class="p-2 text-center">8+</td><td class="p-2">auth-security, secure-api, supply-chain, LGPD</td></tr>
+<tr class="border-t"><td class="p-2">testing</td><td class="p-2 text-center">6+</td><td class="p-2">stryker, nbomber, wiremock, testcontainers</td></tr>
+<tr class="border-t"><td class="p-2">knowledge-first</td><td class="p-2 text-center">5+</td><td class="p-2">hybrid-rag, knowledge-graph, knowledge-ingestion</td></tr>
+<tr class="border-t"><td class="p-2">operations</td><td class="p-2 text-center">5+</td><td class="p-2">backup-restore, devops-ci-cd, release-manager</td></tr>
+<tr class="border-t"><td class="p-2">strategic-intelligence</td><td class="p-2 text-center">5+</td><td class="p-2">autonomy-levels, cost-aware-intelligence, strategic-roadmap</td></tr>
+</tbody></table>
+<h3 class="font-bold mb-2">Top 15 Skills</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-1 text-xs">
+<div class="bg-white border rounded p-1.5"><code class="font-bold">result-comparator</code> Consenso, scoring</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">dotnet-enterprise-expert</code> .NET, ASP.NET Core</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">quality-gates</code> Build, testes, coverage</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">fiscal-tax-expert</code> ICMS, PIS, COFINS</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">accounting-expert</code> Plano de contas, DRE</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">labor-law-expert</code> CLT, FGTS, INSS</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">auth-security-expert</code> JWT, OAuth2, MFA</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">database-efcore-expert</code> EF Core, migrations</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">inventory-domain-expert</code> Estoque, curva ABC</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">cnab-payment-expert</code> CNAB, boletos, PIX</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">procurement-purchasing-expert</code> Compras, cotações</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">esocial-compliance-expert</code> eSocial, eventos</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">sped-fiscal-expert</code> EFD, ECD, ECF</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">marketplace-integration-expert</code> ML, Amazon, Shopee</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">payment-gateway-expert</code> Stripe, Pagar.me, PIX</div>
+</div>
+</div>
+
+<!-- ========== COMMANDS ========== -->
+<div id="s-commands" class="sec">
+<h1 class="text-3xl font-bold mb-4">Commands (129)</h1>
+<h3 class="font-bold mb-2">17 Public Commands</h3>
+<div class="space-y-2 text-sm">
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/xforge [tarefa]</code> — Roteamento universal. Interpreta intenção e seleciona melhor caminho.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/analyze [-project|-security|-ux|-architecture]</code> — Análise profunda multi-dimensional.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/create-project</code> — Scaffolding de novo projeto (Clean Architecture, DI, Swagger).</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/develop [feature|bugfix|refactor]</code> — Criar código seguindo golden rules.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/quality</code> — Rodar quality gates: build, testes, coverage, SOLID, segurança.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/security [audit|lgpd|api|auth|deps]</code> — Auditoria de segurança completa.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/memory [save|search|list|audit]</code> — Gerenciar memória do projeto.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/knowledge [ingest|search|audit|reindex]</code> — Base de conhecimento e RAG.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/document [api|readme|changelog|adr]</code> — Gerar documentação.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/release [prepare|changelog|rollback]</code> — Preparar e executar release.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/test [unit|integration|e2e|mutation]</code> — Rodar testes.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/backup [create|list|restore|verify]</code> — Snapshots e restore.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/create-erp</code> — ERP brasileiro completo (fiscal, estoque, financeiro, folha).</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/create-api</code> — API REST profissional com auth, testes, documentação.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/create-blazor</code> — App Blazor com Tailwind e design system.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/dashboard</code> — Métricas, saúde do sistema, domínios.</div>
+<div class="bg-white border rounded p-2"><code class="text-blue-600 font-bold">/check-updates</code> — Monitorar fontes oficiais (28 fontes).</div>
+</div>
+<h3 class="font-bold mt-3 mb-2">Other Commands (112)</h3>
+<p class="text-sm text-gray-600">Commands internos, workflows, aliases e comandos de criação (xforge-create-agent, xforge-create-skill, etc).</p>
+</div>
+
+<!-- ========== REGRAS ========== -->
+<div id="s-regras" class="sec">
+<h1 class="text-3xl font-bold mb-4">Regras (30)</h1>
+<p class="text-sm mb-3">Carregadas via <code class="ic">kilo.jsonc → instructions: [".kilo/rules/*.md"]</code></p>
+<table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2">Regra</th><th class="p-2">Conteúdo</th></tr></thead><tbody>
+<tr class="border-t bg-red-50"><td class="p-2 font-bold">01-golden-rules</td><td class="p-2">SOLID, SRP, pacotes estáveis, XForge.MediatR obrigatório, AutoMapper obrigatório</td></tr>
+<tr class="border-t"><td class="p-2">security-rules</td><td class="p-2">6 proibições: hardcoded secrets, SQL injection, etc.</td></tr>
+<tr class="border-t"><td class="p-2">rbac-rules</td><td class="p-2">7 ações que exigem permissão (admin, governance, fiscal, etc)</td></tr>
+<tr class="border-t"><td class="p-2">memory-rules</td><td class="p-2">8 comportamentos obrigatórios para memória</td></tr>
+<tr class="border-t"><td class="p-2">knowledge-rules</td><td class="p-2">Origem, confiança, rastreabilidade de conhecimento</td></tr>
+<tr class="border-t"><td class="p-2">trust-score-rules</td><td class="p-2">7 faixas de confiança (0-100)</td></tr>
+<tr class="border-t"><td class="p-2">curation-rules</td><td class="p-2">6 ações de curadoria (dedup, compress, deprecate, promote)</td></tr>
+<tr class="border-t"><td class="p-2">ttl-rules</td><td class="p-2">Revalidação por dependência e idade</td></tr>
+<tr class="border-t"><td class="p-2">human-review-rules</td><td class="p-2">7 triggers obrigatórios de review humano</td></tr>
+<tr class="border-t"><td class="p-2">audit-trail-rules</td><td class="p-2">8 campos obrigatórios por mudança</td></tr>
+<tr class="border-t"><td class="p-2">cost-rules</td><td class="p-2">6 campos para log de custo, prefer local sobre cloud</td></tr>
+<tr class="border-t"><td class="p-2">event-bus-rules</td><td class="p-2">6 eventos obrigatórios, estrutura de evento</td></tr>
+<tr class="border-t"><td class="p-2">state-machine-rules</td><td class="p-2">5 regras de máquina de estados</td></tr>
+<tr class="border-t"><td class="p-2">promotion-rules</td><td class="p-2">Pipeline de promoção de conhecimento</td></tr>
+<tr class="border-t"><td class="p-2">policy-rules</td><td class="p-2">5 exemplos de políticas executáveis</td></tr>
+<tr class="border-t"><td class="p-2">provider-routing-rules</td><td class="p-2">3 tiers de roteamento por complexidade</td></tr>
+<tr class="border-t"><td class="p-2">enterprise-architecture-rules</td><td class="p-2">6 regras de arquitetura (desacoplamento, bounded contexts)</td></tr>
+<tr class="border-t"><td class="p-2">active-project-root-rules</td><td class="p-2">Regra de diretório ativo</td></tr>
+<tr class="border-t"><td class="p-2">legacy-import-rules</td><td class="p-2">9 regras para importação de legado</td></tr>
+<tr class="border-t"><td class="p-2">03-memory-auto-learning-rules</td><td class="p-2">Ciclo de aprendizado automático</td></tr>
+<tr class="border-t"><td class="p-2">manual-sync-rules</td><td class="p-2">Sincronização com manual</td></tr>
+<tr class="border-t"><td class="p-2">00-xforge-rule-index</td><td class="p-2">Índice de todas as regras</td></tr>
+</tbody></table>
+</div>
+
+<!-- ========== MEMÓRIA ========== -->
+<div id="s-memoria" class="sec">
+<h1 class="text-3xl font-bold mb-4">Memória</h1>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Tipo</th><th class="p-2">Local</th><th class="p-2">Retenção</th><th class="p-2">Exemplo</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">Decision</td><td class="p-2">.xforge/decisions/</td><td class="p-2">Permanente</td><td class="p-2">"Usar PostgreSQL por ACID"</td></tr>
+<tr class="border-t"><td class="p-2">Session</td><td class="p-2">.xforge/memory/sessions/</td><td class="p-2">7 dias</td><td class="p-2">"Refactor auth module"</td></tr>
+<tr class="border-t"><td class="p-2">Global</td><td class="p-2">.xforge/memory/global/</td><td class="p-2">Permanente</td><td class="p-2">"Prefer XForge.MediatR"</td></tr>
+<tr class="border-t"><td class="p-2">Learning</td><td class="p-2">.xforge/learning/</td><td class="p-2">Permanente</td><td class="p-2">"EF Core: Include() causa N+1"</td></tr>
+</tbody></table>
+<h3 class="font-bold mb-2">Como Usar</h3>
+<pre>/memory salvar: usamos Minimal APIs ao invés de Controllers
+/memory buscar decisões sobre autenticação
+/memory auditar integridade
+/memory listar decisões arquiteturais</pre>
+</div>
+
+<!-- ========== CONHECIMENTO ========== -->
+<div id="s-conhecimento" class="sec">
+<h1 class="text-3xl font-bold mb-4">Conhecimento (172 arquivos)</h1>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Categoria</th><th class="p-2 text-center">Qtd</th><th class="p-2">Exemplos</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">Folha de Pagamento</td><td class="p-2 text-center">28</td><td class="p-2">INSS 2025, IRRF 2025, FGTS, férias, 13º, rescisão, eSocial</td></tr>
+<tr class="border-t"><td class="p-2">Arquitetura/.NET</td><td class="p-2 text-center">22</td><td class="p-2">Clean, DDD, CQRS, MAUI, Identity, SignalR, gRPC, Tauri</td></tr>
+<tr class="border-t"><td class="p-2">Fiscal/Tributos</td><td class="p-2 text-center">16</td><td class="p-2">ICMS, PIS, COFINS, reforma tributária, CNPJ alfanumérico</td></tr>
+<tr class="border-t"><td class="p-2">ERP</td><td class="p-2 text-center">14</td><td class="p-2">Estoque, vendas, compras, PDV, CRM, produção, orçamentos</td></tr>
+<tr class="border-t"><td class="p-2">Contabilidade</td><td class="p-2 text-center">11</td><td class="p-2">Plano de contas, DRE, balanço, ECD, ECF, LCPR</td></tr>
+<tr class="border-t"><td class="p-2">Padrões/Técnicas</td><td class="p-2 text-center">22</td><td class="p-2">Hangfire, MediatR, FluentValidation, AutoMapper, Swagger</td></tr>
+<tr class="border-t"><td class="p-2">Financeiro</td><td class="p-2 text-center">7</td><td class="p-2">CNAB, fluxo de caixa, conciliação, contas a pagar/receber</td></tr>
+<tr class="border-t"><td class="p-2">Curated/Operational</td><td class="p-2 text-center">30+</td><td class="p-2">Playbooks de produção, anti-patterns aprovados</td></tr>
+<tr class="border-t"><td class="p-2">Outros</td><td class="p-2 text-center">20+</td><td class="p-2">Fluxos, ADRs, glossário, compliance LGPD</td></tr>
+</tbody></table>
+</div>
+
+<!-- ========== PERFORMANCE ========== -->
+<div id="s-performance" class="sec">
+<h1 class="text-3xl font-bold mb-4">Performance Optimization</h1>
+<p class="text-sm mb-3">Estratégias para maximizar performance com IA local em hardware limitado (16GB VRAM, 32GB RAM).</p>
+
+<h3 class="font-bold mb-2">Lazy Knowledge Loading</h3>
+<div class="box green text-sm">
+<p><strong>Problema:</strong> Carregar 172 knowledge files desperdiça tokens e lentifica inference.</p>
+<p><strong>Solução:</strong> INDEX.json com 172 arquivos indexados por keywords, domínio, categoria.</p>
+<pre class="mt-2">1. Ler INDEX.json (~2.6k linhas, mas só keywords/summaries)
+2. Buscar por keywords da tarefa
+3. Carregar APENAS resumo dos 2-3 arquivos mais relevantes
+4. Se resumo é suficiente → não carregar arquivo completo
+5. Se precisa de mais → Read(filePath, limit=100)</pre>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Context Eviction Policy</h3>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Trigger</th><th class="p-2">Ação</th><th class="p-2">Resultado</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">80% (25.6k)</td><td class="p-2">Comprimir histórico</td><td class="p-2">Summariza turns &gt; 3 para trás</td></tr>
+<tr class="border-t"><td class="p-2">90% (28.8k)</td><td class="p-2">Evict knowledge files</td><td class="p-2">Remove files não usados nos últimos 2 turns</td></tr>
+<tr class="border-t"><td class="p-2">95% (30.4k)</td><td class="p-2">Truncar tool outputs</td><td class="p-2">Mantém primeiras 200 + últimas 100 linhas</td></tr>
+<tr class="border-t"><td class="p-2">98% (31.4k)</td><td class="p-2">Force compact</td><td class="p-2">Resume tudo, mantém só contexto da tarefa</td></tr>
+</tbody></table>
+
+<h3 class="font-bold mt-3 mb-2">Split Architecture Flow</h3>
+<pre>User Request
+    │
+    ▼
+┌─────────────────┐
+│ Router (7B)     │  &lt;2s — classifica, seleciona skill + knowledge
+│ Q4_0 · 8k ctx   │  Output: JSON {intent, skill, knowledge_files, complexity}
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    │         │
+    ▼         ▼
+┌────────┐ ┌────────┐
+│Worker  │ │Router  │  se S/M complexity
+│(72B)   │ │(7B)    │  responde direto
+│Q4_K_M  │ │sozinho │
+│32k ctx │ └────────┘
+└────────┘
+    │
+    ▼
+  Response</pre>
+
+<h3 class="font-bold mt-3 mb-2">Resumo Executivo em Knowledge Files</h3>
+<div class="box purple text-sm">
+<p>Cada knowledge file agora começa com uma seção <code>## Resumo Executivo</code> contendo:</p>
+<ul class="list-disc ml-4 mt-1">
+<li>3-5 bullet points com os pontos-chave</li>
+<li>Subseção <code>## Quick Reference</code> com dados críticos em tabela compacta</li>
+</ul>
+<p class="mt-2">Isso permite ao Router decidir se precisa do arquivo completo SEM carregá-lo.</p>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Métricas de Performance</h3>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Métrica</th><th class="p-2">Antes</th><th class="p-2">Depois</th><th class="p-2">Melhoria</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">Latência Router</td><td class="p-2">30-60s (128k)</td><td class="p-2">&lt;2s (8k)</td><td class="p-2 font-semibold text-green-600">~20x</td></tr>
+<tr class="border-t"><td class="p-2">Tokens por turn</td><td class="p-2">~50k (carrega tudo)</td><td class="p-2">~12k (lazy load)</td><td class="p-2 font-semibold text-green-600">~75% menos</td></tr>
+<tr class="border-t"><td class="p-2">Knowledge loading</td><td class="p-2">172 arquivos (upfront)</td><td class="p-2">2-3 arquivos (sob demanda)</td><td class="p-2 font-semibold text-green-600">~98% menos</td></tr>
+<tr class="border-t"><td class="p-2">Context overflow</td><td class="p-2">Sempre (128k cheio)</td><td class="p-2">Raro (eviction automática)</td><td class="p-2 font-semibold text-green-600">~95% menos</td></tr>
+</tbody></table>
+
+<h3 class="font-bold mt-3 mb-2">Checkpoint & Resume (Tarefas Ilimitadas)</h3>
+<div class="box green text-sm">
+<p><strong>Problema:</strong> Tarefa excede contexto mesmo após compactação → agente para.</p>
+<p><strong>Solução:</strong> Salva checkpoint → nova sessão → retoma de onde parou.</p>
+<pre class="mt-2">Sessão 1: Cria entidades, services (60%) → checkpoint
+Sessão 2: Cria validações, testes (90%) → checkpoint
+Sessão 3: Cria docs, quality gates (100%) → completo ✅</pre>
+<p class="mt-2"><strong>Checkpoint contém:</strong> steps completados, step atual, steps restantes, arquivos criados/modificados, decisões tomadas.</p>
+<p><strong>Arquivo:</strong> <code>.xforge/checkpoints/&lt;task-id&gt;.json</code></p>
+<p><strong>Limite:</strong> Máximo 10 retomadas por tarefa.</p>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Adaptive Eviction (Limiares Adaptativos)</h3>
+<div class="box yellow text-sm">
+<p><strong>Problema:</strong> Limiares fixos (32k) não funcionam com 128k context.</p>
+<p><strong>Solução:</strong> Limiares baseados em % do contexto real — adapta automaticamente.</p>
+<table class="w-full text-sm border mt-2"><thead class="bg-gray-100"><tr><th class="p-1">Trigger</th><th class="p-1">32k Context</th><th class="p-1">64k Context</th><th class="p-1">128k Context</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-1">80% (comprimir)</td><td class="p-1">25.6k</td><td class="p-1">51.2k</td><td class="p-1">102.4k</td></tr>
+<tr class="border-t"><td class="p-1">90% (evict knowledge)</td><td class="p-1">28.8k</td><td class="p-1">57.6k</td><td class="p-1">115.2k</td></tr>
+<tr class="border-t"><td class="p-1">95% (truncar tools)</td><td class="p-1">30.4k</td><td class="p-1">60.8k</td><td class="p-1">121.6k</td></tr>
+<tr class="border-t"><td class="p-1">98% (force compact)</td><td class="p-1">31.4k</td><td class="p-1">62.7k</td><td class="p-1">125.4k</td></tr>
+</tbody></table>
+<p class="mt-2"><strong>Config:</strong> <code>xforge-engineer.config.json</code> → <code>contextWindow.eviction.rules</code></p>
+</div>
+</div>
+
+<!-- ========== INTELIGÊNCIA ========== -->
+<div id="s-inteligencia" class="sec">
+<h1 class="text-3xl font-bold mb-4">Inteligência Proativa</h1>
+<p class="text-sm mb-3">O sistema XForge não é apenas reativo — ele previne erros, detecta padrões e sugere melhorias automaticamente.</p>
+
+<h3 class="font-bold mb-2">1. Error Pattern Learning</h3>
+<div class="box blue text-sm">
+<p><strong>20 erros catalogados</strong> com causas raiz, soluções e regras de prevenção.</p>
+<p class="mt-2"><strong>Top 5 erros mais frequentes:</strong></p>
+<ul class="list-disc ml-4 mt-1">
+<li><strong>ERR-002</strong>: CS8600 nullable warnings (muito alta)</li>
+<li><strong>ERR-004</strong>: NullReferenceException em runtime (muito alta)</li>
+<li><strong>ERR-001</strong>: CS0246 tipo não encontrado (alta)</li>
+<li><strong>ERR-005</strong>: Sequence contains no elements (alta)</li>
+<li><strong>ERR-007</strong>: Unique constraint violation (alta)</li>
+</ul>
+<p class="mt-2"><strong>11 auto-fix habilitados</strong> — o agente corrige automaticamente</p>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">2. Self-Healing Rules</h3>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Regra</th><th class="p-2">Detecta</th><th class="p-2">Auto-fix</th><th class="p-2">Severidade</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2 font-semibold">SH-001</td><td class="p-2">Using não utilizado</td><td class="p-2">Remove</td><td class="p-2">baixa</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">SH-003</td><td class="p-2">Null access sem ?.</td><td class="p-2">Adiciona ?.</td><td class="p-2">alta</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">SH-004</td><td class="p-2">FirstOrDefault sem null check</td><td class="p-2">Adiciona if</td><td class="p-2">alta</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">SH-005</td><td class="p-2">Sync-over-async</td><td class="p-2">Substitui por await</td><td class="p-2">alta</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">SH-007</td><td class="p-2">SQL Injection</td><td class="p-2">Parameteriza</td><td class="p-2">crítica</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">SH-008</td><td class="p-2">Secret hardcoded</td><td class="p-2">Use secure secret storage</td><td class="p-2">crítica</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">SH-009</td><td class="p-2">Sem CancellationToken</td><td class="p-2">Adiciona parâmetro</td><td class="p-2">média</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">SH-010</td><td class="p-2">new HttpClient()</td><td class="p-2">Sugere factory</td><td class="p-2">alta</td></tr>
+</tbody></table>
+
+<h3 class="font-bold mt-3 mb-2">3. Proactive Quality Gates</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+<div class="bg-green-50 border border-green-200 rounded p-3 text-sm">
+<p class="font-bold text-green-800">Pré-Commit (&lt;2s)</p>
+<p>Lint, usings, null safety, secrets, self-healing</p>
+</div>
+<div class="bg-blue-50 border border-blue-200 rounded p-3 text-sm">
+<p class="font-bold text-blue-800">Pré-Build (&lt;30s)</p>
+<p>Restore, build, warnings, async safety, Docker</p>
+</div>
+<div class="bg-yellow-50 border border-yellow-200 rounded p-3 text-sm">
+<p class="font-bold text-yellow-800">Pré-Push (&lt;60s)</p>
+<p>Tests, coverage ≥85%, CVE scan, NuGet audit</p>
+</div>
+<div class="bg-purple-50 border border-purple-200 rounded p-3 text-sm">
+<p class="font-bold text-purple-800">Pós-Merge (&lt;5min)</p>
+<p>Full build, full tests, security, Docker, integration</p>
+</div>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">4. Proactive Intelligence</h3>
+<div class="box green text-sm">
+<p><strong>5 tipos de análise proativa:</strong></p>
+<ul class="list-disc ml-4 mt-1">
+<li><strong>Context-Aware Suggestions</strong>: Sugere ações baseado no que você está editando</li>
+<li><strong>Error Prevention</strong>: Verifica erros conhecidos antes que aconteçam</li>
+<li><strong>Impact Analysis</strong>: Lista arquivos impactados por uma mudança</li>
+<li><strong>Pattern Recognition</strong>: Detecta padrões recorrentes e sugere automação</li>
+<li><strong>Knowledge Gap Detection</strong>: Identifica quando falta conhecimento</li>
+</ul>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">5. Dependency Intelligence</h3>
+<div class="box yellow text-sm">
+<p><strong>Monitoramento automático de:</strong></p>
+<ul class="list-disc ml-4 mt-1">
+<li><strong>CVEs</strong>: Verificação a cada build (crítico bloqueia, alto alerta)</li>
+<li><strong>Atualizações</strong>: Patch (auto), Minor (revisão), Major (análise)</li>
+<li><strong>Breaking Changes</strong>: Análise de release notes antes de atualizar</li>
+<li><strong>Licenças</strong>: Alerta para GPL/AGPL/SSPL</li>
+<li><strong>Preview packages</strong>: NUNCA auto-atualizar para preview/RC</li>
+</ul>
+<p class="mt-2"><strong>Comando:</strong> <code>.\.kilo\automation\scripts\dependency-check.ps1 -Report</code></p>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Scripts de Inteligência</h3>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Script</th><th class="p-2">Uso</th><th class="p-2">Frequência</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2 font-semibold">pre-commit.ps1</td><td class="p-2">Quality gate pré-commit</td><td class="p-2">A cada commit</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">dependency-check.ps1</td><td class="p-2">Scanner de dependências</td><td class="p-2">Diário/Semanal</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">proactive-intelligence.ps1</td><td class="p-2">Análise proativa completa</td><td class="p-2">Sob demanda</td></tr>
+</tbody></table>
+
+<h3 class="font-bold mt-3 mb-2">6. Interaction Intelligence</h3>
+<p class="text-sm mb-3">O agente não é apenas executor — ele pergunta, sugere, alerta e itera de forma inteligente.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+<div class="bg-blue-50 border border-blue-200 rounded p-3 text-sm">
+<p class="font-bold text-blue-800">🔍 Clarification Protocol</p>
+<p>Pergunta antes de executar quando há ambiguidade. Máximo 5 perguntas, sempre recomenda a melhor opção.</p>
+</div>
+<div class="bg-green-50 border border-green-200 rounded p-3 text-sm">
+<p class="font-bold text-green-800">📊 Decision Support</p>
+<p>Apresenta 2-4 opções em tabela comparativa com tradeoffs. Sempre recomenda uma e explica o porquê.</p>
+</div>
+<div class="bg-yellow-50 border border-yellow-200 rounded p-3 text-sm">
+<p class="font-bold text-yellow-800">🔄 Iterative Refinement</p>
+<p>Confirma resultado após cada ação. Sugere 2-3 próximos passos com prioridade.</p>
+</div>
+<div class="bg-purple-50 border border-purple-200 rounded p-3 text-sm">
+<p class="font-bold text-purple-800">📂 Context Gathering</p>
+<p>Lê antes de escrever. Mapeia dependências, verifica testes, planeja passos antes de executar.</p>
+</div>
+</div>
+
+<div class="box green text-sm mb-4">
+<p class="font-bold">💡 Suggestion Engine</p>
+<p class="mt-1">Enquanto executa, sugere até 3 melhorias proativamente. Cada sugestão tem impacto descrito. Respeita "não" — não insiste.</p>
+<pre class="mt-2">Exemplo de fluxo interação:
+Você: "Criar endpoint de pagamento"
+IA: 🔍 Qual tipo? (a) Boleto (b) PIX (c) Cartão
+Você: (b)
+IA: 📊 Gateway: (a) Stripe (b) PagSeguro (recomendado)
+Você: (a)
+IA: ✅ Criado POST /api/pagamentos. Próximos:
+    1. GET /api/pagamentos/{id} (recomendado)
+    2. Validação FluentValidation (recomendado)
+    3. Testes unitários (recomendado)
+    Quer que eu execute? (1/2/3/todos/não)</pre>
+</div>
+
+</div>
+
+<!-- ========== INTERAÇÃO ========== -->
+<div id="s-interacao" class="sec">
+<h1 class="text-3xl font-bold mb-4">Sistemas de Interação</h1>
+<p class="text-sm mb-3">5 sistemas que governam como o agente interage: pergunta, sugere, alerta e itera de forma inteligente.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+<div class="bg-blue-50 border border-blue-200 rounded p-3 text-sm">
+<p class="font-bold text-blue-800">🔍 Clarification Protocol</p>
+<p class="mt-1">Pergunta antes de executar quando há ambiguidade. Máximo 5 perguntas, sempre recomenda a melhor opção com letras (a/b/c).</p>
+</div>
+<div class="bg-green-50 border border-green-200 rounded p-3 text-sm">
+<p class="font-bold text-green-800">📊 Decision Support</p>
+<p class="mt-1">Apresenta 2-4 opções em tabela comparativa com tradeoffs. Sempre recomenda uma e explica o porquê em 1 frase.</p>
+</div>
+<div class="bg-yellow-50 border border-yellow-200 rounded p-3 text-sm">
+<p class="font-bold text-yellow-800">🔄 Iterative Refinement</p>
+<p class="mt-1">Após cada ação significativa: confirma resultado, lista impacto, sugere 2-3 próximos passos com prioridade.</p>
+</div>
+<div class="bg-purple-50 border border-purple-200 rounded p-3 text-sm">
+<p class="font-bold text-purple-800">📂 Context Gathering</p>
+<p class="mt-1">Lê antes de escrever. Mapeia dependências, verifica testes existentes, planeja passos antes de executar.</p>
+</div>
+</div>
+
+<div class="box green text-sm mb-4">
+<p class="font-bold">💡 Suggestion Engine</p>
+<p class="mt-1">Enquanto executa, sugere até 3 melhorias proativamente. Cada sugestão tem impacto descrito. Respeita "não" — não insiste.</p>
+</div>
+
+<h3 class="font-bold mb-2">Exemplo Real: Diálogo Completo</h3>
+<div class="bg-gray-50 border rounded p-4 text-sm font-mono space-y-2">
+<p><span class="text-blue-600 font-bold">Você:</span> Criar módulo de pagamento</p>
+<p><span class="text-green-600 font-bold">IA:</span> 🔍 Detectei 3 pontos que preciso esclarecer:</p>
+<p class="ml-4">1. Tipo de pagamento?</p>
+<p class="ml-6">→ (a) Boleto bancário (CNAB 240/400)</p>
+<p class="ml-6">→ (b) PIX (QR Code + payload) ✅ recomendado</p>
+<p class="ml-6">→ (c) Cartão de crédito (Stripe/Mercado Pago)</p>
+<p class="ml-6">→ (d) Todos os acima</p>
+<p class="ml-4">2. Gateway de pagamento?</p>
+<p class="ml-6">→ (a) Stripe ✅ recomendado</p>
+<p class="ml-6">→ (b) PagSeguro</p>
+<p class="ml-6">→ (c) API bancária direta</p>
+<p class="ml-4">Responda com as letras (ex: "1b, 2a")</p>
+<p><span class="text-blue-600 font-bold">Você:</span> 1b, 2a</p>
+<p><span class="text-green-600 font-bold">IA:</span> 📂 Coletando contexto...</p>
+<p class="ml-4">Encontrei: 3 controllers dependem de PaymentService, 12 testes existem</p>
+<p class="ml-4">⚠️ Impacto: Mudanças afetam 3 controllers</p>
+<p class="ml-4">Planejo: 1) Ler PaymentService 2) Criar PIX endpoints 3) Rodar testes</p>
+<p class="ml-4">Posso prosseguir?</p>
+<p><span class="text-blue-600 font-bold">Você:</span> sim</p>
+<p><span class="text-green-600 font-bold">IA:</span> ✅ Criado POST /api/pagamentos/pix</p>
+<p class="ml-4">Resumo: 1 arquivo criado, 45 linhas, 0 erros</p>
+<p class="ml-4">Próximos passos:</p>
+<p class="ml-4">1. Criar GET /api/pagamentos/{id} (recomendado)</p>
+<p class="ml-4">2. Adicionar validação FluentValidation (recomendado)</p>
+<p class="ml-4">3. Criar testes unitários (recomendado)</p>
+<p class="ml-4">Quer que eu execute? (1/2/3/todos/não)</p>
+<p><span class="text-blue-600 font-bold">Você:</span> todos</p>
+<p><span class="text-green-600 font-bold">IA:</span> 💡 Enquanto implemento, observei que:</p>
+<p class="ml-4">1. Falta CancellationToken no método (prática padrão .NET 10)</p>
+<p class="ml-4">2. O gateway Stripe não tem retry policy</p>
+<p class="ml-4">3. Falta documentação Swagger para o endpoint</p>
+<p class="ml-4">Quer que eu implemente? (1/2/3/todas/não)</p>
+</div>
+
+<h3 class="font-bold mb-2">Session Memory</h3>
+<div class="box blue text-sm">
+<p>O sistema lembra preferências e decisões entre sessões:</p>
+<ul class="list-disc ml-4 mt-1">
+<li><strong>User Profile</strong>: nome, role, projetos, hardware, config AI</li>
+<li><strong>Preferences</strong>: preferências aprendidas (ex: "sempre XForge.MediatR") + explícitas</li>
+<li><strong>Decisions Log</strong>: decisões técnicas tomadas com resultado</li>
+<li><strong>Session History</strong>: resumo das últimas 20 sessões</li>
+</ul>
+<p class="mt-2">Resultado: menos perguntas repetidas, decisões consistentes, onboarding de 5s.</p>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Multi-Agent Orchestration</h3>
+<div class="box yellow text-sm">
+<p>Para tarefas complexas, múltiplos agentes trabalham em paralelo:</p>
+<table class="w-full text-sm border mt-2"><thead class="bg-gray-100"><tr><th class="p-1">Agente</th><th class="p-1">Modelo</th><th class="p-1">Especialidade</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-1">Fiscal Specialist</td><td class="p-1">72B</td><td class="p-1">Tabelas fiscais, ICMS, eSocial</td></tr>
+<tr class="border-t"><td class="p-1">Code Builder</td><td class="p-1">72B</td><td class="p-1">C#, Clean Architecture, patterns</td></tr>
+<tr class="border-t"><td class="p-1">Test Creator</td><td class="p-1">14B</td><td class="p-1">xUnit, FluentAssertions, Moq</td></tr>
+<tr class="border-t"><td class="p-1">Doc Writer</td><td class="p-1">7B</td><td class="p-1">Swagger, XML comments</td></tr>
+<tr class="border-t"><td class="p-1">Security Reviewer</td><td class="p-1">72B</td><td class="p-1">OWASP, LGPD, JWT</td></tr>
+<tr class="border-t"><td class="p-1">Performance Analyst</td><td class="p-1">14B</td><td class="p-1">N+1, memory leaks, async</td></tr>
+</tbody></table>
+<p class="mt-2"><strong>Speedup:</strong> 2-4x vs. agente único.</p>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Knowledge Versioning</h3>
+<div class="box purple text-sm">
+<p>Controle de versão para tabelas e regras fiscais:</p>
+<ul class="list-disc ml-4 mt-1">
+<li>8 itens rastreados (INSS, IRRF, eSocial, NF-e, Reforma, CNPJ)</li>
+<li>4 fontes oficiais monitoradas (Receita Federal, eSocial, INSS, SEFAZ)</li>
+<li>Status: active/expired com próxima revisão automática</li>
+<li>Ao expirar: alerta + sugere atualização</li>
+</ul>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Knowledge Validation</h3>
+<div class="box red text-sm">
+<p>Validação automática de 6 áreas críticas:</p>
+<table class="w-full text-sm border mt-2"><thead class="bg-gray-100"><tr><th class="p-1">Área</th><th class="p-1">Valida</th><th class="p-1">Script</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-1">INSS 2025</td><td class="p-1">Alíquotas, teto, faixas</td><td class="p-1">knowledge-validation.ps1</td></tr>
+<tr class="border-t"><td class="p-1">IRRF 2025</td><td class="p-1">Isenção, faixas</td><td class="p-1">knowledge-validation.ps1</td></tr>
+<tr class="border-t"><td class="p-1">eSocial</td><td class="p-1">Eventos, layout</td><td class="p-1">knowledge-validation.ps1</td></tr>
+<tr class="border-t"><td class="p-1">NF-e</td><td class="p-1">Versão 4.00</td><td class="p-1">knowledge-validation.ps1</td></tr>
+<tr class="border-t"><td class="p-1">Reforma Tributária</td><td class="p-1">IBS, CBS, timeline</td><td class="p-1">knowledge-validation.ps1</td></tr>
+<tr class="border-t"><td class="p-1">CNPJ Alfanumérico</td><td class="p-1">Deadline, migração</td><td class="p-1">knowledge-validation.ps1</td></tr>
+</tbody></table>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Live Dashboard</h3>
+<pre>.\.kilo\automation\scripts\live-dashboard.ps1</pre>
+<p class="text-sm text-gray-500 mt-1">Mostra: status do sistema, knowledge base, erros, versioning, quality gates, split architecture, health check.</p>
+</div>
+
+<!-- ========== AUTORESEARCH ========== -->
+<div id="s-autoresearch" class="sec">
+<h1 class="text-3xl font-bold mb-4">AutoResearch Engine</h1>
+<p class="text-sm mb-3">Inspirado no <a href="https://github.com/karpathy/autoresearch" class="text-blue-600 underline">karpathy/autoresearch</a>. Loop autônomo de experimentos: tenta, mede, keeps/discards, repete. O humano programa, o agente executa.</p>
+
+<h3 class="font-bold mb-2">O Loop Autônomo</h3>
+<div class="box blue text-sm">
+<pre>LOOP FOREVER:
+1. Escolher ideia de experimento
+2. Implementar mudança
+3. Commit
+4. Rodar score.ps1 → medir xfs
+5. SE melhorou → KEEP (avançar branch)
+6. SE piorou → DISCARD (revert + analisar)
+7. SE crash → tentar fix (máx 3) → senão discard
+8. Repetir
+NEVER STOP até humano interromper</pre>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Métrica Única: XForge Score (xfs)</h3>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Dimensão</th><th class="p-2">Peso</th><th class="p-2">O que mede</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2 font-semibold">Correctness</td><td class="p-2">30%</td><td class="p-2">Testes passam? Build limpo? Sem erros?</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">Performance</td><td class="p-2">20%</td><td class="p-2">Sem N+1, sem sync-over-async, sem memory leaks</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">Quality</td><td class="p-2">20%</td><td class="p-2">Formatação, warnings, padrões</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">Simplicity</td><td class="p-2">15%</td><td class="p-2">Mudança mínima, poucos arquivos, sem novas deps</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">Prevention</td><td class="p-2">15%</td><td class="p-2">Erros prevenidos, padrões aplicados</td></tr>
+</tbody></table>
+
+<div class="box red text-sm mb-4">
+<p class="font-bold">⚠️ Scoring Imutável</p>
+<p class="mt-1">O agente <strong>NUNCA</strong> pode modificar o sistema de pontuação. O script <code>score.ps1</code> é read-only. Os resultados em <code>results.tsv</code> são append-only. A única exceção é solicitação humana explícita.</p>
+</div>
+
+<h3 class="font-bold mb-2">Simplicity Criterion</h3>
+<div class="box green text-sm">
+<p><strong>"All else being equal, simpler is better."</strong></p>
+<table class="w-full text-sm border mt-2"><thead class="bg-gray-100"><tr><th class="p-1">Ganho xfs</th><th class="p-1">Complexidade</th><th class="p-1">Decisão</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-1">&gt; 5%</td><td class="p-1">Baixa</td><td class="p-1 font-semibold text-green-600">✅ KEEP</td></tr>
+<tr class="border-t"><td class="p-1">&gt; 5%</td><td class="p-1">Alta</td><td class="p-1 font-semibold text-yellow-600">⚠️ REVIEW</td></tr>
+<tr class="border-t"><td class="p-1">1-5%</td><td class="p-1">Média</td><td class="p-1 font-semibold text-yellow-600">⚠️ REVIEW</td></tr>
+<tr class="border-t"><td class="p-1">&lt; 1%</td><td class="p-1">Alta</td><td class="p-1 font-semibold text-red-600">❌ DISCARD</td></tr>
+</tbody></table>
+<p class="mt-2"><strong>Fórmula:</strong> <code>vale_a_pena = (ganho × 100) / (complexidade × 10)</code> — Se &gt; 1.0: KEEP</p>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Results Logging</h3>
+<pre>commit	xfs	correctness	performance	quality	simplicity	prevention	status	description	timestamp
+a1b2c3d	0.875	0.92	0.85	0.90	0.88	0.82	keep	FluentValidation	2026-06-11T10:30:00Z
+b2c3d4e	0.750	0.80	0.70	0.85	0.60	0.78	discard	Mudança radical	2026-06-11T10:35:00Z</pre>
+<p class="text-sm text-gray-500 mt-1">Arquivo: <code>.xforge/experiments/results.tsv</code> — append-only, com hash de integridade.</p>
+
+<h3 class="font-bold mt-3 mb-2">Exemplo Real: Sessão de Experimentos</h3>
+<div class="bg-gray-50 border rounded p-4 text-sm font-mono space-y-2">
+<p><span class="text-gray-500">═══ Experimento 1: Baseline ═══</span></p>
+<p>Mudança: Nenhuma (código original)</p>
+<p>Resultado: xfs = 0.750 | Status: keep</p>
+<p>→ Baseline registrada</p>
+<p></p>
+<p><span class="text-gray-500">═══ Experimento 2: Adicionar FluentValidation ═══</span></p>
+<p>Mudança: Criar ProductValidator com 5 regras</p>
+<p>Resultado: xfs = 0.820 (+0.070) | Status: keep</p>
+<p>→ +7% correctness, +5% quality</p>
+<p></p>
+<p><span class="text-gray-500">═══ Experimento 3: Migrar para Redis cache ═══</span></p>
+<p>Mudança: Adicionar Redis + cache layer</p>
+<p>Resultado: xfs = 0.780 (-0.040) | Status: discard</p>
+<p>→ Complexidade não justificou ganho (vale_a_pena = 0.67)</p>
+<p>→ Revert: git reset --hard HEAD~1</p>
+<p></p>
+<p><span class="text-gray-500">═══ Experimento 4: Otimizar queries N+1 ═══</span></p>
+<p>Mudança: Adicionar .Include() em 3 queries</p>
+<p>Resultado: xfs = 0.850 (+0.030) | Status: keep</p>
+<p>→ +3% performance, simplicidade alta</p>
+<p></p>
+<p><span class="text-gray-500">═══ Experimento 5: Refatorar PaymentService ═══</span></p>
+<p>Mudança: Separar em 4 classes (SRP)</p>
+<p>Resultado: xfs = 0.790 (-0.060) | Status: discard</p>
+<p>→ Muita complexidade para pouco ganho (vale_a_pena = 0.33)</p>
+<p>→ Lição: refactoring radical não valeu a pena</p>
+<p></p>
+<p><span class="text-green-600 font-bold">Resumo: 5 experimentos, 2 keeps (40%), xfs: 0.750 → 0.850 (+13%)</span></p>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Comandos</h3>
+<pre>/autoresearch start experiment loop
+/autoresearch stop loop
+/autoresearch view results
+/autoresearch analyze trend</pre>
+</div>
+
+<!-- ========== FERRAMENTAS ========== -->
+<div id="s-ferramentas" class="sec">
+<h1 class="text-3xl font-bold mb-4">Ferramentas e Web Access</h1>
+<p class="text-sm mb-3">Regras de uso de ferramentas — aplicável a TODOS os modelos de IA.</p>
+
+<h3 class="font-bold mb-2">playwright-mcp (Obrigatório para páginas web)</h3>
+<div class="box red text-sm mb-4">
+<p><strong>REGRA:</strong> Ao analisar qualquer página web, SEMPRE usar <code>playwright-mcp</code> — independente do modelo de IA (gemma, qwen, llama, claude, gpt).</p>
+<p class="mt-1"><code>webfetch</code> só retorna texto bruto — não renderiza CSS/JS. Para análise visual, layout, UX, screenshots → <code>playwright-mcp</code>.</p>
+</div>
+
+<h3 class="font-bold mb-2">Tabela de Decisão</h3>
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Tarefa</th><th class="p-2">Ferramenta</th><th class="p-2">Por quê</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">Analisar design de site</td><td class="p-2 font-semibold">playwright-mcp</td><td class="p-2">Renderiza página completa</td></tr>
+<tr class="border-t"><td class="p-2">Screenshot de página</td><td class="p-2 font-semibold">playwright-mcp</td><td class="p-2">Captura estado visual</td></tr>
+<tr class="border-t"><td class="p-2">Verificar layout/UX</td><td class="p-2 font-semibold">playwright-mcp</td><td class="p-2">Vê output renderizado</td></tr>
+<tr class="border-t"><td class="p-2">Testar formulários</td><td class="p-2 font-semibold">playwright-mcp</td><td class="p-2">Pode interagir com elementos</td></tr>
+<tr class="border-t"><td class="p-2">Verificar responsivo</td><td class="p-2 font-semibold">playwright-mcp</td><td class="p-2">Pode redimensionar viewport</td></tr>
+<tr class="border-t"><td class="p-2">Ler documentação API</td><td class="p-2">webfetch</td><td class="p-2">Retorna markdown/texto</td></tr>
+<tr class="border-t"><td class="p-2">Buscar conteúdo raw</td><td class="p-2">webfetch</td><td class="p-2">Mais leve, mais rápido</td></tr>
+</tbody></table>
+
+<h3 class="font-bold mb-2">Completion Rules</h3>
+<div class="box yellow text-sm">
+<p><strong>O agente DEVE completar a tarefa INTEIRA antes de pausar.</strong></p>
+<ul class="list-disc ml-4 mt-1">
+<li>NUNCA gerar código no chat — SEMPRE usar edit/write</li>
+<li>NUNCA parar no meio — completar tarefa inteira antes de pausar</li>
+<li>Salvar checkpoint se contexto encher</li>
+<li>Retry 3 vezes antes de parar</li>
+<li>Confirmar resultado SÓ DEPOIS de completar</li>
+</ul>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Research → Document → Execute</h3>
+<div class="box blue text-sm mb-4">
+<p><strong>Sistema de duas etapas com troca de modelo:</strong></p>
+<ol class="list-decimal list-inside">
+<li><strong>/research</strong> (IA robusta/paga): Analisa fontes → gera documentação</li>
+<li><strong>/document-execute</strong> (IA local/ollama): Executa backlog → desenvolve</li>
+</ol>
+<p class="mt-2">O usuário troca o modelo entre as fases conforme necessário.</p>
+</div>
+
+<table class="w-full text-sm border mb-4"><thead class="bg-gray-100"><tr><th class="p-2">Comando</th><th class="p-2">Fase</th><th class="p-2">Modelo Recomendado</th><th class="p-2">Output</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2 font-semibold">/research</td><td class="p-2">Análise</td><td class="p-2">IA robusta (paga)</td><td class="p-2">BACKLOG + TASKS + ROADMAP</td></tr>
+<tr class="border-t"><td class="p-2 font-semibold">/document-execute</td><td class="p-2">Execução</td><td class="p-2">IA local (ollama)</td><td class="p-2">Código + testes + docs</td></tr>
+</tbody></table>
+
+<h4 class="font-bold mt-2 mb-1">Fluxo</h4>
+<pre>/research analisar pasta ./src
+→ Gera: .xforge/project/ (BACKLOG, TASKS, ROADMAP)
+→ Troque o modelo para ollama
+/document-execute executar backlog
+→ Lê TASKS/, executa uma por vez, valida, reporta</pre>
+
+<h4 class="font-bold mt-2 mb-1">Fontes Suportadas (/research)</h4>
+<table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-1">Fonte</th><th class="p-1">Método</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-1">Pasta com arquivos</td><td class="p-1">read/glob</td></tr>
+<tr class="border-t"><td class="p-1">PDFs</td><td class="p-1">pdf skill</td></tr>
+<tr class="border-t"><td class="p-1">Web pages</td><td class="p-1">playwright-mcp</td></tr>
+<tr class="border-t"><td class="p-1">Repositórios</td><td class="p-1">git clone + read</td></tr>
+<tr class="border-t"><td class="p-1">XML/JSON</td><td class="p-1">read + parse</td></tr>
+</tbody></table>
+</div>
+
+<!-- ========== OFFLINE ========== -->
+<div id="s-offline" class="sec">
+<h1 class="text-3xl font-bold mb-4">Modo Offline — Split Architecture</h1>
+<p class="text-sm mb-3">Otimizado para hardware local: 16GB VRAM, 32GB RAM, Ryzen 7 5700G. Dois modelos rodam em paralelo para máxima eficiência.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+<h3 class="font-bold text-blue-800 mb-2">Router (Classificador)</h3>
+<p class="text-sm"><strong>Modelo:</strong> Detectado automaticamente</p>
+<p class="text-sm"><strong>Detecção:</strong> gemma, qwen2.5:7b, phi3, llama3:8b</p>
+<p class="text-sm"><strong>Função:</strong> Classifica intenção, seleciona skill, escolhe knowledge</p>
+</div>
+<div class="bg-green-50 border border-green-200 rounded-lg p-4">
+<h3 class="font-bold text-green-800 mb-2">Worker (Execução)</h3>
+<p class="text-sm"><strong>Modelo:</strong> Detectado automaticamente</p>
+<p class="text-sm"><strong>Detecção:</strong> qwen3-coder, qwen2.5:72b, deepseek-coder</p>
+<p class="text-sm"><strong>Função:</strong> Geração de código, raciocínio complexo, multi-file</p>
+</div>
+</div>
+<div class="bg-green-50 border border-green-200 rounded-lg p-4">
+<h3 class="font-bold text-green-800 mb-2">Worker (Execução)</h3>
+<p class="text-sm"><strong>Modelo:</strong> qwen2.5:72b (Q4_K_M)</p>
+<p class="text-sm"><strong>Contexto:</strong> 32k tokens</p>
+<p class="text-sm"><strong>VRAM:</strong> ~10GB + 22GB RAM</p>
+<p class="text-sm"><strong>GPU Offload:</strong> ~35% das camadas</p>
+<p class="text-sm mt-2 text-gray-600">Geração de código, raciocínio complexo, multi-file</p>
+</div>
+</div>
+
+<h3 class="font-bold mb-2">Detecção Automática de Modelos</h3>
+<div class="box green text-sm mb-4">
+<p><strong>Não precisa de modelos específicos</strong> — o sistema detecta automaticamente qual modelo serve para cada papel:</p>
+<table class="w-full text-sm border mt-2"><thead class="bg-gray-100"><tr><th class="p-1">Papel</th><th class="p-1">Padrão de Detecção</th><th class="p-1">Uso</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-1 font-semibold">Router</td><td class="p-1">gemma, qwen2.5:7b, phi3, llama3:8b</td><td class="p-1">Classificação rápida</td></tr>
+<tr class="border-t"><td class="p-1 font-semibold">Worker</td><td class="p-1">qwen3-coder, qwen2.5:72b, deepseek-coder</td><td class="p-1">Código complexo</td></tr>
+<tr class="border-t"><td class="p-1 font-semibold">Fallback</td><td class="p-1">qwen3.6, qwen2.5:14b, llama3:70b, mixtral</td><td class="p-1">Tarefas médias</td></tr>
+<tr class="border-t"><td class="p-1 font-semibold">Embed</td><td class="p-1">nomic-embed, embed</td><td class="p-1">RAG e busca</td></tr>
+</tbody></table>
+<p class="mt-2">O <code>xforge-init</code> detecta e mostra qual modelo foi atribuído a cada papel.</p>
+</div>
+
+<h3 class="font-bold mb-2">Context Budget (32k padrão)</h3>
+<div class="box blue text-sm">
+<p><strong>Por que 32k e não 128k?</strong> CPU inference com 128k é 3-4x mais lento. Para 90% das tarefas, 32k é suficiente.</p>
+<p class="mt-2"><strong>Eviction automática:</strong></p>
+<ul class="list-disc ml-4 mt-1">
+<li>80% (25.6k): Comprime histórico anterior a 3 turns</li>
+<li>90% (28.8k): Remove knowledge files não referenciados</li>
+<li>95% (30.4k): Trunca outputs de ferramentas > 300 linhas</li>
+<li>98% (31.4k): Compacta tudo — mantém apenas contexto da tarefa atual</li>
+</ul>
+</div>
+
+<h3 class="font-bold mt-3 mb-2">Setup Automático</h3>
+<pre>.\.kilo\automation\scripts\ollama-setup.ps1</pre>
+<p class="text-sm text-gray-500 mt-1">Instala Ollama e baixa modelos. O xforge-init detecta automaticamente os papéis.</p>
+
+<h3 class="font-bold mt-3 mb-2">Fluxo de Requisição</h3>
+<pre>Request → Router (modelo detectado automaticamente)
+           │ Classifica intenção
+           │ Seleciona skill + knowledge files
+           │ Estima complexidade (S/M/L/XL)
+           │
+           └→ Worker (modelo detectado automaticamente)
+                │ Recebe contexto otimizado (só o necessário)
+                │ Executa tarefa
+                │ Retorna resultado</pre>
+
+<h3 class="font-bold mt-3 mb-2">Otimizações de Hardware</h3>
+<div class="box yellow text-sm">
+<p><strong>Ryzen 7 5700G (Zen 3):</strong> AVX2 + FMA3 habilitados por padrão no Ollama</p>
+<p><strong>GPU Offload:</strong> ~35% das camadas do qwen2.5:72b vão para a GPU (16GB VRAM)</p>
+<p><strong>mlock:</strong> Mantém modelo em RAM, evita swapping</p>
+<p><strong>KV Cache:</strong> q8_0 para melhor qualidade com 16GB VRAM disponível</p>
+<p><strong>numThread:</strong> 8 (físicos, não lógicos) — otimal para Zen 3</p>
+</div>
+</div>
+
+<!-- ========== SEGURANÇA ========== -->
+<div id="s-seguranca" class="sec">
+<h1 class="text-3xl font-bold mb-4">Segurança</h1>
+<h3 class="font-bold mb-2">Checklist OWASP Top 10</h3>
+<div class="space-y-1 text-sm">
+<div class="bg-white border rounded p-1.5">✅ Sem secrets hardcoded no código</div>
+<div class="bg-white border rounded p-1.5">✅ JWT: expiry ≤ 15 min, signing ≥ 256 bits</div>
+<div class="bg-white border rounded p-1.5">✅ Rate limiting em endpoints</div>
+<div class="bg-white border rounded p-1.5">✅ Input validation (FluentValidation) em todos os endpoints</div>
+<div class="bg-white border rounded p-1.5">✅ CORS com origins explícitas (NUNCA *)</div>
+<div class="bg-white border rounded p-1.5">✅ Dependências sem CVEs críticos</div>
+<div class="bg-white border rounded p-1.5">✅ LGPD: dados mapeados, consentimento, criptografia</div>
+<div class="bg-white border rounded p-1.5">✅ RBAC: deny by padrão</div>
+<div class="bg-white border rounded p-1.5">✅ MFA habilitado para contas admin</div>
+<div class="bg-white border rounded p-1.5">✅ Audit trail em todas as ações críticas</div>
+</div>
+<pre class="mt-3">/security audit completo da API
+/security verificar conformidade LGPD
+/security analisar vulnerabilidades no endpoint de auth</pre>
+</div>
+
+<!-- ========== ONBOARDING ========== -->
+<div id="s-onboarding" class="sec">
+<h1 class="text-3xl font-bold mb-4">Prompts Prontos (50+)</h1>
+<p class="text-sm mb-3">Copie e cole qualquer prompt no KiloCode. Sistema seleciona automaticamente agent, skills e regras.</p>
+
+<h3 class="font-bold mb-2">Setup Inicial</h3>
+<pre>/doctor rodar validação completa do sistema
+/xforge olá! sou novo aqui. me explique o que você pode fazer</pre>
+
+<h3 class="font-bold mt-3 mb-2">Análise</h3>
+<pre>/analyze-project analisar completamente: estrutura, arquitetura, padrões, testes, segurança, gaps
+/security audit completo da API incluindo JWT, rate limiting, CORS, secrets
+/xforge analisar performance: queries N+1, memory leaks, async issues</pre>
+
+<h3 class="font-bold mt-3 mb-2">Criação</h3>
+<pre>/create-project API REST com Clean Architecture, .NET 10, PostgreSQL, EF Core, xUnit
+/create-erp API de gestão de estoque com fiscal, financeiro e folha
+/create-api API de pagamento com Stripe, webhooks, retry, idempotency
+/create-blazor Dashboard com Tailwind, tabelas paginadas, autenticação</pre>
+
+<h3 class="font-bold mt-3 mb-2">Desenvolvimento</h3>
+<pre>/develop feature endpoint de login com JWT, refresh token, cookie HttpOnly
+/develop bugfix cálculo ICMS CST 60 retornando R$ 0
+/develop refactor separar UserService em: Validator, Repository, Mapper, Notification</pre>
+
+<h3 class="font-bold mt-3 mb-2">Qualidade e Segurança</h3>
+<pre>/quality rodar todos os quality gates
+/security audit completo incluindo OWASP Top 10
+/security verificar conformidade LGPD</pre>
+
+<h3 class="font-bold mt-3 mb-2">Fiscal e Folha</h3>
+<pre>/xforge calcular folha de 50 funcionários com INSS progressivo, IRRF, FGTS
+/xforge gerar EFD ICMS/IPI do mês com apuração completa
+/xforge criar módulo de estoque com curva ABC e Kardex</pre>
+
+<h3 class="font-bold mt-3 mb-2">Tecnologias</h3>
+<pre>/create-blazor-component formulário de pagamento com Tailwind
+/xforge criar app MAUI para consulta de estoque com SQLite
+/xforge adicionar SignalR hub para notificações em tempo real</pre>
+</div>
+
+<div id="s-starter" class="sec">
+<h1 class="text-3xl font-bold mb-4">Starter Kits</h1>
+<p class="text-sm mb-3">Templates especializados para diferentes cenários.</p>
+
+<div class="bg-blue-50 border border-blue-200 rounded p-4 mb-3">
+<h3 class="font-bold text-blue-700">/create-erp</h3>
+<p class="text-sm">ERP brasileiro completo: Financeiro, Estoque, Fiscal, Folha, Compras, Vendas. PostgreSQL + EF Core + Blazor.</p>
+<pre>/create-erp API de gestão de estoque com entrada por NF-e, saída por pedido, curva ABC, inventário</pre>
+</div>
+
+<div class="bg-green-50 border border-green-200 rounded p-4 mb-3">
+<h3 class="font-bold text-green-700">/create-api</h3>
+<p class="text-sm">API REST profissional: auth JWT, Swagger, testes, health checks, rate limiting.</p>
+<pre>/create-api API de gestão de usuários com CRUD, auth JWT, roles, pagination</pre>
+</div>
+
+<div class="bg-purple-50 border border-purple-200 rounded p-4 mb-3">
+<h3 class="font-bold text-purple-700">/create-blazor</h3>
+<p class="text-sm">App Blazor com Tailwind CSS, design system, componentes reutilizáveis.</p>
+<pre>/create-blazor Dashboard administrativo com sidebar, tabelas, gráficos, autenticação</pre>
+</div>
+</div>
+
+<div id="s-dashboard-s" class="sec">
+<h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+<p class="text-sm mb-3">Métricas, saúde do sistema e uso do XForge.</p>
+<pre>/dashboard</pre>
+<p class="text-sm mt-2">Exibe: componentes (151 skills, 43 agents, 129 commands), domínios cobertos, tabelas vigentes (INSS 2025/2026, IRRF 2025/2026), e sugestões de melhoria.</p>
+</div>
+
+<div id="s-updates" class="sec">
+<h1 class="text-3xl font-bold mb-4">Verificar Atualizações</h1>
+<p class="text-sm mb-3">Monitorar fontes oficiais para manter conhecimento atualizado.</p>
+<pre>/check-updates</pre>
+
+<h3 class="font-bold mt-3 mb-2">28 Fontes Monitoradas</h3>
+<table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2">Categoria</th><th class="p-2 text-center">Fontes</th><th class="p-2">Frequência</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">Fiscal</td><td class="p-2 text-center">6</td><td class="p-2">Receita Federal, eSocial, SPED, SEFAZ</td></tr>
+<tr class="border-t"><td class="p-2">Trabalhista</td><td class="p-2 text-center">3</td><td class="p-2">Min. Trabalho, INSS, CEF</td></tr>
+<tr class="border-t"><td class="p-2">Contabilidade</td><td class="p-2 text-center">2</td><td class="p-2">CFC, IFRS</td></tr>
+<tr class="border-t"><td class="p-2">.NET/Dev</td><td class="p-2 text-center">7</td><td class="p-2">Microsoft Docs, GitHub, NuGet, Hangfire, MediatR</td></tr>
+<tr class="border-t"><td class="p-2">Segurança</td><td class="p-2 text-center">3</td><td class="p-2">OWASP, NIST NVD, CVE</td></tr>
+<tr class="border-t"><td class="p-2">Banco de Dados</td><td class="p-2 text-center">3</td><td class="p-2">PostgreSQL, MySQL, Redis</td></tr>
+<tr class="border-t"><td class="p-2">Azure</td><td class="p-2 text-center">2</td><td class="p-2">Azure Docs, Updates</td></tr>
+<tr class="border-t"><td class="p-2">Legislação</td><td class="p-2 text-center">2</td><td class="p-2">Planalto, Diário Oficial</td></tr>
+</tbody></table>
+</div>
+
+<!-- ========== CASOS DE USO ========== -->
+<div id="s-cu1" class="sec">
+<h1 class="text-2xl font-bold mb-2">Criar Projeto do Zero</h1>
+<div class="box blue"><strong>Prompt:</strong> /create-project API de gestão de estoque com Clean Architecture, PostgreSQL, EF Core, xUnit, Blazor Server. Usar XForge.MediatR e AutoMapper.</div>
+<p class="text-sm mt-2"><strong>O que acontece:</strong></p>
+<ol class="list-decimal list-inside text-sm space-y-1">
+<li>Agent: dotnet-enterprise-expert cria estrutura de projeto</li>
+<li>Cria: .Api, .Domain, .Application, .Infrastructure, .Tests</li>
+<li>Configura: Minimal APIs, Dependency Injection, Swagger, EF Core + Npgsql</li>
+<li>Adiciona: XForge.MediatR (CQRS), AutoMapper, FluentValidation</li>
+<li>Cria: Program.cs limpo via extension methods</li>
+<li>Valida: build limpo, testes unitários passando</li>
+</ol>
+<p class="text-sm mt-2"><strong>Arquivos criados:</strong></p>
+<pre>src/
+  Api/Program.cs, ProductEndpoints.cs
+  Domain/Product.cs, IProductRepository.cs
+  Application/Products/CreateProductCommand.cs, CreateProductHandler.cs, CreateProductValidator.cs, ProductDto.cs
+  Infrastructure/AppDbContext.cs, ProductRepository.cs, Mappings/ProductMapping.cs
+  Tests/Unit/CreateProductHandlerTests.cs, Integration/ProductEndpointTests.cs</pre>
+</div>
+
+<div id="s-cu2" class="sec">
+<h1 class="text-2xl font-bold mb-2">Analisar Projeto Existente</h1>
+<div class="box blue"><strong>Prompt:</strong> /analyze-project quero entender completamente este projeto antes de mexer</div>
+<p class="text-sm mt-2"><strong>O que acontece:</strong></p>
+<ol class="list-decimal list-inside text-sm space-y-1">
+<li>Agent: project-recognition-engineer faz varredura completa</li>
+<li>Mapeia: estrutura, dependências, padrões, testes, banco, docs</li>
+<li>Cria: PROJECT-DNA em .xforge/project-dna/</li>
+<li>Classifica: maturidade por dimensão (arquitetura 80, testes 65, docs 60, etc)</li>
+<li>Gera: score geral (ex: 72/100) + backlog com gaps priorizados</li>
+</ol>
+<p class="text-sm mt-2"><strong>Saída:</strong></p>
+<pre>{
+  "maturityScore": 72,
+  "gaps": [
+    {"severity": "high", "area": "tests", "description": "Coverage abaixo de 85%"},
+    {"severity": "medium", "area": "docs", "description": "API sem XML docs"}
+  ],
+  "recommendations": ["Aumentar cobertura", "Adicionar XML docs"]
+}</pre>
+</div>
+
+<div id="s-cu3" class="sec">
+<h1 class="text-2xl font-bold mb-2">Feature / Bug / Refactor</h1>
+<div class="box blue"><strong>Feature:</strong> /develop feature endpoint de login com JWT, refresh token, cookie HttpOnly e rate limiting</div>
+<p class="text-sm mt-2">Cria: LoginRequest/Response DTOs, LoginHandler com XForge.MediatR, JwtTokenService, FluentValidation, unit tests, integration tests.</p>
+<div class="box blue mt-3"><strong>Bug:</strong> /develop bugfix cálculo ICMS CST 60 retornando R$ 0 em vez de DIFAL para SP</div>
+<p class="text-sm mt-2">Analisa regra fiscal (fiscal-tax-expert), encontra causa, corrige código, cria teste específico para CST 60.</p>
+<div class="box blue mt-3"><strong>Refactor:</strong> /develop refactor separar PaymentService em: PaymentCalculator, PaymentValidator, PaymentRepository, PaymentNotifier</div>
+<p class="text-sm mt-2">Simula impacto (simulation skill), cria 4 classes SRP, atualiza DI, mantém todos os testes passando.</p>
+</div>
+
+<div id="s-cu4" class="sec">
+<h1 class="text-2xl font-bold mb-2">Release / Deploy</h1>
+<div class="box blue"><strong>Prompt:</strong> /release preparar v2.1.0 com mudanças dos últimos 2 semanas</div>
+<ol class="list-decimal list-inside text-sm space-y-1 mt-2">
+<li>Gera CHANGELOG: Added 3 features, Fixed 2 bugs</li>
+<li>Roda /quality completo (build, testes, coverage)</li>
+<li>Roda /security (verifica dependências)</li>
+<li>Cria branch release/v2.1.0</li>
+<li>Cria PR com release notes</li>
+</ol>
+</div>
+
+<div id="s-cu5" class="sec">
+<h1 class="text-2xl font-bold mb-2">Segurança / LGPD</h1>
+<div class="box blue"><strong>Prompt:</strong> /security audit completo da API de autenticação</div>
+<ol class="list-decimal list-inside text-sm space-y-1 mt-2">
+<li>Agents: auth-security-expert + secure-api-expert + supply-chain-security-expert</li>
+<li>Verifica JWT: expiry, signing, refresh token rotation</li>
+<li>Verifica API: rate limiting, CORS, headers, input validation</li>
+<li>Verifica secrets: hardcoded, key rotation</li>
+<li>Verifica deps: <code class="ic">dotnet list package --vulnerable</code></li>
+<li>Gera relatório com score e severidades</li>
+</ol>
+</div>
+
+<div id="s-cu6" class="sec">
+<h1 class="text-2xl font-bold mb-2">Folha de Pagamento</h1>
+<div class="box blue"><strong>Prompt:</strong> /xforge calcular folha de 50 funcionários com INSS progressivo, IRRF, FGTS, horas extras</div>
+<p class="text-sm mt-2">Usa tabelas INSS 2025 (4 faixas, até R$ 1.518 = 7,5%) e IRRF 2025 (até R$ 2.259,20 = isento). Para cada funcionário: calcula INSS, base IRRF, IRRF, salário líquido, FGTS (8%), horas extras (50%). Gera holerite completo.</p>
+<p class="text-sm mt-2"><strong>Tabelas disponíveis no knowledge:</strong></p>
+<ul class="list-disc list-inside text-sm">
+<li>tabela-inss-2025.md — 4 faixas progressivas</li>
+<li>tabela-irrf-2025.md — 5 faixas + semestral</li>
+<li>irpf-isencao-5000-2025.md — Isenção até R$ 2.259,20</li>
+<li>calculos-folha-pagamento.md — Fórmulas completas</li>
+<li>historico-tabelas-irrf.md — Tabelas 2020-2025</li>
+<li>historico-tabelas-inss.md — Tabelas 2020-2025</li>
+</ul>
+</div>
+
+<div id="s-cu7" class="sec">
+<h1 class="text-2xl font-bold mb-2">Escrituração Fiscal</h1>
+<div class="box blue"><strong>Prompt:</strong> /xforge gerar EFD ICMS/IPI do mês de janeiro</div>
+<p class="text-sm mt-2">Usa skills sped-fiscal-expert + fiscal-tax-expert. Coleta NF-e emitidas e recebidas, valida CFOP/CST, apura ICMS (E110) e IPI (E500), gera arquivo SPED com todos os blocos (0, C, D, E, 9), valida com validador SEFAZ.</p>
+<p class="text-sm mt-2"><strong>Obrigação:</strong> Dia 15 do mês seguinte via portal SPED.</p>
+</div>
+
+<div id="s-cu8" class="sec">
+<h1 class="text-2xl font-bold mb-2">ERP / Estoque / Financeiro</h1>
+<div class="box blue"><strong>Prompt:</strong> /xforge criar módulo de estoque com entrada por NF-e, saída por pedido, curva ABC, inventário e Kardex</div>
+<p class="text-sm mt-2">Usa skills inventory-domain-expert + accounting-expert + fiscal-tax-expert. Cria: entidades (Product, StockEntry, StockExit, Kardex), services (StockService, CurvaAbcService, KardexService), endpoints CRUD, regras de negócio (FEFO, custo médio, estoque não-negativo), testes, documentação fiscal (CFOP, CST).</p>
+<p class="text-sm mt-2"><strong>Knowledge disponível:</strong> estoque-completo.md (172 linhas), financeiro-completo.md (187 linhas), cnab-boletos.md (81 linhas).</p>
+</div>
+
+<div id="s-cu9" class="sec">
+<h1 class="text-2xl font-bold mb-2">App Blazor / MAUI</h1>
+<div class="box blue"><strong>Blazor:</strong> /create-blazor-component formulário de pagamento com validação, máscara de cartão e botão confirmar</div>
+<p class="text-sm mt-2">Cria componente com Tailwind CSS, FluentValidation, estados de loading, acessibilidade (ARIA labels), design responsivo.</p>
+<div class="box blue mt-3"><strong>MAUI:</strong> /xforge criar app MAUI para consulta de estoque com SQLite local e sincronização com API</div>
+<p class="text-sm mt-2">Cria projeto .NET MAUI com: MVVM (CommunityToolkit), SQLite local, HTTP client para API, sincronização offline/online, platform-specific (Android/iOS/Windows).</p>
+</div>
+
+<!-- ========== REFERÊNCIA TÉCNICA ========== -->
+<div id="s-t1" class="sec">
+<h1 class="text-3xl font-bold mb-4">.NET 10 / C# 14 / ASP.NET Core</h1>
+<h3 class="font-bold mb-2">C# 14</h3>
+<pre>// Primary constructors
+public class ProductService(IProductRepository repo) { }
+
+// Collection expressions
+List&lt;int&gt; numbers = [1, 2, 3];
+
+// Pattern matching
+var desc = product switch
+{
+    { Price: > 1000 } => "Premium",
+    { Stock: 0 } => "Out of stock",
+    _ => "Regular"
+};
+
+// Records
+public record ProductDto(int Id, string Name, decimal Price);</pre>
+<h3 class="font-bold mt-3 mb-2">ASP.NET Core Minimal APIs</h3>
+<pre>app.MapGet("/products", async (IProductService svc) => await svc.GetAllAsync())
+    .WithName("GetProducts").WithTags("Products").Produces&lt;List&lt;ProductDto&gt;&gt;();
+
+app.MapPost("/products", async (CreateProductCommand cmd, IProductService svc) =>
+{
+    var result = await svc.CreateAsync(cmd);
+    return Results.Created($"/products/{result.Id}", result);
+}).WithValidation&lt;CreateProductCommand&gt;();</pre>
+<h3 class="font-bold mt-3 mb-2">ASP.NET Core Identity</h3>
+<pre>builder.Services.AddIdentity&lt;ApplicationUser, IdentityRole&gt;()
+    .AddEntityFrameworkStores&lt;AppDbContext&gt;()
+    .AddDefaultTokenProviders();
+
+// JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuer = true, ValidateAudience = true,
+            ValidIssuer = config["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(config["Jwt:Key"]!))
+        };
+    });</pre>
+</div>
+
+<div id="s-t2" class="sec">
+<h1 class="text-3xl font-bold mb-4">Blazor / .NET MAUI / EF Core</h1>
+<h3 class="font-bold mb-2">Blazor Server</h3>
+<pre>@rendermode RenderMode.InteractiveServer
+&lt;Virtualize Items="@_products" Context="product" ItemSize="50"&gt;
+    &lt;div class="product-row"&gt;@product.Name&lt;/div&gt;
+&lt;/Virtualize&gt;</pre>
+<h3 class="font-bold mt-3 mb-2">.NET MAUI</h3>
+<pre>// MVVM com CommunityToolkit
+[ObservableProperty] private string _name = string.Empty;
+[RelayCommand] private async Task SaveAsync() { ... }
+
+// SQLite
+builder.Services.AddSingleton&lt;ISqliteConnection&gt;(...);
+
+// Platform-specific
+#if ANDROID
+public void Vibrate() => Vibration.Vibrate(TimeSpan.FromMilliseconds(200));
+#endif</pre>
+<h3 class="font-bold mt-3 mb-2">Entity Framework Core</h3>
+<pre>// Batch update
+await context.Products
+    .Where(p => p.CategoryId == 1)
+    .ExecuteUpdateAsync(s => s.SetProperty(p => p.Discount, 0.1m));
+
+// Compiled query
+private static readonly Func&lt;AppDbContext, int, Task&lt;Product?&gt;&gt; GetById =
+    EF.CompileAsyncQuery((AppDbContext ctx, int id) =>
+        ctx.Products.FirstOrDefault(p => p.Id == id));
+
+// Split query
+var orders = await context.Orders
+    .Include(o => o.Items).Include(o => o.Customer)
+    .AsSplitQuery().ToListAsync();</pre>
+</div>
+
+<div id="s-t3" class="sec">
+<h1 class="text-3xl font-bold mb-4">SQL Server / MySQL / PostgreSQL / Redis</h1>
+<h3 class="font-bold mb-2">SQL Server — Índices</h3>
+<pre>CREATE NONCLUSTERED INDEX IX_Pedidos_Cliente
+ON Pedidos (ClienteId) INCLUDE (Status, Total);
+
+CREATE NONCLUSTERED INDEX IX_Pedidos_Pendentes
+ON Pedidos (DataPedido) WHERE Status = 'Pendente';</pre>
+<h3 class="font-bold mt-3 mb-2">PostgreSQL — JSONB</h3>
+<pre>CREATE INDEX idx_produtos_tags ON produtos USING GIN (tags);
+SELECT * FROM produtos WHERE tags @&gt; '["eletronicos"]';</pre>
+<h3 class="font-bold mt-3 mb-2">MySQL — Pomelo EF Core</h3>
+<pre>builder.Services.AddDbContext&lt;AppDbContext&gt;(options =>
+    options.UseMySql(connectionString,
+        ServerVersion.AutoDetect(connectionString),
+        mySql => mySql.CharSetBehavior(CharSetBehavior.NeverAppend)));</pre>
+<h3 class="font-bold mt-3 mb-2">Redis — Cache</h3>
+<pre>builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = "localhost:6379";
+    options.InstanceName = "xforge_";
+});
+
+// Usage
+await _cache.SetAsync("product:1", product, TimeSpan.FromMinutes(5));
+var cached = await _cache.GetAsync&lt;Product&gt;("product:1");</pre>
+</div>
+
+<div id="s-t4" class="sec">
+<h1 class="text-3xl font-bold mb-4">Bibliotecas</h1>
+<div class="space-y-3">
+<div class="bg-white border rounded p-3"><h3 class="font-bold">Hangfire</h3><p class="text-sm">Jobs em background: fire-and-forget, delayed, recurring, continuations. Dashboard com autorização.</p><pre>BackgroundJob.Enqueue(() => ProcessPaymentAsync(orderId));
+BackgroundJob.Schedule(() => SendReminderAsync(userId), TimeSpan.FromHours(1));
+RecurringJob.AddOrUpdate("daily-cleanup", () => svc.Cleanup(), Cron.Daily);</pre></div>
+<div class="bg-white border rounded p-3"><h3 class="font-bold">XForge.MediatR</h3><p class="text-sm">CQRS: Commands (escrita) + Queries (leitura) + Behaviors (pipeline).</p><pre>public record CreateProductCommand(string Name, decimal Price) : Command&lt;ProductDto&gt;;
+var result = await _mediator.Send(new CreateProductCommand("Test", 100m));</pre></div>
+<div class="bg-white border rounded p-3"><h3 class="font-bold">FluentValidation</h3><p class="text-sm">Regras de validação fluent, CPF/CNPJ custom, validação async.</p><pre>RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
+RuleFor(x => x.CPF).CPF(); // extensão custom
+RuleFor(x => x.Email).MustAsync(async (email, ct) => !await _repo.EmailExistsAsync(email));</pre></div>
+<div class="bg-white border rounded p-3"><h3 class="font-bold">AutoMapper</h3><p class="text-sm">Mapeamento de objetos, ProjectTo (IQueryable otimizado), resolvers custom.</p><pre>CreateMap&lt;Product, ProductDto&gt;()
+    .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+var dtos = await context.Products.ProjectTo&lt;ProductDto&gt;(_mapper.ConfigurationProvider).ToListAsync();</pre></div>
+<div class="bg-white border rounded p-3"><h3 class="font-bold">Swagger/OpenAPI</h3><p class="text-sm">Documentação automática, JWT security, filtros, versionamento.</p><pre>builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" }));
+app.UseSwagger(); app.UseSwaggerUI();</pre></div>
+</div>
+</div>
+
+<div id="s-t5" class="sec">
+<h1 class="text-3xl font-bold mb-4">DevOps / Docker / Kubernetes</h1>
+<h3 class="font-bold mb-2">Dockerfile Multi-stage</h3>
+<pre>FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish -c Release -o /out
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+COPY --from=build /out .
+ENTRYPOINT ["dotnet", "Api.dll"]</pre>
+<h3 class="font-bold mt-3 mb-2">Docker Compose</h3>
+<pre>services:
+  api:    { build: ., ports: ["5000:8080"] }
+  postgres: { image: postgres:16, environment: { POSTGRES_DB: app } }
+  redis:    { image: redis:7-alpine }</pre>
+<h3 class="font-bold mt-3 mb-2">GitHub Actions CI/CD</h3>
+<pre>jobs:
+  build:
+    steps:
+    - uses: actions/setup-dotnet@v4
+    - run: dotnet build && dotnet test
+    - run: docker build -t myregistry/api:${{ github.sha }} .
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - run: kubectl set image deployment/api api=myregistry/api:${{ github.sha }}</pre>
+</div>
+
+<div id="s-t6" class="sec">
+<h1 class="text-3xl font-bold mb-4">Tailwind CSS / SignalR / gRPC</h1>
+<h3 class="font-bold mb-2">Tailwind CSS</h3>
+<pre>&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"&gt;
+  &lt;div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition"&gt;
+    &lt;h3 class="font-bold"&gt;Card&lt;/h3&gt;
+    &lt;p class="text-gray-500"&gt;Conteúdo&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+<p class="text-sm">Breakpoints: sm:640px, md:768px, lg:1024px, xl:1280px. Cores: bg-blue-500, text-gray-600. Espaçamento: p-4, m-2, gap-4.</p>
+<h3 class="font-bold mt-3 mb-2">SignalR (Tempo Real)</h3>
+<pre>// Hub
+public class ChatHub : Hub {
+    public async Task SendMessage(string msg) =>
+        await Clients.All.SendAsync("ReceiveMessage", msg);
+}
+app.MapHub&lt;ChatHub&gt;("/hub/chat");
+
+// Cliente JS
+const connection = new signalR.HubConnectionBuilder().withUrl("/hub/chat").build();
+connection.on("ReceiveMessage", (msg) => console.log(msg));
+await connection.invoke("SendMessage", "Hello");</pre>
+<h3 class="font-bold mt-3 mb-2">gRPC (Alta Performance)</h3>
+<pre>// Server
+public class ProductGrpcService : ProductService.ProductServiceBase {
+    public override async Task&lt;ProductResponse&gt; GetProduct(
+        GetProductRequest req, ServerCallContext ctx) { ... }
+}
+app.MapGrpcService&lt;ProductGrpcService&gt;();</pre>
+</div>
+
+<div id="s-t7" class="sec">
+<h1 class="text-3xl font-bold mb-4">Desktop: Tauri / WPF / WinForms</h1>
+<h3 class="font-bold mb-2">Tauri (Rust + Web)</h3>
+<pre>// Backend Rust
+#[tauri::command]
+fn get_products() -> Vec&lt;Product&gt; { ... }
+
+// Frontend TypeScript
+const products = await invoke&lt;Product[]&gt;('get_products');</pre>
+<p class="text-sm">Vantagens: ~3-10MB, memória ~30ms, sem Node.js, segurança Rust.</p>
+<h3 class="font-bold mt-3 mb-2">WPF (MVVM + XAML)</h3>
+<pre>&lt;DataGrid ItemsSource="{Binding Products}" SelectedItem="{Binding Selected}" /&gt;
+
+// ViewModel com CommunityToolkit.Mvvm
+[ObservableProperty] private ObservableCollection&lt;Product&gt; _products;
+[RelayCommand] private async Task LoadAsync() { ... }</pre>
+<h3 class="font-bold mt-3 mb-2">WinForms</h3>
+<pre>dataGridView1.DataSource = products;
+textBox1.DataBindings.Add("Text", product, "Name");</pre>
+</div>
+
+<div id="s-t8" class="sec">
+<h1 class="text-3xl font-bold mb-4">Testes / BDD</h1>
+<h3 class="font-bold mb-2">xUnit + NSubstitute + FluentAssertions</h3>
+<pre>[Fact]
+public async Task Create_ValidProduct_ReturnsDto() {
+    var command = new CreateProductCommand("Test", 100m, 1, null);
+    var result = await _handler.Handle(command, CancellationToken.None);
+    result.Name.Should().Be("Test");
+    await _repo.Received(1).AddAsync(Arg.Any&lt;Product&gt;());
+}
+
+[Theory]
+[InlineData(0)]
+[InlineData(-1)]
+public void InvalidPrice_Should_Throw(decimal price) {
+    Action act = () => new Product { Price = price };
+    act.Should().Throw&lt;ArgumentException&gt;();
+}</pre>
+<h3 class="font-bold mt-3 mb-2">TestContainers (Integration)</h3>
+<pre>var db = new PostgreSqlBuilder().WithImage("postgres:16").Build();
+await db.StartAsync();
+var ctx = new AppDbContext(new DbContextOptionsBuilder&lt;AppDbContext&gt;()
+    .UseNpgsql(db.GetConnectionString()).Options);</pre>
+<h3 class="font-bold mt-3 mb-2">BDD (Gherkin)</h3>
+<pre>Feature: Product Management
+  Scenario: Create valid product
+    Given I am on the products page
+    When I fill name "Test" and price "99.99"
+    And I submit
+    Then I should see "Product created"</pre>
+</div>
+
+<!-- ========== DOMÍNIOS ========== -->
+<div id="s-d1" class="sec">
+<h1 class="text-3xl font-bold mb-4">Folha de Pagamento</h1>
+<p class="text-sm mb-3">28 knowledge files. Cálculos completos de todos os tipos de verba.</p>
+<h3 class="font-bold mb-2">Tabelas Vigentes (2025/2026)</h3>
+<table class="w-full text-sm border mb-3"><thead class="bg-gray-100"><tr><th class="p-2">Tabela</th><th class="p-2">Faixa Isenta</th><th class="p-2">Alíq. Máx.</th><th class="p-2">Teto</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">INSS</td><td class="p-2">R$ 1.518,00 (7,5%)</td><td class="p-2">14%</td><td class="p-2">R$ 951,63/mês</td></tr>
+<tr class="border-t"><td class="p-2">IRRF</td><td class="p-2">R$ 2.259,20</td><td class="p-2">27,5%</td><td class="p-2">-</td></tr>
+<tr class="border-t"><td class="p-2">FGTS</td><td class="p-2">-</td><td class="p-2">8%</td><td class="p-2">-</td></tr>
+</tbody></table>
+<h3 class="font-bold mb-2">Cálculo Rápido: Salário R$ 5.000</h3>
+<pre>INSS:  R$ 5.000 × 14% - R$ 190,40 = R$ 509,60
+Base:  R$ 5.000 - 509,60 = R$ 4.490,40
+IRRF:  R$ 4.490,40 × 22,5% - R$ 662,77 = R$ 347,57
+Líquido: R$ 5.000 - 509,60 - 347,57 = R$ 4.142,83</pre>
+</div>
+
+<div id="s-d2" class="sec">
+<h1 class="text-3xl font-bold mb-4">Contabilidade</h1>
+<p class="text-sm mb-3">11 knowledge files. Plano de contas, centro de custo, demonstrações, encerramento.</p>
+<h3 class="font-bold mb-2">Demonstrações Contábeis</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+<div class="bg-white border rounded p-2"><strong>Balanço Patrimonial</strong> — Ativo = Passivo + PL. Circulante + Não Circulante.</div>
+<div class="bg-white border rounded p-2"><strong>DRE</strong> — Receita Bruta → (-) CMV → Lucro Bruto → (-) Despesas → EBITDA → Lucro Líquido.</div>
+<div class="bg-white border rounded p-2"><strong>DFC</strong> — Operacionais + Investimentos + Financeiros = Variação Líquida.</div>
+<div class="bg-white border rounded p-2"><strong>DMPL</strong> — Variações do Patrimônio Líquido.</div>
+</div>
+<h3 class="font-bold mt-3 mb-2">LCPR (Produtor Rural)</h3>
+<p class="text-sm">Receitas rurais - Despesas dedutíveis = Lucro. Presunção 32% para IRPJ/CSLL. PIS 1,65%, COFINS 7,60%.</p>
+</div>
+
+<div id="s-d3" class="sec">
+<h1 class="text-3xl font-bold mb-4">Fiscal / Tributos</h1>
+<p class="text-sm mb-3">16 knowledge files. ICMS, PIS, COFINS, IPI, ISS, IRPJ, CSLL.</p>
+<h3 class="font-bold mb-2">Reforma Tributária (2026-2033)</h3>
+<div class="grid grid-cols-3 gap-2 text-center text-sm">
+<div class="bg-blue-50 border border-blue-200 rounded p-3"><div class="font-bold text-blue-700 text-lg">IBS</div><div>~17,74%</div><div class="text-xs text-gray-500">ICMS+ISS+IPI</div></div>
+<div class="bg-green-50 border border-green-200 rounded p-3"><div class="font-bold text-green-700 text-lg">CBS</div><div>~8,87%</div><div class="text-xs text-gray-500">IRPJ+CSLL+PIS+COFINS</div></div>
+<div class="bg-red-50 border border-red-200 rounded p-3"><div class="font-bold text-red-700 text-lg">IS</div><div>Variável</div><div class="text-xs text-gray-500">Combustíveis, tabaco</div></div>
+</div>
+<h3 class="font-bold mt-3 mb-2">Split Payment</h3>
+<p class="text-sm">Pagamento do imposto no momento da transação. Banco retém automaticamente. Convergência com gateway de pagamento.</p>
+</div>
+
+<div id="s-d4" class="sec">
+<h1 class="text-3xl font-bold mb-4">Escrituração Fiscal</h1>
+<table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2">Obrigação</th><th class="p-2">Prazo</th><th class="p-2">Entidade</th><th class="p-2">Conteúdo</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">EFD ICMS/IPI</td><td class="p-2">Dia 15</td><td class="p-2">SEFAZ</td><td class="p-2">Entradas, saídas, apuração ICMS/IPI</td></tr>
+<tr class="border-t"><td class="p-2">EFD Contribuições</td><td class="p-2">Dia 15</td><td class="p-2">RFB</td><td class="p-2">PIS/COFINS, créditos, apuração</td></tr>
+<tr class="border-t"><td class="p-2">ECD</td><td class="p-2">Dia 31/07</td><td class="p-2">RFB</td><td class="p-2">Escrituração contábil digital</td></tr>
+<tr class="border-t"><td class="p-2">ECF</td><td class="p-2">Dia 31/07</td><td class="p-2">RFB</td><td class="p-2">Lucro real/presumido, LALUR</td></tr>
+<tr class="border-t"><td class="p-2">eSocial</td><td class="p-2">Dia 7</td><td class="p-2">eSocial</td><td class="p-2">Folha, admissões, desligamentos</td></tr>
+<tr class="border-t"><td class="p-2">REINF</td><td class="p-2">Dia 15</td><td class="p-2">eSocial</td><td class="p-2">CPB, retenções, produção rural</td></tr>
+<tr class="border-t"><td class="p-2">DCTFWeb</td><td class="p-2">Dia 15</td><td class="p-2">eSocial</td><td class="p-2">Consolidação PIS/COFINS</td></tr>
+</tbody></table>
+</div>
+
+<div id="s-d5" class="sec">
+<h1 class="text-3xl font-bold mb-4">Estoque / ERP</h1>
+<p class="text-sm mb-3">Curva ABC, MRP, custo médio, FIFO, lote, validade, kardex, inventário.</p>
+<h3 class="font-bold mb-2">Curva ABC</h3>
+<table class="w-full text-sm border mb-3"><thead class="bg-gray-100"><tr><th class="p-2">Classe</th><th class="p-2">% Valor</th><th class="p-2">% Itens</th><th class="p-2">Ação</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2 font-bold">A</td><td class="p-2">80%</td><td class="p-2">20%</td><td class="p-2">Controle rígido, semanal</td></tr>
+<tr class="border-t"><td class="p-2 font-bold">B</td><td class="p-2">15%</td><td class="p-2">30%</td><td class="p-2">Moderado, mensal</td></tr>
+<tr class="border-t"><td class="p-2 font-bold">C</td><td class="p-2">5%</td><td class="p-2">50%</td><td class="p-2">Simples, trimestral</td></tr>
+</tbody></table>
+<h3 class="font-bold mb-2">Indicadores</h3>
+<table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2">Indicador</th><th class="p-2">Fórmula</th><th class="p-2">Target</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">Giro</td><td class="p-2">CMV / Estoque Médio</td><td class="p-2">&gt; 4x/ano</td></tr>
+<tr class="border-t"><td class="p-2">Dias de Estoque</td><td class="p-2">365 / Giro</td><td class="p-2">&lt; 90 dias</td></tr>
+<tr class="border-t"><td class="p-2">Fill Rate</td><td class="p-2">Atendidos / Totais</td><td class="p-2">&gt; 95%</td></tr>
+</tbody></table>
+</div>
+
+<div id="s-d6" class="sec">
+<h1 class="text-3xl font-bold mb-4">Financeiro</h1>
+<p class="text-sm mb-3">Centros de custo, rateios, orçamentos, forecast, DRE gerencial, KPIs.</p>
+<h3 class="font-bold mb-2">KPIs Principais</h3>
+<table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2">KPI</th><th class="p-2">Fórmula</th><th class="p-2">Target</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">ROE</td><td class="p-2">Lucro Líquido / PL</td><td class="p-2">&gt; 15%</td></tr>
+<tr class="border-t"><td class="p-2">ROA</td><td class="p-2">Lucro Líquido / Ativo</td><td class="p-2">&gt; 5%</td></tr>
+<tr class="border-t"><td class="p-2">Liquidez Corrente</td><td class="p-2">AC / PC</td><td class="p-2">&gt; 1,2</td></tr>
+<tr class="border-t"><td class="p-2">Endividamento</td><td class="p-2">PL / Ativo</td><td class="p-2">&lt; 0,6</td></tr>
+<tr class="border-t"><td class="p-2">Margem Líquida</td><td class="p-2">LL / Receita</td><td class="p-2">&gt; 10%</td></tr>
+<tr class="border-t"><td class="p-2">Giro Estoque</td><td class="p-2">CMV / Estoque</td><td class="p-2">&gt; 4x</td></tr>
+</tbody></table>
+</div>
+
+<div id="s-d7" class="sec">
+<h1 class="text-3xl font-bold mb-4">RH / DP / eSocial / SPED</h1>
+<p class="text-sm mb-3">Admissão, férias, 13º, rescisão, FGTS, eSocial completo, CNPJ alfanumérico.</p>
+<h3 class="font-bold mb-2">eSocial — Eventos</h3>
+<table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2">Evento</th><th class="p-2">Descrição</th><th class="p-2">Prazo</th></tr></thead><tbody>
+<tr class="border-t"><td class="p-2">S-1000</td><td class="p-2">Dados do empregador</td><td class="p-2">Antes do 1º evento</td></tr>
+<tr class="border-t"><td class="p-2">S-2200</td><td class="p-2">Admissão</td><td class="p-2">Até dia anterior ao início</td></tr>
+<tr class="border-t"><td class="p-2">S-2299</td><td class="p-2">Desligamento</td><td class="p-2">Até 10 dias após</td></tr>
+<tr class="border-t"><td class="p-2">S-1200</td><td class="p-2">Remuneração</td><td class="p-2">Dia 7 do mês seguinte</td></tr>
+<tr class="border-t"><td class="p-2">S-1299</td><td class="p-2">Fechamento</td><td class="p-2">Dia 7 do mês seguinte</td></tr>
+<tr class="border-t"><td class="p-2">S-2210</td><td class="p-2">Acidente de trabalho</td><td class="p-2">Dia seguinte</td></tr>
+</tbody></table>
+<h3 class="font-bold mt-3 mb-2">CNPJ Alfanumérico</h3>
+<p class="text-sm">Novo formato a partir de 2026. 12 caracteres (letras+números). Migração obrigatória até 2030. Validação com módulo 31.</p>
+</div>
+
+<!-- ========== REFERÊNCIA ========== -->
+<div id="s-ext" class="sec">
+<h1 class="text-3xl font-bold mb-4">Estender o XForge</h1>
+<h3 class="font-bold mb-2">Novo Skill</h3>
+<pre># Criar diretório e arquivo
+.kilo/skills/minha-skill/SKILL.md
+
+# Conteúdo mínimo:
+---
+name: minha-skill
+description: Quando usar e o que faz
+metadata:
+  version: "1.0.0"
+---
+
+# minha-skill
+## Objetivo
+[descrição clara]
+## Procedimento
+1. Passo 1
+2. Passo 2
+
+# Validar
+.\.kilo\automation\scripts\doctor.ps1</pre>
+<h3 class="font-bold mt-3 mb-2">Novo Agent</h3>
+<pre># Criar arquivo
+.kilo/agents/meu-agent.md
+
+# Frontmatter obrigatório:
+---
+name: meu-agent
+description: O que faz e quando usar
+mode: primary
+permission:
+  read: allow
+  edit: {"*.md": allow, "*": deny}
+  bash: ask
+---</pre>
+<h3 class="font-bold mt-3 mb-2">Novo Command</h3>
+<pre>.kilo/commands/meu-comando.md
+---
+description: O que faz
+agent: code
+---
+# /meu-comando
+[procedimento]</pre>
+</div>
+
+<div id="s-estrutura" class="sec">
+<h1 class="text-3xl font-bold mb-4">Estrutura de Arquivos</h1>
+<pre>terminal/
+├── AGENTS.md                    # Instruções do agente
+├── kilo.jsonc                   # Config Kilo (só: instructions, agent, skills)
+├── .kilocodeignore              # Ignorar no indexing
+├── README.md                    # Visão geral
+├── docs/index.html              # Este manual
+├── .kilo/                       # Camada operacional
+│   ├── agents/                  # 43 agents (EN kebab-case)
+│   ├── skills/                  # 151 skills (SKILL.md)
+│   ├── commands/                # 129 slash commands
+│   ├── rules/                   # 30 regras (interaction, self-healing, quality, etc)
+│   ├── core/                    # Roteadores e registries (17 JSON)
+│   ├── automation/              # Scripts (doctor, pre-commit, dashboard, etc)
+│   └── mcp/                     # MCP servers (3: postgresql, redis, rabbitmq)
+└── .xforge/                     # Camada persistente
+    ├── knowledge/               # 172 arquivos + INDEX.json
+    ├── memory/                  # Memória do projeto
+    ├── rag/                     # Índice RAG + config
+    ├── decisions/               # ADRs
+    ├── config/                  # Config XForge + Ollama + Router + Versioning
+    ├── backlog/                 # Backlog de tarefas
+    └── scripts/                 # Scripts utilitários</pre>
+</div>
+
+<div id="s-troubleshoot" class="sec">
+<h1 class="text-3xl font-bold mb-4">Troubleshooting</h1>
+<div class="space-y-2">
+<div class="bg-white border rounded p-3"><strong class="text-red-600">Doctor retorna errors</strong><p class="text-sm">Rodar <code class="ic">doctor.ps1</code> e seguir instruções para cada [ERROR].</p></div>
+<div class="bg-white border rounded p-3"><strong class="text-red-600">Skill não carrega</strong><p class="text-sm">Verificar: <code class="ic">name</code> no frontmatter == nome do diretório. Rodar <code class="ic">doctor.ps1</code>.</p></div>
+<div class="bg-white border rounded p-3"><strong class="text-red-600">Agent não aparece</strong><p class="text-sm">Verificar <code class="ic">mode: primary</code> no frontmatter. Nome do arquivo == <code class="ic">name</code>.</p></div>
+<div class="bg-white border rounded p-3"><strong class="text-red-600">RAG não retorna</strong><p class="text-sm">Reindexar: <code class="ic">python .kilo/automation/scripts/rag/rag_local.py index</code></p></div>
+<div class="bg-white border rounded p-3"><strong class="text-red-600">Ollama não conecta</strong><p class="text-sm"><code class="ic">ollama serve</code> em terminal separado + <code class="ic">ollama pull llama3</code></p></div>
+<div class="bg-white border rounded p-3"><strong class="text-red-600">Mojibake/encoding</strong><p class="text-sm">Re-salvar como UTF-8 sem BOM no VS Code (Save with Encoding).</p></div>
+<div class="bg-white border rounded p-3"><strong class="text-red-600">Build falha</strong><p class="text-sm">Verificar versões de packages (nunca preview). Rodar <code class="ic">dotnet restore</code> + <code class="ic">dotnet build</code>.</p></div>
+</div>
+</div>
+
+<div id="s-quickref" class="sec">
+<h1 class="text-3xl font-bold mb-4">Referência Rápida</h1>
+<p class="text-sm mb-3">Copie e cole. Comandos mais usados.</p>
+
+<h3 class="font-bold mb-2">Setup</h3>
+<pre>.\.kilo\automation\scripts\doctor.ps1                    # Validar sistema
+.\.kilo\automation\scripts\ollama-setup.ps1               # Configurar Ollama
+.\.kilo\automation\scripts\live-dashboard.ps1              # Dashboard do sistema</pre>
+
+<h3 class="font-bold mt-3 mb-2">Desenvolvimento</h3>
+<pre>/xforge [tarefa]                                         # Roteamento universal
+/create-project API com Clean Architecture, .NET 10        # Criar projeto
+/develop feature [descrição]                          # Criar feature
+/develop bugfix [descrição]                           # Corrigir bug
+/develop refactor [descrição]                         # Refatorar código</pre>
+
+<h3 class="font-bold mt-3 mb-2">Qualidade</h3>
+<pre>/quality rodar todos os quality gates                  # Quality gates
+/security audit completo da API                         # Auditoria segurança
+.\.kilo\automation\scripts\pre-commit.ps1                 # Pré-commit gate
+.\.kilo\automation\scripts\dependency-check.ps1           # Verificar dependências</pre>
+
+<h3 class="font-bold mt-3 mb-2">Conhecimento</h3>
+<pre>/knowledge ver knowledge base                        # Ver knowledge
+.\.kilo\automation\scripts\knowledge-validation.ps1       # Validar tabelas
+.\.kilo\automation\scripts\check-updates.ps1              # Verificar atualizações</pre>
+
+<h3 class="font-bold mt-3 mb-2">Checkpoint & Resume</h3>
+<pre>/xforge retomar tarefa                                   # Retomar última tarefa
+/xforge ver checkpoints                                   # Listar checkpoints pendentes
+/xforge limpar checkpoints                                # Arquivar checkpoints concluídos</pre>
+
+<h3 class="font-bold mt-3 mb-2">Domínios Brasileiros</h3>
+<pre>/xforge calcular folha de 50 funcionários                # Folha de pagamento
+/xforge gerar EFD ICMS/IPI do mês                        # Escrituração fiscal
+/xforge criar módulo de estoque com curva ABC             # ERP/Estoque
+/xforge verificar conformidade LGPD                      # LGPD</pre>
+</div>
+
+<div id="s-faq" class="sec">
+<h1 class="text-3xl font-bold mb-4">Perguntas Frequentes (FAQ)</h1>
+
+<div class="space-y-3">
+<div class="bg-white border rounded p-3">
+<p class="font-bold">Preciso de internet para usar?</p>
+<p class="text-sm">Não. O sistema é 100% local via Ollama. Só precisa de internet para: uploads, webfetch, e updates do knowledge.</p>
+</div>
+
+<div class="bg-white border rounded p-3">
+<p class="font-bold">Qual hardware mínimo recomendado?</p>
+<p class="text-sm">GPU 16GB VRAM + 32GB RAM + CPU 8 cores. Funciona em CPU-only mas é 3-4x mais lento.</p>
+</div>
+
+<div class="bg-white border rounded p-3">
+<p class="font-bold">O sistema é tudo local?</p>
+<p class="text-sm">Sim. O XForge é otimizado para Ollama (100% local, gratuito, offline). O sistema detecta automaticamente os modelos instalados e adapta o comportamento.</p>
+</div>
+
+<div class="bg-white border rounded p-3">
+<p class="font-bold">Como adicionar um novo skill?</p>
+<p class="text-sm">Crie <code class="ic">.kilo/skills/minha-skill/SKILL.md</code> com frontmatter (name, description) + corpo com procedimento. Rode <code class="ic">doctor.ps1</code> para validar.</p>
+</div>
+
+<div class="bg-white border rounded p-3">
+<p class="font-bold">O agente pode modificar o sistema de pontuação?</p>
+<p class="text-sm">Não. O scoring é imutável. A única exceção é solicitação humana explícita.</p>
+</div>
+
+<div class="bg-white border rounded p-3">
+<p class="font-bold">Como funciona a memória entre sessões?</p>
+<p class="text-sm">Preferências ficam em <code class="ic">.xforge/memory/</code>. O agente lembra: decisões tomadas, padrões aprendidos, preferências do usuário.</p>
+</div>
+
+<div class="bg-white border rounded p-3">
+<p class="font-bold">Posso rodar múltiplos agentes em paralelo?</p>
+<p class="text-sm">Sim. O Multi-Agent Orchestration coordena até 2 workers simultâneos (16GB VRAM). Tarefas complexas são divididas entre agentes especializados.</p>
+</div>
+
+<div class="bg-white border rounded p-3">
+<p class="font-bold">E se a tarefa for maior que o contexto?</p>
+<p class="text-sm">O sistema usa Checkpoint & Resume: salva o progresso em <code class="ic">.xforge/checkpoints/</code> e continua na próxima sessão. Máximo 10 retomadas por tarefa. Não precisa preocupar — tarefas grandes funcionam automaticamente.</p>
+</div>
+
+<div class="bg-white border rounded p-3">
+<p class="font-bold">Como atualizar o knowledge base?</p>
+<p class="text-sm">Rode <code class="ic">.\.kilo\automation\scripts\check-updates.ps1</code>. Ele verifica 28 fontes oficiais e alerta sobre tabelas expiradas.</p>
+</div>
+</div>
+</div>
+
+<div id="s-golden" class="sec">
+<h1 class="text-3xl font-bold mb-4">Golden Command</h1>
+<p class="text-sm mb-3">Um único comando que ativa e valida TODO o sistema XForge de uma vez.</p>
+
+<div class="box green text-sm mb-4">
+<p class="font-bold text-lg">⚡ /xforge-init</p>
+<p class="mt-1">Rode este comando na primeira vez (ou sempre que quiser validar). Ele verifica:</p>
+</div>
+
+<div class="space-y-2 text-sm">
+<div class="bg-white border rounded p-2">✅ <strong>Doctor</strong> — Valida 24 paths obrigatórios</div>
+<div class="bg-white border rounded p-2">✅ <strong>Ollama</strong> — Verifica modelos carregados</div>
+<div class="bg-white border rounded p-2">✅ <strong>Knowledge</strong> — Verifica 172 files + INDEX.json</div>
+<div class="bg-white border rounded p-2">✅ <strong>Error Graph</strong> — Verifica 20 patterns de erros</div>
+<div class="bg-white border rounded p-2">✅ <strong>Scripts</strong> — Verifica 29 scripts disponíveis</div>
+<div class="bg-white border rounded p-2">✅ <strong>Rules</strong> — Verifica 30 rules carregadas</div>
+<div class="bg-white border rounded p-2">✅ <strong>Manual</strong> — Verifica docs/index.html (1.680 linhas)</div>
+<div class="bg-white border rounded p-2">✅ <strong>Validation</strong> — Valida tabelas (INSS, IRRF, eSocial)</div>
+</div>
+
+<h3 class="font-bold mt-4 mb-2">Como Usar</h3>
+<pre>No KiloCode:
+/xforge-init
+
+Ou no terminal:
+.\.kilo\automation\scripts\xforge-init.ps1</pre>
+
+<h3 class="font-bold mt-3 mb-2">Saída Esperada</h3>
+<pre>╔══════════════════════════════════════════════════════════╗
+║              XFORGE INIT — RESULTADO                   ║
+╠══════════════════════════════════════════════════════════╣
+║  Doctor:      PASS (24 OK, 0 errors)                   ║
+║  Ollama:      PASS (4 models)                          ║
+║  Knowledge:   PASS (172 files)                         ║
+║  Error Graph: PASS (20 patterns)                       ║
+║  Scripts:     PASS (29 available)                      ║
+║  Rules:       PASS (30 loaded)                         ║
+║  Manual:      PASS (1680 lines)                        ║
+║  Validation:  PASS (6 areas)                           ║
+║                                                        ║
+║  SCORE: 100% (8/8 checks passed)                       ║
+║  TIME:  3.2s                                           ║
+╠══════════════════════════════════════════════════════════╣
+║  v54.0 — Split Architecture · AutoResearch · IA Local  ║
+╚══════════════════════════════════════════════════════════╝
+
+✅ Sistema XForge pronto para uso!
+   Próximo passo: /xforge [sua tarefa]</pre>
+
+<h3 class="font-bold mt-3 mb-2">Sealgo Falhar</h3>
+<div class="box yellow text-sm">
+<p>Se algum check retornar WARN ou FAIL:</p>
+<ol class="list-decimal list-inside mt-1">
+<li>Rode <code>.\.kilo\automation\scripts\doctor.ps1</code> para detalhes</li>
+<li>Corrija os issues encontrados</li>
+<li>Rode <code>/xforge-init</code> novamente</li>
+</ol>
+</div>
+</div>
+
+<div id="s-glossario" class="sec">
+<h1 class="text-3xl font-bold mb-4">Glossário</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+<div class="bg-white border rounded p-1.5"><code class="font-bold">ADR</code> Architecture Decision Record</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">CQRS</code> Command Query Responsibility Segregation</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">DDD</code> Domain-Driven Design</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">EF Core</code> Entity Framework Core</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">LGPD</code> Lei Geral de Proteção de Dados</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">SPED</code> Sistema Público de Escrituração Digital</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">eSocial</code> Sistema de Escrituração Digital</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">CNAB</code> Comunicação Bancária Padronizada</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">RAG</code> Retrieval-Augmented Generation</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">SOLID</code> SRP, OCP, LSP, ISP, DIP</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">MRP</code> Material Requirements Planning</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">Kardex</code> Registro de movimentações de estoque</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">Curva ABC</code> Classificação por valor (A:80%, B:15%, C:5%)</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">EFD</code> Escrituração Fiscal Digital</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">LCPR</code> Livro Caixa do Produtor Rural</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">IBS</code> Imposto sobre Bens e Serviços (reforma)</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">CBS</code> Contribuição sobre Bens e Serviços (reforma)</div>
+<div class="bg-white border rounded p-1.5"><code class="font-bold">CPB</code> Contribuição Previdenciária sobre Receita Bruta</div>
+</div>
+</div>
+
+</div>
+</main>
+<script>
+function showSection(id){
+document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+document.querySelectorAll('.nav').forEach(l=>l.classList.remove('on'));
+const el=document.getElementById('s-'+id);
+if(el){el.classList.add('on');el.scrollIntoView({behavior:'smooth',block:'start'})}
+const nv=document.querySelector('[data-s="'+id+'"]');
+if(nv)nv.classList.add('on');
+document.getElementById('sb').classList.remove('open');
+}
+document.querySelectorAll('.nav').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();showSection(a.dataset.s)})});
+showSection('inicio');
+function search(q){const s=q.toLowerCase();document.querySelectorAll('.sec').forEach(sec=>{sec.classList.remove('on');if(!s||sec.textContent.toLowerCase().includes(s)){sec.style.display='block';sec.classList.add('on')}else{sec.style.display='none'}});document.querySelectorAll('.nav').forEach(l=>l.classList.remove('on'))}
+</script>
+</body>
+</html>

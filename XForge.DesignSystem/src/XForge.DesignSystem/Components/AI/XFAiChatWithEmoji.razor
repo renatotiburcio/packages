@@ -1,0 +1,30 @@
+﻿@namespace XForge.DesignSystem.Components.AI
+@using XForge.DesignSystem.Components.Emoji
+<div class="xf-ai-chat-emoji" role="log" aria-label="AI chat with emoji support">
+  @foreach (var msg in _messages)
+  {
+    <article class="xf-ai-chat-emoji__msg @(msg.IsUser ? "user" : "ai")" @key="msg.Id">
+      <header><strong>@(msg.IsUser ? "You" : "AI")</strong> <time>@msg.Timestamp.ToString("HH:mm")</time></header>
+      <p>@msg.Text</p>
+    </article>
+  }
+  <footer class="xf-ai-chat-emoji__input">
+    <input type="text" @bind="_draft" @bind:event="oninput" placeholder="Type a message..." aria-label="Chat input" />
+    <button type="button" @onclick="Send" disabled="@string.IsNullOrWhiteSpace(_draft)">Send</button>
+  </footer>
+</div>
+@code {
+    [Parameter] public string? UserId { get; set; }
+    private string _draft = "";
+    private List<ChatMessage> _messages = new();
+    private int _nextId;
+
+    private void Send()
+    {
+        _messages.Add(new ChatMessage(_nextId++, _draft, true, DateTime.Now));
+        _messages.Add(new ChatMessage(_nextId++, "Echo: " + _draft, false, DateTime.Now));
+        _draft = "";
+    }
+
+    public sealed record ChatMessage(int Id, string Text, bool IsUser, DateTime Timestamp);
+}

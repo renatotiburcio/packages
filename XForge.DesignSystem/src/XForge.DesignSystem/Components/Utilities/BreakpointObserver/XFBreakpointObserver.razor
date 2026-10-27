@@ -1,0 +1,7 @@
+@implements IAsyncDisposable
+@inject XFBreakpointService BreakpointService
+
+@if (ChildContent is not null)
+{
+    @ChildContent(BreakpointService.CurrentBreakpoint)
+}

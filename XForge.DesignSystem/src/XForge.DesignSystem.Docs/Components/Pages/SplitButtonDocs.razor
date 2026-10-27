@@ -1,0 +1,773 @@
+@page "/components/split-button"
+@using XForge.DesignSystem.Core.Primitives
+@using Microsoft.AspNetCore.Components.Web
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSplitButton" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Acao + menu", "Action + menu")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Teclado pronto", "Keyboard-ready")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Fluxos ERP", "ERP flows")" />
+                    </XFStack>
+
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Um comando principal com alternativas relacionadas no mesmo contexto.",
+                               "One primary command with related alternatives in the same context.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFSplitButton combina uma acao frequente e direta com um menu de variacoes como salvar copia, exportar em outro formato, agendar publicacao ou executar escopos diferentes. Ele preserva semantica, teclado, roles de menu e governanca visual sem espalhar botoes redundantes pela tela.",
+                               "XFSplitButton combines a frequent direct action with a menu of variations such as saving a copy, exporting in another format, scheduling publication or running different scopes. It preserves semantics, keyboard behavior, menu roles and visual governance without spreading redundant buttons across the screen.")
+                        </XFTypography>
+                    </XFStack>
+
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts)
+                            {
+                                @Tile(item)
+                            }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section(T("Blazor Server e Blazor WebAssembly", "Blazor Server and Blazor WebAssembly"), @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Posicionamento do menu e focus indisponiveis durante prerender.", "Renders base HTML. Menu positioning and focus unavailable during prerender.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-splitbutton.js — gerencia xfSplitButton.register/release, posicionamento do painel flutuante e fechamento por clique externo.", "JS file: xf-splitbutton.js — manages xfSplitButton.register/release, floating panel positioning and outside-click close.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: OnAfterRenderAsync.", "When loaded: OnAfterRenderAsync.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Prerender seguro: try/catch para InvalidOperationException e JSDisconnectedException.", "Prerender safe: try/catch for InvalidOperationException and JSDisconnectedException.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor Server", "Blazor Server Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop via SignalR com latencia. Posicionamento do menu pode ter resposta mais lenta.", "JS interop via SignalR with latency. Menu positioning may have slower response.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor WebAssembly", "Blazor WebAssembly Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop direto sem latencia de rede. Disponivel apos carregamento do WASM.", "Direct JS interop with no network latency. Available after WASM load.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Preview renderizado", "Live Preview"),
+                T("Acao padrao com alternativas reais de salvamento e exportacao.", "Default action with real save and export alternatives."),
+                BasicPreview(),
+                BasicCode)
+
+            @Example(T("Cobertura de exemplos: variantes e cores", "Example Coverage: variants and colors"),
+                T("A linguagem visual acompanha o contrato de XFButton.", "The visual language follows the XFButton contract."),
+                VariantsPreview(),
+                VariantsCode)
+
+            @Example(T("Estados e layout", "States and layout"),
+                T("FullWidth, disabled e uso em cards estreitos.", "FullWidth, disabled and use in narrow cards."),
+                StatePreview(),
+                StateCode)
+
+            @Example(T("Integracao: menu rico", "Integration: rich menu"),
+                T("Headers, separators, checkbox, radio, shortcuts e item desabilitado via XFDropdownMenuItem.", "Headers, separators, checkbox, radio, shortcuts and disabled item via XFDropdownMenuItem."),
+                RichMenuPreview(),
+                RichMenuCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegacao enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Exemplos de integracao", "Integration Examples"), @<div>@TileGrid(IntegrationItems, 2)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Seguranca", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migracao", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Split Button", "Split Button");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string lastAction = "Aguardando acao";
+    private bool controlledOpen;
+
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private IReadOnlyList<XFDropdownMenuItem> SaveItems => [
+        new() { Text = T("Salvar copia", "Save copy"), Description = T("Mantem o documento original", "Keeps the original document"), Shortcut = "Ctrl+Shift+S", Value = "save-copy" },
+        new() { Text = T("Salvar como template", "Save as template"), Description = T("Reutilizar em novos cadastros", "Reuse in new records"), Value = "template" },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Descartar alteracoes", "Discard changes"), Tone = XFSemanticColor.Danger, Value = "discard" }
+    ];
+
+    private IReadOnlyList<XFDropdownMenuItem> ExportItems => [
+        new() { Text = T("Exportar PDF", "Export PDF"), Description = T("Formato final para auditoria", "Final format for audit"), Shortcut = "PDF", Value = "pdf" },
+        new() { Text = T("Exportar XLSX", "Export XLSX"), Description = T("Planilha editavel", "Editable spreadsheet"), Shortcut = "XLSX", Value = "xlsx" },
+        new() { Text = T("Exportar CSV", "Export CSV"), Description = T("Integracao e carga", "Integration and import"), Shortcut = "CSV", Value = "csv" }
+    ];
+
+    private IReadOnlyList<XFDropdownMenuItem> RichExportItems => [
+        new() { Kind = XFDropdownMenuItemKind.Header, Text = T("Formato", "Format") },
+        new() { Text = T("PDF final", "Final PDF"), Description = T("Com assinatura visual", "With visual signature"), Shortcut = "PDF", Value = "pdf" },
+        new() { Text = T("Excel operacional", "Operational Excel"), Description = T("Com colunas de conferencia", "With review columns"), Shortcut = "XLSX", Value = "xlsx" },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Incluir anexos", "Include attachments"), Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = true, Value = "attachments" },
+        new() { Text = T("Somente selecionados", "Selected only"), Kind = XFDropdownMenuItemKind.XFRadio, Group = "scope", Checked = true, Value = "selected" },
+        new() { Text = T("Todos os registros", "All records"), Kind = XFDropdownMenuItemKind.XFRadio, Group = "scope", Value = "all" },
+        new() { Kind = XFDropdownMenuItemKind.Separator },
+        new() { Text = T("Exportacao bloqueada", "Export locked"), Description = T("Sem permissao no perfil atual", "No permission in the current profile"), Disabled = true, Value = "locked" }
+    ];
+
+    private IReadOnlyList<XFDropdownMenuItem> PublishItems => [
+        new() { Text = T("Publicar agora", "Publish now"), Description = T("Envia para producao", "Sends to production"), Value = "publish-now" },
+        new() { Text = T("Agendar publicacao", "Schedule publication"), Description = T("Escolher data e hora", "Choose date and time"), Value = "schedule" },
+        new() { Text = T("Salvar rascunho", "Save draft"), Value = "draft" }
+    ];
+
+    private IReadOnlyList<XFDropdownMenuItem> ValidationItems => [
+        new() { Text = T("Validar tudo", "Validate all"), Value = "validate-all" },
+        new() { Text = T("Validar apenas alterados", "Validate changed only"), Value = "validate-changed" },
+        new() { Text = T("Ignorar avisos leves", "Ignore minor warnings"), Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = false, Value = "ignore-warnings" }
+    ];
+
+    private IReadOnlyList<XFDropdownMenuItem> PeriodItems => [
+        new() { Text = T("Fechar competencia", "Close period"), Value = "close-period" },
+        new() { Text = T("Fechar e notificar", "Close and notify"), Value = "close-notify" }
+    ];
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFSplitButton Text="@T("Salvar", "Save")"
+                           Items="SaveItems"
+                           MenuAriaLabel="@T("Abrir opcoes de salvamento", "Open save options")"
+                           OnClick="SaveDefaultAsync"
+                           ItemSelected="SelectOptionAsync">
+                <StartIcon><span class="inline-flex h-5 w-5">@XFSvgIcons.MarkupWithSize("check", 18)</span></StartIcon>
+            </XFSplitButton>
+
+            <XFSplitButton Text="@T("Exportar", "Export")"
+                           Variant="XFButtonVariant.Outline"
+                           Items="ExportItems"
+                           MenuAriaLabel="@T("Abrir formatos de exportacao", "Open export formats")"
+                           OnClick="ExportDefaultAsync"
+                           ItemSelected="SelectOptionAsync">
+                <StartIcon><span class="inline-flex h-5 w-5">@XFSvgIcons.MarkupWithSize("download", 18)</span></StartIcon>
+            </XFSplitButton>
+
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Text="@lastAction" />
+        </XFStack>
+
+        <XFGrid Cols="1" Md="3" Gap="3">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Primario", "Primary")</XFTypography>
+                    <XFSplitButton Text="@T("Publicar", "Publish")" Items="PublishItems" OnClick="PublishDefaultAsync" ItemSelected="SelectOptionAsync" FullWidth="true" />
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Cautela", "Caution")</XFTypography>
+                    <XFSplitButton Text="@T("Revalidar", "Revalidate")" Items="ValidationItems" Variant="XFButtonVariant.Soft" Color="XFButtonColor.Warning" ItemSelected="SelectOptionAsync" FullWidth="true" />
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Bloqueado", "Locked")</XFTypography>
+                    <XFSplitButton Text="@T("Fechar periodo", "Close period")" Items="PeriodItems" Color="XFButtonColor.Danger" Disabled="true" FullWidth="true" />
+                </ChildContent>
+            </XFCard>
+        </XFGrid>
+    </XFStack>;
+
+    private RenderFragment BasicPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFSplitButton Text="@T("Salvar", "Save")" Items="SaveItems" OnClick="SaveDefaultAsync" ItemSelected="SelectOptionAsync" />
+        <XFSplitButton Text="@T("Exportar", "Export")" Items="ExportItems" Variant="XFButtonVariant.Outline" ItemSelected="SelectOptionAsync" />
+        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Text="@lastAction" />
+    </XFStack>;
+
+    private RenderFragment VariantsPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFSplitButton Text="Solid" Items="SaveItems" />
+            <XFSplitButton Text="Outline" Items="SaveItems" Variant="XFButtonVariant.Outline" />
+            <XFSplitButton Text="Soft" Items="SaveItems" Variant="XFButtonVariant.Soft" />
+            <XFSplitButton Text="Ghost" Items="SaveItems" Variant="XFButtonVariant.Ghost" />
+            <XFSplitButton Text="Subtle" Items="SaveItems" Variant="XFButtonVariant.Subtle" />
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFSplitButton Text="Primary" Items="SaveItems" Color="XFButtonColor.Primary" />
+            <XFSplitButton Text="Success" Items="SaveItems" Color="XFButtonColor.Success" />
+            <XFSplitButton Text="Warning" Items="ValidationItems" Color="XFButtonColor.Warning" />
+            <XFSplitButton Text="Danger" Items="PeriodItems" Color="XFButtonColor.Danger" />
+            <XFSplitButton Text="Neutral" Items="ExportItems" Color="XFButtonColor.Neutral" />
+        </XFStack>
+    </XFStack>;
+
+    private RenderFragment StatePreview() => @<XFGrid Cols="1" Md="3" Gap="3">
+        <XFSplitButton Text="@T("Enviar proposta", "Send proposal")" Items="ExportItems" FullWidth="true" />
+        <XFSplitButton Text="@T("Fechar competencia", "Close fiscal period")" Items="PeriodItems" Color="XFButtonColor.Danger" Disabled="true" FullWidth="true" />
+        <XFSplitButton Text="@T("Mais acoes", "More actions")" Items="SaveItems" Open="controlledOpen" OpenChanged="SetControlledOpenAsync" ItemSelected="SelectOptionAsync" FullWidth="true" />
+    </XFGrid>;
+
+    private RenderFragment RichMenuPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFSplitButton Text="@T("Exportar relatorio", "Export report")"
+                       Items="RichExportItems"
+                       Variant="XFButtonVariant.Outline"
+                       MenuAriaLabel="@T("Abrir opcoes de exportacao", "Open export options")"
+                       MenuPanelAriaLabel="@T("Opcoes de exportacao do relatorio", "Report export options")"
+                       ItemSelected="SelectOptionAsync">
+            <StartIcon><span class="inline-flex h-5 w-5">@XFSvgIcons.MarkupWithSize("download", 18)</span></StartIcon>
+        </XFSplitButton>
+    </XFStack>;
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header>
+            <div class="px-6 pt-6">
+                <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+            </div>
+        </Header>
+        <ChildContent>
+            <div class="grid">
+                <div class="border-t border-border-light p-6">@preview</div>
+                <div class="border-t border-border-light bg-surface-50 p-6">
+                    <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                </div>
+            </div>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                    <div class="min-w-0">
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                    </div>
+                </div>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">
+        @foreach (var item in items)
+        {
+            @Tile(item)
+        }
+    </XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">
+        @foreach (var item in items)
+        {
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                        <div class="flex items-center gap-4">
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                            <div class="min-w-0">
+                                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                            </div>
+                        </div>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        }
+    </XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@nameHeader</XFTableCell>
+                <XFTableCell Header="true">@valueHeader</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Value</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+                <XFTableCell Header="true">Type</XFTableCell>
+                <XFTableCell Header="true">Default</XFTableCell>
+                <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Type</XFTableCell>
+                    <XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell>
+                    <XFTableCell>@row.Description</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Duas regioes", "Two regions"), T("Botao principal executa OnClick; trigger abre o menu.", "Primary button executes OnClick; trigger opens the menu."), "split"),
+        new(T("Menu semantico", "Semantic menu"), T("Renderiza role=menu, menuitem, checkbox/radio e separator.", "Renders role=menu, menuitem, checkbox/radio and separator."), "list-dropdown"),
+        new(T("Controle externo", "External control"), T("Open/OpenChanged permitem controlar o painel pela tela pai.", "Open/OpenChanged let the parent screen control the panel."), "sliders")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFSplitButton"),
+        new("Namespace", "XForge.DesignSystem.Components.Button.SplitButton"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components"),
+        new("Related model", "XFDropdownMenuItem"),
+        new("Routes", "/components/split-button")
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Acao padrao direta", "Direct default action"), T("O lado esquerdo executa o fluxo mais comum sem abrir menu.", "The left side executes the most common flow without opening a menu."), "bolt"),
+        new(T("Alternativas agrupadas", "Grouped alternatives"), T("O trigger concentra variacoes da mesma intencao.", "The trigger groups variations of the same intent."), "list-dropdown"),
+        new(T("Contrato de menu", "Menu contract"), T("Itens suportam texto, descricao, atalho, valor, kind, tone, checked e disabled.", "Items support text, description, shortcut, value, kind, tone, checked and disabled."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Reduz redundancia", "Reduces redundancy"), T("Evita barras com tres ou quatro botoes quase iguais.", "Avoids bars with three or four nearly identical buttons."), "arrows-minimize"),
+        new(T("Mantem velocidade", "Keeps speed"), T("A acao primaria continua a um clique.", "The primary action remains one click away."), "gauge"),
+        new(T("Organiza variacoes", "Organizes variations"), T("Exportar PDF/XLSX/CSV ou salvar copia/template sem poluir a tela.", "Export PDF/XLSX/CSV or save copy/template without cluttering the screen."), "folder-tree")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Toolbar poluida", "Cluttered toolbar"), T("Agrupa variacoes que competem pelo mesmo espaco.", "Groups variations that compete for the same space."), "bars"),
+        new(T("Decisao ambigua", "Ambiguous decision"), T("Deixa explicito qual acao e padrao e quais sao alternativas.", "Makes explicit which action is default and which are alternatives."), "arrow-pointer"),
+        new(T("Acessibilidade manual", "Manual accessibility"), T("Centraliza aria-haspopup, aria-expanded, roles e teclado.", "Centralizes aria-haspopup, aria-expanded, roles and keyboard."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Salvar com alternativas", "Save with alternatives"), T("Salvar, salvar copia, salvar template ou descartar alteracoes.", "Save, save copy, save as template or discard changes."), "check"),
+        new(T("Exportacao", "Export"), T("Exportar formato padrao e oferecer PDF, XLSX ou CSV.", "Export a default format and offer PDF, XLSX or CSV."), "download"),
+        new(T("Publicacao", "Publication"), T("Publicar agora, agendar ou salvar rascunho.", "Publish now, schedule or save draft."), "paper-plane"),
+        new(T("Toolbar operacional", "Operational toolbar"), T("Manter uma acao principal compacta com variacoes proximas.", "Keep one compact primary action with nearby variations."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Acoes sem relacao", "Unrelated actions"), T("Nao misture salvar, excluir, imprimir e compartilhar no mesmo split.", "Do not mix save, delete, print and share in the same split."), "xmark"),
+        new(T("Acao unica", "Single action"), T("Se nao ha variacao real, use XFButton.", "If there is no real variation, use XFButton."), "circle"),
+        new(T("Decisao critica complexa", "Complex critical decision"), T("Se exige explicacao, confirmacao ou formulario, use Dialog.", "If it requires explanation, confirmation or a form, use Dialog."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("1. Botao primario", "1. Primary button"), T("Executa OnClick e pode usar Text, ChildContent e StartIcon.", "Executes OnClick and can use Text, ChildContent and StartIcon."), "check"),
+        new(T("2. Trigger", "2. Trigger"), T("Abre/fecha o painel e expoe aria-haspopup e aria-expanded.", "Opens/closes the panel and exposes aria-haspopup and aria-expanded."), "chevron-down"),
+        new(T("3. Menu", "3. Menu"), T("Renderiza Items com role=menu, headers e separators.", "Renders Items with role=menu, headers and separators."), "list-dropdown"),
+        new(T("4. Estado", "4. State"), T("Open/OpenChanged, Disabled e CloseOnSelect definem comportamento.", "Open/OpenChanged, Disabled and CloseOnSelect define behavior."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Principal primeiro", "Primary first"), T("O lado esquerdo deve ser a acao mais frequente e segura.", "The left side should be the most frequent and safe action."), "arrow-pointer"),
+        new(T("Trigger menor", "Smaller trigger"), T("O chevron e apoio, nao deve competir com o comando.", "The chevron is support, not a competitor to the command."), "chevron-down"),
+        new(T("Menu curto", "Short menu"), T("Alternativas devem ser escaneaveis e relacionadas.", "Alternatives must be scannable and related."), "list-ul")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Uma intencao", "One intent"), T("Todos os itens do menu variam a mesma acao.", "All menu items vary the same action."), "route"),
+        new(T("Sem surpresa", "No surprise"), T("A acao padrao precisa ser previsivel e reversivel quando possivel.", "The default action must be predictable and reversible when possible."), "shield-check"),
+        new(T("Semantica antes de estilo", "Semantics before style"), T("Roles e aria devem existir antes de refinamento visual.", "Roles and aria must exist before visual refinement."), "universal-access")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Solid", T("Acao principal dominante.", "Dominant primary action.")),
+        new("Outline", T("Alternativa com menor peso visual.", "Alternative with lower visual weight.")),
+        new("Soft", T("Acao contextual ou de cautela.", "Contextual or cautionary action.")),
+        new("Ghost", T("Toolbar densa com baixo ruido.", "Dense toolbar with low noise.")),
+        new("Subtle", T("Superficie discreta com borda leve.", "Discreet surface with a light border."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Botao e trigger habilitados.", "Button and trigger enabled.")),
+        new("Open", T("Painel renderizado e aria-expanded=true.", "Panel rendered and aria-expanded=true.")),
+        new("Disabled", T("Botao principal e trigger ficam inativos.", "Primary button and trigger become inactive.")),
+        new("Checked", T("Itens checkbox/radio exibem aria-checked.", "Checkbox/radio items expose aria-checked.")),
+        new("CloseOnSelect=false", T("Selecao nao fecha o menu automaticamente.", "Selection does not close the menu automatically."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Text", "string?", "null", T("Texto do botao primario quando ChildContent nao foi informado.", "Primary button text when ChildContent was not provided.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo customizado do botao primario.", "Custom primary button content.")),
+        new("StartIcon", "RenderFragment?", "null", T("Icone decorativo antes do texto principal.", "Decorative icon before the main text.")),
+        new("Items", "IReadOnlyList<XFDropdownMenuItem>", "Array.Empty", T("Itens do menu: Action, Checkbox, Radio, Header ou Separator.", "Menu items: Action, Checkbox, Radio, Header or Separator.")),
+        new("Variant", "XFButtonVariant", "Solid", T("Solid, Outline, Ghost, Soft ou Subtle.", "Solid, Outline, Ghost, Soft or Subtle.")),
+        new("Color", "XFButtonColor", "Primary", T("Primary, Secondary, Success, Warning, Danger, Neutral ou Info.", "Primary, Secondary, Success, Warning, Danger, Neutral or Info.")),
+        new("Size", "XFExtendedSize", "Md", T("Xs, Sm, Md, Lg e Xl.", "Xs, Sm, Md, Lg and Xl.")),
+        new("Type", "XFButtonType", "Button", T("Tipo HTML do botao primario: Button, Submit ou Reset.", "HTML type for the primary button: Button, Submit or Reset.")),
+        new("FullWidth", "bool", "false", T("Ocupa toda a largura disponivel.", "Fills the available width.")),
+        new("Open", "bool", "false", T("Estado controlado de abertura do menu.", "Controlled menu open state.")),
+        new("OpenChanged", "EventCallback<bool>", "default", T("Notifica mudancas de abertura.", "Notifies open state changes.")),
+        new("Disabled", "bool", "false", T("Desabilita botao principal e trigger.", "Disables primary button and trigger.")),
+        new("MenuAriaLabel", "string", "\"Abrir opcoes\"", T("Nome acessivel do trigger.", "Accessible name for the trigger.")),
+        new("MenuPanelAriaLabel", "string?", "null", T("Nome acessivel do painel; usa MenuAriaLabel quando vazio.", "Accessible name for the panel; uses MenuAriaLabel when empty.")),
+        new("CloseOnSelect", "bool", "true", T("Fecha o menu ao selecionar um item.", "Closes the menu after selecting an item."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnClick", T("Disparado pelo botao principal.", "Fired by the primary button.")),
+        new("ItemSelected", T("Disparado ao selecionar item Action, Checkbox ou Radio.", "Fired when selecting an Action, Checkbox or Radio item.")),
+        new("OpenChanged", T("Disparado quando o menu abre ou fecha.", "Fired when the menu opens or closes."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("CloseFromJsAsync", T("Metodo JSInvokable usado pelo script de posicionamento/fechamento externo.", "JSInvokable method used by the positioning/external close script.")),
+        new("DisposeAsync", T("Libera registro JS e DotNetObjectReference.", "Releases JS registration and DotNetObjectReference.")),
+        new(T("Metodos publicos @ref", "Public @ref methods"), T("Nao aplicavel; o componente nao expoe API publica de chamada manual.", "Not applicable; the component exposes no public manual-call API."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Trigger nomeado", "Named trigger"), T("MenuAriaLabel nomeia o botao de chevron.", "MenuAriaLabel names the chevron button."), "tag"),
+        new("ARIA", T("Trigger usa aria-haspopup=menu, aria-controls e aria-expanded.", "Trigger uses aria-haspopup=menu, aria-controls and aria-expanded."), "code"),
+        new(T("Roles de menu", "Menu roles"), T("Painel usa role=menu e itens usam menuitem/menuitemcheckbox/menuitemradio.", "Panel uses role=menu and items use menuitem/menuitemcheckbox/menuitemradio."), "list-dropdown"),
+        new(T("Estado real", "Real state"), T("Disabled, checked e separator/header alteram comportamento e semantica.", "Disabled, checked and separator/header change behavior and semantics."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [
+        new(T("Tab separado", "Separate tab stops"), T("Botao principal e trigger sao focos distintos.", "Primary button and trigger are distinct focus targets."), "keyboard"),
+        new(T("Abrir menu", "Open menu"), T("ArrowDown, Enter ou Space no trigger abrem o painel.", "ArrowDown, Enter or Space on the trigger opens the panel."), "chevron-down"),
+        new(T("Navegar itens", "Navigate items"), T("ArrowUp/ArrowDown, Home e End percorrem itens selecionaveis.", "ArrowUp/ArrowDown, Home and End move through selectable items."), "arrows-up-down"),
+        new(T("Fechar", "Close"), T("Escape fecha o menu; selecao fecha quando CloseOnSelect=true.", "Escape closes the menu; selection closes when CloseOnSelect=true."), "xmark")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Move foco para o botao principal e depois para o trigger.", "Moves focus to the primary button and then the trigger.")),
+        new("Enter/Space", T("No botao principal executa OnClick; no trigger abre menu; no menu seleciona item ativo.", "On the primary button executes OnClick; on the trigger opens menu; in the menu selects active item.")),
+        new("ArrowDown", T("No trigger abre menu; no menu move para proximo item selecionavel.", "On the trigger opens menu; in the menu moves to the next selectable item.")),
+        new("ArrowUp", T("Move para o item selecionavel anterior.", "Moves to the previous selectable item.")),
+        new("Home/End", T("Move para primeiro/ultimo item selecionavel.", "Moves to first/last selectable item.")),
+        new("Escape", T("Fecha o menu.", "Closes the menu."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new("FullWidth", T("Use em cards estreitos, drawers e mobile.", "Use in narrow cards, drawers and mobile."), "mobile-screen"),
+        new(T("Toolbars densas", "Dense toolbars"), T("Use Size Sm e menus curtos para evitar overflow.", "Use Size Sm and short menus to avoid overflow."), "sliders"),
+        new(T("Quebra controlada", "Controlled wrapping"), T("Agrupe em XFStack Wrap quando houver varios comandos.", "Group in XFStack Wrap when there are multiple commands."), "arrows-maximize"),
+        new(T("Painel flutuante", "Floating panel"), T("O menu usa posicionamento JS e z-index alto.", "The menu uses JS positioning and high z-index."), "window-restore")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Render condicional", "Conditional render"), T("O painel so existe no DOM quando Open=true.", "The panel only exists in the DOM when Open=true."), "bolt"),
+        new(T("JS limitado", "Limited JS"), T("Interop fica restrito a registro, posicionamento e release.", "Interop is restricted to registration, positioning and release."), "code"),
+        new(T("Lista curta", "Short list"), T("Menus grandes prejudicam teclado, leitura e performance percebida.", "Large menus harm keyboard flow, scanning and perceived performance."), "list-ul"),
+        new(T("Release no fechamento", "Release on close"), T("Quando fecha ou descarta, o registro JS e liberado.", "When closing or disposing, JS registration is released."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Financeiro", "Finance"), T("Exportar remessa, gerar PDF ou baixar conciliacao.", "Export remittance, generate PDF or download reconciliation."), "money-bill"),
+        new(T("Fiscal", "Tax"), T("Salvar validacao, salvar copia ou descartar alteracoes.", "Save validation, save copy or discard changes."), "calculator"),
+        new(T("Estoque", "Inventory"), T("Publicar inventario, agendar contagem ou salvar rascunho.", "Publish inventory, schedule count or save draft."), "box-archive"),
+        new("CRM", T("Enviar proposta por e-mail, copiar link ou gerar link publico.", "Send proposal by email, copy link or generate public link."), "briefcase"),
+        new(T("RH", "HR"), T("Aprovar folha, aprovar e notificar ou agendar processamento.", "Approve payroll, approve and notify or schedule processing."), "users"),
+        new(T("Administrativo", "Administration"), T("Fechar periodo, fechar e notificar ou bloquear acao.", "Close period, close and notify or block action."), "building")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("Toolbar", T("Use com XFStack Wrap e Size Sm.", "Use with XFStack Wrap and Size Sm."), "sliders"),
+        new("Card", T("Use FullWidth quando a acao pertence ao bloco inteiro.", "Use FullWidth when the action belongs to the whole block."), "square"),
+        new("Dialog", T("Use no footer apenas quando alternativas sao simples.", "Use in the footer only when alternatives are simple."), "window-restore"),
+        new("DropdownMenu", T("Reutiliza XFDropdownMenuItem para consistencia de menu.", "Reuses XFDropdownMenuItem for menu consistency."), "list-dropdown"),
+        new("Forms", T("Type Submit/Reset afeta apenas o botao principal.", "Type Submit/Reset affects only the primary button."), "file-lines"),
+        new(T("Icones", "Icons"), T("StartIcon deve ser decorativo e simples.", "StartIcon should be decorative and simple."), "sparkles")
+    ];
+
+    private IReadOnlyList<DocTile> IntegrationItems => [
+        new("XFDropdownMenuItem", T("Use Text, Description, Shortcut, Value, Kind, Tone, Disabled e Checked.", "Use Text, Description, Shortcut, Value, Kind, Tone, Disabled and Checked."), "list-dropdown"),
+        new("Open/OpenChanged", T("Controle abertura por estado externo quando necessario.", "Control opening through external state when needed."), "sliders"),
+        new("MenuPanelAriaLabel", T("Nomeie painéis complexos de forma especifica.", "Give complex panels a specific name."), "tag"),
+        new("CloseOnSelect", T("Desative apenas para checkbox/radio persistente.", "Disable only for persistent checkbox/radio selection."), "circle-check")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Acao padrao segura", "Safe default action"), T("O clique principal deve ser a opcao esperada e menos perigosa.", "The primary click should be the expected and least dangerous option."), "shield-check"),
+        new(T("Itens relacionados", "Related items"), T("Tudo no menu deve ser variacao da mesma intencao.", "Everything in the menu must be a variation of the same intent."), "route"),
+        new(T("Labels especificos", "Specific labels"), T("Evite 'Mais'; prefira 'Mais opcoes de exportacao'.", "Avoid 'More'; prefer 'More export options'."), "tag"),
+        new(T("Menus curtos", "Short menus"), T("Se a lista crescer, use DropdownMenu dedicado ou Dialog.", "If the list grows, use a dedicated DropdownMenu or Dialog."), "list-ul")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Tudo em um menu", "Everything in one menu"), T("Nao use Split Button como menu principal da tela.", "Do not use Split Button as the main screen menu."), "xmark"),
+        new(T("Destrutivo como padrao", "Destructive as default"), T("Nao coloque excluir/descartar como acao principal sem confirmacao.", "Do not put delete/discard as primary action without confirmation."), "triangle-exclamation"),
+        new(T("Sem label acessivel", "No accessible label"), T("Trigger generico sem contexto prejudica leitor de tela.", "Generic trigger without context hurts screen readers."), "eye-slash"),
+        new(T("Menu longo", "Long menu"), T("Dezenas de opcoes reduzem escaneamento e navegacao por teclado.", "Dozens of options reduce scanning and keyboard navigation."), "list-ul")
+    ];
+
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("bg-primary/status, text-primary/status e contrast tokens.", "bg-primary/status, text-primary/status and contrast tokens.")),
+        new("typography", T("font-semibold e text-xs/sm/base/lg por size.", "font-semibold and text-xs/sm/base/lg by size.")),
+        new("radius", T("rounded-l-md, rounded-r-md, rounded-lg e rounded-md em itens.", "rounded-l-md, rounded-r-md, rounded-lg and rounded-md in items.")),
+        new("elevation", T("shadow do botao e shadow alto do painel.", "Button shadow and high panel shadow.")),
+        new("spacing", "gap-1.5/gap-2, h-7..h-12, px-2..px-6."),
+        new("borders", "border-primary/status/border-light."),
+        new("motion", "transition-all duration-200 ease-out.")
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Classes apontam para CSS variables e funcionam em light/dark.", "Classes point to CSS variables and work in light/dark."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa; status permanecem semanticos.", "Primary follows the active brand; statuses remain semantic."), "swatchbook"),
+        new(T("Painel", "Panel"), T("Menu usa bg-bg-surface, border-light e text tokens.", "Menu uses bg-bg-surface, border-light and text tokens."), "window-restore"),
+        new(T("Foco", "Focus"), T("focus-visible usa ring tokenizado.", "focus-visible uses a tokenized ring."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [
+        new(T("Sem HTML inseguro", "No unsafe HTML"), T("Text/Description sao renderizados pelo Blazor; nao injete markup externo.", "Text/Description are rendered by Blazor; do not inject external markup."), "shield-check"),
+        new(T("Acoes sensiveis", "Sensitive actions"), T("Use Danger, auditoria e Dialog para operacoes irreversiveis.", "Use Danger, audit and Dialog for irreversible operations."), "triangle-exclamation"),
+        new("Value", T("Nao coloque dados sensiveis em Value quando o evento for logado.", "Do not put sensitive data in Value when the event is logged."), "lock"),
+        new(T("Permissoes", "Permissions"), T("Desabilite itens sem permissao e explique com Description.", "Disable unauthorized items and explain with Description."), "users")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("XFSplitButtonComponentTest cobre render, clique primario, selecao, teclado, headers/separators e aria label.", "XFSplitButtonComponentTest covers render, primary click, selection, keyboard, headers/separators and aria label.")),
+        new("Snapshot", T("XFSnapshotTest possui snapshot de SplitButton com acao e dropdown.", "XFSnapshotTest has a SplitButton snapshot with action and dropdown.")),
+        new("Performance", T("XFPerformanceTest mede render abaixo do limite.", "XFPerformanceTest measures render under the threshold.")),
+        new("Accessibility", T("Testes cobrem aria-haspopup, aria-label e roles de menu.", "Tests cover aria-haspopup, aria-label and menu roles."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Href", T("Nao aplicavel; o componente executa comandos, nao navegacao.", "Not applicable; the component executes commands, not navigation.")),
+        new("Loading", T("Ainda nao possui parametro Loading proprio; use estados externos/Disabled.", "No dedicated Loading parameter yet; use external states/Disabled.")),
+        new("Virtualization", T("Nao aplicavel; menus devem ser curtos.", "Not applicable; menus should be short.")),
+        new("Nested Children", T("XFDropdownMenuItem.Children existe no modelo, mas SplitButton renderiza lista plana.", "XFDropdownMenuItem.Children exists in the model, but SplitButton renders a flat list."))
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("Grupo de botoes", "Button group"), T("Migre acao padrao + variacoes para XFSplitButton.", "Migrate default action + variations to XFSplitButton."), "arrow-rotate-left"),
+        new(T("Menu custom", "Custom menu"), T("Troque markup local por Items de XFDropdownMenuItem.", "Replace local markup with XFDropdownMenuItem Items."), "list-dropdown"),
+        new(T("Trigger sem aria", "Trigger without aria"), T("Use MenuAriaLabel e MenuPanelAriaLabel.", "Use MenuAriaLabel and MenuPanelAriaLabel."), "tag"),
+        new(T("CSS local", "Local CSS"), T("Use Variant, Color e Size em vez de classes soltas.", "Use Variant, Color and Size instead of loose classes."), "swatchbook")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFButton", T("Use quando existe apenas uma acao.", "Use when there is only one action."), "arrow-pointer"),
+        new("XFDropdownMenu", T("Use quando o menu e o elemento principal.", "Use when the menu is the main element."), "list-dropdown"),
+        new("XFToolbar", T("Use para organizar varios comandos.", "Use to organize multiple commands."), "sliders"),
+        new("XFDialog", T("Use para acoes que exigem confirmacao ou formulario.", "Use for actions that require confirmation or a form."), "window-restore"),
+        new("XFBadge", T("Use para exibir o ultimo resultado ou status.", "Use to display the latest result or status."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual acao deve ficar no lado esquerdo?", "Which action belongs on the left side?"), T("A acao mais frequente, clara e segura.", "The most frequent, clear and safe action.")),
+        new(T("Posso colocar excluir no menu?", "Can I put delete in the menu?"), T("Sim, mas use Tone Danger e separacao; para irreversivel, use Dialog.", "Yes, but use Tone Danger and separation; for irreversible actions, use Dialog.")),
+        new(T("CloseOnSelect=false e quando?", "When should CloseOnSelect=false be used?"), T("Apenas quando checkbox/radio precisa manter o painel aberto.", "Only when checkbox/radio needs to keep the panel open.")),
+        new(T("O componente suporta submit?", "Does the component support submit?"), T("Sim, Type afeta o botao primario; o trigger continua type=button.", "Yes, Type affects the primary button; the trigger remains type=button."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-05-25", T("Pagina refeita por completo no padrao enterprise, multi idioma, com API real, exemplos renderizados, teclado, acessibilidade, performance, tokens e cenarios ERP.", "Page fully rebuilt in the enterprise, multilingual standard with real API, rendered examples, keyboard, accessibility, performance, tokens and ERP scenarios.")),
+        new("Tests", T("Documentacao alinhada a XFSplitButtonComponentTest, XFSnapshotTest e XFPerformanceTest.", "Documentation aligned with XFSplitButtonComponentTest, XFSnapshotTest and XFPerformanceTest."))
+    ];
+
+    private string BasicCode => T("""
+<XFSplitButton Text="Salvar"
+               Items="SaveItems"
+               OnClick="SaveDefaultAsync"
+               ItemSelected="SelectOptionAsync" />
+
+<XFSplitButton Text="Exportar"
+               Items="ExportItems"
+               Variant="XFButtonVariant.Outline"
+               ItemSelected="SelectOptionAsync" />
+""", """
+<XFSplitButton Text="Save"
+               Items="SaveItems"
+               OnClick="SaveDefaultAsync"
+               ItemSelected="SelectOptionAsync" />
+
+<XFSplitButton Text="Export"
+               Items="ExportItems"
+               Variant="XFButtonVariant.Outline"
+               ItemSelected="SelectOptionAsync" />
+""");
+
+    private string VariantsCode => """
+<XFSplitButton Text="Solid" Items="SaveItems" />
+<XFSplitButton Text="Outline" Items="SaveItems" Variant="XFButtonVariant.Outline" />
+<XFSplitButton Text="Soft" Items="SaveItems" Variant="XFButtonVariant.Soft" />
+<XFSplitButton Text="Ghost" Items="SaveItems" Variant="XFButtonVariant.Ghost" />
+<XFSplitButton Text="Subtle" Items="SaveItems" Variant="XFButtonVariant.Subtle" />
+
+<XFSplitButton Text="Success" Items="SaveItems" Color="XFButtonColor.Success" />
+<XFSplitButton Text="Warning" Items="ValidationItems" Color="XFButtonColor.Warning" />
+<XFSplitButton Text="Danger" Items="PeriodItems" Color="XFButtonColor.Danger" />
+""";
+
+    private string StateCode => T("""
+<XFSplitButton Text="Enviar proposta" Items="ExportItems" FullWidth="true" />
+
+<XFSplitButton Text="Fechar competencia"
+               Items="PeriodItems"
+               Color="XFButtonColor.Danger"
+               Disabled="true"
+               FullWidth="true" />
+
+<XFSplitButton Text="Mais acoes"
+               Items="SaveItems"
+               Open="controlledOpen"
+               OpenChanged="SetControlledOpenAsync" />
+""", """
+<XFSplitButton Text="Send proposal" Items="ExportItems" FullWidth="true" />
+
+<XFSplitButton Text="Close fiscal period"
+               Items="PeriodItems"
+               Color="XFButtonColor.Danger"
+               Disabled="true"
+               FullWidth="true" />
+
+<XFSplitButton Text="More actions"
+               Items="SaveItems"
+               Open="controlledOpen"
+               OpenChanged="SetControlledOpenAsync" />
+""");
+
+    private string RichMenuCode => T("""
+private IReadOnlyList<XFDropdownMenuItem> RichExportItems => [
+    new() { Kind = XFDropdownMenuItemKind.Header, Text = "Formato" },
+    new() { Text = "PDF final", Description = "Com assinatura visual", Shortcut = "PDF", Value = "pdf" },
+    new() { Text = "Excel operacional", Description = "Com colunas de conferencia", Shortcut = "XLSX", Value = "xlsx" },
+    new() { Kind = XFDropdownMenuItemKind.Separator },
+    new() { Text = "Incluir anexos", Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = true, Value = "attachments" },
+    new() { Text = "Somente selecionados", Kind = XFDropdownMenuItemKind.XFRadio, Group = "scope", Checked = true, Value = "selected" },
+    new() { Text = "Todos os registros", Kind = XFDropdownMenuItemKind.XFRadio, Group = "scope", Value = "all" },
+    new() { Text = "Exportacao bloqueada", Disabled = true, Value = "locked" }
+];
+
+<XFSplitButton Text="Exportar relatorio"
+               Items="RichExportItems"
+               Variant="XFButtonVariant.Outline"
+               MenuAriaLabel="Abrir opcoes de exportacao"
+               MenuPanelAriaLabel="Opcoes de exportacao do relatorio" />
+""", """
+private IReadOnlyList<XFDropdownMenuItem> RichExportItems => [
+    new() { Kind = XFDropdownMenuItemKind.Header, Text = "Format" },
+    new() { Text = "Final PDF", Description = "With visual signature", Shortcut = "PDF", Value = "pdf" },
+    new() { Text = "Operational Excel", Description = "With review columns", Shortcut = "XLSX", Value = "xlsx" },
+    new() { Kind = XFDropdownMenuItemKind.Separator },
+    new() { Text = "Include attachments", Kind = XFDropdownMenuItemKind.XFCheckbox, Checked = true, Value = "attachments" },
+    new() { Text = "Selected only", Kind = XFDropdownMenuItemKind.XFRadio, Group = "scope", Checked = true, Value = "selected" },
+    new() { Text = "All records", Kind = XFDropdownMenuItemKind.XFRadio, Group = "scope", Value = "all" },
+    new() { Text = "Export locked", Disabled = true, Value = "locked" }
+];
+
+<XFSplitButton Text="Export report"
+               Items="RichExportItems"
+               Variant="XFButtonVariant.Outline"
+               MenuAriaLabel="Open export options"
+               MenuPanelAriaLabel="Report export options" />
+""");
+
+    private Task SaveDefaultAsync(MouseEventArgs args)
+    {
+        lastAction = T("Salvar", "Save");
+        return Task.CompletedTask;
+    }
+
+    private Task ExportDefaultAsync(MouseEventArgs args)
+    {
+        lastAction = T("Exportar padrao", "Default export");
+        return Task.CompletedTask;
+    }
+
+    private Task PublishDefaultAsync(MouseEventArgs args)
+    {
+        lastAction = T("Publicar", "Publish");
+        return Task.CompletedTask;
+    }
+
+    private Task SelectOptionAsync(XFDropdownMenuItem item)
+    {
+        lastAction = item.Text ?? item.Value?.ToString() ?? T("Opcao selecionada", "Selected option");
+        return Task.CompletedTask;
+    }
+
+    private Task SetControlledOpenAsync(bool open)
+    {
+        controlledOpen = open;
+        return Task.CompletedTask;
+    }
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

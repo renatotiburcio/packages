@@ -1,0 +1,38 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@RootClass"
+     style="@Style"
+     role="button"
+     tabindex="@(Disabled ? "-1" : "0")"
+     aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+     aria-labelledby="@LabelId"
+     aria-describedby="@AriaDescribedBy"
+     data-state="@State.ToString().ToLowerInvariant()"
+     @ondragenter="HandleDragEnterAsync"
+     @ondragover="HandleDragOverAsync"
+     @ondragover:preventDefault="true"
+     @ondragleave="HandleDragLeaveAsync"
+     @ondrop="HandleDropAsync"
+     @ondrop:preventDefault="true">
+    @if (StateContent is not null)
+    {
+        @StateContent(State)
+    }
+    else if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <span aria-hidden="true" class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[color-mix(in_oklab,var(--color-primary)_8%,transparent)] text-primary ring-1 ring-[color-mix(in_oklab,var(--color-primary)_16%,transparent)]">
+            <span class="inline-block h-5 w-5">@XFSvgIcons.Markup("upload")</span>
+        </span>
+        <span id="@LabelId" class="@TitleClass">@ResolvedLabel</span>
+        @if (!string.IsNullOrWhiteSpace(Description))
+        {
+            <span id="@DescriptionId" class="@DescriptionClass">@Description</span>
+        }
+    }
+</div>

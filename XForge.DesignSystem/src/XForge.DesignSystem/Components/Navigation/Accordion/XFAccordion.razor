@@ -1,0 +1,16 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="region"
+     aria-label="@AriaLabel">
+    <CascadingValue Value="this" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter] public string AriaLabel { get; set; } = "Accordion";
+}

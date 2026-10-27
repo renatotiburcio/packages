@@ -1,0 +1,232 @@
+@using XForge.DesignSystem.Components.AI.Common
+@using XForge.DesignSystem.Services.AI
+@inherits XForgeComponentBase
+
+<section class="@RootClass"
+         style="@Style"
+         aria-busy="@AriaBusyValue"
+         aria-label="@Title"
+         @attributes="AdditionalAttributes">
+
+    @* -- Header ------------------------------------------------------- *@
+    @if (ShowHeader)
+    {
+        <header class="@HeaderClass">
+            @if (HeaderContent is not null)
+            {
+                @HeaderContent
+            }
+            else
+            {
+                <div class="min-w-0">
+                    <div class="@HeaderTitleClass">
+                        <span class="inline-flex h-5 w-5 items-center justify-center text-text-muted" aria-hidden="true">
+                            @XFSvgIcons.Markup("sparkles")
+                        </span>
+                        @Title
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Subtitle))
+                    {
+                        <div class="@HeaderSubtitleClass">@Subtitle</div>
+                    }
+                </div>
+            }
+        </header>
+    }
+
+    @* -- Messages ----------------------------------------------------- *@
+    <div class="@MessagesContainerClass"
+         role="log"
+         aria-live="polite"
+         aria-relevant="additions text"
+         aria-label="Conversa com IA">
+
+        @if (_messages.Count == 0)
+        {
+            <div class="@EmptyContainerClass">
+                @if (EmptyContent is not null)
+                {
+                    @EmptyContent
+                }
+                else
+                {
+                    <div class="@EmptyInnerClass">
+                        <div class="@EmptyIconClass" aria-hidden="true">
+                            @XFSvgIcons.Markup("robot")
+                        </div>
+                        <div class="text-sm font-medium text-text-primary">Assistente IA</div>
+                        <div class="@EmptyTextClass">
+                            Digite sua mensagem para iniciar uma conversa com o assistente de IA.
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            @foreach (var message in _messages)
+            {
+                <div class="@MessageRowClass(message)" @key="message.GetHashCode()">
+                    @if (MessageTemplate is not null)
+                    {
+                        @MessageTemplate(message)
+                    }
+                    else
+                    {
+                        @if (message.Role != AiRole.User && message.Role != AiRole.System)
+                        {
+                            <div class="@AvatarClass" aria-hidden="true">
+                                @GetRoleAvatar(message.Role)
+                            </div>
+                        }
+
+                        <div class="min-w-0">
+                            <div class="@MetaClass(message)">
+                                <span>@GetRoleName(message.Role)</span>
+                                @if (ShowTimestamps)
+                                {
+                                    <time datetime="@message.Timestamp.ToString("O")">
+                                        @message.Timestamp.ToLocalTime().ToString("HH:mm")
+                                    </time>
+                                }
+                            </div>
+
+                            <div class="@BubbleClass(message)" data-copy-content="@message.Content">
+                                @message.Content
+
+                                @* -- Streaming indicator -- *@
+                                @if (IsBusy && message == _messages.LastOrDefault() && message.Role == AiRole.User)
+                                {
+                                    <span class="ml-1 inline-flex animate-pulse" aria-label="Processando">...</span>
+                                }
+                            </div>
+
+                            @* -- Citations -- *@
+                            @if (message.Citations is { Count: > 0 })
+                            {
+                                <div class="mt-1.5 flex flex-wrap gap-1.5">
+                                    @foreach (var citation in message.Citations)
+                                    {
+                                        <a href="@citation.Url"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="inline-flex items-center gap-1 rounded-full bg-surface-100 px-2 py-0.5 text-xs text-text-muted ring-1 ring-border-light transition-colors hover:bg-surface-200 hover:text-text-primary"
+                                           title="@citation.Snippet">
+                                            <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                                                @XFSvgIcons.Markup("arrow-up-right-from-square")
+                                            </span>
+                                            @citation.Title
+                                            @if (citation.Score > 0)
+                                            {
+                                                <span class="text-text-muted">(@(citation.Score.ToString("P0")))</span>
+                                            }
+                                        </a>
+                                    }
+                                </div>
+                            }
+
+                            @* -- Message actions -- *@
+                            @if (message.Role == AiRole.Assistant && ShowCopyButton)
+                            {
+                                <div class="mt-1 flex items-center gap-1">
+                                    <button type="button"
+                                            class="@CopyButtonClass"
+                                            aria-label="@(IsCopied(message) ? "Copiado!" : CopyLabel)"
+                                            title="@(IsCopied(message) ? "Copiado!" : CopyLabel)"
+                                            @onclick="() => CopyMessage(message)"
+                                            @onclick:stopPropagation="true">
+                                        <span class="inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">
+                                            @if (IsCopied(message))
+                                            {
+                                                @XFSvgIcons.Markup("check")
+                                            }
+                                            else
+                                            {
+                                                @XFSvgIcons.Markup("copy")
+                                            }
+                                        </span>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+
+                        @if (message.Role == AiRole.User)
+                        {
+                            <div class="@AvatarClass" aria-hidden="true">U</div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    @* -- Error Banner ------------------------------------------------- *@
+    @if (State == XFAiChatState.Error && !string.IsNullOrWhiteSpace(ErrorText))
+    {
+        <div class="@ErrorBannerClass" role="alert">
+            <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                @XFSvgIcons.Markup("circle-exclamation")
+            </span>
+            <span>@ErrorText</span>
+        </div>
+    }
+
+    @* -- Footer (Token Usage + Custom) -------------------------------- *@
+    @if (ShowTokenUsage || FooterContent is not null)
+    {
+        <footer class="@FooterClass">
+            @if (FooterContent is not null)
+            {
+                @FooterContent
+            }
+            @if (ShowTokenUsage && TotalTokens > 0)
+            {
+                <div class="flex items-center gap-1.5">
+                    <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                        @XFSvgIcons.Markup("microchip")
+                    </span>
+                    <span>@TotalTokens.ToString("N0") tokens utilizados</span>
+                </div>
+            }
+        </footer>
+    }
+
+    @* -- Composer ----------------------------------------------------- *@
+    <footer class="@ComposerClass">
+        <textarea class="@TextareaClass"
+                  rows="2"
+                  value="@_draft"
+                  placeholder="@Placeholder"
+                  disabled="@(Disabled || IsBusy)"
+                  aria-label="@Placeholder"
+                  @oninput="HandleInput"
+                  @onkeydown="HandleKeyDownAsync"
+                  @onkeydown:preventDefault="@_preventEnterDefault"></textarea>
+
+        @if (CanCancel)
+        {
+            <button type="button"
+                    class="@CancelButtonClass"
+                    aria-label="@CancelLabel"
+                    title="@CancelLabel"
+                    @onclick="CancelAsync">
+                <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                    @XFSvgIcons.Markup("stop")
+                </span>
+            </button>
+        }
+        else
+        {
+            <button type="button"
+                    class="@SendButtonClass"
+                    disabled="@(!CanSend)"
+                    aria-label="@SendLabel"
+                    title="@SendLabel"
+                    @onclick="SendMessageAsync">
+                <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                    @XFSvgIcons.Markup("paper-plane")
+                </span>
+            </button>
+        }
+    </footer>
+</section>

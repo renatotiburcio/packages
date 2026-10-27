@@ -1,0 +1,411 @@
+@page "/ai/scheduler"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiScheduler" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("Agendamento e calendario", "Scheduling and calendar")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Agendador de tarefas inteligentes com calendario, recorrencias, gerenciamento de jobs e sugestoes de agendamento por IA.",
+                                   "Intelligent task scheduler with calendar, recurrences, job management and AI scheduling suggestions.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Componente de agendamento com mini calendario, suporte a 7 frequencias, status de jobs, analise de execucoes e sugestoes de IA. Puro Blazor, sem JavaScript interop.",
+                                   "Scheduling component with mini calendar, 7 frequency support, job status, execution analysis and AI suggestions. Pure Blazor, no JavaScript interop.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes. Navegacao de calendario reativa.", "Works without restrictions. Reactive calendar navigation.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Calendario com jobs", "1. Calendar with jobs"), L.Text("Scheduler com mini calendario e multiplos agendamentos.", "Scheduler with mini calendar and multiple scheduled jobs."), ExWithJobs(), Code1)
+            @Example(L.Text("2. Sem agendamentos", "2. No schedules"), L.Text("Estado vazio com mensagem de orientacao.", "Empty state with guidance message."), ExEmpty(), Code2)
+            @Example(L.Text("3. Frequencias variadas", "3. Varied frequencies"), L.Text("Jobs com diferentes frequencias e status.", "Jobs with different frequencies and statuses."), ExFrequencies(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => L.Text("AI Commercial", "AI Commercial");
+    private string PageTitleText => L.Text("XFAiScheduler", "XFAiScheduler");
+    private string PageStatusText => L.Text("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    private static readonly IReadOnlyList<XFAiScheduledJob> MockJobs = new List<XFAiScheduledJob>
+    {
+        new()
+        {
+            Name = "Backup diario do banco",
+            Description = "Backup automatico do banco de dados principal",
+            Frequency = XFAiScheduleFrequency.Daily,
+            Status = XFAiScheduledJobStatus.Active,
+            NextRunAt = DateTime.Today.AddDays(1).AddHours(2),
+            LastRunAt = DateTime.Today.AddHours(-4),
+            TotalRuns = 120, SuccessfulRuns = 118, FailedRuns = 2,
+            CronExpression = "0 2 * * *"
+        },
+        new()
+        {
+            Name = "Relatorio semanal",
+            Description = "Gerar relatorio de vendas da semana",
+            Frequency = XFAiScheduleFrequency.Weekly,
+            Status = XFAiScheduledJobStatus.Active,
+            NextRunAt = DateTime.Today.AddDays(3),
+            TotalRuns = 52, SuccessfulRuns = 52, FailedRuns = 0,
+            AiEnhanced = true,
+            AiSuggestedSchedule = "Domingos as 01:00 para evitar conflito com backups"
+        },
+        new()
+        {
+            Name = "Sincronizacao de precos",
+            Description = "Sincronizar precos com fornecedores",
+            Frequency = XFAiScheduleFrequency.Hourly,
+            Status = XFAiScheduledJobStatus.Paused,
+            LastRunAt = DateTime.Today.AddHours(-2),
+            TotalRuns = 840, SuccessfulRuns = 835, FailedRuns = 5
+        }
+    };
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiScheduler Jobs="MockJobs" Title="Agendador de Tarefas" ShowCalendar="true" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("Mini calendario", "Mini calendar"), L.Text("Visualizacao semanal com dots indicando jobs.", "Weekly view with dots indicating jobs."), "calendar"),
+        new(L.Text("7 frequencias", "7 frequencies"), L.Text("Once, Minutely, Hourly, Daily, Weekly, Monthly, Custom.", "Once, Minutely, Hourly, Daily, Weekly, Monthly, Custom."), "repeat"),
+        new(L.Text("Sugestoes IA", "AI suggestions"), L.Text("Recomendacoes inteligentes de agendamento.", "Intelligent scheduling recommendations."), "sparkles")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiScheduler"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Workflow"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Workflow"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, aria-label, botoes com aria-label.", "role=region, aria-label, buttons with aria-label.")),
+        new("Theme support", L.Text("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Agendador inteligente", "Intelligent scheduler"), L.Text("Gerenciamento de tarefas agendadas com calendario.", "Scheduled task management with calendar."), "clock"),
+        new(L.Text("Mini calendario", "Mini calendar"), L.Text("Visualizacao semanal com navegacao por semana.", "Weekly view with week navigation."), "calendar"),
+        new(L.Text("7 frequencias", "7 frequencies"), L.Text("From unique execution to custom cron expressions.", "From unique execution to custom cron expressions."), "repeat")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Automacoes", "Automations"), L.Text("Agendar execucoes automaticas de workflows.", "Schedule automatic workflow executions."), "robot"),
+        new(L.Text("Relatorios", "Reports"), L.Text("Gerar relatorios periodicamente.", "Generate reports periodically."), "file-lines"),
+        new(L.Text("Manutencao", "Maintenance"), L.Text("Agendar tarefas de manutencao do sistema.", "Schedule system maintenance tasks."), "wrench")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Agendamento manual sem visibilidade.", "Manual scheduling without visibility."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Calendario visual com status e frequencias.", "Visual calendar with status and frequencies."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=region, aria-label, botoes acessiveis.", "role=region, aria-label, accessible buttons."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Automacoes recorrentes", "Recurring automations"), L.Text("Tarefas que precisam rodar periodicamente.", "Tasks that need to run periodically."), "repeat"),
+        new(L.Text("Agendamento com IA", "AI scheduling"), L.Text("Jobs que se beneficiam de sugestoes de IA.", "Jobs that benefit from AI suggestions."), "sparkles")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Tarefas on-demand", "On-demand tasks"), L.Text("Para tarefas sob demanda, use XFButton.", "For on-demand tasks, use XFButton."), "hand-pointer"),
+        new(L.Text("Cron complexo", "Complex cron"), L.Text("Para cron avancado, use backend scheduling.", "For advanced cron, use backend scheduling."), "server")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(L.Text("Header", "Header"), L.Text("Barra com titulo, contador de jobs e botao Novo.", "Bar with title, job count and New button."), "bars"),
+        new(L.Text("Calendar", "Calendar"), L.Text("Mini calendario semanal com dots indicadores.", "Weekly mini calendar with indicator dots."), "calendar"),
+        new(L.Text("Job list", "Job list"), L.Text("Lista de jobs com nome, status, frequencia e metadados.", "Job list with name, status, frequency and metadata."), "list"),
+        new(L.Text("Empty state", "Empty state"), L.Text("Estado vazio quando nao ha agendamentos.", "Empty state when no schedules exist."), "inbox")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Visibilidade", "Visibility"), L.Text("Status e proxima execucao sempre visive.", "Status and next execution always visible."), "eye"),
+        new(L.Text("Controle", "Control"), L.Text("Pausar, reativar e adicionar jobs facilmente.", "Pause, resume and add jobs easily."), "hand-pointer"),
+        new(L.Text("IA assistida", "AI-assisted"), L.Text("Sugestoes de agendamento baseadas em dados.", "Data-driven scheduling suggestions."), "sparkles")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExWithJobs() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiScheduler Jobs="MockJobs" Title="Agendador de Tarefas" ShowCalendar="true" />
+    </XFStack>;
+
+    private RenderFragment ExEmpty() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiScheduler Title="Novo agendador" />
+    </XFStack>;
+
+    private RenderFragment ExFrequencies() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiScheduler Jobs="FrequencyJobs" Title="Frequencias" ShowCalendar="false" />
+    </XFStack>;
+
+    private static readonly IReadOnlyList<XFAiScheduledJob> FrequencyJobs = new List<XFAiScheduledJob>
+    {
+        new() { Name = "Execucao unica", Frequency = XFAiScheduleFrequency.Once, Status = XFAiScheduledJobStatus.Completed },
+        new() { Name = "A cada minuto", Frequency = XFAiScheduleFrequency.Minutely, Status = XFAiScheduledJobStatus.Active },
+        new() { Name = "A cada hora", Frequency = XFAiScheduleFrequency.Hourly, Status = XFAiScheduledJobStatus.Active },
+        new() { Name = "Diario", Frequency = XFAiScheduleFrequency.Daily, Status = XFAiScheduledJobStatus.Active },
+        new() { Name = "Semanal", Frequency = XFAiScheduleFrequency.Weekly, Status = XFAiScheduledJobStatus.Paused },
+        new() { Name = "Mensal", Frequency = XFAiScheduleFrequency.Monthly, Status = XFAiScheduledJobStatus.Active },
+        new() { Name = "Personalizado", Frequency = XFAiScheduleFrequency.Custom, Status = XFAiScheduledJobStatus.Active, CronExpression = "*/30 * * * *" }
+    };
+
+    private const string Code1 = @"<XFAiScheduler Jobs=""@_jobs"" Title=""Agendador de Tarefas"" ShowCalendar=""true"" />";
+    private const string Code2 = @"<XFAiScheduler Title=""Novo agendador"" />";
+    private const string Code3 = @"<XFAiScheduler Jobs=""@_jobs"" Title=""Frequencias"" ShowCalendar=""false"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Jobs", "IReadOnlyList<XFAiScheduledJob>", "[]", L.Text("Lista de jobs agendados para exibir.", "List of scheduled jobs to display.")),
+        new("Title", "string", "\"Agendador de Tarefas\"", L.Text("Titulo do componente.", "Component title.")),
+        new("AriaLabel", "string", "\"Agendador de tarefas\"", L.Text("Rotulo ARIA para acessibilidade.", "ARIA label for accessibility.")),
+        new("ShowHeader", "bool", "true", L.Text("Exibe a barra de cabecalho.", "Shows the header bar.")),
+        new("ShowCalendar", "bool", "true", L.Text("Exibe o mini calendario semanal.", "Shows the weekly mini calendar.")),
+        new("EmptyText", "string", "\"Nenhuma tarefa...\"", L.Text("Texto do estado vazio.", "Empty state text.")),
+        new("EmptyContent", "RenderFragment?", "null", L.Text("Conteudo customizado para estado vazio.", "Custom empty state content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnAddJob", L.Text("Disparado quando o usuario clica em Novo Agendamento.", "Fired when user clicks New Schedule.")),
+        new("OnPauseJob", L.Text("Disparado quando um job e pausado. Retorna XFAiScheduledJob.", "Fired when a job is paused. Returns XFAiScheduledJob.")),
+        new("OnResumeJob", L.Text("Disparado quando um job e reativado. Retorna XFAiScheduledJob.", "Fired when a job is resumed. Returns XFAiScheduledJob.")),
+        new("OnJobSelected", L.Text("Disparado quando um job e selecionado. Retorna XFAiScheduledJob.", "Fired when a job is selected. Returns XFAiScheduledJob."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Componente usa role=region para leitores de tela.", "Component uses role=region for screen readers."), "universal-access"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Labels descritivos em todos os botoes e areas.", "Descriptive labels on all buttons and areas."), "tag"),
+        new(L.Text("Botoes com aria-label", "Buttons with aria-label"), L.Text("Novo, Pausar, Reativar com labels.", "New, Pause, Resume with labels."), "keyboard"),
+        new(L.Text("Calendario acessivel", "Accessible calendar"), L.Text("Dias com indicadores visuais e labels.", "Days with visual indicators and labels."), "calendar")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega entre botoes de calendario, jobs e acoes.", "Navigates between calendar buttons, jobs and actions.")),
+        new("Enter", L.Text("Ativa o botao focado ou seleciona job.", "Activates focused button or selects job.")),
+        new("Space", L.Text("Ativa botoes de pausar/reativar.", "Activates pause/resume buttons."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Largura total", "Full width"), L.Text("Scheduler ocupa 100% do container.", "Scheduler occupies 100% of container."), "maximize"),
+        new(L.Text("Calendario responsivo", "Responsive calendar"), L.Text("Grid 7 colunas adaptavel a qualquer largura.", "7-column grid adaptable to any width."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Render leve", "Light render"), L.Text("Atualizacoes parciais via StateHasChanged.", "Partial updates via StateHasChanged."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Backup automatizado", "Automated backup"), L.Text("Agendar backups diarios do banco de dados.", "Schedule daily database backups."), "database"),
+        new(L.Text("Relatorios periodicos", "Periodic reports"), L.Text("Gerar relatorios semanais automaticamente.", "Generate weekly reports automatically."), "file-lines"),
+        new(L.Text("Sincronizacao de dados", "Data sync"), L.Text("Sincronizar dados entre sistemas periodicamente.", "Sync data between systems periodically."), "arrows-rotate")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("Scheduler + XFCard", "Scheduler + XFCard"), L.Text("Scheduler dentro de um card para contexto.", "Scheduler inside a card for context."), "square"),
+        new(L.Text("Scheduler + TOC", "Scheduler + TOC"), L.Text("Scheduler com navegacao por secoes.", "Scheduler with section navigation."), "list"),
+        new(L.Text("Scheduler + Alert", "Scheduler + Alert"), L.Text("Alerta de falha acima do scheduler.", "Failure alert above scheduler."), "triangle-exclamation")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("Mostrar proxima execucao", "Show next execution"), L.Text("Sempre exibir data/hora da proxima execucao.", "Always show date/time of next execution."), "clock"),
+        new(L.Text("Indicar frequencia", "Indicate frequency"), L.Text("Badge de frequencia ajuda a identificar o tipo.", "Frequency badge helps identify the type."), "repeat"),
+        new(L.Text("Pausar com cuidado", "Pause with care"), L.Text("Confirmar antes de pausar jobs criticos.", "Confirm before pausing critical jobs."), "pause"),
+        new(L.Text("Usar sugestoes IA", "Use AI suggestions"), L.Text("Recomendacoes de IA otimizam horarios.", "AI recommendations optimize schedules."), "sparkles")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Sem calendario", "No calendar"), L.Text("Scheduler sem calendario perde contexto temporal.", "Scheduler without calendar loses temporal context."), "xmark"),
+        new(L.Text("Muitos jobs", "Too many jobs"), L.Text("Mais de 20 jobs sobrecarregam a visualizacao.", "More than 20 jobs overload the view."), "ban"),
+        new(L.Text("Frequencia inadequada", "Inadequate frequency"), L.Text("Nao use Minutely para tarefas que nao precisam.", "Do not use Minutely for tasks that do not need it."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("calendar-day", L.Text("flex flex-col items-center rounded-md py-1.", "flex flex-col items-center rounded-md py-1.")),
+        new("job-row", L.Text("px-4 py-3 hover:bg-surface-50 transition-colors.", "px-4 py-3 hover:bg-surface-50 transition-colors.")),
+        new("status-badge", L.Text("rounded-full px-1.5 py-0.5 text-[10px] font-bold.", "rounded-full px-1.5 py-0.5 text-[10px] font-bold."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Cores de status", L.Text("Status: verde=ativo, amarelo=pausado, vermelho=falha.", "Status: green=active, yellow=paused, red=failed."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Testes de render, props, eventos, calendario, navegacao.", "Render, props, events, calendar, navigation tests.")),
+        new("Accessibility", L.Text("role=region, aria-label, botoes com aria-label.", "role=region, aria-label, buttons with aria-label."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Calendario", L.Text("Mini calendario mostra apenas a semana atual. Navegacao limitada a 7 dias.", "Mini calendar shows only current week. Navigation limited to 7 days.")),
+        new("Cron", L.Text("CronExpression e apenas exibido, nao interpretado pelo componente.", "CronExpression is only displayed, not interpreted by the component."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiWorkflowExecutor", L.Text("Execucao de workflows.", "Workflow execution."), "play"),
+        new("XFAiAutomationRule", L.Text("Regras de automacao.", "Automation rules."), "scale-balanced"),
+        new("XFAiBatchProcessor", L.Text("Processamento em lote.", "Batch processing."), "layer-group")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Como adicionar um job?", "How to add a job?"), L.Text("Implemente OnAddJob e abra um dialog de criacao.", "Implement OnAddJob and open a creation dialog.")),
+        new(L.Text("O calendario e interativo?", "Is the calendar interactive?"), L.Text("Sim, navegacao por semana com PreviousWeek/NextWeek.", "Yes, week navigation with PreviousWeek/NextWeek.")),
+        new(L.Text("Funciona sem JS?", "Works without JS?"), L.Text("Sim. Nenhum JavaScript interop necessario.", "Yes. No JavaScript interop required."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", L.Text("Pagina refeita no padrao AppShellDocs com 26 secoes.", "Page rewritten in AppShellDocs standard with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

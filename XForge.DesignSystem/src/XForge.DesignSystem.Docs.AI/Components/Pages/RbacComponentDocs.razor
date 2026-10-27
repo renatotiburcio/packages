@@ -1,0 +1,387 @@
+@page "/ai/rbac-component"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFRbacComponent" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("And/Or, regras, deny custom", "And/Or, rules, custom deny")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Controle visual de permissoes, papeis e acesso a recursos AI.",
+                                   "Visual control of permissions, roles and AI resource access.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Renderiza condicionalmente conteudo baseado em papeis e permissoes do usuario com operadores And/Or e regras RBAC pre-definidas.",
+                                   "Conditionally renders content based on user roles and permissions with And/Or operators and pre-defined RBAC rules.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Acesso permitido", "1. Access allowed"), L.Text("Conteudo renderizado quando o usuario tem as papeis necessarios.", "Content rendered when user has required roles."), ExAllowed(), Code1)
+            @Example(L.Text("2. Acesso negado", "2. Access denied"), L.Text("Indicador de acesso restrito quando o usuario nao atende aos requisitos.", "Restricted access indicator when user does not meet requirements."), ExDenied(), Code2)
+            @Example(L.Text("3. Regra e operador", "3. Rule and operator"), L.Text("Uso de XFRbacRule pre-definida com operador And/Or.", "Use of pre-defined XFRbacRule with And/Or operator."), ExRuleOperator(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+
+        <XForgeDocsPageStandard ComponentName="RbacComponentDocs" />
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => L.Text("AI Commercial", "AI Commercial");
+    private string PageTitleText => L.Text("XFRbacComponent", "XFRbacComponent");
+    private string PageStatusText => L.Text("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFRbacComponent UserRoles="@(new[] { "Admin", "Editor" })" RequiredRoles="@(new[] { "Admin" })" ShowDeniedIndicator="true">
+            <div class="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                <span class="text-sm text-green-800 dark:text-green-200">Conteudo protegido por RBAC - acesso permitido</span>
+            </div>
+        </XFRbacComponent>
+        <XFRbacComponent UserRoles="@(new[] { "Viewer" })" RequiredRoles="@(new[] { "Admin" })" ShowDeniedIndicator="true" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("Operador And/Or", "And/Or operator"), L.Text("Combina roles e permissoes com And ou Or.", "Combines roles and permissions with And or Or."), "code-branch"),
+        new(L.Text("Regras pre-definidas", "Pre-defined rules"), L.Text("XFRbacRule para reutilizacao de politicas.", "XFRbacRule for policy reuse."), "scroll"),
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFRbacComponent"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Enterprise"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Enterprise"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, aria-label, role=alert para denied.", "role=region, aria-label, role=alert for denied.")),
+        new("Theme support", L.Text("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Controle de acesso", "Access control"), L.Text("Renderiza conteudo condicionalmente baseado em papeis.", "Conditionally renders content based on roles."), "shield-halved"),
+        new(L.Text("Operador And/Or", "And/Or operator"), L.Text("Combina roles e permissoes com logica flexivel.", "Combines roles and permissions with flexible logic."), "code-branch"),
+        new(L.Text("Regras RBAC", "RBAC rules"), L.Text("XFRbacRule para politicas reutilizaveis.", "XFRbacRule for reusable policies."), "scroll")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Modulos AI", "AI modules"), L.Text("Proteger modulos AI com controle de acesso.", "Protect AI modules with access control."), "robot"),
+        new(L.Text("Paineis enterprise", "Enterprise panels"), L.Text("Exibir paineis baseado em papeis do usuario.", "Display panels based on user roles."), "building"),
+        new(L.Text("Acoes restritas", "Restricted actions"), L.Text("Habilitar/desabilitar acoes por permissao.", "Enable/disable actions by permission."), "lock")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Sem controle visual de acesso em componentes AI.", "No visual access control in AI components."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Componente declarativo com roles, perms e operador.", "Declarative component with roles, perms and operator."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=alert para denied, aria-label para region.", "role=alert for denied, aria-label for region."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Protecao de dados", "Data protection"), L.Text("Controlar acesso a dados sensiveis AI.", "Control access to sensitive AI data."), "shield-halved"),
+        new(L.Text("Funcionalidades", "Features"), L.Text("Habilitar funcionalidades por papel.", "Enable features by role."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Auth unica", "Sole auth"), L.Text("RBAC e complementar ao AuthProvider, nao substituto.", "RBAC complements AuthProvider, not a substitute."), "user-shield"),
+        new(L.Text("Logica complexa", "Complex logic"), L.Text("Nao implemente logica de negocio complexa no componente.", "Do not implement complex business logic in the component."), "brain")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Guard", L.Text("Wrapper condicional baseado em avaliacao RBAC.", "Conditional wrapper based on RBAC evaluation."), "shield-halved"),
+        new("ChildContent", L.Text("Conteudo renderizado quando acesso permitido.", "Content rendered when access allowed."), "check"),
+        new("DeniedContent", L.Text("Conteudo customizado quando acesso negado.", "Custom content when access denied."), "xmark"),
+        new("Denied Indicator", L.Text("Indicador visual padrao quando acesso negado.", "Default visual indicator when access denied."), "ban")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Declarativo", "Declarative"), L.Text("Defina roles, perms e operador. O componente avalia.", "Define roles, perms and operator. Component evaluates."), "code"),
+        new(L.Text("Flexivel", "Flexible"), L.Text("Operador And/Or para combinacoes de acesso.", "And/Or operator for access combinations."), "code-branch"),
+        new(L.Text("Customizavel", "Customizable"), L.Text("DeniedContent para layout personalizado de negacao.", "Custom layout for denial via DeniedContent."), "paint-brush")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExAllowed() => @<XFRbacComponent UserRoles="@(new[] { "Admin" })" RequiredRoles="@(new[] { "Admin" })" ShowDeniedIndicator="true">
+        <div class="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+            <span class="text-sm font-medium text-green-800 dark:text-green-200">Painel de configuracao AI - acesso permitido</span>
+        </div>
+    </XFRbacComponent>;
+
+    private RenderFragment ExDenied() => @<XFRbacComponent UserRoles="@(new[] { "Viewer" })" RequiredRoles="@(new[] { "Admin" })" ShowDeniedIndicator="true" />;
+
+    private RenderFragment ExRuleOperator() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFRbacComponent UserRoles="@(new[] { "Admin", "Auditor" })" RequiredRoles="@(new[] { "Admin" })" Operator="XFRbacOperator.Or" ShowDeniedIndicator="true">
+            <div class="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                <span class="text-sm text-blue-800 dark:text-blue-200">Conteudo para Admin OU Auditor</span>
+            </div>
+        </XFRbacComponent>
+        <XFRbacComponent UserRoles="@(new[] { "Editor" })" RequiredRoles="@(new[] { "Admin" })" RequiredPermissions="@(new[] { "manage_ai" })" Operator="XFRbacOperator.And" ShowDeniedIndicator="true">
+            <div class="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                <span class="text-sm text-blue-800 dark:text-blue-200">Conteudo para Admin E permissao manage_ai</span>
+            </div>
+        </XFRbacComponent>
+    </XFStack>;
+
+    private const string Code1 = @"<XFRbacComponent UserRoles=""@(new[] { ""Admin"" })""
+                     RequiredRoles=""@(new[] { ""Admin"" })""
+                     ShowDeniedIndicator=""true"">
+    <div>Painel de configuracao AI - acesso permitido</div>
+</XFRbacComponent>";
+    private const string Code2 = @"<XFRbacComponent UserRoles=""@(new[] { ""Viewer"" })""
+                     RequiredRoles=""@(new[] { ""Admin"" })""
+                     ShowDeniedIndicator=""true"" />";
+    private const string Code3 = @"<XFRbacComponent UserRoles=""@(new[] { ""Admin"", ""Auditor"" })""
+                     RequiredRoles=""@(new[] { ""Admin"" })""
+                     Operator=""XFRbacOperator.Or""
+                     ShowDeniedIndicator=""true"">
+    <div>Conteudo para Admin OU Auditor</div>
+</XFRbacComponent>";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("UserRoles", "IReadOnlyList<string>", "[]", L.Text("Papeis atribuidos ao usuario atual.", "Roles assigned to the current user.")),
+        new("UserPermissions", "IReadOnlyList<string>", "[]", L.Text("Permissoes atribuidas ao usuario atual.", "Permissions assigned to the current user.")),
+        new("RequiredRoles", "IReadOnlyList<string>", "[]", L.Text("Papeis necessarios para acesso.", "Required roles for access.")),
+        new("RequiredPermissions", "IReadOnlyList<string>", "[]", L.Text("Permissoes necessarias para acesso.", "Required permissions for access.")),
+        new("Operator", "XFRbacOperator", "And", L.Text("Operador logico: And ou Or.", "Logical operator: And or Or.")),
+        new("Rule", "XFRbacRule?", "null", L.Text("Regra RBAC pre-definida (sobrescreve RequiredRoles/Permissions).", "Pre-defined RBAC rule (overrides RequiredRoles/Permissions).")),
+        new("ShowDeniedIndicator", "bool", "false", L.Text("Exibe indicador padrao quando acesso negado.", "Shows default indicator when access denied.")),
+        new("DeniedLabel", "string", "\"Acesso restrito\"", L.Text("Label do indicador de acesso negado.", "Denied access indicator label.")),
+        new("ChildContent", "RenderFragment?", "null", L.Text("Conteudo quando acesso permitido.", "Content when access allowed.")),
+        new("DeniedContent", "RenderFragment?", "null", L.Text("Conteudo customizado quando acesso negado.", "Custom content when access denied."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnDecision", L.Text("Disparado quando a avaliacao RBAC e concluida com a decisao Allow/Deny.", "Fired when RBAC evaluation completes with Allow/Deny decision."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Componente usa role=region para leitores de tela.", "Component uses role=region for screen readers."), "universal-access"),
+        new(L.Text("role=alert", "role=alert"), L.Text("Indicador de negacao usa role=alert.", "Denial indicator uses role=alert."), "triangle-exclamation"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Label descritivo Role-Based Access Control.", "Descriptive label Role-Based Access Control."), "tag"),
+        new(L.Text("Conteudo protegido", "Protected content"), L.Text("Conteudo nao renderizado quando negado = inacessivel.", "Content not rendered when denied = inaccessible."), "lock")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Inline", "Inline"), L.Text("Componente se adapta ao container pai.", "Component adapts to parent container."), "minimize"),
+        new(L.Text("Sem break", "No break"), L.Text("DeniedIndicator compacto nao quebra layout.", "Compact DeniedIndicator does not break layout."), "maximize")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Avaliacao leve", "Light evaluation"), L.Text("Avaliacao sincrona de roles/permissoes.", "Synchronous roles/permissions evaluation."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Painel admin AI", "AI admin panel"), L.Text("Proteger configuracoes de modelos AI.", "Protect AI model configurations."), "robot"),
+        new(L.Text("Dados sensiveis", "Sensitive data"), L.Text("Controlar acesso a dados treinados AI.", "Control access to AI training data."), "database"),
+        new(L.Text("Acoes destrutivas", "Destructive actions"), L.Text("Proteger exclusao de datasets AI.", "Protect AI dataset deletion."), "trash")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("AuthProvider + RBAC", "AuthProvider + RBAC"), L.Text("Autenticacao seguida de controle de acesso.", "Authentication followed by access control."), "shield-halved"),
+        new(L.Text("RBAC + Card", "RBAC + Card"), L.Text("Proteger conteudo dentro de XFCard.", "Protect content inside XFCard."), "square"),
+        new(L.Text("RBAC aninhado", "Nested RBAC"), L.Text("Camadas de acesso para modulos AI complexos.", "Access layers for complex AI modules."), "layer-group")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("DeniedContent customizado", "Custom DeniedContent"), L.Text("Forneca feedback claro quando acesso negado.", "Provide clear feedback when access denied."), "message"),
+        new(L.Text("Roles explicitas", "Explicit roles"), L.Text("Defina RequiredRoles de forma clara e documentada.", "Define RequiredRoles clearly and documented."), "list"),
+        new(L.Text("ShowDeniedIndicator", "ShowDeniedIndicator"), L.Text("Ative para feedback visual padrao.", "Enable for default visual feedback."), "eye")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Sem DeniedContent", "No DeniedContent"), L.Text("Usuario nao recebe feedback quando acesso negado.", "User receives no feedback when access denied."), "xmark"),
+        new(L.Text("Roles hardcoded", "Hardcoded roles"), L.Text("Nao hardcode roles no componente. Use variavel.", "Do not hardcode roles in component. Use variable."), "ban"),
+        new(L.Text("RBAC sem Auth", "RBAC without Auth"), L.Text("RBAC so funciona com usuario autenticado.", "RBAC only works with authenticated user."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("guard", L.Text("Div wrapper com role=region e aria-label.", "Div wrapper with role=region and aria-label.")),
+        new("denied", L.Text("flex items-center gap-2 p-2 rounded border border-dashed.", "Flex items-center gap-2 p-2 rounded border border-dashed."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Denied colors", L.Text("Denied indicator usa cores neutras (gray).", "Denied indicator uses neutral colors (gray)."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Testes de render, roles, permissoes, operador, regra, denied.", "Render, roles, permissions, operator, rule, denied tests.")),
+        new("Accessibility", L.Text("role=region, aria-label, role=alert para denied.", "role=region, aria-label, role=alert for denied."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Sem auth", L.Text("RBAC nao valida autenticacao. Use AuthProvider primeiro.", "RBAC does not validate authentication. Use AuthProvider first.")),
+        new("Avaliacao", L.Text("Avaliacao sincrona em OnParametersSetAsync.", "Synchronous evaluation in OnParametersSetAsync."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAuthProvider", L.Text("Autenticacao SSO/OIDC/OAuth2.", "SSO/OIDC/OAuth2 authentication."), "shield-halved"),
+        new("XFAuditLogger", L.Text("Log de auditoria de decisoes RBAC.", "RBAC decision audit logging."), "clipboard-list"),
+        new("XFCompliancePanel", L.Text("Painel de conformidade LGPD/GDPR.", "LGPD/GDPR compliance panel."), "scale-balanced")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("And vs Or?", "And vs Or?"), L.Text("And = todas as roles/perms devem ser atendidas. Or = qualquer uma basta.", "And = all roles/perms must be met. Or = any one suffices.")),
+        new(L.Text("Como usar Rule?", "How to use Rule?"), L.Text("Crie XFRbacRule com RequiredRoles, RequiredPermissions e Operator.", "Create XFRbacRule with RequiredRoles, RequiredPermissions and Operator.")),
+        new(L.Text("Sem auth funciona?", "Works without auth?"), L.Text("Sim, mas UserRoles vazio = sempre negado.", "Yes, but empty UserRoles = always denied."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", L.Text("Pagina seed criada com card basico.", "Seed page created with basic card.")),
+        new("2026-06-12", L.Text("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

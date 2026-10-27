@@ -1,0 +1,27 @@
+﻿@namespace XForge.DesignSystem.Components.Emoji
+<div class="xf-skintone-picker" role="radiogroup" aria-label="Skin tone">
+  @foreach (var tone in _tones)
+  {
+    <button type="button" role="radio" aria-checked="@(tone == Skintone)"
+            class="xf-skintone-picker__swatch" data-tone="@tone"
+            style="background: @ToneSwatch(tone)" @onclick="() => Set(tone)" @key="tone">
+      <span aria-hidden="true">@(tone == XFEmojiSkintone.Default ? "👋" : "👋🏽")</span>
+    </button>
+  }
+</div>
+@code {
+    [Parameter] public XFEmojiSkintone Skintone { get; set; } = XFEmojiSkintone.Default;
+    [Parameter] public EventCallback<XFEmojiSkintone> SkintoneChanged { get; set; }
+    private static readonly XFEmojiSkintone[] _tones = { XFEmojiSkintone.Default, XFEmojiSkintone.Light, XFEmojiSkintone.MediumLight, XFEmojiSkintone.Medium, XFEmojiSkintone.MediumDark, XFEmojiSkintone.Dark };
+    private static string ToneSwatch(XFEmojiSkintone t) => t switch
+    {
+        XFEmojiSkintone.Default => "#fadcbc",
+        XFEmojiSkintone.Light => "#f3d2a2",
+        XFEmojiSkintone.MediumLight => "#dba577",
+        XFEmojiSkintone.Medium => "#a87954",
+        XFEmojiSkintone.MediumDark => "#714226",
+        XFEmojiSkintone.Dark => "#4a2c0a",
+        _ => "#cccccc",
+    };
+    private async Task Set(XFEmojiSkintone t) { Skintone = t; await SkintoneChanged.InvokeAsync(t); }
+}

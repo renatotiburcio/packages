@@ -1,0 +1,300 @@
+﻿@using XForge.DesignSystem.Components.AI.Common
+@using XForge.DesignSystem.Services.AI
+@inherits XForgeComponentBase
+
+<section class="@RootClass"
+         style="@Style"
+         role="region"
+         aria-label="@Title"
+         aria-busy="@AriaBusyValue"
+         @attributes="AdditionalAttributes">
+
+    @* -- Header ------------------------------------------------------- *@
+    @if (ShowHeader)
+    {
+        <header class="@HeaderClass">
+            @if (HeaderContent is not null)
+            {
+                @HeaderContent
+            }
+            else
+            {
+                <div class="min-w-0">
+                    <div class="@HeaderTitleClass">
+                        <span class="inline-flex h-5 w-5 items-center justify-center text-text-muted" aria-hidden="true">
+                            @XFSvgIcons.Markup("sparkles")
+                        </span>
+                        @Title
+                    </div>
+                </div>
+            }
+        </header>
+    }
+
+    @* -- Input Area --------------------------------------------------- *@
+    <div class="@InputContainerClass">
+        <textarea class="@TextareaClass"
+                  rows="3"
+                  value="@_query"
+                  placeholder="@Placeholder"
+                  disabled="@IsBusy"
+                  aria-label="@Placeholder"
+                  @oninput="HandleInput"
+                  @onkeydown="HandleKeyDownAsync"
+                  @onkeydown:preventDefault="@_preventEnterDefault"></textarea>
+
+        <div class="@InputActionsClass">
+            @* -- Format chips *@
+            @if (SupportedFormats is { Count: > 0 })
+            {
+                <div class="flex flex-wrap items-center gap-1.5" role="group" aria-label="Formatos suportados">
+                    @foreach (var format in SupportedFormats)
+                    {
+                        <button type="button"
+                                class="@FormatChipClass(format)"
+                                aria-pressed="@(format == _selectedFormat ? "true" : "false")"
+                                aria-label="@GetFormatLabel(format)"
+                                disabled="@IsBusy"
+                                @onclick="() => SelectFormatAsync(format)">
+                            <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                                @XFSvgIcons.Markup(GetFormatIcon(format))
+                            </span>
+                            @GetFormatLabel(format)
+                        </button>
+                    }
+                </div>
+            }
+
+            @* -- Send button *@
+            <button type="button"
+                    class="@SendButtonClass"
+                    disabled="@(!CanSend)"
+                    aria-label="Gerar relatório"
+                    title="Gerar relatório"
+                    @onclick="GenerateReportAsync">
+                @if (IsBusy)
+                {
+                    <span class="inline-flex h-4 w-4 animate-spin items-center justify-center" aria-hidden="true">
+                        @XFSvgIcons.Markup("spinner")
+                    </span>
+                }
+                else
+                {
+                    <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                        @XFSvgIcons.Markup("wand-magic-sparkles")
+                    </span>
+                }
+                <span>Gerar</span>
+            </button>
+        </div>
+    </div>
+
+    @* -- Available Fields --------------------------------------------- *@
+    @if (AvailableFields is { Count: > 0 })
+    {
+        <div class="@FieldsContainerClass">
+            <div class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Campos disponíveis</div>
+            <div class="flex flex-wrap gap-1.5">
+                @foreach (var field in AvailableFields)
+                {
+                    <span class="@FieldChipClass" title="@($"{field.Name} ({field.DataType})")">
+                        @field.DisplayName
+                        @if (field.IsRequired)
+                        {
+                            <span class="text-danger" aria-label="obrigatório">*</span>
+                        }
+                    </span>
+                }
+            </div>
+        </div>
+    }
+
+    @* -- Error Banner ------------------------------------------------- *@
+    @if (!string.IsNullOrWhiteSpace(_errorText))
+    {
+        <div class="@ErrorBannerClass" role="alert">
+            <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                @XFSvgIcons.Markup("circle-exclamation")
+            </span>
+            <span>@_errorText</span>
+            <button type="button"
+                    class="ml-auto inline-flex h-5 w-5 items-center justify-center rounded text-text-muted hover:text-text-primary"
+                    aria-label="Dispensar erro"
+                    @onclick="DismissError">
+                <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                    @XFSvgIcons.Markup("xmark")
+                </span>
+            </button>
+        </div>
+    }
+
+    @* -- Loading Skeleton --------------------------------------------- *@
+    @if (IsBusy)
+    {
+        <div class="@LoadingContainerClass" role="status" aria-label="Gerando relatório...">
+            <span class="sr-only">Gerando relatório...</span>
+            <div class="space-y-3">
+                <div class="@SkeletonLineClass w-3/4"></div>
+                <div class="@SkeletonLineClass w-1/2"></div>
+                <div class="@SkeletonLineClass w-5/6"></div>
+                <div class="flex gap-2 pt-2">
+                    <div class="@SkeletonChipClass w-16"></div>
+                    <div class="@SkeletonChipClass w-20"></div>
+                    <div class="@SkeletonChipClass w-14"></div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @* -- Report Preview ----------------------------------------------- *@
+    @if (!IsBusy && _reportDefinition is not null)
+    {
+        <div class="@PreviewContainerClass" aria-live="polite" aria-label="Relatório gerado">
+            @if (ReportPreview is not null)
+            {
+                @ReportPreview(_reportDefinition)
+            }
+            else
+            {
+                @* -- Title & Description *@
+                <div class="mb-4">
+                    <h3 class="text-base font-semibold text-text-primary">@_reportDefinition.Title</h3>
+                    @if (!string.IsNullOrWhiteSpace(_reportDefinition.Description))
+                    {
+                        <p class="mt-1 text-sm text-text-secondary">@_reportDefinition.Description</p>
+                    }
+                </div>
+
+                @* -- Confidence *@
+                @if (_reportDefinition.Confidence > 0)
+                {
+                    <div class="mb-4 flex items-center gap-2">
+                        <span class="text-xs text-text-muted">Confiança:</span>
+                        <div class="@ConfidenceTrackClass" role="progressbar" aria-valuenow="@((int)(_reportDefinition.Confidence * 100))" aria-valuemin="0" aria-valuemax="100">
+                            <div class="@ConfidenceFillClass" style="width: @((int)(_reportDefinition.Confidence * 100))%"></div>
+                        </div>
+                        <span class="text-xs font-medium tabular-nums @ConfidenceTextClass">@((_reportDefinition.Confidence * 100).ToString("F0"))%</span>
+                    </div>
+                }
+
+                @* -- AI Summary *@
+                @if (!string.IsNullOrWhiteSpace(_reportDefinition.AiSummary))
+                {
+                    <div class="@SummaryBoxClass">
+                        <div class="flex items-start gap-2">
+                            <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center text-primary" aria-hidden="true">
+                                @XFSvgIcons.Markup("sparkles")
+                            </span>
+                            <p class="text-sm leading-5 text-text-primary">@_reportDefinition.AiSummary</p>
+                        </div>
+                    </div>
+                }
+
+                @* -- Selected Fields *@
+                @if (_reportDefinition.SelectedFields is { Count: > 0 })
+                {
+                    <div class="mb-3">
+                        <div class="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">Campos</div>
+                        <div class="flex flex-wrap gap-1.5">
+                            @foreach (var field in _reportDefinition.SelectedFields)
+                            {
+                                <span class="@PreviewFieldChipClass">
+                                    <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                                        @XFSvgIcons.Markup(GetDataTypeIcon(field.DataType))
+                                    </span>
+                                    @field.DisplayName
+                                </span>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @* -- Filters *@
+                @if (_reportDefinition.Filters is { Count: > 0 })
+                {
+                    <div class="mb-3">
+                        <div class="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">Filtros</div>
+                        <div class="space-y-1">
+                            @foreach (var filter in _reportDefinition.Filters)
+                            {
+                                <div class="@FilterItemClass">
+                                    <span class="font-medium">@filter.Field</span>
+                                    <span class="text-text-muted">@filter.Operator</span>
+                                    <span class="text-primary">@filter.Value</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @* -- Grouping & Sorting *@
+                @if (!string.IsNullOrWhiteSpace(_reportDefinition.GroupByField) || !string.IsNullOrWhiteSpace(_reportDefinition.SortByField))
+                {
+                    <div class="mb-3 flex flex-wrap items-center gap-3 text-xs">
+                        @if (!string.IsNullOrWhiteSpace(_reportDefinition.GroupByField))
+                        {
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-2.5 py-1 text-purple-700 ring-1 ring-purple-200">
+                                <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("layer-group")</span>
+                                Grupo: @_reportDefinition.GroupByField
+                            </span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(_reportDefinition.SortByField))
+                        {
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-blue-700 ring-1 ring-blue-200">
+                                <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                                    @XFSvgIcons.Markup(_reportDefinition.SortDescending ? "arrow-down-wide-short" : "arrow-up-wide-short")
+                                </span>
+                                Ordenar: @_reportDefinition.SortByField @(_reportDefinition.SortDescending ? "(desc)" : "(asc)")
+                            </span>
+                        }
+                    </div>
+                }
+
+                @* -- Format *@
+                <div class="mb-3">
+                    <div class="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">Formato</div>
+                    <span class="@FormatBadgeClass(_reportDefinition.Format)">
+                        <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                            @XFSvgIcons.Markup(GetFormatIcon(_reportDefinition.Format))
+                        </span>
+                        @GetFormatLabel(_reportDefinition.Format)
+                    </span>
+                </div>
+
+                @* -- Generated SQL *@
+                @if (!string.IsNullOrWhiteSpace(_reportDefinition.GeneratedSql))
+                {
+                    <details class="mb-3">
+                        <summary class="cursor-pointer text-xs font-semibold uppercase tracking-wider text-text-muted hover:text-text-primary">
+                            SQL Gerado
+                        </summary>
+                        <pre class="mt-2 overflow-x-auto rounded-lg bg-surface-100 p-3 text-xs leading-5 text-text-primary"><code>@_reportDefinition.GeneratedSql</code></pre>
+                    </details>
+                }
+            }
+        </div>
+    }
+
+    @* -- Empty State -------------------------------------------------- *@
+    @if (!IsBusy && _reportDefinition is null && string.IsNullOrWhiteSpace(_errorText))
+    {
+        <div class="@EmptyContainerClass">
+            @if (EmptyContent is not null)
+            {
+                @EmptyContent
+            }
+            else
+            {
+                <div class="@EmptyInnerClass">
+                    <div class="@EmptyIconClass" aria-hidden="true">
+                        @XFSvgIcons.Markup("clipboard-list")
+                    </div>
+                    <div class="text-sm font-medium text-text-primary">Gerador de Relatórios</div>
+                    <div class="@EmptyTextClass">
+                        Descreva o relatório que deseja gerar em linguagem natural. A IA irá configurar campos, filtros, agrupamentos e formato automaticamente.
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>

@@ -1,0 +1,474 @@
+@using XForge.DesignSystem.Core.Primitives;
+@using Microsoft.JSInterop
+@typeparam TItem
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+@inject IJSRuntime JS
+
+@if (Visible)
+{
+    <CascadingValue Value="this" IsFixed="true">
+        <div class="hidden">
+            @Columns
+        </div>
+    </CascadingValue>
+
+    @if (ShowColumnChooser && OperationalColumns.Any(column => column.Hideable))
+    {
+        <div class="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-border-light bg-surface-50 px-3 py-2 text-sm" role="toolbar" aria-label="@ColumnChooserLabel">
+            <span class="font-medium text-text-secondary">@ColumnChooserLabel</span>
+            @foreach (var column in OperationalColumns.Where(column => column.Hideable))
+            {
+                var columnVisible = IsColumnVisible(column);
+                <button type="button"
+                        class="@ColumnChooserButtonClass(columnVisible)"
+                        aria-pressed="@columnVisible.ToString().ToLowerInvariant()"
+                        aria-label="@GetColumnVisibilityLabel(column, columnVisible)"
+                        disabled="@(VisibleColumns.Count == 1 && columnVisible)"
+                        @onclick="() => ToggleColumnVisibilityAsync(column)">
+                    @column.ResolvedTitle
+                </button>
+            }
+        </div>
+    }
+
+    <div class="@WrapperClass">
+        <table id="@Id" class="@GetComponentClass()" aria-busy="@EffectiveLoading.ToString().ToLowerInvariant()" @attributes="AdditionalAttributes">
+            @if (!string.IsNullOrWhiteSpace(Caption))
+            {
+                <caption class="@CaptionClass">@Caption</caption>
+            }
+
+            <thead class="@HeaderClass">
+                <tr class="@HeaderRowClass">
+                    @foreach (var column in VisibleColumns)
+                    {
+                        <th class="@HeaderCellClass(column)" style="@ColumnStyle(column)" scope="col" aria-sort="@(HeaderCanSort(column) ? GetAriaSort(column) : null)">
+                            <div class="flex min-w-0 items-center gap-2">
+                                @if (HeaderCanSort(column))
+                                {
+                                    <button type="button"
+                                            class="@HeaderButtonClass(column)"
+                                            aria-label="@GetSortLabel(column)"
+                                            @onclick="() => ToggleSortAsync(column)">
+                                        <span class="min-w-0 truncate">
+                                            @if (column.HeaderTemplate is not null)
+                                            {
+                                                @column.HeaderTemplate
+                                            }
+                                            else
+                                            {
+                                                @column.ResolvedTitle
+                                            }
+                                        </span>
+                                        <span class="@SortIconClass(column)" aria-hidden="true">@GetSortIcon(column)</span>
+                                        @if (GetSortIndexBadge(column) is { Length: > 0 } badge)
+                                        {
+                                            <span class="ml-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary/10 px-1 text-[9px] font-bold leading-none text-primary" aria-hidden="true">@badge</span>
+                                        }
+                                    </button>
+                                }
+                                else if (column.HeaderTemplate is not null)
+                                {
+                                    <span class="min-w-0 truncate">@column.HeaderTemplate</span>
+                                }
+                                else
+                                {
+                                    <span class="min-w-0 truncate">@column.ResolvedTitle</span>
+                                }
+
+                                @if (AllowColumnReorder || AllowColumnResize)
+                                {
+                                    <span class="ml-auto inline-flex shrink-0 items-center gap-0.5">
+                                        @if (AllowColumnReorder)
+                                        {
+                                            <button type="button"
+                                                    class="@ColumnOperationButtonClass"
+                                                    aria-label="@FormatColumnLabel(MoveColumnLeftLabelFormat, column)"
+                                                    disabled="@(!CanMoveColumn(column, -1))"
+                                                    @onclick="() => MoveColumnAsync(column, -1)">
+                                                @((MarkupString)IconMarkup("chevron-left", 10))
+                                            </button>
+                                            <button type="button"
+                                                    class="@ColumnOperationButtonClass"
+                                                    aria-label="@FormatColumnLabel(MoveColumnRightLabelFormat, column)"
+                                                    disabled="@(!CanMoveColumn(column, 1))"
+                                                    @onclick="() => MoveColumnAsync(column, 1)">
+                                                @((MarkupString)IconMarkup("chevron-right", 10))
+                                            </button>
+                                        }
+
+                                        @if (AllowColumnResize && column.Resizable)
+                                        {
+                                            <button type="button"
+                                                    class="@ColumnOperationButtonClass"
+                                                    aria-label="@FormatColumnLabel(DecreaseColumnWidthLabelFormat, column)"
+                                                    disabled="@(!CanResizeColumn(column, -1))"
+                                                    @onclick="() => ResizeColumnAsync(column, -1)">
+                                                @((MarkupString)IconMarkup("minus", 10))
+                                            </button>
+                                            <button type="button"
+                                                    class="@ColumnOperationButtonClass"
+                                                    aria-label="@FormatColumnLabel(IncreaseColumnWidthLabelFormat, column)"
+                                                    disabled="@(!CanResizeColumn(column, 1))"
+                                                    @onclick="() => ResizeColumnAsync(column, 1)">
+                                                @((MarkupString)IconMarkup("plus", 10))
+                                            </button>
+                                        }
+                                    </span>
+                                }
+                            </div>
+                        </th>
+                    }
+                    @if (AllowEditing)
+                    {
+                        <th class="@EditHeaderCellClass" scope="col">
+                            @EditColumnTitle
+                        </th>
+                    }
+                </tr>
+
+                @if (FilterMode == XFDataGridFilterMode.Row)
+                {
+                    <tr class="@FilterRowClass">
+                        @foreach (var column in VisibleColumns)
+                        {
+                            <td class="@FilterCellClass(column)">
+                                @if (column.Filterable)
+                                {
+                                    @if (column.FilterTemplate is not null)
+                                    {
+                                        @column.FilterTemplate(column)
+                                    }
+                                    else
+                                    {
+                                        @RenderFilterInput(column)
+                                    }
+                                }
+                            </td>
+                        }
+                        @if (AllowEditing)
+                        {
+                            <td></td>
+                        }
+                    </tr>
+                }
+            </thead>
+
+            <tbody class="@BodyClass" data-xf-datagrid-virtualized="@VirtualizedAttribute">
+                @if (EffectiveLoading)
+                {
+                    @if (LoadingTemplate is not null)
+                    {
+                        <tr>
+                            <td class="@EmptyClass" colspan="@VisibleColumnSpan">@LoadingTemplate</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var index in Enumerable.Range(0, Math.Max(3, Math.Min(5, PageSize))))
+                        {
+                            <tr class="@BaseRowClass">
+                                @foreach (var column in VisibleColumns)
+                                {
+                                    <td class="@BodyCellClass(column)" style="@ColumnStyle(column)">
+                                        <span class="block h-4 w-full max-w-44 animate-pulse rounded bg-surface-200"></span>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                }
+                else if (PagedItems.Count == 0)
+                {
+                    <tr>
+                        <td class="@EmptyClass" colspan="@VisibleColumnSpan">
+                            @if (EmptyTemplate is not null)
+                            {
+                                @EmptyTemplate
+                            }
+                            else
+                            {
+                                @EmptyText
+                            }
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @if (HasGrouping)
+                    {
+                        @foreach (var group in GroupedItems)
+                        {
+                            <tr class="@GroupHeaderRowClass">
+                                <td colspan="@VisibleColumnSpan" class="@CellBaseClass">
+                                    @if (GroupHeaderTemplate is not null)
+                                    {
+                                        @GroupHeaderTemplate(group)
+                                    }
+                                    else
+                                    {
+                                        <span>@group.Label</span>
+                                        <span class="ml-2 text-text-muted">(@group.Count)</span>
+                                    }
+                                </td>
+                            </tr>
+
+                            @foreach (var item in group.Items)
+                            {
+                                <tr class="@RowClass(item)"
+                                    aria-selected="@(SelectionMode == XFDataGridSelectionMode.None ? null : IsSelected(item).ToString().ToLowerInvariant())"
+                                    tabindex="@(SelectionMode == XFDataGridSelectionMode.None && !RowClicked.HasDelegate ? null : "0")"
+                                    @onclick="() => HandleRowSelectedAsync(item)"
+                                    @onkeydown="args => HandleRowKeyDownAsync(args, item)">
+                                    @foreach (var column in VisibleColumns)
+                                    {
+                                        <td class="@BodyCellClass(column)" style="@ColumnStyle(column)">
+                                            @if (column.Template is not null)
+                                            {
+                                                @column.Template(item)
+                                            }
+                                            else
+                                            {
+                                                @FormatValue(GetValue(item, column), column.FormatString)
+                                            }
+                                        </td>
+                                    }
+                                    @if (AllowEditing)
+                                    {
+                                        <td class="@EditActionCellClass">
+                                            <button type="button"
+                                                    class="@EditActionButtonClass"
+                                                    aria-label="@GetEditActionLabel(item)"
+                                                    @onclick:stopPropagation="true"
+                                                    @onclick="() => StartEditAsync(item)">
+                                                @EditLabel
+                                            </button>
+                                        </td>
+                                    }
+                                </tr>
+
+                                @if (AllowEditing && IsEditing(item) && EditTemplate is not null)
+                                {
+                                    <tr class="@EditRowClass">
+                                        <td colspan="@VisibleColumnSpan" class="@CellBaseClass">
+                                            <div class="space-y-3">
+                                                @EditTemplate(item)
+                                                <div class="flex justify-end gap-2">
+                                                    <button type="button" class="@EditActionButtonClass" aria-label="@GetSaveActionLabel(item)" @onclick:stopPropagation="true" @onclick="() => CommitEditAsync(item)">@SaveLabel</button>
+                                                    <button type="button" class="@EditActionButtonClass" aria-label="@GetCancelActionLabel(item)" @onclick:stopPropagation="true" @onclick="() => CancelEditAsync(item)">@CancelLabel</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+                                @if (DetailTemplate is not null)
+                                {
+                                    <tr class="@DetailRowClass">
+                                        <td colspan="@VisibleColumnSpan" class="@CellBaseClass">
+                                            @DetailTemplate(item)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                            @if (GroupFooterTemplate is not null)
+                            {
+                                <tr class="@GroupFooterRowClass">
+                                    <td colspan="@VisibleColumnSpan" class="@CellBaseClass">
+                                        @GroupFooterTemplate(group)
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                    else if (Virtualize)
+                    {
+                        <Virtualize TItem="TItem"
+                                    Items="@VirtualizedItems"
+                                    Context="item"
+                                    ItemSize="@ItemSize"
+                                    OverscanCount="@EffectiveOverscanCount"
+                                    SpacerElement="tr">
+                            <ItemContent>
+                                <tr class="@RowClass(item)"
+                                    aria-selected="@(SelectionMode == XFDataGridSelectionMode.None ? null : IsSelected(item).ToString().ToLowerInvariant())"
+                                    tabindex="@(SelectionMode == XFDataGridSelectionMode.None && !RowClicked.HasDelegate ? null : "0")"
+                                    @onclick="() => HandleRowSelectedAsync(item)"
+                                    @onkeydown="args => HandleRowKeyDownAsync(args, item)">
+                                    @foreach (var column in VisibleColumns)
+                                    {
+                                        <td class="@BodyCellClass(column)" style="@ColumnStyle(column)">
+                                            @if (column.Template is not null)
+                                            {
+                                                @column.Template(item)
+                                            }
+                                            else
+                                            {
+                                                @FormatValue(GetValue(item, column), column.FormatString)
+                                            }
+                                        </td>
+                                    }
+                                    @if (AllowEditing)
+                                    {
+                                        <td class="@EditActionCellClass">
+                                            <button type="button"
+                                                    class="@EditActionButtonClass"
+                                                    aria-label="@GetEditActionLabel(item)"
+                                                    @onclick:stopPropagation="true"
+                                                    @onclick="() => StartEditAsync(item)">
+                                                @EditLabel
+                                            </button>
+                                        </td>
+                                    }
+                                </tr>
+
+                                @if (AllowEditing && IsEditing(item) && EditTemplate is not null)
+                                {
+                                    <tr class="@EditRowClass">
+                                        <td colspan="@VisibleColumnSpan" class="@CellBaseClass">
+                                            <div class="space-y-3">
+                                                @EditTemplate(item)
+                                                <div class="flex justify-end gap-2">
+                                                    <button type="button" class="@EditActionButtonClass" aria-label="@GetSaveActionLabel(item)" @onclick:stopPropagation="true" @onclick="() => CommitEditAsync(item)">@SaveLabel</button>
+                                                    <button type="button" class="@EditActionButtonClass" aria-label="@GetCancelActionLabel(item)" @onclick:stopPropagation="true" @onclick="() => CancelEditAsync(item)">@CancelLabel</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+                                @if (DetailTemplate is not null)
+                                {
+                                    <tr class="@DetailRowClass">
+                                        <td colspan="@VisibleColumnSpan" class="@CellBaseClass">
+                                            @DetailTemplate(item)
+                                        </td>
+                                    </tr>
+                                }
+                            </ItemContent>
+                            <Placeholder>
+                                <tr class="@BaseRowClass" aria-hidden="true">
+                                    @foreach (var column in VisibleColumns)
+                                    {
+                                        <td class="@BodyCellClass(column)">
+                                            <span class="block h-4 w-full max-w-44 animate-pulse rounded bg-surface-200"></span>
+                                        </td>
+                                    }
+                                </tr>
+                            </Placeholder>
+                        </Virtualize>
+                    }
+                    else
+                    {
+                        @foreach (var item in PagedItems)
+                        {
+                            <tr class="@RowClass(item)"
+                                aria-selected="@(SelectionMode == XFDataGridSelectionMode.None ? null : IsSelected(item).ToString().ToLowerInvariant())"
+                                tabindex="@(SelectionMode == XFDataGridSelectionMode.None && !RowClicked.HasDelegate ? null : "0")"
+                                @onclick="() => HandleRowSelectedAsync(item)"
+                                @onkeydown="args => HandleRowKeyDownAsync(args, item)">
+                                @foreach (var column in VisibleColumns)
+                                {
+                                    <td class="@BodyCellClass(column)" style="@ColumnStyle(column)">
+                                        @if (column.Template is not null)
+                                        {
+                                            @column.Template(item)
+                                        }
+                                        else
+                                        {
+                                            @FormatValue(GetValue(item, column), column.FormatString)
+                                        }
+                                    </td>
+                                }
+                                @if (AllowEditing)
+                                {
+                                    <td class="@EditActionCellClass">
+                                        <button type="button"
+                                                class="@EditActionButtonClass"
+                                                aria-label="@GetEditActionLabel(item)"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="() => StartEditAsync(item)">
+                                            @EditLabel
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+
+                            @if (AllowEditing && IsEditing(item) && EditTemplate is not null)
+                            {
+                                <tr class="@EditRowClass">
+                                    <td colspan="@VisibleColumnSpan" class="@CellBaseClass">
+                                        <div class="space-y-3">
+                                            @EditTemplate(item)
+                                            <div class="flex justify-end gap-2">
+                                                <button type="button" class="@EditActionButtonClass" aria-label="@GetSaveActionLabel(item)" @onclick:stopPropagation="true" @onclick="() => CommitEditAsync(item)">@SaveLabel</button>
+                                                <button type="button" class="@EditActionButtonClass" aria-label="@GetCancelActionLabel(item)" @onclick:stopPropagation="true" @onclick="() => CancelEditAsync(item)">@CancelLabel</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+
+                            @if (DetailTemplate is not null)
+                            {
+                                <tr class="@DetailRowClass">
+                                    <td colspan="@VisibleColumnSpan" class="@CellBaseClass">
+                                        @DetailTemplate(item)
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            </tbody>
+
+            @if (VisibleColumns.Any(column => column.FooterTemplate is not null))
+            {
+                <tfoot class="@FooterClass">
+                    <tr class="@FooterRowClass">
+                        @foreach (var column in VisibleColumns)
+                        {
+                            <td class="@FooterCellClass(column)" style="@ColumnStyle(column)">
+                                @column.FooterTemplate
+                            </td>
+                        }
+                    </tr>
+                </tfoot>
+            }
+
+            @if (ShowAggregates && VisibleColumns.Any(column => column.Aggregatable))
+            {
+                <tfoot class="@AggregateFooterClass">
+                    <tr class="@AggregateRowClass">
+                        @foreach (var column in VisibleColumns)
+                        {
+                            <td class="@FooterCellClass(column)" style="@ColumnStyle(column)">
+                                @if (column.Aggregatable)
+                                {
+                                    <span class="text-xs font-medium text-text-muted">@GetAggregateFunctionLabel(column.AggregateFunction)</span>
+                                    <span class="ml-1 text-sm font-semibold">@ComputeAggregate(column, PagedItems)</span>
+                                }
+                            </td>
+                        }
+                    </tr>
+                </tfoot>
+            }
+        </table>
+    </div>
+
+    @if (AllowPaging && TotalCount > PageSize)
+    {
+        <div class="@PagerClass">
+            <XForge.DesignSystem.Components.Navigation.Pagination.XFPagination Page="@CurrentPage"
+                                                                              PageChanged="HandlePageChangedAsync"
+                                                                              PageSize="@CurrentPageSize"
+                                                                              PageSizeChanged="HandlePageSizeChangedAsync"
+                                                                              TotalItems="@TotalCount"
+                                                                              ShowPageSize="@ShowPageSize"
+                                                                              PageSizeOptions="@PageSizeOptions"
+                                                                              Variant="XFContainerVariant.Surface"
+                                                                              Size="XFSize.Sm" />
+        </div>
+    }
+}

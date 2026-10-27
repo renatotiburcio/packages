@@ -1,0 +1,23 @@
+﻿@namespace XForge.Components.Lgpd
+@if (Visible)
+{
+  <div class="xf-lgpd-cookies">
+    <h3>Preferencias de Cookies (LGPD art. 18)</h3>
+    @foreach (var c in Categories)
+    {
+      <label><input type="checkbox" @bind="c.Enabled" /> @c.Name <small>@c.Description</small></label>
+    }
+    <button @onclick="Save">Salvar preferencias</button>
+  </div>
+}
+@code {
+  public class CookieCategory { public string Name { get; set; } = ""; public string Description { get; set; } = ""; public bool Enabled { get; set; } public bool Required { get; set; } }
+  [Parameter] public bool Visible { get; set; } = true;
+  [Parameter] public IReadOnlyList<CookieCategory> Categories { get; set; } = new List<CookieCategory> {
+    new() { Name = "Essenciais", Description = "Necessarios para o site funcionar", Enabled = true, Required = true },
+    new() { Name = "Performance", Description = "Metricas anonimas de uso", Enabled = true },
+    new() { Name = "Marketing", Description = "Publicidade direcionada", Enabled = false }
+  };
+  [Parameter] public EventCallback<IReadOnlyList<CookieCategory>> OnSave { get; set; }
+  async Task Save() { Visible = false; await OnSave.InvokeAsync(Categories); }
+}

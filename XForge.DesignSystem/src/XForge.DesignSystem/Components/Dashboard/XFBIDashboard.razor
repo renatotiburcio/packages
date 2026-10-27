@@ -1,0 +1,203 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes"
+     role="region" aria-label="@AriaLabel">
+
+    <!-- Header -->
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                @if (TitleTemplate != null)
+                {
+                    @TitleTemplate
+                }
+                else
+                {
+                    <h2 class="text-lg font-bold text-text-primary">@Title</h2>
+                }
+                @if (!string.IsNullOrWhiteSpace(Subtitle))
+                {
+                    <p class="text-sm text-text-secondary mt-0.5">@Subtitle</p>
+                }
+            </div>
+            <div class="flex items-center gap-2">
+                @if (AllowLayoutEdit)
+                {
+                    <button type="button" class="@HeaderButtonClass" @onclick="ToggleEditMode" aria-label="@EditModeText">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("pencil")</span>
+                    </button>
+                }
+                @if (AllowRefresh)
+                {
+                    <button type="button" class="@HeaderButtonClass" @onclick="RefreshAsync" aria-label="@RefreshText" disabled="@_isRefreshing">
+                        <span class="inline-block h-4 w-4 @(_isRefreshing ? "animate-spin" : "")">@XFSvgIcons.Markup("refresh")</span>
+                    </button>
+                }
+                @if (HeaderActions != null)
+                {
+                    @HeaderActions
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Filter bar -->
+    @if (Filters?.Any() == true)
+    {
+        <div class="flex items-center gap-2 mb-4 flex-wrap">
+            @foreach (var filter in Filters)
+            {
+                <div class="flex items-center gap-1 rounded-lg bg-surface-100 px-2 py-1 text-xs font-medium text-text-secondary">
+                    <span>@filter.Label</span>
+                    @if (filter.HasOptions)
+                    {
+                        <select class="bg-transparent text-xs font-semibold text-text-primary outline-none cursor-pointer"
+                                value="@filter.SelectedValue"
+                                @onchange="e => OnFilterChangedAsync(filter, e.Value?.ToString())">
+                            @foreach (var option in filter.Options)
+                            {
+                                <option value="@option.Value">@option.Label</option>
+                            }
+                        </select>
+                    }
+                    @if (filter.IsRemovable)
+                    {
+                        <button type="button" class="ml-1 text-text-muted hover:text-danger" @onclick="() => RemoveFilterAsync(filter)">
+                            <span class="text-xs">&times;</span>
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Widget grid -->
+    <div class="@GridClass"
+         style="grid-template-columns: repeat(@Columns, 1fr); grid-auto-rows: @(RowHeight)px;">
+        @foreach (var widget in _visibleWidgets)
+        {
+            var isActive = widget.Id == _selectedWidgetId;
+            <div class="@WidgetContainerClass(widget, isActive)"
+                 style="grid-column: @widget.ColumnSpan; grid-row: @widget.RowSpan;"
+                 draggable="@(IsEditMode ? "true" : null)"
+                 @ondragstart="() => OnWidgetDragStart(widget)"
+                 @ondragover:preventDefault="true"
+                 @ondrop="() => OnWidgetDrop(widget)"
+                 @onclick="() => SelectWidgetAsync(widget)">
+
+                <!-- Widget header -->
+                @if (widget.ShowHeader)
+                {
+                    <div class="flex items-center justify-between px-3 py-2 border-b border-border-light">
+                        <div class="flex items-center gap-2 min-w-0">
+                            @if (!string.IsNullOrEmpty(widget.Icon))
+                            {
+                                <span class="inline-block h-4 w-4 text-text-muted">@((MarkupString)widget.Icon)</span>
+                            }
+                            <span class="text-sm font-semibold text-text-primary truncate">@widget.Title</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            @if (widget.ShowMenu)
+                            {
+                                <button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded text-text-muted hover:bg-surface-100 hover:text-text-primary transition-colors"
+                                        @onclick:stopPropagation="true"
+                                        @onclick="() => ToggleWidgetMenuAsync(widget)">
+                                    <span class="text-xs">&#8942;</span>
+                                </button>
+                            }
+                            @if (IsEditMode)
+                            {
+                                <button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded text-text-muted hover:bg-surface-100 hover:text-text-primary transition-colors"
+                                        @onclick:stopPropagation="true"
+                                        @onclick="() => RemoveWidgetAsync(widget)"
+                                        aria-label="@RemoveWidgetText">
+                                    <span class="text-xs">&times;</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Widget content -->
+                <div class="flex-1 overflow-auto p-3">
+                    @if (widget.Content != null)
+                    {
+                        @widget.Content
+                    }
+                    else if (widget.Type == XFBIDashboardWidgetType.Card)
+                    {
+                        @RenderCardWidget(widget)
+                    }
+                    else if (widget.Type == XFBIDashboardWidgetType.Chart)
+                    {
+                        @RenderChartWidget(widget)
+                    }
+                    else if (widget.Type == XFBIDashboardWidgetType.Table)
+                    {
+                        @RenderTableWidget(widget)
+                    }
+                    else if (widget.Type == XFBIDashboardWidgetType.Gauge)
+                    {
+                        @RenderGaugeWidget(widget)
+                    }
+                    else if (widget.Type == XFBIDashboardWidgetType.List)
+                    {
+                        @RenderListWidget(widget)
+                    }
+                    else if (widget.Type == XFBIDashboardWidgetType.Custom)
+                    {
+                        @RenderCustomWidget(widget)
+                    }
+                </div>
+
+                <!-- Resize handle -->
+                @if (IsEditMode && widget.Resizable)
+                {
+                    <div class="absolute right-0 bottom-0 w-4 h-4 cursor-se-resize bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/40 rounded-tl transition-colors"
+                         @ondragstart:stopPropagation="true"
+                         @onmousedown:stopPropagation="true"
+                         @onmousedown="() => StartResize(widget)"
+                         @onpointermove="OnResizePointerMove"
+                         @onpointerup="OnResizePointerUp"></div>
+                }
+            </div>
+        }
+
+        <!-- Add widget button (edit mode) -->
+        @if (IsEditMode && AllowAddWidget)
+        {
+            <div class="flex items-center justify-center rounded-xl border-2 border-dashed border-border-light hover:border-[var(--color-primary)] cursor-pointer transition-colors min-h-[120px]"
+                 @onclick="AddWidgetAsync">
+                <div class="text-center">
+                    <span class="inline-block h-8 w-8 text-text-muted">@XFSvgIcons.Markup("plus")</span>
+                    <div class="text-xs font-medium text-text-secondary mt-1">@AddWidgetText</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Widget context menu -->
+    @if (_menuWidget != null)
+    {
+        <div class="fixed z-50 rounded-lg border border-border-light bg-bg-surface shadow-lg py-1 min-w-[150px]"
+             style="left: @(_menuX)px; top: @(_menuY)px;">
+            @if (WidgetMenuTemplate != null)
+            {
+                @WidgetMenuTemplate(_menuWidget)
+            }
+            else
+            {
+                <button type="button" class="w-full px-3 py-1.5 text-left text-sm hover:bg-surface-100" @onclick="() => RefreshWidgetAsync(_menuWidget)">
+                    @RefreshText
+                </button>
+                <button type="button" class="w-full px-3 py-1.5 text-left text-sm hover:bg-surface-100" @onclick="() => MaximizeWidgetAsync(_menuWidget)">
+                    @MaximizeText
+                </button>
+                <button type="button" class="w-full px-3 py-1.5 text-left text-sm hover:bg-surface-100" @onclick="() => ExportWidgetAsync(_menuWidget)">
+                    @ExportText
+                </button>
+            }
+        </div>
+    }
+</div>

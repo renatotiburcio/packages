@@ -1,0 +1,60 @@
+@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <div @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@GetComponentClass()"
+         style="@Style"
+         role="@Role"
+         aria-live="@AriaLiveValue"
+         aria-label="@AriaLabel">
+        @if (ShowLeadingIcon)
+        {
+            <div class="@IconClass" aria-hidden="true">
+                @if (StartIcon is not null)
+                {
+                    @StartIcon
+                }
+                else
+                {
+                    <span class="inline-block h-4 w-4">@XFSvgIcons.Markup(DefaultIcon)</span>
+                }
+            </div>
+        }
+
+        <div class="min-w-0 flex-1">
+            @if (!string.IsNullOrWhiteSpace(Title))
+            {
+                <div class="@TitleClass">@Title</div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Text))
+            {
+                <div class="@TextClass">@Text</div>
+            }
+
+            @if (ChildContent is not null)
+            {
+                <div class="@BodyClass">@ChildContent</div>
+            }
+        </div>
+
+        @if (Actions is not null)
+        {
+            <div class="@ActionsClass">
+                @Actions
+            </div>
+        }
+
+        @if (Dismissible)
+        {
+            <button type="button"
+                    class="@DismissClass"
+                    aria-label="@ResolvedDismissLabel"
+                    @onclick="DismissAsync">
+                <span aria-hidden="true" class="inline-block h-3.5 w-3.5">@XFSvgIcons.Markup("xmark")</span>
+            </button>
+        }
+    </div>
+}

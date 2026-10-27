@@ -1,0 +1,27 @@
+﻿@namespace XForge.DesignSystem.Components.Icon
+@typeparam TIcon where TIcon : class
+<span class="xf-icon" data-variant="@Variant" data-size="@Size" role="@(Focusable ? "button" : "img")"
+      aria-label="@(string.IsNullOrEmpty(AriaLabel) ? Name : AriaLabel)"
+      tabindex="@(Focusable ? 0 : -1)" @onclick="HandleClick" @onkeydown="HandleKey">
+  @if (ChildContent != null) { @ChildContent }
+  else if (Info != null) { @((MarkupString)Info.Content) }
+  else { <span class="xf-icon-missing" aria-hidden="true">@Name</span> }
+</span>
+@code {
+    [Parameter] public TIcon? Value { get; set; }
+    [Parameter] public XFIconVariant Variant { get; set; } = XFIconVariant.Regular;
+    [Parameter] public XFIconSize Size { get; set; } = XFIconSize.Size20;
+    [Parameter] public string Color { get; set; } = "Accent";
+    [Parameter] public string? CustomColor { get; set; }
+    [Parameter] public int? Width { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public bool Focusable { get; set; }
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string Name => Value?.GetType().Name ?? "missing";
+    private XFIconInfo? Info => XFIconCatalog.Get(Name, Variant, Size);
+
+    private async Task HandleClick() => await OnClick.InvokeAsync();
+    private async Task HandleKey(KeyboardEventArgs e) { if (Focusable && (e.Key == "Enter" || e.Key == " ")) await OnClick.InvokeAsync(); }
+}

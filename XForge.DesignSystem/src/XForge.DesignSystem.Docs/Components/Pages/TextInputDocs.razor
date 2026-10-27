@@ -1,0 +1,645 @@
+@page "/forms/text-input"
+@using Microsoft.AspNetCore.Components.Forms
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFTextInput" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Acessivel", "Accessible")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Debounce", "Debounce")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Campo de texto acessivel com label, adornos, debounce, limpeza e validacao.",
+                               "Accessible text input with label, adornments, debounce, clear and validation.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFTextInput e o componente base de entrada de texto do XForge. Suporta 6 tipos HTML, 4 variantes, 3 tamanhos, label flutuante, adornos, clearable, debounce, trim e integracao completa com EditForm.",
+                               "XFTextInput is the base text input component of XForge. Supports 6 HTML types, 4 variants, 3 sizes, floating label, adornments, clearable, debounce, trim and full EditForm integration.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 11 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("XFTextInput com Label, Placeholder e HelperText.", "XFTextInput with Label, Placeholder and HelperText."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Variantes", "2. Variants"),
+                T("Outline, Filled, Soft e Ghost.", "Outline, Filled, Soft and Ghost."),
+                ExVariants(), CodeVariants)
+
+            @Example(T("3. Tamanhos", "3. Sizes"),
+                T("Sm, Md e Lg.", "Sm, Md and Lg."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("4. Tipos", "4. Types"),
+                T("Text, Email, Password, Search, Tel, Url.", "Text, Email, Password, Search, Tel, Url."),
+                ExTypes(), CodeTypes)
+
+            @Example(T("5. Adornos", "5. Adornments"),
+                T("StartIcon, EndIcon, PrefixText e SuffixText.", "StartIcon, EndIcon, PrefixText and SuffixText."),
+                ExAdornments(), CodeAdornments)
+
+            @Example(T("6. Clearable", "6. Clearable"),
+                T("Botao de limpar com ClearLabel customizado.", "Clear button with custom ClearLabel."),
+                ExClearable(), CodeClearable)
+
+            @Example(T("7. Floating Label", "7. Floating Label"),
+                T("Label flutuante estilo Material.", "Material-style floating label."),
+                ExFloatingLabel(), CodeFloatingLabel)
+
+            @Example(T("8. Estados", "8. States"),
+                T("Disabled, ReadOnly e Required.", "Disabled, ReadOnly and Required."),
+                ExStates(), CodeStates)
+
+            @Example(T("9. Immediate + Debounce", "9. Immediate + Debounce"),
+                T("Valor em tempo real com debounce de 400ms.", "Real-time value with 400ms debounce."),
+                ExImmediate(), CodeImmediate)
+
+            @Example(T("10. Validacao EditForm", "10. EditForm Validation"),
+                T("Integracao com DataAnnotations: Required, Length.", "Integration with DataAnnotations: Required, Length."),
+                ExValidation(), CodeValidation)
+
+            @Example(T("11. Enterprise", "11. Enterprise"),
+                T("Formulario de cadastro de cliente com multiplos campos.", "Customer registration form with multiple fields."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Forms", "Forms");
+    private string PageTitleText => T("Text Input", "Text Input");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // --- State for interactive examples ---
+    private string? _basicValue;
+    private string? _variantValue;
+    private string? _sizeValue;
+    private string? _emailValue;
+    private string? _passwordValue;
+    private string? _searchValue;
+    private string? _telValue;
+    private string? _urlValue;
+    private string? _prefixValue;
+    private string? _suffixValue;
+    private string? _clearableValue;
+    private string? _floatingValue;
+#pragma warning disable CS0649
+    private string? _disabledValue;
+    private string? _readonlyValue;
+#pragma warning restore CS0649
+    private string? _immediateValue;
+    private bool _formSubmitted;
+    private string? _enterpriseName;
+    private string? _enterpriseEmail;
+    private string? _enterprisePhone;
+    private string? _enterpriseDocument;
+
+    // --- Validation model ---
+    private TextInputFormModel _formModel = new();
+    private EditContext? _editContext;
+
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(_formModel);
+    }
+
+    private void HandleValidSubmit()
+    {
+        _formSubmitted = true;
+    }
+
+    // --- Helpers ---
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== HERO ====================
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTextInput Label="@T("Nome do cliente", "Client name")"
+                     Value="@_basicValue"
+                     ValueChanged="@(v => _basicValue = v)"
+                     Placeholder="@T("Ex: Empresa ABC Ltda", "Ex: ABC Company Ltd")"
+                     HelperText="@T("Usado em buscas e identificacao visual.", "Used for search and visual identification.")"
+                     Clearable="true" />
+    </XFStack>;
+
+    // ==================== 1. BASIC ====================
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTextInput Label="@T("Nome completo", "Full name")"
+                     Value="@_basicValue"
+                     ValueChanged="@(v => _basicValue = v)"
+                     Placeholder="@T("Digite o nome completo", "Enter full name")"
+                     HelperText="@T("Conforme documento de identidade.", "As per identity document.")" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Valor atual: ", "Current value: ") @(_basicValue ?? "-")
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 2. VARIANTS ====================
+    private RenderFragment ExVariants() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTextInput Variant="XFFormVariant.Outline" Label="Outline (default)" Value="@_variantValue" ValueChanged="@(v => _variantValue = v)" Placeholder="@T("Variante Outline", "Outline variant")" />
+        <XFTextInput Variant="XFFormVariant.Filled" Label="Filled" Value="@_variantValue" ValueChanged="@(v => _variantValue = v)" Placeholder="@T("Variante Filled", "Filled variant")" />
+        <XFTextInput Variant="XFFormVariant.Soft" Label="Soft" Value="@_variantValue" ValueChanged="@(v => _variantValue = v)" Placeholder="@T("Variante Soft", "Soft variant")" />
+        <XFTextInput Variant="XFFormVariant.Ghost" Label="Ghost" Value="@_variantValue" ValueChanged="@(v => _variantValue = v)" Placeholder="@T("Variante Ghost", "Ghost variant")" />
+    </XFStack>;
+
+    // ==================== 3. SIZES ====================
+    private RenderFragment ExSizes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTextInput Size="XFSize.Sm" Label="Small (Sm)" Value="@_sizeValue" ValueChanged="@(v => _sizeValue = v)" Placeholder="36px height" />
+        <XFTextInput Size="XFSize.Md" Label="Medium (Md, default)" Value="@_sizeValue" ValueChanged="@(v => _sizeValue = v)" Placeholder="40px height" />
+        <XFTextInput Size="XFSize.Lg" Label="Large (Lg)" Value="@_sizeValue" ValueChanged="@(v => _sizeValue = v)" Placeholder="48px height" />
+    </XFStack>;
+
+    // ==================== 4. TYPES ====================
+    private RenderFragment ExTypes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTextInput Type="XFTextInputType.Text" Label="Text (default)" Value="@_basicValue" Placeholder="@T("Texto livre", "Free text")" />
+        <XFTextInput Type="XFTextInputType.Email" Label="Email" Value="@_emailValue" ValueChanged="@(v => _emailValue = v)" Placeholder="email@empresa.com" />
+        <XFTextInput Type="XFTextInputType.Password" Label="Password" Value="@_passwordValue" ValueChanged="@(v => _passwordValue = v)" Placeholder="@T("Senha", "Password")" />
+        <XFTextInput Type="XFTextInputType.Search" Label="Search" Value="@_searchValue" ValueChanged="@(v => _searchValue = v)" Placeholder="@T("Buscar...", "Search...")" />
+        <XFTextInput Type="XFTextInputType.Tel" Label="Tel" Value="@_telValue" ValueChanged="@(v => _telValue = v)" Placeholder="(11) 99999-0000" />
+        <XFTextInput Type="XFTextInputType.Url" Label="Url" Value="@_urlValue" ValueChanged="@(v => _urlValue = v)" Placeholder="https://exemplo.com" />
+    </XFStack>;
+
+    // ==================== 5. ADORNMENTS ====================
+    private RenderFragment ExAdornments() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTextInput Label="StartIcon + EndIcon" Value="@_basicValue" PrefixText="" SuffixText="">
+            <StartIcon><span class="text-sm" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("user", 16))</span></StartIcon>
+            <EndIcon><span class="text-sm" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("check", 16))</span></EndIcon>
+        </XFTextInput>
+        <XFTextInput Label="PrefixText" PrefixText="R$" Value="@_prefixValue" ValueChanged="@(v => _prefixValue = v)" Placeholder="0.00" />
+        <XFTextInput Label="SuffixText" SuffixText="kg" Value="@_suffixValue" ValueChanged="@(v => _suffixValue = v)" Placeholder="@T("Peso", "Weight")" />
+    </XFStack>;
+
+    // ==================== 6. CLEARABLE ====================
+    private RenderFragment ExClearable() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTextInput Label="@T("Campo limpo", "Clearable field")"
+                     Value="@_clearableValue"
+                     ValueChanged="@(v => _clearableValue = v)"
+                     Placeholder="@T("Digite e limpe", "Type and clear")"
+                     Clearable="true"
+                     ClearLabel="@T("Limpar campo", "Clear field")"
+                     HelperText="@T("Clique no X para limpar.", "Click X to clear.")" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Valor: ", "Value: ") @(_clearableValue ?? "-")
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 7. FLOATING LABEL ====================
+    private RenderFragment ExFloatingLabel() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTextInput FloatingLabel="true"
+                     Label="@T("Razao social", "Company name")"
+                     Value="@_floatingValue"
+                     ValueChanged="@(v => _floatingValue = v)"
+                     HelperText="@T("Label flutua ao focar.", "Label floats on focus.")" />
+    </XFStack>;
+
+    // ==================== 8. STATES ====================
+    private RenderFragment ExStates() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTextInput Label="@T("Desabilitado", "Disabled")" Value="@_disabledValue" Disabled="true" HelperText="@T("Campo desabilitado.", "Disabled field.")" />
+        <XFTextInput Label="@T("Somente leitura", "Read only")" Value="@_readonlyValue" ReadOnly="true" HelperText="@T("Campo somente leitura.", "Read-only field.")" />
+        <XFTextInput Label="@T("Obrigatorio", "Required")" Value="@_basicValue" Required="true" HelperText="@T("Campo obrigatorio com asterisco.", "Required field with asterisk.")" />
+    </XFStack>;
+
+    // ==================== 9. IMMEDIATE + DEBOUNCE ====================
+    private RenderFragment ExImmediate() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTextInput Label="@T("Busca com debounce (400ms)", "Search with debounce (400ms)")"
+                     Value="@_immediateValue"
+                      ValueChanged="@(v => _immediateValue = v)"
+                     Immediate="true"
+                     DebounceMilliseconds="400"
+                     Placeholder="@T("Digite para buscar...", "Type to search...")"
+                     HelperText="@T("Valor atualizado a cada 400ms.", "Value updated every 400ms.")" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Valor: ", "Value: ") @(_immediateValue ?? "-")
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 10. VALIDATION ====================
+    private RenderFragment ExValidation() => @<div>
+        <EditForm EditContext="@_editContext" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFTextInput Label="@T("Nome do produto", "Product name")" @bind-Value="_formModel.ProductName" />
+                <XFTextInput Label="@T("Codigo SKU", "SKU code")" @bind-Value="_formModel.SkuCode" />
+                <XFButton Type="XFButtonType.Submit" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary">@T("Enviar", "Submit")</XFButton>
+                @if (_formSubmitted)
+                {
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="@T("Formulario valido!", "Form valid!")" />
+                }
+            </XFStack>
+        </EditForm>
+    </div>;
+
+    // ==================== 11. ENTERPRISE ====================
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Cadastro de cliente", "Customer registration")</XFTypography>
+        <div class="grid gap-4 md:grid-cols-2">
+            <XFTextInput Label="@T("Razao social", "Company name")" Value="@_enterpriseName" ValueChanged="@(v => _enterpriseName = v)" Required="true" Variant="XFFormVariant.Soft" Tone="XFSemanticColor.Primary" />
+            <XFTextInput Label="Email" Type="XFTextInputType.Email" Value="@_enterpriseEmail" ValueChanged="@(v => _enterpriseEmail = v)" Required="true" Variant="XFFormVariant.Soft" Tone="XFSemanticColor.Primary" />
+            <XFTextInput Label="@T("Telefone", "Phone")" Type="XFTextInputType.Tel" Value="@_enterprisePhone" ValueChanged="@(v => _enterprisePhone = v)" Variant="XFFormVariant.Soft" Tone="XFSemanticColor.Primary" />
+            <XFTextInput Label="CNPJ" Value="@_enterpriseDocument" ValueChanged="@(v => _enterpriseDocument = v)" Placeholder="00.000.000/0000-00" Variant="XFFormVariant.Soft" Tone="XFSemanticColor.Primary" />
+        </div>
+    </XFStack>;
+
+    // ==================== QUICK FACTS ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("6 tipos HTML", "6 HTML types"), T("Text, Email, Password, Search, Tel, Url.", "Text, Email, Password, Search, Tel, Url."), "font"),
+        new(T("WCAG AAA", "WCAG AAA"), T("aria-describedby, role='alert', touch 44px, focus 40%.", "aria-describedby, role='alert', 44px touch, 40% focus."), "universal-access"),
+        new(T("Debounce integrado", "Built-in debounce"), T("CancellationTokenSource por instancia.", "CancellationTokenSource per instance."), "clock")
+    ];
+
+    // ==================== METADATA ====================
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFTextInput"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.TextInput"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", T("Forms / Text Input", "Forms / Text Input")),
+        new("Base class", "XFInputComponentBase"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("aria-describedby, role='alert', touch 44px AAA, focus 40%.", "aria-describedby, role='alert', 44px AAA touch, 40% focus.")),
+        new("Theme support", T("Light, dark via tokens.", "Light, dark via tokens."))
+    ];
+
+    // ==================== STATIC DATA ====================
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Entrada de texto", "Text entry"), T("Input nativo com label, placeholder, helper text e validacao.", "Native input with label, placeholder, helper text and validation."), "font"),
+        new(T("6 tipos HTML", "6 HTML types"), T("Text, Email, Password, Search, Tel, Url com inputmode correto.", "Text, Email, Password, Search, Tel, Url with correct inputmode."), "code"),
+        new(T("Debounce integrado", "Built-in debounce"), T("Immediate + DebounceMilliseconds com CancellationTokenSource.", "Immediate + DebounceMilliseconds with CancellationTokenSource."), "clock")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Formularios ERP", "ERP forms"), T("Cadastros, filtros, buscas, configuracoes.", "Registrations, filters, searches, configurations."), "building"),
+        new(T("Entrada tipada", "Typed entry"), T("Email, telefone, URL, senha com tipo HTML correto.", "Email, phone, URL, password with correct HTML type."), "keyboard"),
+        new(T("Experiencia fluida", "Fluid experience"), T("Debounce, trim, clearable, floating label.", "Debounce, trim, clearable, floating label."), "sparkles")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Input nativo sem label, sem helper, sem validacao, sem debounce.", "Native input without label, helper, validation or debounce."), "xmark"),
+        new(T("Depois", "After"), T("XFTextInput com label, helper, validacao, debounce, clearable, floating label.", "XFTextInput with label, helper, validation, debounce, clearable, floating label."), "check"),
+        new(T("Menos codigo", "Less code"), T("Zero JS interop para debounce e clear.", "Zero JS interop for debounce and clear."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Formularios", "Forms"), T("Cadastros, edicao, filtros, buscas.", "Registrations, editing, filters, searches."), "file-lines"),
+        new(T("Campos tipados", "Typed fields"), T("Email, telefone, URL, senha.", "Email, phone, URL, password."), "keyboard"),
+        new(T("Busca em tempo real", "Real-time search"), T("Immediate + debounce para buscas.", "Immediate + debounce for searches."), "search"),
+        new(T("ERP", "ERP"), T("Financeiro, Fiscal, Estoque, Comercial, RH.", "Financial, Tax, Inventory, Sales, HR."), "building")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Texto longo", "Long text"), T("Use XFTextarea para texto multi-linha.", "Use XFTextarea for multi-line text."), "triangle-exclamation"),
+        new(T("Selecao de opcao", "Option selection"), T("Use XFSelect ou XFCombobox para escolher opcoes.", "Use XFSelect or XFCombobox to choose options."), "triangle-exclamation"),
+        new(T("Valor numerico", "Numeric value"), T("Use XFNumberInput ou XFCurrencyInput para numeros.", "Use XFNumberInput or XFCurrencyInput for numbers."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("div com flex flex-col gap-1.5.", "div with flex flex-col gap-1.5."), "code"),
+        new("Label", T("span com flex items-center gap-1, Required asterisco.", "span with flex items-center gap-1, Required asterisk."), "font"),
+        new("FieldShell", T("div com border, rounded-lg, StartIcon, input, EndIcon/Clear.", "div with border, rounded-lg, StartIcon, input, EndIcon/Clear."), "square"),
+        new("Input", T("input nativo com Type, Placeholder, aria-*.", "native input with Type, Placeholder, aria-*."), "i-cursor"),
+        new("Helper/Error", T("span com text-xs helper ou error message com role=alert.", "span with text-xs helper or error message with role=alert."), "info")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Label acima", "Label above"), T("Label sempre acima ou flutuante (FloatingLabel).", "Label always above or floating (FloatingLabel)."), "font"),
+        new(T("Tons semanticos", "Semantic tones"), T("Focus ring por Tone: Primary, Success, Warning, Danger.", "Focus ring per Tone: Primary, Success, Warning, Danger."), "palette"),
+        new(T("Adornos contextuais", "Contextual adornments"), T("StartIcon, EndIcon, PrefixText, SuffixText com precedencia.", "StartIcon, EndIcon, PrefixText, SuffixText with precedence."), "icons")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Touch target 44px", "44px touch target"), T("Area clicavel minima em todos os tamanhos.", "Minimum click area on all sizes."), "hand-pointer"),
+        new(T("Debounce eficiente", "Efficient debounce"), T("CancellationTokenSource cancela debounce anterior.", "CancellationTokenSource cancels previous debounce."), "clock"),
+        new(T("Acessibilidade nativa", "Native accessibility"), T("aria-describedby, aria-invalid, role=alert.", "aria-describedby, aria-invalid, role=alert."), "universal-access")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Outline", T("Borda visivel (padrao). Para formularios padrao.", "Visible border (default). For standard forms.")),
+        new("Filled", T("Fundo preenchido, sem borda. Para areas compactas.", "Filled background, no border. For compact areas.")),
+        new("Soft", T("Fundo e borda suaves com cor do Tone. Para destaque.", "Soft background and border with Tone color. For emphasis.")),
+        new("Ghost", T("Transparente, aparece no hover. Para toolbars.", "Transparent, appears on hover. For toolbars."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Habilitado, editavel, borda normal.", "Enabled, editable, normal border.")),
+        new("Disabled", T("opacity-60, cursor-not-allowed, sem interacao.", "opacity-60, cursor-not-allowed, no interaction.")),
+        new("ReadOnly", T("cursor-default, visual mas nao editavel.", "cursor-default, visual but not editable.")),
+        new("Required", T("asterisco vermelho *, aria-required.", "Red asterisk *, aria-required.")),
+        new("Validation error", T("Borda danger, ring danger, aria-invalid=true, role=alert.", "Danger border, danger ring, aria-invalid=true, role=alert."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "string?", "null", T("Valor atual do input.", "Current input value.")),
+        new("ValueChanged", "EventCallback<string?>", "default", T("Two-way binding callback.", "Two-way binding callback.")),
+        new("ValueExpression", "Expression<Func<string?>>?", "null", T("Expressao para validacao EditForm.", "Expression for EditForm validation.")),
+        new("Type", "XFTextInputType", "Text", T("Tipo HTML: Text, Email, Password, Search, Tel, Url.", "HTML type: Text, Email, Password, Search, Tel, Url.")),
+        new("Variant", "XFFormVariant", "Outline", T("Variante visual: Outline, Filled, Soft, Ghost.", "Visual variant: Outline, Filled, Soft, Ghost.")),
+        new("Size", "XFSize", "Md", T("Tamanho: Sm, Md, Lg.", "Size: Sm, Md, Lg.")),
+        new("Tone", "XFSemanticColor", "Default", T("Tom semantico do focus ring.", "Semantic tone of focus ring.")),
+        new("Label", "string?", "null", T("Texto do label acima do input.", "Label text above input.")),
+        new("Placeholder", "string?", "null", T("Texto placeholder.", "Placeholder text.")),
+        new("HelperText", "string?", "null", T("Texto de ajuda abaixo do input.", "Helper text below input.")),
+        new("AriaLabel", "string?", "null", T("Nome acessivel alternativo.", "Alternative accessible name.")),
+        new("PrefixText", "string?", "null", T("Texto adorno antes do input.", "Adornment text before input.")),
+        new("SuffixText", "string?", "null", T("Texto adorno depois do input.", "Adornment text after input.")),
+        new("StartIcon", "RenderFragment?", "null", T("Icone customizado antes do input.", "Custom icon before input.")),
+        new("EndIcon", "RenderFragment?", "null", T("Icone customizado depois do input.", "Custom icon after input.")),
+        new("Clearable", "bool", "false", T("Exibe botao X para limpar valor.", "Shows X button to clear value.")),
+        new("ClearLabel", "string", "Limpar valor", T("aria-label do botao limpar.", "aria-label of clear button.")),
+        new("FloatingLabel", "bool", "false", T("Label flutuante estilo Material.", "Material-style floating label.")),
+        new("Immediate", "bool", "false", T("Notifica mudanca a cada tecla (oninput).", "Notifies change on every keystroke (oninput).")),
+        new("DebounceMilliseconds", "int", "0", T("Delay de debounce em ms (0 = sem debounce).", "Debounce delay in ms (0 = no debounce).")),
+        new("Trim", "bool", "false", T("Remove espacos antes de atribuir.", "Trims whitespace before assignment.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read only.")),
+        new("Required", "bool", "false", T("Obrigatorio com asterisco.", "Required with asterisk.")),
+        new("Disabled", "bool", "false", T("Desabilita interacao.", "Disables interaction.")),
+        new("FullWidth", "bool", "true", T("Ocupa largura total.", "Full width.")),
+        new("Name", "string?", "null", T("Nome do input HTML.", "HTML input name.")),
+        new("AutoComplete", "string?", "null", T("Atributo autocomplete.", "Autocomplete attribute.")),
+        new("InputMode", "string?", "null", T("Atributo inputmode (numeric, decimal).", "Inputmode attribute (numeric, decimal).")),
+        new("Pattern", "string?", "null", T("Atributo pattern para validacao nativa.", "Pattern attribute for native validation.")),
+        new("MaxLength", "int?", "null", T("maxlength do input.", "Input maxlength.")),
+        new("MinLength", "int?", "null", T("minlength do input.", "Input minlength.")),
+        new("Change", "EventCallback<string?>", "default", T("Disparado ao mudar valor.", "Fired on value change.")),
+        new("OnFocus", "EventCallback<FocusEventArgs>", "default", T("Disparado ao receber foco.", "Fired on focus.")),
+        new("OnBlur", "EventCallback<FocusEventArgs>", "default", T("Disparado ao perder foco.", "Fired on blur.")),
+        new("Class", "string?", "null", T("CSS classes adicionais.", "Additional CSS classes.")),
+        new("Style", "string?", "null", T("Inline CSS styles.", "Inline CSS styles."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ValueChanged", T("Two-way binding. Disparado ao mudar Value.", "Two-way binding. Fired when Value changes.")),
+        new("Change", T("Disparado ao mudar valor. string? como payload.", "Fired on value change. string? as payload.")),
+        new("OnFocus", T("Disparado ao receber foco. FocusEventArgs.", "Fired on focus. FocusEventArgs.")),
+        new("OnBlur", T("Disparado ao perder foco. FocusEventArgs.", "Fired on blur. FocusEventArgs."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("FocusAsync()", T("Foca o input programaticamente.", "Focuses the input programmatically.")),
+        new("SelectAsync()", T("Seleciona todo o texto do input.", "Selects all input text.")),
+        new("BlurAsync()", T("Remove foco do input.", "Removes focus from the input."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("aria-label", T("Do Label ou AriaLabel.", "From Label or AriaLabel."), "universal-access"),
+        new("aria-invalid", T("Quando ha erro de validacao.", "When validation error exists."), "check"),
+        new("aria-required", T("Quando Required=true.", "When Required=true."), "check"),
+        new("aria-readonly", T("Quando ReadOnly=true.", "When ReadOnly=true."), "check"),
+        new("aria-describedby", T("ErrorId ou HelperId.", "ErrorId or HelperId."), "check"),
+        new("role='alert'", T("No div de erro de validacao.", "On validation error div."), "bell")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Move foco para o proximo elemento.", "Moves focus to the next element.")),
+        new("Enter", T("Submete formulario (se dentro de EditForm).", "Submits form (if inside EditForm).")),
+        new("Escape", T("Limpa campo (comportamento nativo).", "Clears field (native behavior).")),
+        new("Backspace", T("Remove caractere anterior.", "Removes previous character."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("FullWidth", "FullWidth"), T("Ocupa largura total do container por padrao.", "Fills full container width by default."), "arrows-up-down"),
+        new(T("Grid responsivo", "Responsive grid"), T("Use XFGrid para multi-campos lado a lado.", "Use XFGrid for side-by-side multi-fields."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Debounce eficiente", "Efficient debounce"), T("CancellationTokenSource por instancia, sem timers globais.", "CancellationTokenSource per instance, no global timers."), "bolt"),
+        new(T("Sem JS interop", "No JS interop"), T("Puramente Blazor, exceto FocusAsync/SelectAsync/BlurAsync.", "Purely Blazor, except FocusAsync/SelectAsync/BlurAsync."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Cadastros", "Registrations"), T("Nome, email, telefone, documento.", "Name, email, phone, document."), "file-lines"),
+        new(T("Buscas", "Searches"), T("Filtros com debounce para busca em tempo real.", "Debounced filters for real-time search."), "search"),
+        new(T("Configuracoes", "Settings"), T("Chaves de API, URLs, tokens.", "API keys, URLs, tokens."), "gear"),
+        new(T("Login", "Login"), T("Email + senha com validacao.", "Email + password with validation."), "lock")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("EditForm", T("Use @bind-Value para validacao automatica.", "Use @bind-Value for automatic validation."), "file-lines"),
+        new("XFStack", T("Alinhe campos verticalmente.", "Align fields vertically."), "layer-group"),
+        new("XFGrid", T("Multi-campos lado a lado (2 ou 3 colunas).", "Side-by-side multi-fields (2 or 3 columns)."), "grid"),
+        new("XFCard", T("Agrupe em cards por secao.", "Group in cards by section."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Label claro", "Clear label"), T("Use: Nome completo, Email, Telefone.", "Use: Full name, Email, Phone."), "circle-check"),
+        new(T("HelperText util", "Useful HelperText"), T("Explique o formato esperado: (11) 99999-0000.", "Explain expected format: (11) 99999-0000."), "circle-check"),
+        new(T("Type correto", "Correct Type"), T("Use Email para email, Tel para telefone, Url para URL.", "Use Email for email, Tel for phone, Url for URL."), "circle-check"),
+        new(T("Debounce para busca", "Debounce for search"), T("Immediate=true + 300-500ms para buscas.", "Immediate=true + 300-500ms for searches."), "circle-check")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem label", "No label"), T("Sempre fornece label ou AriaLabel para acessibilidade.", "Always provide label or AriaLabel for accessibility."), "triangle-exclamation"),
+        new(T("Type errado", "Wrong type"), T("Nao use Text para email. Use Email para teclado correto no mobile.", "Don't use Text for email. Use Email for correct mobile keyboard."), "triangle-exclamation"),
+        new(T("Debounce excessivo", "Excessive debounce"), T("Debounce > 1000ms torna a UI lenta. Use 300-500ms.", "Debounce > 1000ms makes UI slow. Use 300-500ms."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("border-surface-200, bg-bg-surface, text-text-primary, adornment text-text-muted.", "border-surface-200, bg-bg-surface, text-text-primary, adornment text-text-muted.")),
+        new("typography", T("text-sm (Sm/Md), text-base (Lg).", "text-sm (Sm/Md), text-base (Lg).")),
+        new("radius", T("rounded-lg em todos os tamanhos.", "rounded-lg on all sizes.")),
+        new("spacing", T("h-9/h-10/h-12 por Size.", "h-9/h-10/h-12 per Size.")),
+        new("focus", T("focus-visible ring-2 40% primary.", "focus-visible ring-2 40% primary."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFTextarea", T("Texto multi-linha.", "Multi-line text."), "align-left"),
+        new("XFNumberInput", T("Entrada numerica.", "Numeric input."), "hashtag"),
+        new("XFCurrencyInput", T("Entrada monetaria.", "Monetary input."), "dollar-sign"),
+        new("XFSelect", T("Selecao de opcoes.", "Option selection."), "chevron-down")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Immediate vs Change?", "Immediate vs Change?"), T("Immediate atualiza a cada tecla. Change so no blur/Enter.", "Immediate updates on every keystroke. Change only on blur/Enter.")),
+        new(T("Debounce como funciona?", "How does debounce work?"), T("CancellationTokenSource cancela o timer anterior a cada tecla.", "CancellationTokenSource cancels previous timer on each keystroke.")),
+        new(T("FloatingLabel vs Label?", "FloatingLabel vs Label?"), T("FloatingLabel flutua dentro do input. Label fica acima.", "FloatingLabel floats inside input. Label stays above.")),
+        new(T("StartIcon vs PrefixText?", "StartIcon vs PrefixText?"), T("StartIcon tem precedencia. Use icone ou texto, nao ambos.", "StartIcon takes precedence. Use icon or text, not both."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina refeita no padrao enterprise com 11 exemplos renderizados.", "Page rebuilt in enterprise standard with 11 rendered examples."))
+    ];
+
+    // ==================== CODE STRINGS ====================
+    private string CodeBasic =>
+        "<XFTextInput Label=\"Nome completo\"\n" +
+        "    Value=\"@name\" ValueChanged=\"@OnNameChanged\"\n" +
+        "    Placeholder=\"Digite o nome completo\"\n" +
+        "    HelperText=\"Conforme documento de identidade.\"\n" +
+        "    Clearable=\"true\" />";
+
+    private string CodeVariants =>
+        "<XFTextInput Variant=\"XFFormVariant.Outline\" Label=\"Outline\" />\n" +
+        "<XFTextInput Variant=\"XFFormVariant.Filled\" Label=\"Filled\" />\n" +
+        "<XFTextInput Variant=\"XFFormVariant.Soft\" Label=\"Soft\" />\n" +
+        "<XFTextInput Variant=\"XFFormVariant.Ghost\" Label=\"Ghost\" />";
+
+    private string CodeSizes =>
+        "<XFTextInput Size=\"XFSize.Sm\" Label=\"Small\" />\n" +
+        "<XFTextInput Size=\"XFSize.Md\" Label=\"Medium\" />\n" +
+        "<XFTextInput Size=\"XFSize.Lg\" Label=\"Large\" />";
+
+    private string CodeTypes =>
+        "<XFTextInput Type=\"XFTextInputType.Text\" Label=\"Text\" />\n" +
+        "<XFTextInput Type=\"XFTextInputType.Email\" Label=\"Email\" />\n" +
+        "<XFTextInput Type=\"XFTextInputType.Password\" Label=\"Password\" />\n" +
+        "<XFTextInput Type=\"XFTextInputType.Search\" Label=\"Search\" />\n" +
+        "<XFTextInput Type=\"XFTextInputType.Tel\" Label=\"Tel\" />\n" +
+        "<XFTextInput Type=\"XFTextInputType.Url\" Label=\"Url\" />";
+
+    private string CodeAdornments =>
+        "<XFTextInput Label=\"Com icones\">\n" +
+        "  <StartIcon><XFSvgIcons Name=\"user\" /></StartIcon>\n" +
+        "  <EndIcon><XFSvgIcons Name=\"check\" /></EndIcon>\n" +
+        "</XFTextInput>\n" +
+        "<XFTextInput PrefixText=\"R$\" Label=\"Prefixo\" />\n" +
+        "<XFTextInput SuffixText=\"kg\" Label=\"Sufixo\" />";
+
+    private string CodeClearable =>
+        "<XFTextInput Clearable=\"true\"\n" +
+        "    ClearLabel=\"Limpar campo\"\n" +
+        "    HelperText=\"Clique no X para limpar.\" />";
+
+    private string CodeFloatingLabel =>
+        "<XFTextInput FloatingLabel=\"true\"\n" +
+        "    Label=\"Razao social\"\n" +
+        "    HelperText=\"Label flutua ao focar.\" />";
+
+    private string CodeStates =>
+        "<XFTextInput Disabled=\"true\" Label=\"Desabilitado\" />\n" +
+        "<XFTextInput ReadOnly=\"true\" Label=\"Somente leitura\" />\n" +
+        "<XFTextInput Required=\"true\" Label=\"Obrigatorio\" />";
+
+    private string CodeImmediate =>
+        "<XFTextInput Immediate=\"true\"\n" +
+        "    DebounceMilliseconds=\"400\"\n" +
+        "    Placeholder=\"Digite para buscar...\" />";
+
+    private string CodeValidation =>
+        "<EditForm EditContext=\"@ctx\" OnValidSubmit=\"@OnSubmit\">\n" +
+        "  <DataAnnotationsValidator />\n" +
+        "  <XFTextInput Label=\"Nome\" @bind-Value=\"model.Name\" />\n" +
+        "  <XFTextInput Label=\"SKU\" @bind-Value=\"model.Sku\" />\n" +
+        "  <XFButton Type=\"XFButtonType.Submit\">Enviar</XFButton>\n" +
+        "</EditForm>";
+
+    private string CodeEnterprise =>
+        "<XFTextInput Label=\"Razao social\" Required=\"true\"\n" +
+        "    Variant=\"Soft\" Tone=\"Primary\" />\n" +
+        "<XFTextInput Label=\"Email\" Type=\"Email\" Required=\"true\"\n" +
+        "    Variant=\"Soft\" Tone=\"Primary\" />\n" +
+        "<XFTextInput Label=\"Telefone\" Type=\"Tel\"\n" +
+        "    Variant=\"Soft\" Tone=\"Primary\" />\n" +
+        "<XFTextInput Label=\"CNPJ\" Placeholder=\"00.000.000/0000-00\"\n" +
+        "    Variant=\"Soft\" Tone=\"Primary\" />";
+
+    // ==================== RECORDS ====================
+    internal sealed record DocTile(string Title, string Description, string Icon);
+    internal sealed record NameValueRow(string Name, string Value);
+    internal sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+
+    // ==================== VALIDATION MODEL ====================
+    internal sealed class TextInputFormModel
+    {
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Obrigatorio")]
+        [System.ComponentModel.DataAnnotations.MinLength(3, ErrorMessage = "Minimo 3 caracteres")]
+        public string? ProductName { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Obrigatorio")]
+        public string? SkuCode { get; set; }
+    }
+}

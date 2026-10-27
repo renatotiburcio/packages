@@ -1,0 +1,138 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes"
+     @onkeydown="OnKeyDownAsync">
+
+    <!-- Trigger button -->
+    <button type="button"
+            class="@TriggerClass"
+            aria-haspopup="true"
+            aria-expanded="@(_isOpen.ToString().ToLower())"
+            aria-label="@AriaLabel"
+            @onclick="ToggleAsync"
+            @onkeydown:stopPropagation="true">
+
+        <!-- Avatar -->
+        <div class="@AvatarClass">
+            @if (!string.IsNullOrEmpty(ImageUrl))
+            {
+                <img src="@ImageUrl" alt="@UserName" class="h-full w-full rounded-full object-cover" />
+            }
+            else if (!string.IsNullOrEmpty(Initials))
+            {
+                <span class="text-sm font-bold">@Initials</span>
+            }
+            else if (!string.IsNullOrEmpty(UserName))
+            {
+                <span class="text-sm font-bold">@UserName[..1].ToUpperInvariant()</span>
+            }
+
+            @if (ShowStatusIndicator)
+            {
+                <span class="@StatusIndicatorClass"></span>
+            }
+        </div>
+
+        <!-- User info (optional) -->
+        @if (ShowUserInfo)
+        {
+            <div class="hidden min-w-0 lg:block">
+                <div class="text-sm font-semibold text-text-primary truncate">@DisplayName</div>
+                @if (!string.IsNullOrEmpty(Subtitle))
+                {
+                    <div class="text-xs text-text-muted truncate">@Subtitle</div>
+                }
+            </div>
+        }
+
+        <!-- Badge -->
+        @if (BadgeCount > 0)
+        {
+            <span class="@BadgeClass">@BadgeCount</span>
+        }
+
+        <!-- Chevron -->
+        @if (ShowChevron)
+        {
+            <span class="@("inline-block h-4 w-4 text-text-muted transition-transform " + (_isOpen ? "rotate-180" : ""))">@XFSvgIcons.Markup("chevron-down")</span>
+        }
+    </button>
+
+    <!-- Dropdown -->
+    @if (_isOpen)
+    {
+        <div class="@DropdownClass"
+             role="menu"
+             aria-label="@MenuLabel"
+             @onfocusout="OnFocusOutAsync">
+
+            <!-- Header -->
+            @if (ShowDropdownHeader)
+            {
+                <div class="px-4 py-3 border-b border-border-light">
+                    <div class="flex items-center gap-3">
+                        <div class="@("h-10 w-10 rounded-full flex items-center justify-center shrink-0 " + AvatarBgClass)">
+                            @if (!string.IsNullOrEmpty(ImageUrl))
+                            {
+                                <img src="@ImageUrl" alt="@UserName" class="h-full w-full rounded-full object-cover" />
+                            }
+                            else
+                            {
+                                <span class="text-sm font-bold" style="color: var(--color-primary-contrast);">@((DisplayName ?? "U")[..1].ToUpperInvariant())</span>
+                            }
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-sm font-semibold text-text-primary truncate">@DisplayName</div>
+                            @if (!string.IsNullOrEmpty(Email))
+                            {
+                                <div class="text-xs text-text-muted truncate">@Email</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Items -->
+            <div class="py-1">
+                @if (Items?.Any() == true)
+                {
+                    @foreach (var item in Items)
+                    {
+                        @if (item.IsDivider)
+                        {
+                            <div class="my-1 border-t border-border-light"></div>
+                        }
+                        else
+                        {
+                            <button type="button"
+                                    role="menuitem"
+                                    tabindex="-1"
+                                    class="@ItemClass(item)"
+                                    disabled="@item.Disabled"
+                                    @onclick="() => OnItemClickAsync(item)"
+                                    @onkeydown:stopPropagation="true">
+                                @if (!string.IsNullOrEmpty(item.Icon))
+                                {
+                                    <span class="@("inline-block h-4 w-4 shrink-0 " + (item.Danger ? "text-danger" : "text-text-muted"))">@((MarkupString)item.Icon)</span>
+                                }
+                                <span class="min-w-0 flex-1 text-left truncate @(item.Danger ? "text-danger font-medium" : "")">@item.Label</span>
+                                @if (item.Badge > 0)
+                                {
+                                    <span class="@ItemBadgeClass">@item.Badge</span>
+                                }
+                                @if (item.Shortcut != null)
+                                {
+                                    <span class="text-xs text-text-muted ml-2">@item.Shortcut</span>
+                                }
+                            </button>
+                        }
+                    }
+                }
+                else
+                {
+                    @ChildContent
+                }
+            </div>
+        </div>
+    }
+</div>

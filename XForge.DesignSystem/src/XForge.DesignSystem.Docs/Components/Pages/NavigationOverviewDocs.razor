@@ -1,0 +1,511 @@
+@page "/navigation/overview"
+@inject XForgeDocsLanguageService LanguageService
+@using XForge.DesignSystem.Core.Primitives
+
+
+<XForgeDocsShell ProductLabel="Core Open Source" Title="Navigation Overview" Status="Category standard" Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Text="Navigation" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" />
+                        <XFBadge Text="Wayfinding" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" />
+                        <XFBadge Text="Keyboard-first" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" />
+                    </XFStack>
+
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            Oriente usuarios em jornadas enterprise sem perder contexto.
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            A categoria Navigation cobre breadcrumb, menu, tabs, toolbar, steps, pagination, accordion e TOC.
+                            Ela existe para transformar rotas, categorias, filtros de pagina e progresso de tarefas em um contrato
+                            acessivel, previsivel e performatico para docs, playgrounds, apps ERP e produtos AI.
+                        </XFTypography>
+                    </XFStack>
+
+                    <XFGrid Cols="1" Gap="4" Class="lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in HeroFacts)
+                            {
+                                @InfoTile(item)
+                            }
+                        </XFStack>
+                    </XFGrid>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">Blazor Server e Blazor WebAssembly</XFTypography></Header>
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                    <XFTable Striped="true" Hoverable="true" Compact="true">
+                        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                        <XFTableBody>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                        </XFTableBody>
+                    </XFTable>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Overview" Items="OverviewItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Philosophy" Items="PhilosophyItems" />
+            <XForgeCategoryOverviewSection Title="Category Objectives" Items="ObjectiveItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewComponentTable Rows="ComponentRows"
+                                                  Description="Componentes de Navigation controlam orientacao, troca de contexto, progresso, comandos locais e paginacao sem depender de markup local fragil." />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Visual Language" Items="VisualLanguageItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="UX Standards" Items="UxStandardItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Accessibility Standards" Items="AccessibilityItems" />
+            <XForgeCategoryOverviewSection Title="Responsiveness Standards" Items="ResponsiveItems" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Theme Standards" Items="ThemeItems" />
+            <XForgeCategoryOverviewNameDescriptionTable Title="Design Tokens"
+                                                        NameHeader="Token Group"
+                                                        DescriptionHeader="Purpose"
+                                                        CodeName="true"
+                                                        Rows="TokenRows" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Common Patterns" Items="PatternItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Enterprise Scenarios" Items="ScenarioItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewExampleGallery Examples="Examples" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Documentation Standards" Items="DocumentationItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Anti-patterns" Items="AntiPatternItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Migration Guidance" Items="MigrationItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Best Practices" Items="BestPracticeItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewNameDescriptionTable Title="Related Categories"
+                                                        NameHeader="Category"
+                                                        DescriptionHeader="Relationship"
+                                                        Rows="RelatedCategories" />
+        </XFStack>
+    </XFStack>
+
+    <XForgeDocsPageStandard ComponentName="NavigationOverviewDocs" IsOverview="true" />
+</XForgeDocsShell>
+
+@code {
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private IReadOnlyList<XForgeCategoryOverviewExample> Examples =>
+    [
+        new("Operational wayfinding", "Breadcrumb, tabs e steps mantem modulo, visao e etapa explicitos durante uma aprovacao fiscal.", WayfindingPreview(), WayfindingCode),
+        new("Sidebar command surface", "Menu e toolbar separam navegacao persistente de comandos locais do workspace.", CommandSurfacePreview(), CommandSurfaceCode),
+        new("Paged review queue", "Pagination e TOC tornam listas longas e documentos navegaveis sem perder foco.", PagedQueuePreview(), PagedQueueCode)
+    ];
+
+    private static RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFBreadcrumb Items="HeroBreadcrumbItems" Variant="XFContainerVariant.Surface" MaxVisibleItems="4" />
+
+        <XFGrid Cols="1" Md="12" Gap="4">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg" Class="md:col-span-4">
+                <ChildContent>
+                    <XFMenu Items="HeroMenuItems" SelectedId="invoices" Variant="XFMenuVariant.Sidebar" AriaLabel="Menu financeiro" />
+                </ChildContent>
+            </XFCard>
+
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg" Class="md:col-span-8">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                        <XFToolbar Items="HeroToolbarItems" Variant="XFToolbarVariant.Soft" AriaLabel="Acoes da conciliacao" />
+                        <XFSteps Items="HeroSteps" Variant="XFContainerVariant.Surface" Size="XFSize.Sm" />
+                        <XFTabs ActiveId="pending" Variant="XFTabsVariant.Pills" FullWidth="true">
+                            <Tabs>
+                                <XFTab TabId="pending" Label="Pendentes" />
+                                <XFTab TabId="approved" Label="Aprovadas" />
+                                <XFTab TabId="history" Label="Historico" />
+                            </Tabs>
+                            <Panels>
+                                <XFTabPanel TabId="pending">
+                                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                                        <XFGrid Cols="1" Sm="3" Gap="3">
+                                            <XFBadge Text="248 notas" Color="XFBadgeColor.Info" />
+                                            <XFBadge Text="12 divergencias" Color="XFBadgeColor.Warning" />
+                                            <XFBadge Text="3 bloqueios" Color="XFBadgeColor.Danger" />
+                                        </XFGrid>
+                                        <XFPagination Page="2" PageSize="25" TotalItems="248" ShowPageSize="false" Size="XFSize.Sm" />
+                                    </XFStack>
+                                </XFTabPanel>
+                                <XFTabPanel TabId="approved">Itens aprovados no periodo.</XFTabPanel>
+                                <XFTabPanel TabId="history">Historico auditavel de navegacao.</XFTabPanel>
+                            </Panels>
+                        </XFTabs>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        </XFGrid>
+    </XFStack>;
+
+    private static RenderFragment WayfindingPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFBreadcrumb Items="ExampleBreadcrumbItems" Variant="XFContainerVariant.Surface" MaxVisibleItems="4" />
+        <XFSteps Items="ApprovalSteps" Variant="XFContainerVariant.Surface" />
+        <XFTabs ActiveId="documents" Variant="XFTabsVariant.Enclosed">
+            <Tabs>
+                <XFTab TabId="documents" Label="Documentos" />
+                <XFTab TabId="audit" Label="Auditoria" />
+            </Tabs>
+            <Panels>
+                <XFTabPanel TabId="documents">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Text="NF-e 94381" Color="XFBadgeColor.Info" />
+                        <XFBadge Text="Validacao fiscal" Color="XFBadgeColor.Warning" />
+                    </XFStack>
+                </XFTabPanel>
+                <XFTabPanel TabId="audit">Eventos de navegacao e decisao.</XFTabPanel>
+            </Panels>
+        </XFTabs>
+    </XFStack>;
+
+    private static RenderFragment CommandSurfacePreview() => @<XFGrid Cols="1" Md="12" Gap="4">
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg" Class="md:col-span-4">
+            <ChildContent>
+                <XFMenu Items="WorkspaceMenuItems" SelectedId="orders" Variant="XFMenuVariant.Sidebar" AriaLabel="Menu operacional" />
+            </ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg" Class="md:col-span-8">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                    <XFToolbar Items="WorkspaceToolbarItems" EndItems="WorkspaceToolbarEndItems" Variant="XFToolbarVariant.Bordered" AriaLabel="Comandos do pedido" />
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">Pedido 2048</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                        A barra de comandos opera o contexto selecionado sem substituir a navegacao principal.
+                    </XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+    </XFGrid>;
+
+    private static RenderFragment PagedQueuePreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFGrid Cols="1" Md="3" Gap="3">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Fila</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">248</XFTypography>
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Pagina</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">2/10</XFTypography>
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Secao</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">Fiscal</XFTypography>
+                </ChildContent>
+            </XFCard>
+        </XFGrid>
+        <XFPagination Page="2" PageSize="25" TotalItems="248" ShowPageSize="true" PageSizeOptions="PageSizes" AllowReload="true" />
+    </XFStack>;
+
+    private RenderFragment InfoTile(XForgeCategoryOverviewItem item) => @<XForgeCategoryOverviewTile Item="item" />;
+
+    private static readonly IReadOnlyList<XFBreadcrumbItemModel> HeroBreadcrumbItems =
+    [
+        new() { Text = "ERP", Href = "#" },
+        new() { Text = "Financeiro", Href = "#" },
+        new() { Text = "Conciliacao", Href = "#" },
+        new() { Text = "NF-e 94381", Current = true }
+    ];
+
+    private static readonly IReadOnlyList<XFBreadcrumbItemModel> ExampleBreadcrumbItems =
+    [
+        new() { Text = "Fiscal", Href = "#" },
+        new() { Text = "Apuracao", Href = "#" },
+        new() { Text = "Lote 2048", Current = true }
+    ];
+
+    private static readonly IReadOnlyList<XFMenuItem> HeroMenuItems =
+    [
+        new() { Id = "dashboard", Text = "Dashboard", Description = "Resumo financeiro" },
+        new() { Id = "invoices", Text = "Notas fiscais", Description = "Validacao e aprovacao", Selected = true, Badge = "248", BadgeTone = XFSemanticColor.Primary },
+        new() { Id = "reports", Text = "Relatorios", Description = "Fechamento mensal" }
+    ];
+
+    private static readonly IReadOnlyList<XFMenuItem> WorkspaceMenuItems =
+    [
+        new() { Id = "orders", Text = "Pedidos", Description = "Fila operacional", Selected = true, Badge = "36", BadgeTone = XFSemanticColor.Primary },
+        new() { Id = "customers", Text = "Clientes", Description = "Carteira ativa" },
+        new() { Id = "stock", Text = "Estoque", Description = "Rupturas e reservas", Badge = "8", BadgeTone = XFSemanticColor.Warning }
+    ];
+
+    private static readonly IReadOnlyList<XFToolbarItem> HeroToolbarItems =
+    [
+        new() { Id = "approve", Text = "Aprovar", Active = true },
+        new() { Id = "reject", Text = "Revisar" },
+        new() { Kind = XFToolbarItemKind.Separator },
+        new() { Id = "export", Text = "Exportar" }
+    ];
+
+    private static readonly IReadOnlyList<XFToolbarItem> WorkspaceToolbarItems =
+    [
+        new() { Id = "save", Text = "Salvar", Active = true },
+        new() { Id = "assign", Text = "Atribuir" },
+        new() { Id = "comment", Text = "Comentar" }
+    ];
+
+    private static readonly IReadOnlyList<XFToolbarItem> WorkspaceToolbarEndItems =
+    [
+        new() { Id = "history", Text = "Historico" },
+        new() { Id = "more", Text = "Mais" }
+    ];
+
+    private static readonly IReadOnlyList<XFStepItemModel> HeroSteps =
+    [
+        new() { Id = "capture", Label = "Captura", Description = "Documento recebido", Status = XFStepStatus.Complete },
+        new() { Id = "review", Label = "Revisao", Description = "Validacao fiscal", Status = XFStepStatus.Current },
+        new() { Id = "approve", Label = "Aprovacao", Description = "Liberacao final", Status = XFStepStatus.Pending }
+    ];
+
+    private static readonly IReadOnlyList<XFStepItemModel> ApprovalSteps =
+    [
+        new() { Id = "triage", Label = "Triagem", Status = XFStepStatus.Complete },
+        new() { Id = "analysis", Label = "Analise", Status = XFStepStatus.Current },
+        new() { Id = "approval", Label = "Aprovacao", Status = XFStepStatus.Pending },
+        new() { Id = "archive", Label = "Arquivo", Status = XFStepStatus.Disabled }
+    ];
+
+    private static readonly IReadOnlyList<int> PageSizes = [10, 25, 50, 100];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> HeroFacts =
+    [
+        new("Objetivo enterprise", "Manter contexto entre apps, categorias, paginas, etapas e listas densas.", "route"),
+        new("Acessibilidade", "Menus, tabs, steps e paginacao precisam operar com foco, labels e teclado.", "universal-access"),
+        new("Performance", "Navegacao deve evitar reflow, recalculo excessivo e perda de estado visual.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> OverviewItems =
+    [
+        new("Wayfinding", "Breadcrumb e TOC explicam onde o usuario esta e como voltar.", "signs-post"),
+        new("Context switch", "Tabs, menu e accordion trocam escopo sem esconder hierarquia.", "table-columns"),
+        new("Workflow progress", "Steps documentam etapa atual, etapas concluidas e bloqueios.", "list-check"),
+        new("Command grouping", "Toolbar separa comandos locais da navegacao persistente.", "sliders"),
+        new("Paged data", "Pagination reduz carga cognitiva em tabelas, listas e filas.", "table-cells"),
+        new("Shared shell", "Rail e sidebar usam Navigation para abrir a primeira overview da categoria.", "window-frame")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> PhilosophyItems =
+    [
+        new("Context before action", "A tela deve deixar claro modulo, rota, etapa e selecao antes de oferecer comandos.", "circle-info"),
+        new("One source of truth", "Rotas, sidebar e rail devem ler o mesmo catalogo para evitar divergencia.", "share-nodes"),
+        new("Progress is navigation", "Etapas de workflow sao navegacao orientada por estado, nao apenas decoracao.", "diagram-project"),
+        new("Keyboard parity", "Toda navegacao clicavel precisa ter fluxo equivalente por teclado.", "keyboard")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ObjectiveItems =
+    [
+        new("Orientation", "Reduzir perda de contexto em jornadas longas.", "signs-post"),
+        new("Predictability", "Manter estados active, expanded, current e disabled consistentes.", "circle-check"),
+        new("Scalability", "Suportar dezenas de paginas sem menus locais duplicados.", "layer-group"),
+        new("Accessibility", "Fornecer roles, labels, aria-current e foco visivel.", "universal-access"),
+        new("Responsiveness", "Adaptar rail, sidebar, tabs e toolbar para telas estreitas.", "mobile-screen"),
+        new("Performance", "Evitar renderizacao pesada para listas e menus grandes.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewComponentRow> ComponentRows =
+    [
+        new("XFBreadcrumb", "Trilha hierarquica.", "Mostrar rota atual e ancestrais.", "Navegacao de documentos, pedidos, modulos e entidades.", "High", "Medium"),
+        new("XFMenu", "Menu estrutural.", "Sidebar, dropdown ou top nav.", "Catalogos extensos, areas ERP e agrupamento por permissao.", "High", "High"),
+        new("XFTabs", "Troca de visao no mesmo contexto.", "Resumo, detalhes, auditoria e configuracao.", "Workspaces densos sem trocar modulo.", "High", "Medium"),
+        new("XFToolbar", "Comandos agrupados.", "Acoes locais do item ou pagina.", "Salvar, exportar, atribuir, filtrar e auditar.", "High", "Medium"),
+        new("XFSteps", "Progresso orientado por etapas.", "Onboarding, checkout e aprovacoes.", "Fluxos fiscais, fechamento e governanca.", "High", "Medium"),
+        new("XFPagination", "Navegacao por paginas.", "Dividir listas e tabelas longas.", "Filas operacionais, auditoria e consultas grandes.", "High", "Medium"),
+        new("XFAccordion", "Revelacao progressiva.", "Agrupar secoes expansivas.", "Filtros, FAQs, configuracoes e detalhes secundarios.", "High", "Medium"),
+        new("XFTOC", "Indice de conteudo.", "Navegar secoes longas.", "Docs, contratos, politicas e paginas tecnicas.", "High", "Medium")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> VisualLanguageItems =
+    [
+        new("Active state", "O item ativo usa cor primaria e contraste tokenizado.", "circle-check"),
+        new("Hierarchy", "Menu, breadcrumb e TOC diferenciam pai, filho e item atual.", "sitemap"),
+        new("Density", "Toolbar e menu preservam toque e leitura em telas densas.", "arrows-up-down"),
+        new("Motion", "Expansoes usam transicao curta e previsivel.", "bolt"),
+        new("Badges", "Contadores aparecem como apoio, nao como titulo principal.", "tag"),
+        new("Surface", "Menus e toolbars usam bordas/elevacao de superficie do tema.", "square")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> UxStandardItems =
+    [
+        new("Current location", "Sempre indique pagina, etapa ou tab ativa.", "location-dot"),
+        new("No dead ends", "Breadcrumb, back path ou sidebar devem permitir retorno claro.", "arrow-rotate-left"),
+        new("Command separation", "Acoes de toolbar nao substituem links de navegacao.", "sliders"),
+        new("Progress clarity", "Steps mostram concluido, atual, pendente, erro e desabilitado.", "list-check"),
+        new("Large sets", "Use pagination ou TOC antes de listas longas sem estrutura.", "table-cells"),
+        new("State memory", "Trocas de tabs/menu preservam estado quando possivel.", "floppy-disk")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> AccessibilityItems =
+    [
+        new("Keyboard", "Setas, Home, End, Enter e Space devem operar menus, tabs e toolbars.", "keyboard"),
+        new("ARIA", "Use aria-current, aria-expanded, aria-selected e aria-disabled quando aplicavel.", "code"),
+        new("Labels", "Toolbar, menu, breadcrumb e pagination precisam de nomes acessiveis.", "tag"),
+        new("Focus", "Foco visivel deve permanecer dentro do contexto ativo.", "hand-pointer"),
+        new("Semantics", "Navegacao persistente deve usar landmarks e roles corretos.", "universal-access"),
+        new("Disabled", "Estados desabilitados devem informar indisponibilidade sem sumir do fluxo.", "ban")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ResponsiveItems =
+    [
+        new("Rail/sidebar", "Rail pode compactar, mas a overview da categoria continua primeira pagina.", "window-frame"),
+        new("Horizontal overflow", "Tabs e toolbar devem rolar ou quebrar sem esmagar texto.", "arrows-left-right"),
+        new("Touch targets", "Itens mantem alvo minimo adequado em mobile.", "hand-pointer"),
+        new("Condensed labels", "Icon-only exige aria-label e tooltip quando aplicavel.", "eye"),
+        new("Pagination", "Resumo e page size podem colapsar antes dos controles principais.", "table-cells"),
+        new("TOC", "Indice pode virar bloco acima do conteudo em telas estreitas.", "list-ul")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ThemeItems =
+    [
+        new("Brand color", "Navigation respeita data-brand ativo do rail/sidebar.", "swatchbook"),
+        new("Dark mode", "Estados active, hover e focus mantem contraste em dark.", "moon"),
+        new("Tokenized surfaces", "Menus, toolbar e pagination usam superficies e bordas do tema.", "paintbrush"),
+        new("Status tones", "Badges em menus seguem tokens success, warning, danger e info.", "circle-info")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewNameDescription> TokenRows =
+    [
+        new("colors", "Primary para active/current; surface para containers; status para badges e erros."),
+        new("typography", "Labels curtos, descricoes secundarias e contadores com hierarquia legivel."),
+        new("radius", "Itens de menu, tabs, toolbar e cards usam raio consistente."),
+        new("elevation", "Dropdowns e toolbars elevadas usam sombras discretas e previsiveis."),
+        new("spacing", "Gap entre itens, grupos e secoes deve vir dos tokens do DesignSystem."),
+        new("borders", "Bordas separam grupos sem competir com o conteudo principal."),
+        new("motion", "Expansao, active indicator e foco usam duracao curta.")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> PatternItems =
+    [
+        new("Rail opens overview", "Cada rail item de categoria abre sua pagina Overview como primeira sidebar.", "route"),
+        new("Breadcrumb plus tabs", "Breadcrumb orienta hierarquia; tabs alternam visoes no mesmo recurso.", "table-columns"),
+        new("Menu plus toolbar", "Menu troca entidade/area; toolbar executa comandos da area ativa.", "sliders"),
+        new("Steps plus feedback", "Steps combinam com alerts, progress e dialog para fluxos guiados.", "list-check"),
+        new("TOC for long docs", "Paginas extensas usam TOC para saltos previsiveis.", "list-ul"),
+        new("Pagination for queues", "Filas grandes usam pagina, tamanho e resumo.", "table-cells")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ScenarioItems =
+    [
+        new("Fiscal approval", "Breadcrumb, steps e tabs guiam validacao de documentos.", "file-lines"),
+        new("ERP workspace", "Menu e toolbar controlam modulo, registro e comandos.", "briefcase"),
+        new("Audit review", "Pagination e TOC navegam evidencias extensas.", "shield-check"),
+        new("Docs platform", "Rail de categoria e sidebar de paginas compartilham catalogo.", "book-open"),
+        new("AI console", "Tabs separam prompt, contexto, auditoria e execucao.", "sparkles"),
+        new("Support center", "Accordion e TOC estruturam respostas longas.", "circle-info")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> DocumentationItems =
+    [
+        new("Rendered preview", "Cada componente deve mostrar navegacao real, nao apenas descricao.", "eye"),
+        new("Copyable code", "Todo exemplo precisa de XFCode com Razor valido.", "code"),
+        new("State matrix", "Documente active, current, expanded, disabled, loading e error.", "table-cells"),
+        new("Keyboard notes", "Inclua comportamento esperado de teclado por componente.", "keyboard"),
+        new("Route contract", "Explique href, catalogo e pagina overview da categoria.", "route"),
+        new("A11y contract", "Documente labels e ARIA obrigatorios.", "universal-access")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> AntiPatternItems =
+    [
+        new("Raw links everywhere", "Duplicar menus com anchors locais quebra tema, foco e catalogo.", "xmark"),
+        new("Invisible active state", "Nao indicar rota atual causa perda de contexto.", "eye-slash"),
+        new("Toolbar as navigation", "Comandos nao devem virar substituto de menu ou tabs.", "triangle-exclamation"),
+        new("Icon-only without label", "Icones sem aria-label ficam invisiveis para leitores de tela.", "ban"),
+        new("Overloaded sidebar", "Sidebar com todas as categorias mistura app ativo e contexto.", "layer-group"),
+        new("Heavy rerenders", "Recriar listas e menus a cada interacao prejudica performance.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> MigrationItems =
+    [
+        new("ul/li menu", "Migrar listas manuais para XFMenu com SelectedId e ExpandedIds.", "list-ul"),
+        new("handmade tabs", "Migrar botoes locais para XFTabs, XFTab e XFTabPanel.", "table-columns"),
+        new("custom pagination", "Migrar paginadores ad hoc para XFPagination.", "table-cells"),
+        new("manual breadcrumb", "Migrar spans/anchors para XFBreadcrumbItemModel.", "signs-post"),
+        new("CSS toolbar", "Migrar grupos de botoes para XFToolbar.", "sliders"),
+        new("wizard labels", "Migrar progresso estatico para XFSteps.", "list-check")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> BestPracticeItems =
+    [
+        new("Use catalog first", "Rotas de docs e playground devem nascer do catalogo compartilhado.", "share-nodes"),
+        new("Keep overview first", "A primeira pagina da sidebar da categoria deve ser a Overview.", "route"),
+        new("Preserve focus", "Depois de navegar, restaure foco no heading ou conteudo principal.", "hand-pointer"),
+        new("Name controls", "Sempre defina AriaLabel para menus, toolbars e paginacao.", "tag"),
+        new("Prefer XForge", "Use XFMenu, XFTabs, XFToolbar e XFPagination antes de HTML cru.", "shield-check"),
+        new("Validate scale", "Teste com muitas rotas, paginas e labels longos.", "magnifying-glass")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewNameDescription> RelatedCategories =
+    [
+        new("Layout", "Rail, sidebar, app shell e scroll areas hospedam os componentes de Navigation."),
+        new("Components", "Button, icon, badge e typography sustentam itens, comandos e estados."),
+        new("Display", "Tabelas, listas e documentos usam pagination, tabs e TOC para exploracao."),
+        new("Forms", "Wizards e formularios longos usam steps, tabs e toolbar de acoes."),
+        new("Feedback", "Alert, dialog, toast e progress comunicam consequencias de navegacao."),
+        new("AI", "Consoles comerciais usam tabs, menu e steps para prompt, auditoria e execucao.")
+    ];
+
+    private const string WayfindingCode = """
+<XFBreadcrumb Items="Items" Variant="XFContainerVariant.Surface" />
+<XFSteps Items="ApprovalSteps" Variant="XFContainerVariant.Surface" />
+<XFTabs ActiveId="documents" Variant="XFTabsVariant.Enclosed">
+    <Tabs>
+        <XFTab TabId="documents" Label="Documentos" />
+        <XFTab TabId="audit" Label="Auditoria" />
+    </Tabs>
+    <Panels>
+        <XFTabPanel TabId="documents">
+            <XFBadge Text="NF-e 94381" Color="XFBadgeColor.Info" />
+        </XFTabPanel>
+    </Panels>
+</XFTabs>
+""";
+
+    private const string CommandSurfaceCode = """
+<XFMenu Items="WorkspaceMenuItems"
+        SelectedId="orders"
+        Variant="XFMenuVariant.Sidebar"
+        AriaLabel="Menu operacional" />
+<XFToolbar Items="WorkspaceToolbarItems"
+           EndItems="WorkspaceToolbarEndItems"
+           Variant="XFToolbarVariant.Bordered"
+           AriaLabel="Comandos do pedido" />
+""";
+
+    private const string PagedQueueCode = """
+<XFPagination Page="2"
+              PageSize="25"
+              TotalItems="248"
+              ShowPageSize="true"
+              PageSizeOptions="PageSizes"
+              AllowReload="true" />
+""";
+}

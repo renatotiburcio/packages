@@ -1,0 +1,93 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="img"
+     aria-label="@(AriaLabel ?? "Spider chart")">
+
+    <svg class="h-full w-full" viewBox="0 0 300 300" aria-hidden="true">
+        @* ── Background Grid Circles *@
+        @for (var i = 1; i <= Levels; i++)
+        {
+            var r = Radius * i / Levels;
+            <circle cx="150" cy="150" r="@r" fill="none" stroke-width="0.5" class="stroke-surface-200" />
+        }
+
+        @* ── Axis Lines *@
+        @for (var i = 0; i < Axes.Count; i++)
+        {
+            var angle = GetAngle(i);
+            var rad = angle * Math.PI / 180;
+            var x = 150 + Radius * Math.Cos(rad);
+            var y = 150 + Radius * Math.Sin(rad);
+            <line x1="150" y1="150" x2="@x" y2="@y" stroke-width="0.5" class="stroke-surface-200" />
+
+            @* ── Axis Labels *@
+            var labelR = Radius + 20;
+            var lx = 150 + labelR * Math.Cos(rad);
+            var ly = 150 + labelR * Math.Sin(rad);
+            @((MarkupString)RenderSvgText(lx, ly, Axes[i].Label, "fill-text-secondary text-[10px] font-medium"))
+        }
+
+        @* ── Data Polygons *@
+        @if (Series is { Count: > 0 })
+        {
+            @foreach (var series in Series)
+            {
+                var points = new List<string>();
+                for (var i = 0; i < Math.Min(Axes.Count, series.Values.Count); i++)
+                {
+                    var value = series.Values[i];
+                    var maxVal = Axes[i].Max > 0 ? Axes[i].Max : Max;
+                    var pct = Math.Clamp(value / maxVal, 0, 1);
+                    var angle = GetAngle(i);
+                    var rad = angle * Math.PI / 180;
+                    var r = Radius * pct;
+                    var px = 150 + r * Math.Cos(rad);
+                    var py = 150 + r * Math.Sin(rad);
+                    points.Add($"{px},{py}");
+                }
+
+                if (points.Count > 2)
+                {
+                    <polygon points="@string.Join(" ", points)"
+                             fill="@(series.FillColor ?? "fill-primary/20")"
+                             stroke="@(series.StrokeColor ?? "stroke-primary")"
+                             stroke-width="@(series.StrokeWidth > 0 ? series.StrokeWidth : 1.5)" />
+                }
+
+                @* ── Data Points *@
+                @for (var i = 0; i < Math.Min(Axes.Count, series.Values.Count); i++)
+                {
+                    var value = series.Values[i];
+                    var maxVal = Axes[i].Max > 0 ? Axes[i].Max : Max;
+                    var pct = Math.Clamp(value / maxVal, 0, 1);
+                    var angle = GetAngle(i);
+                    var rad = angle * Math.PI / 180;
+                    var r = Radius * pct;
+                    var px = 150 + r * Math.Cos(rad);
+                    var py = 150 + r * Math.Sin(rad);
+                    <circle cx="@px" cy="@py" r="3"
+                            fill="@(series.PointColor ?? "fill-primary")"
+                            stroke="white" stroke-width="1" />
+                }
+            }
+        }
+    </svg>
+
+    @* ── Legend *@
+    @if (ShowLegend && Series is { Count: > 1 })
+    {
+        <div class="mt-2 flex flex-wrap justify-center gap-3">
+            @foreach (var series in Series)
+            {
+                <div class="flex items-center gap-1.5 text-xs text-text-secondary">
+                    <span class="inline-block h-2.5 w-2.5 rounded-full @(series.StrokeColor ?? "bg-primary")"></span>
+                    @series.Name
+                </div>
+            }
+        </div>
+    }
+</div>

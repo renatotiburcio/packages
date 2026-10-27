@@ -1,0 +1,13 @@
+@namespace XForge.Components.Charts
+@inherits XForgeComponentBase
+
+<div class="xf-funnel" data-stages="@Stages.Count">
+  @foreach (var s in Stages)
+  {
+    <div class="xf-funnel-stage" style="width:@(s.Value*100)%"><span>@s.Label</span><span>@s.Value</span></div>
+  }
+</div>
+
+@code {
+  public record FunnelStage(string Label, double Value);
+}

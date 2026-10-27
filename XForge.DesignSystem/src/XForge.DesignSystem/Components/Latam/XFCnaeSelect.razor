@@ -1,0 +1,14 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<div class="xf-cnae-select">
+  <input type="text" placeholder="Search CNAE..." @bind="Filter" @bind:event="oninput" />
+  <select @bind="SelectedCode" @bind:after="OnChanged">
+    <option value="">--</option>
+    @foreach (var c in Filtered) { <option value="@c.Code">@c.Code - @c.Description</option> }
+  </select>
+</div>
+
+@code {
+  public record CnaeItem(string Code, string Description);
+}

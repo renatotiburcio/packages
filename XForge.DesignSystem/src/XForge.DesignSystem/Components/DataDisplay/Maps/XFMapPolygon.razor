@@ -1,0 +1,38 @@
+@* XFMapPolygon — Adds a polygon shape to the parent XFMap *@
+
+@code {
+    [CascadingParameter] private XFMap ParentMap { get; set; } = default!;
+
+    /// <summary>
+    /// Polygon rings (first = outer boundary, additional = holes). Required.
+    /// </summary>
+    [Parameter, EditorRequired] public IReadOnlyList<IReadOnlyList<XFMapCoordinate>> Rings { get; set; }
+        = Array.Empty<IReadOnlyList<XFMapCoordinate>>();
+
+    /// <summary>
+    /// Shape styling (stroke + fill).
+    /// </summary>
+    [Parameter] public XFMapShapeStyle Style { get; set; } = new();
+
+    private int _layerIndex = -1;
+    private bool _added;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ParentMap.IsReady && !_added && Rings.Count > 0)
+        {
+            _layerIndex = await ParentMap.AddPolygonAsync(Rings, Style);
+            _added = true;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_layerIndex >= 0 && ParentMap != null)
+        {
+            try { await ParentMap.RemoveLayerAsync(_layerIndex); }
+            catch (Microsoft.JSInterop.JSDisconnectedException) { }
+            catch (InvalidOperationException) { }
+        }
+    }
+}

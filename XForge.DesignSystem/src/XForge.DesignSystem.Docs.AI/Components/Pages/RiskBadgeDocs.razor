@@ -1,0 +1,380 @@
+@page "/ai/risk-badge"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiRiskBadge" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("4 niveis, 6 contextos", "4 levels, 6 contexts")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Indicador compacto de risco com contexto de negocio e score opcional.",
+                               "Compact risk indicator with business context and optional score.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Badge semantico com 4 niveis de severidade, 6 contextos de negocio, 3 tamanhos e score numerico opcional. Inclui template customizado e dot colorido.",
+                               "Semantic badge with 4 severity levels, 6 business contexts, 3 sizes and optional numeric score. Includes custom template and colored dot.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Niveis de risco", "1. Risk levels"), T("4 niveis com cores semanticas diferentes.", "4 levels with different semantic colors."), ExLevels(), Code1)
+            @Example(T("2. Com score", "2. With score"), T("Badges com score numerico opcional.", "Badges with optional numeric score."), ExWithScore(), Code2)
+            @Example(T("3. Tamanhos", "3. Sizes"), T("Small, Medium e Large para diferentes contextos.", "Small, Medium and Large for different contexts."), ExSizes(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+        <XForgeDocsPageStandard ComponentName="RiskBadgeDocs" />
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("AI Commercial", "AI Commercial");
+    private string PageTitleText => T("XFAiRiskBadge", "XFAiRiskBadge");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<div class="flex flex-wrap gap-2">
+        <XFAiRiskBadge Level="XFAiRiskLevel.Low" Context="XFAiRiskContext.Fiscal" ShowScore="true" Score="0.18" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.High" Context="XFAiRiskContext.Credit" ShowScore="true" Score="0.76" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.Critical" Context="XFAiRiskContext.Fraud" />
+    </div>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("4 niveis", "4 levels"), T("Low, Medium, High, Critical com cores semanticas.", "Low, Medium, High, Critical with semantic colors."), "shield-halved"),
+        new(T("6 contextos", "6 contexts"), T("General, Credit, Fiscal, Stock, Fraud, Delinquency.", "General, Credit, Fiscal, Stock, Fraud, Delinquency."), "building"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiRiskBadge"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Utility"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Utility"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=status, aria-label com nivel e contexto.", "role=status, aria-label with level and context.")),
+        new("Theme support", T("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Badge de risco", "Risk badge"), T("Indicador compacto com nivel e contexto.", "Compact indicator with level and context."), "shield-halved"),
+        new(T("4 niveis", "4 levels"), T("Low, Medium, High, Critical com cores semanticas.", "Low, Medium, High, Critical with semantic colors."), "palette"),
+        new(T("Score opcional", "Optional score"), T("Exibe valor numerico 0-100% ao lado.", "Displays numeric value 0-100% alongside."), "percent")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Grids ERP", "ERP grids"), T("Indicar risco em colunas de tabelas.", "Indicate risk in table columns."), "table-cells"),
+        new(T("Dashboards", "Dashboards"), T("Exibir scores de risco consolidados.", "Display consolidated risk scores."), "chart-line"),
+        new(T("Alertas", "Alerts"), T("Destacar itens criticos para acao imediata.", "Highlight critical items for immediate action."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Textos de risco sem padrao visual.", "Risk texts without visual pattern."), "xmark"),
+        new(T("Depois", "After"), T("Badge padronizado com cor, contexto e score.", "Standardized badge with color, context and score."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=status, aria-label com nivel e contexto.", "role=status, aria-label with level and context."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Tabelas", "Tables"), T("Colunas de risco em grids de dados.", "Risk columns in data grids."), "table-cells"),
+        new(T("Cards", "Cards"), T("Indicadores de risco em cards de resumo.", "Risk indicators in summary cards."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Acoes", "Actions"), T("Nao use badge como botao de acao.", "Do not use badge as action button."), "hand-pointer"),
+        new(T("Navegacao", "Navigation"), T("Use XFNav ou XFSteps para navegacao.", "Use XFNav or XFSteps for navigation."), "route")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Dot", T("Ponto colorido indicando nivel de severidade.", "Colored dot indicating severity level."), "circle"),
+        new("Label", T("Texto do nivel ou label customizado.", "Level text or custom label."), "font"),
+        new("Score", T("Valor numerico opcional (ShowScore).", "Optional numeric value (ShowScore)."), "percent")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Compacto", "Compact"), T("Badge inline que nao ocupa espaco excessivo.", "Inline badge that does not occupy excessive space."), "minimize"),
+        new(T("Cor = significado", "Color = meaning"), T("Low=verde, Medium=amarelo, High=laranja, Critical=vermelho.", "Low=green, Medium=yellow, High=orange, Critical=red."), "palette"),
+        new(T("Contexto", "Context"), T("6 contextos de negocio afetam cores e labels.", "6 business contexts affect colors and labels."), "building")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExLevels() => @<div class="flex flex-wrap gap-2">
+        <XFAiRiskBadge Level="XFAiRiskLevel.Low" Context="XFAiRiskContext.Fiscal" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.Medium" Context="XFAiRiskContext.Stock" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.High" Context="XFAiRiskContext.Credit" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.Critical" Context="XFAiRiskContext.Fraud" />
+    </div>;
+
+    private RenderFragment ExWithScore() => @<div class="flex flex-wrap gap-2">
+        <XFAiRiskBadge Level="XFAiRiskLevel.Low" Context="XFAiRiskContext.Fiscal" ShowScore="true" Score="0.12" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.Medium" Context="XFAiRiskContext.Delinquency" ShowScore="true" Score="0.45" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.High" Context="XFAiRiskContext.Credit" ShowScore="true" Score="0.78" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.Critical" Context="XFAiRiskContext.Fraud" ShowScore="true" Score="0.95" />
+    </div>;
+
+    private RenderFragment ExSizes() => @<div class="flex flex-wrap items-center gap-3">
+        <XFAiRiskBadge Level="XFAiRiskLevel.High" Context="XFAiRiskContext.Credit" Size="XFAiRiskBadgeSize.Sm" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.High" Context="XFAiRiskContext.Credit" Size="XFAiRiskBadgeSize.Md" />
+        <XFAiRiskBadge Level="XFAiRiskLevel.High" Context="XFAiRiskContext.Credit" Size="XFAiRiskBadgeSize.Lg" />
+    </div>;
+
+    private const string Code1 = @"<XFAiRiskBadge Level=""XFAiRiskLevel.Low"" Context=""XFAiRiskContext.Fiscal"" />
+<XFAiRiskBadge Level=""XFAiRiskLevel.Medium"" Context=""XFAiRiskContext.Stock"" />
+<XFAiRiskBadge Level=""XFAiRiskLevel.High"" Context=""XFAiRiskContext.Credit"" />
+<XFAiRiskBadge Level=""XFAiRiskLevel.Critical"" Context=""XFAiRiskContext.Fraud"" />";
+    private const string Code2 = @"<XFAiRiskBadge Level=""XFAiRiskLevel.Low"" Context=""XFAiRiskContext.Fiscal"" ShowScore=""true"" Score=""0.12"" />
+<XFAiRiskBadge Level=""XFAiRiskLevel.High"" Context=""XFAiRiskContext.Credit"" ShowScore=""true"" Score=""0.78"" />";
+    private const string Code3 = @"<XFAiRiskBadge Level=""XFAiRiskLevel.High"" Context=""XFAiRiskContext.Credit"" Size=""XFAiRiskBadgeSize.Sm"" />
+<XFAiRiskBadge Level=""XFAiRiskLevel.High"" Context=""XFAiRiskContext.Credit"" Size=""XFAiRiskBadgeSize.Md"" />
+<XFAiRiskBadge Level=""XFAiRiskLevel.High"" Context=""XFAiRiskContext.Credit"" Size=""XFAiRiskBadgeSize.Lg"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Level", "XFAiRiskLevel", "Low", T("Low, Medium, High, Critical.", "Low, Medium, High, Critical.")),
+        new("Context", "XFAiRiskContext", "General", T("General, Credit, Fiscal, Stock, Fraud, Delinquency.", "General, Credit, Fiscal, Stock, Fraud, Delinquency.")),
+        new("Label", "string?", "null", T("Label customizado. Se vazio, usa label do nivel.", "Custom label. If empty, uses level label.")),
+        new("Score", "double?", "null", T("Score numerico de risco (0.0-1.0).", "Numeric risk score (0.0-1.0).")),
+        new("ShowScore", "bool", "false", T("Exibe score numerico ao lado.", "Shows numeric score alongside.")),
+        new("Size", "XFAiRiskBadgeSize", "Md", T("Sm, Md, Lg.", "Sm, Md, Lg.")),
+        new("BadgeTemplate", "RenderFragment<XFAiRiskBadgeContext>?", "null", T("Template customizado do badge.", "Custom badge template."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=status", "role=status"), T("Badge usa role=status para leitores de tela.", "Badge uses role=status for screen readers."), "universal-access"),
+        new(T("aria-label", "aria-label"), T("Composto por nivel e contexto (ex: Alto — Credito).", "Composed by level and context (e.g. High — Credit)."), "tag"),
+        new(T("data-risk", "data-risk"), T("Atributo data com nivel para CSS e testes.", "Data attribute with level for CSS and tests."), "code"),
+        new(T("data-context", "data-context"), T("Atributo data com contexto para CSS e testes.", "Data attribute with context for CSS and tests."), "code")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Inline", "Inline"), T("Badge ocupa apenas o tamanho do conteudo.", "Badge occupies only content size."), "minimize"),
+        new(T("Wrap", "Wrap"), T("Multiplos badges fazem wrap automatico.", "Multiple badges wrap automatically."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Render leve", "Light render"), T("Tag span nativa sem wrappers.", "Native span tag without wrappers."), "feather"),
+        new(T("Sem estado", "No state"), T("Componente puramente declarativo.", "Purely declarative component."), "minus")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Grid fiscal", "Fiscal grid"), T("Badge de risco fiscal em coluna de tabela.", "Fiscal risk badge in table column."), "table-cells"),
+        new(T("Dashboard credito", "Credit dashboard"), T("Scores de risco de credito consolidados.", "Consolidated credit risk scores."), "chart-line"),
+        new(T("Alerta fraude", "Fraud alert"), T("Badge Critico para itens de fraude.", "Critical badge for fraud items."), "triangle-exclamation")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Badge + Label", "Badge + Label"), T("Badge ao lado de texto descritivo.", "Badge alongside descriptive text."), "font"),
+        new(T("Badge + Card", "Badge + Card"), T("Badge dentro de XFCard para contexto.", "Badge inside XFCard for context."), "square"),
+        new(T("Badge + Tooltip", "Badge + Tooltip"), T("Tooltip com detalhes ao passar o mouse.", "Tooltip with details on hover."), "comment")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Nivel correto", "Correct level"), T("Use nivel apropriado para a situacao.", "Use appropriate level for the situation."), "shield-halved"),
+        new(T("Contexto especifico", "Specific context"), T("Defina Context para cores semanticas.", "Define Context for semantic colors."), "building"),
+        new(T("Score quando util", "Score when useful"), T("ShowScore ajuda a comparar riscos.", "ShowScore helps compare risks."), "percent"),
+        new(T("Tamanho adequado", "Adequate size"), T("Sm para tabelas, Md para cards, Lg para destaques.", "Sm for tables, Md for cards, Lg for highlights."), "maximize")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Badge como botao", "Badge as button"), T("Nao use badge como elemento clicavel.", "Do not use badge as clickable element."), "xmark"),
+        new(T("Nivel sempre Critical", "Always Critical level"), T("Nao abuse do nivel Critico.", "Do not overuse Critical level."), "ban"),
+        new(T("Sem contexto", "Without context"), T("Context=General perde cor semantica.", "Context=General loses semantic color."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", T("inline-flex items-center gap-1.5 rounded-full font-medium.", "Inline-flex items-center gap-1.5 rounded-full font-medium.")),
+        new("dot", T("h-2 w-2 rounded-full (Md).", "H-2 w-2 rounded-full (Md).")),
+        new("label", T("leading-none.", "Leading-none.")),
+        new("score", T("ml-0.5 tabular-nums opacity-75.", "Ml-0.5 tabular-nums opacity-75.")),
+        new("levelBg", T("bg-emerald-50 ring-1 ring-emerald-200 (Low).", "Bg-emerald-50 ring-1 ring-emerald-200 (Low)."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-risk", T("Atributo data para customizacao CSS por nivel.", "Data attribute for CSS customization by level."), "code"),
+        new("data-context", T("Atributo data para customizacao CSS por contexto.", "Data attribute for CSS customization by context."), "code")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, niveis, contextos, tamanhos, score, template.", "Render, levels, contexts, sizes, score, template tests.")),
+        new("Accessibility", T("role=status, aria-label, data-risk, data-context.", "role=status, aria-label, data-risk, data-context."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Score", T("Score deve estar entre 0.0 e 1.0.", "Score must be between 0.0 and 1.0.")),
+        new("Niveis", T("Apenas 4 niveis: Low, Medium, High, Critical.", "Only 4 levels: Low, Medium, High, Critical.")),
+        new("Contextos", T("Apenas 6 contextos: General, Credit, Fiscal, Stock, Fraud, Delinquency.", "Only 6 contexts: General, Credit, Fiscal, Stock, Fraud, Delinquency."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFBadge", T("Badge generico sem contexto de risco.", "Generic badge without risk context."), "tag"),
+        new("XFAiExplainButton", T("Explicacao IA de campos.", "AI field explanation."), "circle-question"),
+        new("XFAiRewriteButton", T("Reescrita IA de textos.", "AI text rewriting."), "wand-magic-sparkles")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("RiskBadge vs Badge?", "RiskBadge vs Badge?"), T("RiskBadge = risco com 4 niveis e 6 contextos. Badge = generico.", "RiskBadge = risk with 4 levels and 6 contexts. Badge = generic.")),
+        new(T("Como mudar as cores?", "How to change colors?"), T("Cores sao fixas por nivel. Use data-risk para override CSS.", "Colors are fixed per level. Use data-risk for CSS override.")),
+        new(T("Score obrigatorio?", "Score required?"), T("Nao. Score e opcional, controlado por ShowScore.", "No. Score is optional, controlled by ShowScore."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina seed criada com preview e API inicial.", "Seed page created with preview and initial API.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

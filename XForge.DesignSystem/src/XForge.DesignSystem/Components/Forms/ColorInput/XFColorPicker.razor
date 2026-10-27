@@ -1,0 +1,287 @@
+@inherits XForgeComponentBase
+
+<div id="@Id" class="@RootClass" style="@Style" @onkeydown="HandleRootKeyDownAsync">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@TextInputId" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@PickerShellClass">
+        <div class="@FieldShellClass">
+            <span class="h-5 w-5 shrink-0 rounded border border-border-light" style="@CommittedPreviewStyle" aria-hidden="true"></span>
+            <input id="@TextInputId"
+                   class="@TextInputClass"
+                   type="text"
+                   value="@TextValue"
+                   placeholder="@TextPlaceholder"
+                   maxlength="@TextMaxLength"
+                   disabled="@Disabled"
+                   readonly="@ReadOnly"
+                   required="@Required"
+                   aria-label="@AriaLabel"
+                   aria-invalid="@AriaInvalid"
+                   aria-required="@Required"
+                   aria-describedby="@DescribedBy"
+                   aria-expanded="@IsOpen"
+                   aria-haspopup="dialog"
+                   @oninput="HandleTextInputAsync"
+                   @onchange="HandleTextChangeAsync"
+                   @onfocus="HandleFocusAsync" />
+
+            <button type="button"
+                    class="@IconButtonClass"
+                    aria-label="@ToggleLabel"
+                    aria-expanded="@IsOpen"
+                    disabled="@ToggleDisabled"
+                    @onclick="ToggleAsync">
+                <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("palette")</span>
+            </button>
+        </div>
+
+        @if (IsOpen)
+        {
+            <div class="@PopoverClass" role="dialog" aria-label="@DialogLabel">
+
+                <!-- Persistent header: preview + hex readout + native picker -->
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="h-10 w-10 shrink-0 rounded-full border border-surface-200 shadow-[inset_0_0_0_1px_rgb(255_255_255/.45)]" style="@DraftPreviewStyle" aria-hidden="true"></span>
+                        <div class="min-w-0 space-y-0.5">
+                            <div class="text-xs font-bold uppercase text-text-secondary">@ThemeColorTitle</div>
+                            <div class="font-mono text-sm font-semibold text-text-primary truncate">@DraftTextValue</div>
+                            <div class="text-xs text-text-muted">@ColorReadoutText</div>
+                        </div>
+                    </div>
+                    <input id="@NativeInputId"
+                           class="@NativeInputClass"
+                           type="color"
+                           value="@DraftNativeValue"
+                           disabled="@Disabled"
+                           readonly="@ReadOnly"
+                           aria-label="@NativeInputLabel"
+                           @oninput="HandleNativeInputAsync"
+                           @onchange="HandleNativeChangeAsync" />
+                </div>
+
+                <!-- Tab bar (hidden when only 1 tab visible) -->
+                @if (HasMultipleTabs)
+                {
+                <div class="mt-3 flex rounded-lg bg-surface-100 p-1" role="tablist" aria-label="@TabBarLabel">
+                    @if (ShowPickerTab)
+                    {
+                        <button type="button" role="tab" class="@GetTabClass(0)" aria-selected="@GetAriaSelected(0)" @onclick="() => SetTabAsync(0)">@PickerTabLabel</button>
+                    }
+                    <button type="button" role="tab" class="@GetTabClass(1)" aria-selected="@GetAriaSelected(1)" @onclick="() => SetTabAsync(1)">@PaletteTabLabel</button>
+                    @if (ShowDetailsTab)
+                    {
+                        <button type="button" role="tab" class="@GetTabClass(2)" aria-selected="@GetAriaSelected(2)" @onclick="() => SetTabAsync(2)">@DetailsTabLabel</button>
+                    }
+                </div>
+                }
+
+                <!-- Tab 0: Picker (HSV + Alpha) -->
+                @if (_activeTab == 0 && ShowPickerTab)
+                {
+                    <div role="tabpanel" class="mt-3 space-y-3">
+                        @if (ShowHsvPicker)
+                        {
+                            <div class="relative h-40 w-full select-none overflow-hidden rounded-lg ring-1 ring-border-light"
+                                 @ref="_svAreaRef"
+                                 style="@SvAreaStyle"
+                                 aria-label="@SvPickerLabel"
+                                 role="slider"
+                                 aria-valuetext="@HsvText">
+                                <div class="pointer-events-none absolute inset-0" style="background: linear-gradient(to right, white, transparent)"></div>
+                                <div class="pointer-events-none absolute inset-0" style="background: linear-gradient(to bottom, transparent, black)"></div>
+                                <div class="pointer-events-none absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,.25),0_2px_6px_rgba(0,0,0,.3)]"
+                                     style="@SvHandleStyle">
+                                </div>
+                            </div>
+
+                            <div class="relative h-3 w-full select-none overflow-hidden rounded-full ring-1 ring-border-light"
+                                 @ref="_hueSliderRef"
+                                 style="background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)"
+                                 aria-label="@HueSliderLabel"
+                                 role="slider"
+                                 aria-valuemin="0"
+                                 aria-valuemax="360"
+                                 aria-valuenow="@((int)_hsvHue)">
+                                <div class="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,.25),0_2px_6px_rgba(0,0,0,.3)]"
+                                     style="@HueHandleStyle">
+                                </div>
+                            </div>
+                        }
+
+                        @if (ShowAlpha)
+                        {
+                            <div class="grid gap-1.5">
+                                <div class="flex items-center justify-between gap-3 text-xs font-medium text-text-secondary">
+                                    <span>@AlphaLabel</span>
+                                    <span>@AlphaPercent%</span>
+                                </div>
+                                <input class="w-full accent-[var(--color-primary)]"
+                                       type="range"
+                                       min="0"
+                                       max="100"
+                                       step="1"
+                                       value="@AlphaPercent"
+                                       disabled="@Disabled"
+                                       readonly="@ReadOnly"
+                                       aria-label="@AlphaLabel"
+                                       @oninput="HandleAlphaInputAsync"
+                                       @onchange="HandleAlphaChangeAsync" />
+                            </div>
+                        }
+
+                        @if (!ShowHsvPicker && !ShowAlpha)
+                        {
+                            <div class="py-6 text-center text-xs text-text-muted">@HexLabel: @DraftTextValue</div>
+                        }
+                    </div>
+                }
+
+                <!-- Tab 1: Palette (Theme + Custom) -->
+                @if (_activeTab == 1)
+                {
+                    <div role="tabpanel" class="mt-3 space-y-4">
+                        <div class="grid gap-2" role="group" aria-label="@ThemeScaleLabel">
+                            @foreach (var row in ThemePaletteRows)
+                            {
+                                <div class="grid grid-cols-10 overflow-hidden rounded-md ring-1 ring-border-light">
+                                    @foreach (var color in row)
+                                    {
+                                        <button type="button"
+                                                class="@GetThemeSwatchClass(color)"
+                                                style="@GetSwatchStyle(color)"
+                                                disabled="@Disabled"
+                                                aria-label="@GetSwatchLabel(color)"
+                                                aria-pressed="@(NormalizeColor(ApplyCurrentAlpha(color), ShowAlpha) == DraftValue)"
+                                                @onclick="() => SelectSwatchAsync(color)">
+                                        </button>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        @if (Palette.Count > 0)
+                        {
+                            <div id="@PaletteId" role="group" aria-label="@PaletteLabel">
+                                <div class="mb-3 flex items-center justify-between gap-3">
+                                    <span class="text-xs font-bold uppercase text-text-secondary">@CustomColorsTitle</span>
+                                    <label class="inline-flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-1 text-xs font-bold text-primary outline-none transition-colors hover:bg-[color-mix(in_oklab,var(--color-primary)_8%,transparent)]">
+                                        <span aria-hidden="true">+</span>
+                                        <span>@AddColorText</span>
+                                        <input class="sr-only"
+                                               type="color"
+                                               value="@DraftNativeValue"
+                                               disabled="@Disabled"
+                                               readonly="@ReadOnly"
+                                               aria-label="@NativeInputLabel"
+                                               @onchange="HandleNativeChangeAsync" />
+                                    </label>
+                                </div>
+                                <div class="@PaletteClass">
+                                    @foreach (var color in Palette)
+                                    {
+                                        <button type="button"
+                                                class="@GetSwatchClass(color)"
+                                                style="@GetSwatchStyle(color)"
+                                                disabled="@Disabled"
+                                                aria-label="@GetSwatchLabel(color)"
+                                                aria-pressed="@(NormalizeColor(ApplyCurrentAlpha(color), ShowAlpha) == DraftValue)"
+                                                @onclick="() => SelectSwatchAsync(color)">
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Tab 2: Details (RGB + Color models) -->
+                @if (_activeTab == 2 && ShowDetailsTab)
+                {
+                    <div role="tabpanel" class="mt-3 space-y-3">
+                        @if (ShowRgb)
+                        {
+                            <div>
+                                <div class="mb-1 text-xs font-bold uppercase text-text-secondary">@HexLabel</div>
+                                <div class="mb-3 font-mono text-sm font-semibold text-text-primary">@DraftTextValue</div>
+
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label class="mb-1 block text-xs font-medium text-text-secondary">R</label>
+                                        <input class="@RgbInputClass"
+                                               type="number"
+                                               min="0"
+                                               max="255"
+                                               value="@_rgbR"
+                                               disabled="@Disabled"
+                                               readonly="@ReadOnly"
+                                               aria-label="R"
+                                               @onchange="HandleRedChange" />
+                                    </div>
+                                    <div>
+                                        <label class="mb-1 block text-xs font-medium text-text-secondary">G</label>
+                                        <input class="@RgbInputClass"
+                                               type="number"
+                                               min="0"
+                                               max="255"
+                                               value="@_rgbG"
+                                               disabled="@Disabled"
+                                               readonly="@ReadOnly"
+                                               aria-label="G"
+                                               @onchange="HandleGreenChange" />
+                                    </div>
+                                    <div>
+                                        <label class="mb-1 block text-xs font-medium text-text-secondary">B</label>
+                                        <input class="@RgbInputClass"
+                                               type="number"
+                                               min="0"
+                                               max="255"
+                                               value="@_rgbB"
+                                               disabled="@Disabled"
+                                               readonly="@ReadOnly"
+                                               aria-label="B"
+                                               @onchange="HandleBlueChange" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (ShowColorModels)
+                        {
+                            <div class="grid gap-2 rounded-lg bg-surface-50 p-3 text-xs text-text-secondary ring-1 ring-border-light">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="font-semibold uppercase">HSL</span>
+                                    <span class="font-mono text-text-primary">@HslText</span>
+                                </div>
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="font-semibold uppercase">HSV</span>
+                                    <span class="font-mono text-text-primary">@HsvText</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Persistent footer -->
+                <div class="mt-4 flex items-center justify-end gap-2 border-t border-border-light pt-3">
+                    <button type="button" class="@FooterButtonClass" @onclick="CancelAsync">@CancelText</button>
+                    <button type="button" class="@ApplyButtonClass" disabled="@ApplyDisabled" @onclick="ApplyAsync">@ApplyText</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">@HelperText</div>
+    }
+</div>

@@ -1,0 +1,58 @@
+@using XForge.DesignSystem.Core.Primitives;
+@inherits XForgeComponentBase
+@using XForge.DesignSystem.Components.Button
+
+<CascadingValue Value="this">
+    <section @attributes="AdditionalAttributes"
+             id="@Id"
+             class="@GetComponentClass()"
+             style="@Style"
+             aria-label="@AriaLabel">
+        <div class="@StepperClass">
+            <XFSteps Items="@StepItems"
+                     Orientation="@Orientation"
+                     Variant="XFContainerVariant.Plain"
+                     Size="@Size"
+                     AriaLabel="@AriaLabel" />
+        </div>
+
+        <div class="@ContentShellClass">
+            <div class="hidden">
+                @ChildContent
+            </div>
+
+            @if (ActiveStep is not null)
+            {
+                <section class="@PanelClass"
+                         role="tabpanel"
+                         aria-labelledby="@ActiveStep.HeaderId"
+                         id="@ActiveStep.PanelId">
+                    @ActiveStep.ChildContent
+                </section>
+            }
+
+            @if (!HideActions)
+            {
+                <footer class="@ActionsClass">
+                    @if (ActionsTemplate is not null)
+                    {
+                        @ActionsTemplate(this)
+                    }
+                    else
+                    {
+                        <XFButton Variant="XFButtonVariant.Subtle"
+                                  Disabled="@(!CanGoPrevious || Disabled)"
+                                  OnClick="PreviousAsync">
+                            @PreviousText
+                        </XFButton>
+                        <XFButton Color="XFButtonColor.Primary"
+                                  Disabled="@(!CanGoNext || Disabled)"
+                                  OnClick="NextOrFinishAsync">
+                            @(IsLastStep ? FinishText : NextText)
+                        </XFButton>
+                    }
+                </footer>
+            }
+        </div>
+    </section>
+</CascadingValue>

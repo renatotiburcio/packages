@@ -1,0 +1,16 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<div class="xf-sped-viewer" data-type="@Type">
+  <div class="xf-sped-toolbar">
+    <select @bind="Type">
+      <option value="EFD_ICMS_IPI">EFD ICMS/IPI</option>
+      <option value="EFD_CONTRIB">EFD Contribuicoes</option>
+      <option value="ECD">ECD (Contabil)</option>
+      <option value="ECF">ECF (Fiscal)</option>
+    </select>
+    <input type="date" @bind="PeriodStart" />
+    <input type="date" @bind="PeriodEnd" />
+  </div>
+  <div class="xf-sped-content">@ChildContent</div>
+</div>

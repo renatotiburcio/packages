@@ -1,0 +1,602 @@
+@page "/components/card"
+@using XForge.DesignSystem.Core.Primitives
+@using Microsoft.AspNetCore.Components.Web
+@page "/display/card"
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFCard" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Container enterprise", "Enterprise container")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Slots semanticos", "Semantic slots")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="WCAG AAA" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Superficies consistentes para agrupar informacao, midia, acoes e estado.",
+                               "Consistent surfaces for grouping information, media, actions and state.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFCard organiza conteudo em Media, Header, ChildContent, Actions e Footer com variantes, tons, padding, radius, divisores e comportamento interativo.",
+                               "XFCard organizes content into Media, Header, ChildContent, Actions and Footer with variants, tones, padding, radius, dividers and interactive behavior.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(PrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("Card com Header, ChildContent e Actions.", "Card with Header, ChildContent and Actions."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Media slot", "2. Media Slot"),
+                T("Slot Media para imagem ou grafico.", "Media slot for image or chart."),
+                ExMedia(), CodeMedia)
+
+            @Example(T("3. Variantes", "3. Variants"),
+                T("Elevated, Outlined, Filled, Flat e Ghost.", "Elevated, Outlined, Filled, Flat and Ghost."),
+                ExVariants(), CodeVariants)
+
+            @Example(T("4. Tons semanticos", "4. Semantic Tones"),
+                T("Default, Primary, Success, Warning e Danger.", "Default, Primary, Success, Warning and Danger."),
+                ExTones(), CodeTones)
+
+            @Example(T("5. Padding", "5. Padding"),
+                T("None, Sm, Md, Lg e Xl.", "None, Sm, Md, Lg and Xl."),
+                ExPadding(), CodePadding)
+
+            @Example(T("6. Interativo", "6. Interactive"),
+                T("OnClick com role button e focus-visible.", "OnClick with button role and focus-visible."),
+                ExInteractive(), CodeInteractive)
+
+            @Example(T("7. Dividers", "7. Dividers"),
+                T("Dividers entre slots para hierarquia visual.", "Dividers between slots for visual hierarchy."),
+                ExDividers(), CodeDividers)
+
+            @Example(T("8. Tone lateral", "8. Side Tone"),
+                T("Borda lateral colorida para indicar estado.", "Colored side border to indicate state."),
+                ExSideTone(), CodeSideTone)
+
+            @Example(T("9. Dashboard enterprise", "9. Enterprise Dashboard"),
+                T("Grid de cards KPI para dashboard financeiro.", "KPI card grid for financial dashboard."),
+                ExDashboard(), CodeDashboard)
+
+            @Example(T("10. Area unrestricted", "10. Area Restricted=false"),
+                T("Overflow visivel para previews e menus.", "Visible overflow for previews and menus."),
+                ExUnrestricted(), CodeUnrestricted)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsiveItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Card", "Card");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private int reviewCount;
+    private int clickCount;
+
+    private RenderFragment HeroPreview() => @<XFGrid Cols="1" Md="3" Gap="4">
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Pedido #8421", "Order #8421")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.H3" Weight="XFTypographyWeight.Bold">R$ 18.900</XFTypography><XFBadge Text="@T("Aprovado", "Approved")" Color="XFBadgeColor.Success" /></ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Tone="XFSemanticColor.Warning" Padding="XFPadding.Lg">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Risco fiscal", "Tax risk")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Requer conferencia antes do envio.", "Requires review before sending.")</XFTypography></ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Elevated" Padding="XFPadding.Lg">
+            <Actions><XFButton Text="@T("Revisar", "Review")" Size="XFExtendedSize.Sm" OnClick="ReviewAsync" /></Actions>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Interacoes", "Interactions"): @reviewCount</XFTypography></ChildContent>
+        </XFCard>
+    </XFGrid>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Superficie enterprise", "Enterprise surface"), T("Agrupa conteudo com borda, sombra, padding e tom.", "Groups content with border, shadow, padding and tone."), "square"),
+        new(T("5 slots semanticos", "5 semantic slots"), T("Media, Header, ChildContent, Actions e Footer.", "Media, Header, ChildContent, Actions and Footer."), "rectangles-mixed"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFCard"),
+        new("Namespace", "XForge.DesignSystem.Components.DataDisplay.Card"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Display / Components"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=button quando interativo, aria-label opcional, focus-visible ring.", "role=button when interactive, optional aria-label, focus-visible ring.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Superficie", "Surface"), T("Agrupa conteudo com borda, sombra, padding e tom.", "Groups content with border, shadow, padding and tone."), "square"),
+        new(T("Slots", "Slots"), T("Media, Header, ChildContent, Actions e Footer.", "Media, Header, ChildContent, Actions and Footer."), "rectangles-mixed"),
+        new(T("Interativo", "Interactive"), T("OnClick ou Interactive adiciona role button e foco.", "OnClick or Interactive adds button role and focus."), "arrow-pointer")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Agrupar", "Group"), T("Transforma informacao solta em bloco escaneavel.", "Turns loose information into a scannable block."), "layer-group"),
+        new(T("Priorizar", "Prioritize"), T("Tons e variantes comunicam peso visual.", "Tones and variants communicate visual weight."), "palette"),
+        new(T("Acionar", "Act"), T("Actions padroniza comandos do bloco.", "Actions standardizes commands for the block."), "check")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("CSS local", "Local CSS"), T("Evita cards improvisados por modulo.", "Avoids improvised cards per module."), "code"),
+        new(T("Densidade inconsistente", "Inconsistent density"), T("Padding e dividers mantem ritmo.", "Padding and dividers preserve rhythm."), "sliders"),
+        new(T("Acoes dispersas", "Scattered actions"), T("Footer/Actions centralizam decisoes.", "Footer/Actions centralize decisions."), "route")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Resumo", "Summary"), T("KPI, entidade, status ou preview de registro.", "KPI, entity, status or record preview."), "chart-bar"),
+        new(T("Midia", "Media"), T("Use Media para imagem, grafico ou faixa visual.", "Use Media for image, chart or visual band."), "image"),
+        new(T("Workflow", "Workflow"), T("Use Actions para decisoes do card.", "Use Actions for card decisions."), "route")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Layout inteiro", "Whole layout"), T("Nao use card como secao de pagina completa.", "Do not use card as a whole page section."), "xmark"),
+        new(T("Card dentro de card", "Card inside card"), T("Evite aninhamento visual pesado.", "Avoid heavy visual nesting."), "xmark"),
+        new(T("Clique ambiguo", "Ambiguous click"), T("Se interativo, deixe objetivo claro.", "If interactive, make the objective clear."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Media", T("Slot superior para midia controlada.", "Top slot for controlled media."), "image"),
+        new("Header", T("Titulo e metadados.", "Title and metadata."), "font"),
+        new("ChildContent", T("Conteudo principal.", "Main content."), "square"),
+        new("Actions", T("Botoes alinhados ao fim.", "Buttons aligned to the end."), "check"),
+        new("Footer", T("Resumo, status ou metadados finais.", "Summary, status or final metadata."), "tag"),
+        new("Dividers", T("Linhas entre areas quando habilitado.", "Lines between areas when enabled."), "minus")
+    ];
+
+    private IReadOnlyList<DocTile> PrincipleItems => [
+        new(T("Um assunto", "One subject"), T("Cada card deve representar um bloco semantico.", "Each card should represent one semantic block."), "bullseye"),
+        new(T("Acoes proximas", "Nearby actions"), T("Actions pertencem ao conteudo do card.", "Actions belong to card content."), "arrow-pointer"),
+        new(T("Sem excesso", "No excess"), T("Use dividers e padding para leitura, nao decoracao.", "Use dividers and padding for reading, not decoration."), "eye")
+    ];
+
+    // ─── Examples ───
+    private RenderFragment ExBasic() => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFStack Orientation="XFOrientation.Horizontal" JustifyContent="XFJustifyContent.SpaceBetween" FullWidth="true">
+            <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Aprovacao fiscal", "Tax approval")</XFTypography>
+            <XFBadge Text="@T("Pendente", "Pending")" Color="XFBadgeColor.Warning" />
+        </XFStack></Header>
+        <ChildContent><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">
+            @T("NF-e 94381 aguarda conferencia de CFOP e anexos.", "NF-e 94381 awaits CFOP and attachment review.")
+        </XFTypography></ChildContent>
+        <Actions>
+            <XFButton Text="@T("Abrir", "Open")" Size="XFExtendedSize.Sm" />
+            <XFButton Text="@T("Aprovar", "Approve")" Color="XFButtonColor.Success" Size="XFExtendedSize.Sm" />
+        </Actions>
+    </XFCard>;
+
+    private RenderFragment ExMedia() => @<XFCard Variant="XFCardVariant.Elevated" Padding="XFPadding.None" AreaRestricted="false">
+        <Media><div class="h-32 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+            <span class="text-4xl" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("chart-line", 48))</span>
+        </div></Media>
+        <Header><XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Receita mensal", "Monthly revenue")</XFTypography></Header>
+        <ChildContent><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">
+            @T("Receita de R$ 2.4M em maio de 2026, crescimento de 12%.", "Revenue of R$ 2.4M in May 2026, 12% growth.")
+        </XFTypography></ChildContent>
+    </XFCard>;
+
+    private RenderFragment ExVariants() => @<XFGrid Cols="1" Sm="2" Md="3" Gap="3">
+        <XFCard Variant="XFCardVariant.Elevated" Padding="XFPadding.Lg"><ChildContent>
+            <XFTypography Weight="XFTypographyWeight.Semibold">Elevated</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Sombra para superficie principal.", "Shadow for primary surface.")</XFTypography>
+        </ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><ChildContent>
+            <XFTypography Weight="XFTypographyWeight.Semibold">Outlined</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Borda leve para paineis densos.", "Light border for dense panels.")</XFTypography>
+        </ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+            <XFTypography Weight="XFTypographyWeight.Semibold">Filled</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Surface suave para agrupamento.", "Soft surface for grouping.")</XFTypography>
+        </ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment ExTones() => @<XFGrid Cols="1" Sm="2" Md="3" Gap="3">
+        <XFCard Variant="XFCardVariant.Outlined" Tone="XFSemanticColor.Primary" Padding="XFPadding.Lg"><ChildContent>
+            <XFTypography Weight="XFTypographyWeight.Semibold">Primary</XFTypography>
+        </ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Tone="XFSemanticColor.Success" Padding="XFPadding.Lg"><ChildContent>
+            <XFTypography Weight="XFTypographyWeight.Semibold">Success</XFTypography>
+        </ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Tone="XFSemanticColor.Warning" Padding="XFPadding.Lg"><ChildContent>
+            <XFTypography Weight="XFTypographyWeight.Semibold">Warning</XFTypography>
+        </ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Tone="XFSemanticColor.Danger" Padding="XFPadding.Lg"><ChildContent>
+            <XFTypography Weight="XFTypographyWeight.Semibold">Danger</XFTypography>
+        </ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Tone="XFSemanticColor.Default" Padding="XFPadding.Lg"><ChildContent>
+            <XFTypography Weight="XFTypographyWeight.Semibold">Default</XFTypography>
+        </ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment ExPadding() => @<div class="grid gap-3">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None"><ChildContent><div class="p-1"><XFTypography Variant="XFTypographyVariant.Caption">None</XFTypography></div></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Sm"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">Sm</XFTypography></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Md"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">Md</XFTypography></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">Lg</XFTypography></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption">Xl</XFTypography></ChildContent></XFCard>
+    </div>;
+
+    private RenderFragment ExInteractive() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" Interactive="true"
+                AriaLabel="@T("Clique para ver detalhes", "Click to see details")"
+                OnClick="@(args => { clickCount++; })">
+            <Header><XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Card interativo", "Interactive card")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">
+                @T("Clique para interagir. Cliques: ", "Click to interact. Clicks: ")@clickCount
+            </XFTypography></ChildContent>
+        </XFCard>
+        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@($"Clicks: {clickCount}")" />
+    </XFStack>;
+
+    private RenderFragment ExDividers() => @<XFGrid Cols="1" Md="2" Gap="3">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" Dividers="true">
+            <Header><XFTypography Weight="XFTypographyWeight.Semibold">@T("Com dividers", "With dividers")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Conteudo principal.", "Main content.")</XFTypography></ChildContent>
+            <Footer><XFBadge Text="Footer" /></Footer>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" Dividers="false">
+            <Header><XFTypography Weight="XFTypographyWeight.Semibold">@T("Sem dividers", "No dividers")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Conteudo principal.", "Main content.")</XFTypography></ChildContent>
+            <Footer><XFBadge Text="Footer" /></Footer>
+        </XFCard>
+    </XFGrid>;
+
+    private RenderFragment ExSideTone() => @<XFGrid Cols="1" Md="2" Gap="3">
+        <XFCard Variant="XFCardVariant.Outlined" Tone="XFSemanticColor.Danger" Padding="XFPadding.Lg">
+            <Header><XFTypography Weight="XFTypographyWeight.Semibold">@T("Critico", "Critical")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("NF-e rejeitada. Correcao imediata necessaria.", "NF-e rejected. Immediate correction required.")</XFTypography></ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Tone="XFSemanticColor.Success" Padding="XFPadding.Lg">
+            <Header><XFTypography Weight="XFTypographyWeight.Semibold">@T("Aprovado", "Approved")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("NF-e autorizada com sucesso.", "NF-e authorized successfully.")</XFTypography></ChildContent>
+        </XFCard>
+    </XFGrid>;
+
+    private RenderFragment ExDashboard() => @<XFGrid Cols="1" Sm="2" Lg="4" Gap="3">
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Receita", "Revenue")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.H3" Weight="XFTypographyWeight.Bold">R$ 2.4M</XFTypography></ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("NF-e emitidas", "NF-e issued")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.H3" Weight="XFTypographyWeight.Bold">1.847</XFTypography></ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Tone="XFSemanticColor.Warning" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Pendentes", "Pending")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.H3" Weight="XFTypographyWeight.Bold">23</XFTypography></ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Tone="XFSemanticColor.Danger" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Rejeitadas", "Rejected")</XFTypography></Header>
+            <ChildContent><XFTypography Variant="XFTypographyVariant.H3" Weight="XFTypographyWeight.Bold">3</XFTypography></ChildContent>
+        </XFCard>
+    </XFGrid>;
+
+    private RenderFragment ExUnrestricted() => @<div class="flex gap-3">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" AreaRestricted="false">
+            <Header><XFTypography Weight="XFTypographyWeight.Semibold">@T("Area Restricted=false", "Area Restricted=false")</XFTypography></Header>
+            <ChildContent>
+                <div class="-mx-2 -mb-2 rounded-lg bg-primary/10 p-4">
+                    <XFTypography Variant="XFTypographyVariant.Body2">@T("Conteudo com overflow visivel.", "Content with visible overflow.")</XFTypography>
+                </div>
+            </ChildContent>
+        </XFCard>
+    </div>;
+
+    private Task ReviewAsync(MouseEventArgs args) { reviewCount++; return Task.CompletedTask; }
+
+    // ─── API ───
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo principal.", "Main content.")),
+        new("Media", "RenderFragment?", "null", T("Midia superior.", "Top media.")),
+        new("Header", "RenderFragment?", "null", T("Cabecalho.", "Header.")),
+        new("Actions", "RenderFragment?", "null", T("Area de acoes.", "Action area.")),
+        new("Footer", "RenderFragment?", "null", T("Rodape.", "Footer.")),
+        new("Padding", "XFPadding", "Md", T("None, Sm, Md, Lg, Xl.", "None, Sm, Md, Lg, Xl.")),
+        new("Variant", "XFCardVariant", "Elevated", T("Estilo visual.", "Visual style.")),
+        new("Tone", "XFSemanticColor", "Default", T("Tom semantico.", "Semantic tone.")),
+        new("Radius", "XFCardRadius", "Lg", T("Raio da borda.", "Border radius.")),
+        new("Interactive", "bool", "false", T("Forca estado interativo.", "Forces interactive state.")),
+        new("AreaRestricted", "bool", "true", T("Controla overflow-hidden.", "Controls overflow-hidden.")),
+        new("Dividers", "bool", "true", T("Mostra divisores entre slots.", "Shows dividers between slots.")),
+        new("AriaLabel", "string?", "null", T("Nome acessivel quando interativo.", "Accessible name when interactive.")),
+        new("OnClick", "EventCallback<MouseEventArgs>", "default", T("Clique do card.", "Card click."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnClick", T("Dispara quando card interativo e clicado.", "Raised when an interactive card is clicked."))
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Foca card se interativo e depois controles internos.", "Focuses card if interactive and then internal controls.")),
+        new("Enter/Space", T("Nao ha handler custom; use acoes internas para comandos criticos.", "No custom handler; use internal actions for critical commands."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("Role", T("Card interativo usa role button.", "Interactive card uses button role."), "universal-access"),
+        new("AriaLabel", T("Forneca nome quando o card inteiro for clicavel.", "Provide a name when the whole card is clickable."), "tag"),
+        new("Focus", T("focus-visible usa ring tokenizado.", "focus-visible uses tokenized ring."), "keyboard")
+    ];
+
+    private IReadOnlyList<DocTile> ResponsiveItems => [
+        new("Grid", T("Use XFGrid para colunas responsivas.", "Use XFGrid for responsive columns."), "table-cells"),
+        new("Padding", T("Ajuste Padding em superficies densas.", "Adjust Padding in dense surfaces."), "sliders"),
+        new("Overflow", T("AreaRestricted evita midia vazar.", "AreaRestricted prevents media overflow."), "arrows-left-right")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Sem JS", "No JS"), T("Componente puro Blazor/Tailwind.", "Pure Blazor/Tailwind component."), "code"),
+        new(T("Slots leves", "Light slots"), T("RenderFragment permite compor sem wrappers extras.", "RenderFragment composes without extra wrappers."), "bolt"),
+        new(T("Evite nesting", "Avoid nesting"), T("Cards aninhados aumentam DOM e ruido.", "Nested cards increase DOM and noise."), "gauge")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Financeiro", "Finance"), T("Resumo de pagamento, limite ou conciliacao.", "Payment, limit or reconciliation summary."), "money-bill"),
+        new(T("Fiscal", "Tax"), T("Status de NF-e e auditoria.", "NF-e status and audit."), "calculator"),
+        new(T("CRM", "CRM"), T("Conta, oportunidade e proximas acoes.", "Account, opportunity and next actions."), "briefcase")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("XFBadge", T("Status no Header ou Footer.", "Status in Header or Footer."), "tag"),
+        new("XFButton", T("Comandos em Actions.", "Commands in Actions."), "arrow-pointer"),
+        new("XFGrid", T("Cards em dashboards responsivos.", "Cards in responsive dashboards."), "table-cells")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Titulo claro", "Clear title"), T("Header deve identificar o assunto.", "Header should identify the subject."), "font"),
+        new(T("Acoes finais", "Final actions"), T("Actions deve conter decisoes do bloco.", "Actions should contain block decisions."), "check"),
+        new(T("Densidade", "Density"), T("Use Outlined/Filled em paginas densas.", "Use Outlined/Filled in dense pages."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Card decorativo", "Decorative card"), T("Nao use apenas para criar sombra.", "Do not use only to create shadow."), "xmark"),
+        new(T("Muitos assuntos", "Too many subjects"), T("Divida em cards menores.", "Split into smaller cards."), "xmark"),
+        new(T("Clique escondido", "Hidden click"), T("Interativo precisa affordance e label.", "Interactive needs affordance and label."), "xmark")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("surface, bg-surface, border-light, primary/status.", "surface, bg-surface, border-light, primary/status.")),
+        new("spacing", T("Padding None/Sm/Md/Lg/Xl.", "Padding None/Sm/Md/Lg/Xl.")),
+        new("radius", T("Sm/Md/Lg/Xl.", "Sm/Md/Lg/Xl.")),
+        new("elevation", T("Sombras por variant.", "Shadows by variant.")),
+        new("motion", T("Hover/focus transition 200ms.", "Hover/focus transition 200ms."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Usa tokens CSS em light/dark.", "Uses CSS tokens in light/dark."), "moon"),
+        new("data-brand", T("Tone Primary acompanha marca ativa.", "Tone Primary follows active brand."), "swatchbook"),
+        new(T("Contraste", "Contrast"), T("Tons usam borda e fundo sutis.", "Tones use subtle border and background."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("XFCardComponentTest cobre render, slots, variants e interacao.", "XFCardComponentTest covers render, slots, variants and interaction.")),
+        new("A11y", T("Card interativo precisa nome acessivel.", "Interactive card needs accessible name.")),
+        new("Visual", T("Testar dividers, tone e area restricted.", "Test dividers, tone and area restricted."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Keyboard activation", T("Nao ha handler custom de Enter/Space no card.", "There is no custom Enter/Space handler on the card.")),
+        new("Layout", T("Nao substitui grid/section de pagina.", "Does not replace page grid/section."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedItems => [
+        new("XFBadge", T("Status compacto dentro do card.", "Compact status inside the card."), "tag"),
+        new("XFButton", T("Acoes do card.", "Card actions."), "arrow-pointer"),
+        new("XFGrid", T("Distribuicao responsiva de cards.", "Responsive card distribution."), "table-cells")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Posso aninhar cards?", "Can I nest cards?"), T("Evite; prefira grid ou stack dentro do card.", "Avoid it; prefer grid or stack inside the card.")),
+        new(T("Quando usar AreaRestricted=false?", "When use AreaRestricted=false?"), T("Em previews/menus que precisam overflow visivel.", "In previews/menus that need visible overflow."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-05-25", T("Pagina refeita no padrao enterprise multi idioma com API real e exemplos renderizados.", "Page rebuilt in the multilingual enterprise standard with real API and rendered examples.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // ─── Code Strings ───
+    private string CodeBasic =>
+        "<XFCard Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\">" + "\n" +
+        "    <Header>Title + Badge</Header>" + "\n" +
+        "    <ChildContent>Content</ChildContent>" + "\n" +
+        "    <Actions>Open | Approve</Actions>" + "\n" +
+        "</XFCard>";
+
+    private string CodeMedia =>
+        "<XFCard Variant=\"XFCardVariant.Elevated\" Padding=\"XFPadding.None\" AreaRestricted=\"false\">" + "\n" +
+        "    <Media><div class=\"h-32 bg-primary/10 flex items-center justify-center\">chart-line icon</div></Media>" + "\n" +
+        "    <Header>Title</Header>" + "\n" +
+        "    <ChildContent>Description</ChildContent>" + "\n" +
+        "</XFCard>";
+
+    private string CodeVariants =>
+        "<XFCard Variant=\"XFCardVariant.Elevated\" Padding=\"XFPadding.Lg\"><ChildContent>Elevated: Shadow for primary surface.</ChildContent></XFCard>" + "\n" +
+        "<XFCard Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\"><ChildContent>Outlined: Light border for dense panels.</ChildContent></XFCard>" + "\n" +
+        "<XFCard Variant=\"XFCardVariant.Filled\" Padding=\"XFPadding.Lg\"><ChildContent>Filled: Soft surface for grouping.</ChildContent></XFCard>";
+
+    private string CodeTones =>
+        "<XFCard Tone=\"XFSemanticColor.Primary\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\"><ChildContent>Primary</ChildContent></XFCard>" + "\n" +
+        "<XFCard Tone=\"XFSemanticColor.Success\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\"><ChildContent>Success</ChildContent></XFCard>" + "\n" +
+        "<XFCard Tone=\"XFSemanticColor.Warning\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\"><ChildContent>Warning</ChildContent></XFCard>" + "\n" +
+        "<XFCard Tone=\"XFSemanticColor.Danger\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\"><ChildContent>Danger</ChildContent></XFCard>";
+
+    private string CodePadding =>
+        "<XFCard Padding=\"XFPadding.None\" Variant=\"XFCardVariant.Outlined\"><ChildContent>None</ChildContent></XFCard>" + "\n" +
+        "<XFCard Padding=\"XFPadding.Sm\" Variant=\"XFCardVariant.Outlined\"><ChildContent>Sm</ChildContent></XFCard>" + "\n" +
+        "<XFCard Padding=\"XFPadding.Md\" Variant=\"XFCardVariant.Outlined\"><ChildContent>Md</ChildContent></XFCard>" + "\n" +
+        "<XFCard Padding=\"XFPadding.Lg\" Variant=\"XFCardVariant.Outlined\"><ChildContent>Lg</ChildContent></XFCard>" + "\n" +
+        "<XFCard Padding=\"XFPadding.Xl\" Variant=\"XFCardVariant.Outlined\"><ChildContent>Xl</ChildContent></XFCard>";
+
+    private string CodeInteractive =>
+        "<XFCard Interactive=\"true\"" + "\n" +
+        "        AriaLabel=\"Click to see details\"" + "\n" +
+        "        OnClick=\"@HandleClick\">" + "\n" +
+        "    <Header>Title</Header>" + "\n" +
+        "    <ChildContent>Content</ChildContent>" + "\n" +
+        "</XFCard>";
+
+    private string CodeDividers =>
+        "<!-- With dividers (default) -->" + "\n" +
+        "<XFCard Dividers=\"true\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\">" + "\n" +
+        "    <Header>Title</Header>" + "\n" +
+        "    <ChildContent>Content</ChildContent>" + "\n" +
+        "    <Footer>Footer</Footer>" + "\n" +
+        "</XFCard>" + "\n" + "\n" +
+        "<!-- Without dividers -->" + "\n" +
+        "<XFCard Dividers=\"false\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\">" + "\n" +
+        "    <Header>Title</Header>" + "\n" +
+        "    <ChildContent>Content</ChildContent>" + "\n" +
+        "    <Footer>Footer</Footer>" + "\n" +
+        "</XFCard>";
+
+    private string CodeSideTone =>
+        "<XFCard Tone=\"XFSemanticColor.Danger\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\"><Header>Critical</Header><ChildContent>NF-e rejected. Immediate correction required.</ChildContent></XFCard>" + "\n" +
+        "<XFCard Tone=\"XFSemanticColor.Success\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\"><Header>Approved</Header><ChildContent>NF-e authorized successfully.</ChildContent></XFCard>";
+
+    private string CodeDashboard =>
+        "<XFGrid Cols=\"1\" Sm=\"2\" Lg=\"4\" Gap=\"3\">" + "\n" +
+        "    <XFCard Variant=\"Filled\">Revenue: R$ 2.4M</XFCard>" + "\n" +
+        "    <XFCard Variant=\"Filled\">NF-e: 1,847</XFCard>" + "\n" +
+        "    <XFCard Variant=\"Filled\" Tone=\"Warning\">Pending: 23</XFCard>" + "\n" +
+        "    <XFCard Variant=\"Filled\" Tone=\"Danger\">Rejected: 3</XFCard>" + "\n" +
+        "</XFGrid>";
+
+    private string CodeUnrestricted =>
+        "<XFCard AreaRestricted=\"false\" Variant=\"XFCardVariant.Outlined\" Padding=\"XFPadding.Lg\">" + "\n" +
+        "    <ChildContent>" + "\n" +
+        "        <div class=\"-mx-2 -mb-2 bg-primary/10 p-4 rounded-lg\">Content with visible overflow.</div>" + "\n" +
+        "    </ChildContent>" + "\n" +
+        "</XFCard>";
+
+    // ─── Helpers ───
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell><XFCode Text="@row.Type" /></XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // ─── Records ───
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

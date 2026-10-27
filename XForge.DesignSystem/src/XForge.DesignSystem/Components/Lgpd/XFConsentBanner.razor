@@ -1,0 +1,20 @@
+﻿@namespace XForge.Components.Lgpd
+@if (Visible)
+{
+  <div class="xf-lgpd-consent" data-policy-version="@PolicyVersion">
+    <div class="xf-lgpd-text">@Message</div>
+    <div class="xf-lgpd-actions">
+      <button class="btn-accept" @onclick="() => OnChoice(true)">Aceitar</button>
+      <button class="btn-reject" @onclick="() => OnChoice(false)">Recusar</button>
+      <a href="@PolicyUrl" target="_blank">Politica de Privacidade</a>
+    </div>
+  </div>
+}
+@code {
+  [Parameter] public bool Visible { get; set; } = true;
+  [Parameter] public string PolicyVersion { get; set; } = "1.0";
+  [Parameter] public string Message { get; set; } = "Usamos cookies e dados pessoais conforme a LGPD (Lei 13.709/2018). Ao continuar, voce concorda com nossa politica de privacidade.";
+  [Parameter] public string PolicyUrl { get; set; } = "/privacy";
+  [Parameter] public EventCallback<bool> OnConsentChanged { get; set; }
+  async Task OnChoice(bool accepted) { Visible = false; await OnConsentChanged.InvokeAsync(accepted); }
+}

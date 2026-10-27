@@ -1,0 +1,39 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes" id="@Id" class="@RootClass" role="img" aria-label="@ResolvedAriaLabel">
+    @if (matrix is not null)
+    {
+        <div class="relative">
+            <svg class="block h-auto w-full"
+                 viewBox="@ViewBox"
+                 xmlns="http://www.w3.org/2000/svg"
+                 shape-rendering="crispEdges">
+                <rect width="@SvgSize" height="@SvgSize" fill="@BackgroundColor" />
+                @foreach (var module in DarkModules)
+                {
+                    <rect x="@module.X" y="@module.Y" width="@SafeModuleSize" height="@SafeModuleSize" fill="@ForegroundColor" />
+                }
+            </svg>
+            @if (CenterContent is not null)
+            {
+                <div class="@CenterOverlayClass" aria-hidden="true">
+                    @CenterContent
+                </div>
+            }
+        </div>
+        @if (ShowText)
+        {
+            <div class="mt-2 truncate text-center text-xs font-medium text-text-secondary">@Value</div>
+        }
+        @if (ShowDownload)
+        {
+            <a class="@DownloadClass" href="@DownloadHref" download="@ResolvedDownloadFileName">@DownloadText</a>
+        }
+    }
+    else
+    {
+        <div class="rounded-lg border border-dashed border-border-light bg-surface-50 px-4 py-6 text-center text-sm text-text-secondary">
+            @EmptyText
+        </div>
+    }
+</div>

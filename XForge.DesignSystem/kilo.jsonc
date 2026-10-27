@@ -1,0 +1,40 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "instructions": [
+    "AGENTS.md",
+    ".kilo/rules/*.md"
+  ],
+  "agent": {
+    "code": {
+      "description": "Modo padrao de desenvolvimento"
+    },
+    "plan": {
+      "description": "Planejamento e arquitetura"
+    },
+    "debug": {
+      "description": "Debug e troubleshooting"
+    },
+    "ask": {
+      "description": "Perguntas rapidas"
+    },
+    "explore": {
+      "description": "Exploracao de codigo"
+    },
+    "docs-writer": {
+      "description": "Especialista em documentacao tecnica",
+      "temperature": 0.2,
+      "permission": {
+        "edit": {
+          "*.md": "allow",
+          "*": "deny"
+        },
+        "bash": "deny"
+      }
+    }
+  },
+  "skills": {
+    "paths": [
+      ".kilo/skills"
+    ]
+  }
+}

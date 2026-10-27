@@ -1,0 +1,447 @@
+@page "/ai/prompt-box"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiPromptBox" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("Templates e tokens", "Templates and tokens")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Editor avancado de prompts AI com templates, estimativa de tokens, limite de caracteres e envio por teclado.",
+                                   "Advanced AI prompt editor with templates, token estimation, character limit and keyboard submission.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Superficie de entrada de prompts para automacoes AI, com suporte a templates reutilizaveis, contagem em tempo real de tokens e caracteres, e envio por Enter.",
+                                   "Prompt input surface for AI automations, with reusable template support, real-time token and character counting, and Enter submission.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Blazor Server e Blazor WebAssembly", @<div>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                    <XFTable Striped="true" Hoverable="true" Compact="true">
+                        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                        <XFTableBody>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@L.Text("Limitado", "Limited")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico. Sem eventos.", "Renders as static HTML. No events.")</XFTableCell></XFTableRow>
+                        </XFTableBody>
+                    </XFTable>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+                </XFStack>
+            </div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Basico", "1. Basic"), L.Text("Prompt basico com placeholder e contadores.", "Basic prompt with placeholder and counters."), ExBasic(), Code1)
+            @Example(L.Text("2. Com templates", "2. With templates"), L.Text("Templates reutilizaveis com categorias.", "Reusable templates with categories."), ExWithTemplates(), Code2)
+            @Example(L.Text("3. Com limite de tokens", "3. Token limit"), L.Text("Limite de tokens com indicador de excesso.", "Token limit with exceed indicator."), ExTokenLimit(), Code3)
+            @Example(L.Text("4. Somente leitura", "4. Read-only"), L.Text("Modo somente leitura para exibicao.", "Read-only mode for display."), ExReadOnly(), Code4)
+            @Example(L.Text("5. Sem contadores", "5. No counters"), L.Text("Ocultar contadores de tokens e caracteres.", "Hide token and character counters."), ExNoCounters(), Code5)
+            @Example(L.Text("6. Envio controlado", "6. Controlled send"), L.Text("Envio controlado com callback OnSend.", "Controlled submission with OnSend callback."), ExControlledSend(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+
+    <XForgeDocsPageStandard ComponentName="PromptBoxDocs" />
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => L.Text("AI Commercial", "AI Commercial");
+    private string PageTitleText => L.Text("XFAiPromptBox", "XFAiPromptBox");
+    private string PageStatusText => L.Text("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiPromptBox Placeholder="Escreva uma instrucao para automatizar uma rotina fiscal..."
+                       MaxTokens="120"
+                       Rows="5"
+                       Templates="Templates" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("Editor de prompts", "Prompt editor"), L.Text("Textarea avancado com templates e tokens.", "Advanced textarea with templates and tokens."), "pen-to-square"),
+        new(L.Text("Templates reutilizaveis", "Reusable templates"), L.Text("Dropdown com categorias e selecao por teclado.", "Dropdown with categories and keyboard selection."), "rectangle-list"),
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiPromptBox"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Prompting"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Prompting"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("aria-label, aria-describedby, aria-haspopup, aria-expanded.", "aria-label, aria-describedby, aria-haspopup, aria-expanded.")),
+        new("Theme support", L.Text("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Editor de prompts AI", "AI prompt editor"), L.Text("Textarea para entrada de prompts com funcionalidades avancadas.", "Textarea for prompt input with advanced features."), "pen-to-square"),
+        new(L.Text("Templates", "Templates"), L.Text("Dropdown com templates reutilizaveis por categoria.", "Dropdown with reusable templates by category."), "rectangle-list"),
+        new(L.Text("Contadores", "Counters"), L.Text("Estimativa de tokens e contagem de caracteres.", "Token estimation and character counting."), "hashtag")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Automacoes AI", "AI automations"), L.Text("Entrada de prompts para workflows automatizados.", "Prompt input for automated workflows."), "robot"),
+        new(L.Text("Assistentes", "Assistants"), L.Text("Interface de entrada para assistentes virtuais.", "Input interface for virtual assistants."), "headset"),
+        new(L.Text("Templates fiscais", "Fiscal templates"), L.Text("Prompts reutilizaveis para analise fiscal.", "Reusable prompts for fiscal analysis."), "file-invoice")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Textarea simples sem feedback de tokens ou templates.", "Simple textarea without token feedback or templates."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Editor com contadores, templates e validacao.", "Editor with counters, templates and validation."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("aria-label, aria-describedby, aria-haspopup para leitores de tela.", "aria-label, aria-describedby, aria-haspopup for screen readers."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Entrada de prompts", "Prompt input"), L.Text("Qualquer interface que receba prompts de usuarios.", "Any interface that receives user prompts."), "pen-to-square"),
+        new(L.Text("Templates reutilizaveis", "Reusable templates"), L.Text("Prompos padronizados que precisam ser reutilizados.", "Standardized prompts that need reuse."), "rectangle-list")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Inputs simples", "Simple inputs"), L.Text("Use XFTextField para entradas de texto curtas.", "Use XFTextField for short text inputs."), "text-width"),
+        new(L.Text("Chat completo", "Full chat"), L.Text("Use XFAiChat para interfaces de chat completas.", "Use XFAiChat for full chat interfaces."), "comments")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Textarea", L.Text("Area de texto principal com placeholder.", "Main text area with placeholder."), "pen-to-square"),
+        new("Templates Button", L.Text("Botao para abrir dropdown de templates.", "Button to open template dropdown."), "rectangle-list"),
+        new("Token Counter", L.Text("Indicador de tokens estimados no footer.", "Estimated token indicator in footer."), "hashtag"),
+        new("Char Counter", L.Text("Contagem de caracteres no footer.", "Character count in footer."), "text-width"),
+        new("Send Button", L.Text("Botao de envio do prompt.", "Prompt submit button."), "paper-plane")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Feedback em tempo real", "Real-time feedback"), L.Text("Contadores atualizados a cada tecla.", "Counters updated on every keystroke."), "bolt"),
+        new(L.Text("Templates economicos", "Efficient templates"), L.Text("Selecao rapida de prompts padronizados.", "Quick selection of standardized prompts."), "rectangle-list"),
+        new(L.Text("Simplicidade", "Simplicity"), L.Text("Interface limpa e focada na tarefa.", "Clean interface focused on the task."), "minimize")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiPromptBox Placeholder="Escreva seu prompt aqui..." Rows="4" />
+    </XFStack>;
+
+    private RenderFragment ExWithTemplates() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiPromptBox Placeholder="Selecione um template ou escreva seu prompt..."
+                       Rows="5"
+                       Templates="Templates" />
+    </XFStack>;
+
+    private RenderFragment ExTokenLimit() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiPromptBox Placeholder="Prompt com limite de tokens..."
+                       MaxTokens="80"
+                       Rows="4" />
+    </XFStack>;
+
+    private RenderFragment ExReadOnly() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiPromptBox Value="Analise os documentos fiscais e liste riscos, evidencias e proximas acoes."
+                       ReadOnly="true"
+                       Rows="3" />
+    </XFStack>;
+
+    private RenderFragment ExNoCounters() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiPromptBox Placeholder="Prompt sem contadores visiveis..."
+                       ShowTokenEstimate="false"
+                       ShowCharCount="false"
+                       Rows="4" />
+    </XFStack>;
+
+    private RenderFragment ExControlledSend() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiPromptBox Placeholder="Envie com Enter ou clique no botao..."
+                       ShowSendButton="true"
+                       Rows="4" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFAiPromptBox Placeholder=""Escreva seu prompt aqui..."" Rows=""4"" />";
+    private const string Code2 = @"<XFAiPromptBox Placeholder=""Selecione um template ou escreva seu prompt...""
+                       Rows=""5""
+                       Templates=""Templates"" />";
+    private const string Code3 = @"<XFAiPromptBox Placeholder=""Prompt com limite de tokens...""
+                       MaxTokens=""80""
+                       Rows=""4"" />";
+    private const string Code4 = @"<XFAiPromptBox Value=""Analise os documentos fiscais e liste riscos, evidencias e proximas acoes.""
+                       ReadOnly=""true""
+                       Rows=""3"" />";
+    private const string Code5 = @"<XFAiPromptBox Placeholder=""Prompt sem contadores visiveis...""
+                       ShowTokenEstimate=""false""
+                       ShowCharCount=""false""
+                       Rows=""4"" />";
+    private const string Code6 = @"<XFAiPromptBox Placeholder=""Envie com Enter ou clique no botao...""
+                       ShowSendButton=""true""
+                       Rows=""4"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "string", "\"\"", L.Text("Texto do prompt (two-way bindable).", "Prompt text (two-way bindable).")),
+        new("Placeholder", "string", "\"Escreva...\"", L.Text("Texto placeholder do textarea.", "Textarea placeholder text.")),
+        new("Templates", "IReadOnlyList<XFAiPromptTemplate>", "[]", L.Text("Lista de templates disponiveis.", "List of available templates.")),
+        new("ShowTemplates", "bool", "true", L.Text("Exibe botao de templates.", "Shows template button.")),
+        new("ShowTokenEstimate", "bool", "true", L.Text("Exibe estimativa de tokens.", "Shows token estimation.")),
+        new("ShowCharCount", "bool", "true", L.Text("Exibe contagem de caracteres.", "Shows character count.")),
+        new("MaxTokens", "int?", "null", L.Text("Limite maximo de tokens.", "Maximum token limit.")),
+        new("MaxLength", "int?", "null", L.Text("Limite maximo de caracteres.", "Maximum character limit.")),
+        new("Rows", "int", "4", L.Text("Numero de linhas do textarea.", "Number of textarea rows.")),
+        new("TemplatesLabel", "string", "\"Templates\"", L.Text("Label do botao de templates.", "Template button label.")),
+        new("TokenEstimateLabel", "string", "\"Tokens estimados\"", L.Text("Label do contador de tokens.", "Token counter label.")),
+        new("SendLabel", "string", "\"Enviar\"", L.Text("Label do botao de envio.", "Send button label.")),
+        new("ReadOnly", "bool", "false", L.Text("Modo somente leitura.", "Read-only mode.")),
+        new("ShowSendButton", "bool", "true", L.Text("Exibe botao de envio inline.", "Shows inline send button."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnSend", L.Text("Disparado quando o usuario envia o prompt (Enter ou botao).", "Fired when user submits prompt (Enter or button).")),
+        new("OnTemplateSelect", L.Text("Disparado quando um template e selecionado.", "Fired when a template is selected.")),
+        new("ValueChanged", L.Text("Disparado quando o texto do prompt muda.", "Fired when prompt text changes."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("aria-label", "aria-label"), L.Text("Label descritivo do textarea via Placeholder.", "Descriptive textarea label via Placeholder."), "tag"),
+        new(L.Text("aria-describedby", "aria-describedby"), L.Text("Referencia ao footer com contadores.", "Reference to footer with counters."), "font"),
+        new(L.Text("aria-haspopup", "aria-haspopup"), L.Text("Dropdown de templates com aria-expanded.", "Template dropdown with aria-expanded."), "rectangle-list"),
+        new(L.Text("Focus management", "Focus management"), L.Text("Tab entre textarea, templates e envio.", "Tab between textarea, templates and send."), "arrows-left-right")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Enter", L.Text("Envia o prompt (quando nao esta no dropdown).", "Submits the prompt (when not in dropdown).")),
+        new("Shift + Enter", L.Text("Nova linha no textarea.", "New line in textarea.")),
+        new("Arrow Down / Up", L.Text("Navega entre templates no dropdown.", "Navigate between templates in dropdown.")),
+        new("Escape", L.Text("Fecha o dropdown de templates.", "Closes the template dropdown.")),
+        new("Tab", L.Text("Move foco entre elementos do componente.", "Moves focus between component elements."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Largura total", "Full width"), L.Text("Componente ocupa 100% do container.", "Component occupies 100% of container."), "maximize"),
+        new(L.Text("Textarea responsivo", "Responsive textarea"), L.Text("Resize automatico com rows configuravel.", "Automatic resize with configurable rows."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Render leve", "Light render"), L.Text("Tags div e textarea nativas sem wrappers.", "Native div and textarea tags without wrappers."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Automacao fiscal", "Fiscal automation"), L.Text("Prompts para revisao de documentos fiscais.", "Prompts for fiscal document review."), "file-invoice"),
+        new(L.Text("Assistente virtual", "Virtual assistant"), L.Text("Entrada de comandos para assistente AI.", "Input commands for AI assistant."), "headset"),
+        new(L.Text("Templates padronizados", "Standardized templates"), L.Text("Prompos reutilizaveis por equipe.", "Reusable prompts by team."), "rectangle-list")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("PromptBox + Templates", "PromptBox + Templates"), L.Text("Templates reutilizaveis para eficiencia.", "Reusable templates for efficiency."), "rectangle-list"),
+        new(L.Text("PromptBox + Token Limit", "PromptBox + Token Limit"), L.Text("Controle de tokens para custo AI.", "Token control for AI cost."), "hashtag"),
+        new(L.Text("PromptBox + Card", "PromptBox + Card"), L.Text("Dentro de XFCard para contexto de cabecalho.", "Inside XFCard for header context."), "square")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("Placeholder descritivo", "Descriptive placeholder"), L.Text("Sempre descreva o tipo de prompt esperado.", "Always describe the expected prompt type."), "align-left"),
+        new(L.Text("MaxTokens quando necessario", "MaxTokens when needed"), L.Text("Defina limites para prompts de custo controlado.", "Set limits for cost-controlled prompts."), "hashtag"),
+        new(L.Text("Templates padronizados", "Standardized templates"), L.Text("Use categorias para organizar templates.", "Use categories to organize templates."), "rectangle-list"),
+        new(L.Text("ReadOnly para exibicao", "ReadOnly for display"), L.Text("Use para exibir prompts enviados.", "Use to display submitted prompts."), "eye")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Sem placeholder", "No placeholder"), L.Text("Textarea sem orientacao e confusa.", "Textarea without guidance is confusing."), "xmark"),
+        new(L.Text("Sem limite de tokens", "No token limit"), L.Text("Prompts sem limite podem gerar custos altos.", "Unlimited prompts can generate high costs."), "ban"),
+        new(L.Text("Templates sem categorias", "Templates without categories"), L.Text("Lista longa sem organizacao e dificil de navegar.", "Long unorganized list is hard to navigate."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", L.Text("flex flex-col rounded-lg border bg-bg-surface shadow-sm.", "flex flex-col rounded-lg border bg-bg-surface shadow-sm.")),
+        new("textarea", L.Text("w-full resize-none bg-transparent px-3 py-2.5 text-sm.", "w-full resize-none bg-transparent px-3 py-2.5 text-sm.")),
+        new("footer", L.Text("flex items-center justify-between gap-3 border-t border-border-light px-3 py-2.", "flex items-center justify-between gap-3 border-t border-border-light px-3 py-2."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", L.Text("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Testes de render, props, templates, contadores, envio.", "Render, props, templates, counters, send tests.")),
+        new("Accessibility", L.Text("aria-label, aria-describedby, aria-haspopup, aria-expanded.", "aria-label, aria-describedby, aria-haspopup, aria-expanded."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("MaxTokens", L.Text("Estimativa baseada em 4 chars/token. Precisao varia.", "Estimation based on 4 chars/token. Accuracy varies.")),
+        new("Static SSR", L.Text("Eventos de teclado nao funcionam em SSR estatico.", "Keyboard events do not work in static SSR."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiCommandPalette", L.Text("Paleta de comandos AI.", "AI command palette."), "magnifying-glass"),
+        new("XFTextField", L.Text("Campo de texto para entradas curtas.", "Text field for short inputs."), "text-width"),
+        new("XFAiChat", L.Text("Interface de chat completa.", "Full chat interface."), "comments")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Como calcular tokens?", "How to calculate tokens?"), L.Text("O componente usa 4 caracteres por token como estimativa.", "The component uses 4 characters per token as estimation.")),
+        new(L.Text("Templates suportam variaveis?", "Templates support variables?"), L.Text("Sim. Use {{variavel}} no conteudo do template.", "Yes. Use {{variable}} in template content.")),
+        new(L.Text("Funciona sem JS?", "Works without JS?"), L.Text("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", L.Text("Pagina refeita no padrao enterprise com 6 exemplos renderizados.", "Page rewritten in enterprise standard with 6 rendered examples."))
+    ];
+
+    // === TEMPLATES DATA ===
+    private static readonly IReadOnlyList<XFAiPromptTemplate> Templates =
+    [
+        new()
+        {
+            Name = "ERP fiscal",
+            Description = "Cria um prompt para revisar inconsistencias fiscais.",
+            Content = "Analise os documentos fiscais e liste riscos, evidencias e proximas acoes.",
+            Category = "Fiscal"
+        },
+        new()
+        {
+            Name = "Atendimento",
+            Description = "Cria uma resposta assistida para suporte.",
+            Content = "Responda ao cliente com tom objetivo, citando causa, solucao e prazo.",
+            Category = "Atendimento"
+        },
+        new()
+        {
+            Name = "Relatorio gerencial",
+            Description = "Gera um prompt para relatorio executivo.",
+            Content = "Crie um relatorio gerencial com metricas, comparativos e recomendacoes.",
+            Category = "Relatorios"
+        }
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

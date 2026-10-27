@@ -1,0 +1,58 @@
+/* ============================================================================
+ * XForge DesignSystem — Global SVG icon styles
+ * Ensures SVGs from XFSvgIcons.Markup() fill their containers properly.
+ * ============================================================================ */
+svg[display="block"] {
+  width: 100%;
+  height: 100%;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+ * XForge DesignSystem — Global scrollbar styles
+ * Thin, discreet scrollbars that adapt to light/dark themes.
+ * ============================================================================ */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
+}
+
+/* Firefox dark */
+[data-theme="dark"] * {
+  scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+}
+
+/* Webkit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.55);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Webkit dark */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
+}

@@ -1,0 +1,39 @@
+@inherits XForgeComponentBase
+
+<div id="@Id"
+     class="@RootClass"
+     style="@Style"
+     role="@(Selectable ? "listbox" : "list")"
+     aria-label="@AriaLabel"
+     aria-orientation="horizontal"
+     @attributes="AdditionalAttributes">
+    @if (Title is not null)
+    {
+        <div class="mb-1 text-xs font-semibold uppercase text-text-secondary">@Title</div>
+    }
+    <div class="@LayoutClass">
+        @if (ChildContent is not null)
+        {
+            @ChildContent
+        }
+        else if (Items is not null)
+        {
+            @foreach (var item in Items)
+            {
+                var isSelected = SelectedItems?.Contains(item) == true;
+                <span class="inline-flex"
+                      role="option"
+                      aria-selected="@isSelected.ToString().ToLowerInvariant()">
+                    @if (ItemTemplate is not null)
+                    {
+                        @ItemTemplate(item)
+                    }
+                    else
+                    {
+                        @item
+                    }
+                </span>
+            }
+        }
+    </div>
+</div>

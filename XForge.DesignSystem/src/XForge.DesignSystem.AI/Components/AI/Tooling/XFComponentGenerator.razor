@@ -1,0 +1,142 @@
+@inherits XForgeComponentBase
+@implements IDisposable
+
+<div class="@RootClass"
+     role="region"
+     aria-label="@AriaLabel"
+     @attributes="AdditionalAttributes">
+
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between border-b border-border-light px-4 py-2.5">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-text-primary">@Title</span>
+                @if (_outputs.Any())
+                {
+                    <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                        @_outputs.Count arquivos
+                    </span>
+                }
+            </div>
+            <div class="flex items-center gap-2 text-xs text-text-muted">
+                <span>XForge Component Generator</span>
+            </div>
+        </div>
+    }
+
+    <div class="grid grid-cols-1 gap-0 lg:grid-cols-2">
+        <div class="border-r border-border-light p-4">
+            <div class="grid gap-3">
+                <div>
+                    <label class="mb-1 block text-xs font-semibold text-text-secondary">Nome do Componente</label>
+                    <input type="text"
+                           value="@_config.ComponentName"
+                           @onchange="(e) => UpdateComponentName(e.Value?.ToString())"
+                           class="w-full rounded border border-border-light bg-bg-surface px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted"
+                           placeholder="XFMyComponent" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold text-text-secondary">Namespace</label>
+                    <input type="text"
+                           value="@_config.Namespace"
+                           @onchange="(e) => UpdateNamespace(e.Value?.ToString())"
+                           class="w-full rounded border border-border-light bg-bg-surface px-3 py-1.5 text-sm text-text-primary font-mono" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold text-text-secondary">Tipo</label>
+                    <select class="w-full rounded border border-border-light bg-bg-surface px-3 py-1.5 text-sm text-text-secondary"
+                            @onchange="(e) => UpdateOutputType(e.Value?.ToString())">
+                        <option value="Component">Component</option>
+                        <option value="Service">Service</option>
+                        <option value="Page">Page</option>
+                        <option value="Layout">Layout</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold text-text-secondary">Base Class</label>
+                    <select class="w-full rounded border border-border-light bg-bg-surface px-3 py-1.5 text-sm text-text-secondary"
+                            @onchange="(e) => UpdateBaseClass(e.Value?.ToString())">
+                        <option value="">Nenhuma</option>
+                        <option value="XForgeComponentBase">XForgeComponentBase</option>
+                        <option value="XFInputComponentBase">XFInputComponentBase</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold text-text-secondary">Parametros (um por linha)</label>
+                    <textarea class="w-full rounded border border-border-light bg-bg-surface px-3 py-1.5 text-sm text-text-primary font-mono"
+                              rows="4"
+                              placeholder="string Title&#10;bool Disabled&#10;EventCallback OnClick"
+                              @onchange="(e) => ParseParameters(e.Value?.ToString() ?? string.Empty)">@string.Join("\n", _config.Parameters)</textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center gap-2 text-xs text-text-secondary">
+                        <input type="checkbox" checked="@_config.IncludeTests" @onchange="(e) => ToggleBool(nameof(_config.IncludeTests), e.Value)" />
+                        Incluir testes
+                    </label>
+                    <label class="flex items-center gap-2 text-xs text-text-secondary">
+                        <input type="checkbox" checked="@_config.IncludeDocs" @onchange="(e) => ToggleBool(nameof(_config.IncludeDocs), e.Value)" />
+                        Incluir docs
+                    </label>
+                    <label class="flex items-center gap-2 text-xs text-text-secondary">
+                        <input type="checkbox" checked="@_config.TailwindFirst" @onchange="(e) => ToggleBool(nameof(_config.TailwindFirst), e.Value)" />
+                        Tailwind-first
+                    </label>
+                    <label class="flex items-center gap-2 text-xs text-text-secondary">
+                        <input type="checkbox" checked="@_config.SupportDarkLight" @onchange="(e) => ToggleBool(nameof(_config.SupportDarkLight), e.Value)" />
+                        Dark/Light
+                    </label>
+                    <label class="flex items-center gap-2 text-xs text-text-secondary">
+                        <input type="checkbox" checked="@_config.ImplementDisposable" @onchange="(e) => ToggleBool(nameof(_config.ImplementDisposable), e.Value)" />
+                        IDisposable
+                    </label>
+                    <label class="flex items-center gap-2 text-xs text-text-secondary">
+                        <input type="checkbox" checked="@_config.ImplementAsyncDisposable" @onchange="(e) => ToggleBool(nameof(_config.ImplementAsyncDisposable), e.Value)" />
+                        IAsyncDisposable
+                    </label>
+                </div>
+                <button class="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
+                        @onclick="Generate"
+                        disabled="@string.IsNullOrWhiteSpace(_config.ComponentName)">
+                    Gerar Componente
+                </button>
+            </div>
+        </div>
+
+        <div class="p-4">
+            @if (_outputs.Any())
+            {
+                <div class="grid gap-3">
+                    @foreach (var output in _outputs)
+                    {
+                        <div class="rounded-lg border border-border-light">
+                            <div class="flex items-center justify-between border-b border-border-light px-3 py-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="rounded px-1.5 py-0.5 text-xs font-medium @GetOutputTypeBadgeClass(output.OutputType)">
+                                        @GetOutputTypeLabel(output.OutputType)
+                                    </span>
+                                    <span class="font-mono text-xs text-text-primary">@output.FileName</span>
+                                </div>
+                                <button class="rounded p-1 text-text-muted hover:bg-surface-100 hover:text-text-primary"
+                                        @onclick="() => CopyOutput(output)"
+                                        title="Copiar"
+                                        aria-label="Copiar @output.FileName">
+                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                </button>
+                            </div>
+                            <pre class="max-h-64 overflow-auto p-3 text-xs"><code class="text-text-primary">@output.Content</code></pre>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="flex h-full items-center justify-center py-16 text-text-muted">
+                    <div class="text-center">
+                        <svg class="mx-auto mb-2 h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                        <span class="text-sm">Configure e clique "Gerar Componente"</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

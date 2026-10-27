@@ -1,0 +1,447 @@
+@page "/ai/configuration"
+@using XForge.DesignSystem.Services.AI
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="@L.Text("Configuracao de Providers de IA","AI Provider Configuration")"
+                 Status="@L.Text("Guia completo","Complete guide")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true" Class="mx-auto max-w-6xl px-6 py-10">
+
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="IAiProvider" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="8 Providers" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Streaming e Tools","Streaming & Tools")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Interface unificada para 8 provedores de IA com streaming, tools e retry automatico.",
+                               "Unified interface for 8 AI providers with streaming, tools and automatic retry.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("O XForge.DesignSystem oferece suporte a 8 provedores de IA diferentes, todos implementando a interface IAiProvider. Cada provedor tem suas vantagens e casos de uso ideais.",
+                               "XForge.DesignSystem offers support for 8 different AI providers, all implementing the IAiProvider interface. Each provider has its advantages and ideal use cases.")
+                        </XFTypography>
+                    </XFStack>
+                    <XFGrid Cols="1" Md="3" Gap="4">
+                        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+                            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">🔌 @T("Interface unificada","Unified Interface")</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Um contrato IAiProvider para todos os provedores.","One IAiProvider contract for all providers.")</XFTypography>
+                        </ChildContent></XFCard>
+                        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+                            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">🔄 @T("Retry automatico","Auto Retry")</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Exponential backoff com 3 tentativas para erros transientes.","Exponential backoff with 3 retries for transient errors.")</XFTypography>
+                        </ChildContent></XFCard>
+                        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+                            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">🛡️ @T("Health checks","Health Checks")</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Monitoramento continuo da saude de cada provider.","Continuous health monitoring for each provider.")</XFTypography>
+                        </ChildContent></XFCard>
+                    </XFGrid>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== SECTION 1: Metadata ===== -->
+        @Section(T("Metadados","Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo","Field"), T("Valor","Value"))</div>)
+
+        <!-- ===== SECTION 2: Overview ===== -->
+        @Section(T("Visao geral dos Providers","Provider Overview"), @<div>
+            <XFGrid Cols="1" Md="2" Gap="4">
+                @foreach (var item in OverviewItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 3: Purpose ===== -->
+        @Section(T("Proposito","Purpose"), @<div>
+            <XFGrid Cols="1" Md="3" Gap="4">
+                @foreach (var item in PurposeItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 4: Problem Solved ===== -->
+        @Section(T("Problema resolvido","Problem Solved"), @<div>
+            <XFGrid Cols="1" Md="3" Gap="4">
+                @foreach (var item in ProblemItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 5: When To Use ===== -->
+        @Section(T("Quando usar","When to Use"), @<div>
+            <XFGrid Cols="1" Md="2" Gap="4">
+                @foreach (var item in UseItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 6: When Not To Use ===== -->
+        @Section(T("Quando nao usar","When Not to Use"), @<div>
+            <XFGrid Cols="1" Md="2" Gap="4">
+                @foreach (var item in AvoidItems) { @WarningTile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 7: Architecture ===== -->
+        @Section(T("Arquitetura do IAiProvider","IAiProvider Architecture"), @<div>
+            <XFGrid Cols="1" Md="3" Gap="4">
+                @foreach (var item in ArchitectureItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 8: Design Principles ===== -->
+        @Section(T("Principios de Design","Design Principles"), @<div>
+            <XFGrid Cols="1" Md="3" Gap="4">
+                @foreach (var item in DesignPrincipleItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 9: Comparison Table ===== -->
+        @Section(T("Tabela comparativa","Comparison Table"), @<div>
+            <XFTable Striped="true" Hoverable="true" Compact="true" Class="text-sm">
+                <XFTableHeader><XFTableRow>
+                    <XFTableCell Header="true">Provider</XFTableCell>
+                    <XFTableCell Header="true">@L.Text("Base URL","Base URL")</XFTableCell>
+                    <XFTableCell Header="true">Auth</XFTableCell>
+                    <XFTableCell Header="true">@L.Text("Streaming","Streaming")</XFTableCell>
+                    <XFTableCell Header="true">@L.Text("Embeddings","Embeddings")</XFTableCell>
+                    <XFTableCell Header="true">@L.Text("Tools","Tools")</XFTableCell>
+                </XFTableRow></XFTableHeader>
+                <XFTableBody>
+                    <XFTableRow><XFTableCell><XFCode Text="OpenAiProvider" /></XFTableCell><XFTableCell><XFCode Text="api.openai.com/v1" /></XFTableCell><XFTableCell>Bearer</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>✅</XFTableCell></XFTableRow>
+                    <XFTableRow><XFTableCell><XFCode Text="OllamaProvider" /></XFTableCell><XFTableCell><XFCode Text="localhost:11434" /></XFTableCell><XFTableCell>@L.Text("Nenhuma","None")</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>✅</XFTableCell></XFTableRow>
+                    <XFTableRow><XFTableCell><XFCode Text="GeminiProvider" /></XFTableCell><XFTableCell><XFCode Text="generativelanguage.googleapis.com" /></XFTableCell><XFTableCell>Query key</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>✅</XFTableCell></XFTableRow>
+                    <XFTableRow><XFTableCell><XFCode Text="AzureOpenAiProvider" /></XFTableCell><XFTableCell><XFCode Text="{resource}.openai.azure.com" /></XFTableCell><XFTableCell>api-key</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>❌</XFTableCell><XFTableCell>✅</XFTableCell></XFTableRow>
+                    <XFTableRow><XFTableCell><XFCode Text="AnthropicProvider" /></XFTableCell><XFTableCell><XFCode Text="api.anthropic.com/v1" /></XFTableCell><XFTableCell>x-api-key</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>❌</XFTableCell><XFTableCell>✅</XFTableCell></XFTableRow>
+                    <XFTableRow><XFTableCell><XFCode Text="LocalLlmProvider" /></XFTableCell><XFTableCell><XFCode Text="custom" /></XFTableCell><XFTableCell>@L.Text("Optional","Optional")</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>❌</XFTableCell><XFTableCell>❌</XFTableCell></XFTableRow>
+                    <XFTableRow><XFTableCell><XFCode Text="OpenRouterProvider" /></XFTableCell><XFTableCell><XFCode Text="openrouter.ai/api/v1" /></XFTableCell><XFTableCell>Bearer</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>✅</XFTableCell></XFTableRow>
+                    <XFTableRow><XFTableCell><XFCode Text="GenericAiProvider" /></XFTableCell><XFTableCell><XFCode Text="custom" /></XFTableCell><XFTableCell>@L.Text("Config","Config")</XFTableCell><XFTableCell>✅</XFTableCell><XFTableCell>@L.Text("Custom","Custom")</XFTableCell><XFTableCell>@L.Text("Custom","Custom")</XFTableCell></XFTableRow>
+                </XFTableBody>
+            </XFTable>
+        </div>)
+
+        <!-- ===== SECTION 10: Decision Guide ===== -->
+        @Section(T("Guia de decisao","Decision Guide"), @<div>
+            <XFGrid Cols="1" Md="2" Gap="4">
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">🏠 @L.Text("Desenvolvimento local","Local Development")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Use OllamaProvider com llama3:8b. Sem custo, sem latencia, funciona offline.","Use OllamaProvider with llama3:8b. No cost, no latency, works offline.")</XFTypography>
+                </ChildContent></XFCard>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">🏢 @L.Text("Producao enterprise","Enterprise Production")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Use AzureOpenAiProvider com content filtering e SLA garantido.","Use AzureOpenAiProvider with content filtering and guaranteed SLA.")</XFTypography>
+                </ChildContent></XFCard>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">🌐 @L.Text("Multi-modelo","Multi-model")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Use OpenRouterProvider para acessar 300+ modelos com um unico endpoint.","Use OpenRouterProvider to access 300+ models with a single endpoint.")</XFTypography>
+                </ChildContent></XFCard>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">🔒 @L.Text("Privacidade total","Total Privacy")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Use OllamaProvider ou LocalLlmProvider com modelos no seu infra.","Use OllamaProvider or LocalLlmProvider with models on your infra.")</XFTypography>
+                </ChildContent></XFCard>
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 11: OpenAI ===== -->
+        @Section("OpenAiProvider", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Provider oficial da OpenAI. Suporta GPT-4o, GPT-4o-mini, o1-mini e embeddings com text-embedding-3-small.","Official OpenAI provider. Supports GPT-4o, GPT-4o-mini, o1-mini and embeddings with text-embedding-3-small.")</XFTypography>
+                <XFCode Text="@OpenAiCode" Language="csharp" Title="OpenAI Setup" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </XFStack>
+        </div>)
+
+        <!-- ===== SECTION 12: Ollama ===== -->
+        @Section("OllamaProvider", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Provider local sem custo. Executa modelos como llama3:8b, mistral, codellama via Ollama.","Local provider with no cost. Runs models like llama3:8b, mistral, codellama via Ollama.")</XFTypography>
+                <XFCode Text="@OllamaCode" Language="csharp" Title="Ollama Setup" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </XFStack>
+        </div>)
+
+        <!-- ===== SECTION 13: Gemini ===== -->
+        @Section("GeminiProvider", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Provider Google Gemini. Suporta Gemini 2.0 Flash, Gemini 1.5 Pro e embeddings via API key no query string.","Google Gemini provider. Supports Gemini 2.0 Flash, Gemini 1.5 Pro and embeddings via API key in query string.")</XFTypography>
+                <XFCode Text="@GeminiCode" Language="csharp" Title="Gemini Setup" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </XFStack>
+        </div>)
+
+        <!-- ===== SECTION 14: Azure OpenAI ===== -->
+        @Section("AzureOpenAiProvider", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Provider Azure OpenAI com content filtering, SLA garantido e compliance enterprise. Requer resource name e deployment name.","Azure OpenAI provider with content filtering, guaranteed SLA and enterprise compliance. Requires resource name and deployment name.")</XFTypography>
+                <XFCode Text="@AzureOpenAiCode" Language="csharp" Title="Azure OpenAI Setup" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </XFStack>
+        </div>)
+
+        <!-- ===== SECTION 15: Anthropic ===== -->
+        @Section("AnthropicProvider", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Provider Anthropic com Claude 3.5 Sonnet, Claude 3 Opus e Claude 3 Haiku. Autenticacao via x-api-key header.","Anthropic provider with Claude 3.5 Sonnet, Claude 3 Opus and Claude 3 Haiku. Authentication via x-api-key header.")</XFTypography>
+                <XFCode Text="@AnthropicCode" Language="csharp" Title="Anthropic Setup" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </XFStack>
+        </div>)
+
+        <!-- ===== SECTION 16: Other Providers ===== -->
+        @Section(T("Outros Providers","Other Providers"), @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow>
+                        <XFTableCell Header="true">Provider</XFTableCell>
+                        <XFTableCell Header="true">@T("Descricao","Description")</XFTableCell>
+                        <XFTableCell Header="true">@T("Uso ideal","Ideal Use")</XFTableCell>
+                    </XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="LocalLlmProvider" /></XFTableCell><XFTableCell>@T("Endpoint customizavel para LLMs locais via HTTP.","Customizable endpoint for local LLMs via HTTP.")</XFTableCell><XFTableCell>@T("Modelos proprios e edge deployment.","Proprietary models and edge deployment.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="OpenRouterProvider" /></XFTableCell><XFTableCell>@T("Meta-provider com 300+ modelos de multiplas empresas.","Meta-provider with 300+ models from multiple companies.")</XFTableCell><XFTableCell>@T("A/B testing e exploracao de modelos.","A/B testing and model exploration.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="GenericAiProvider" /></XFTableCell><XFTableCell>@T("Provider generico configuravel para APIs OpenAI-compatible.","Generic configurable provider for OpenAI-compatible APIs.")</XFTableCell><XFTableCell>@T("APIs customizadas e provedores emergentes.","Custom APIs and emerging providers.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFCode Text="@OtherProvidersCode" Language="csharp" Title="Other Providers Setup" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </XFStack>
+        </div>)
+
+        <!-- ===== SECTION 17: Multi-Provider ===== -->
+        @Section(T("Multi-provider","Multi-Provider"), @<div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Registre multiplos providers e selecione por componente:","Register multiple providers and select per component:")</XFTypography>
+            <div class="mt-3">
+                <XFCode Text="@MultiProviderCode" Language="csharp" Title="Program.cs" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div>)
+
+        <!-- ===== SECTION 18: Retry & Health Checks ===== -->
+        @Section(T("Retry e Health Checks","Retry & Health Checks"), @<div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Todos os providers implementam retry automatico com exponential backoff (3 tentativas: 1s, 2s, 4s) para erros transientes (429, 500, 502, 503, 504). O header Retry-After e respeitado quando presente. Health checks disponiveis via CheckHealthAsync():","All providers implement automatic retry with exponential backoff (3 attempts: 1s, 2s, 4s) for transient errors (429, 500, 502, 503, 504). Retry-After header is respected when present. Health checks available via CheckHealthAsync():")</XFTypography>
+            <div class="mt-3">
+                <XFCode Text="@HealthCheckCode" Language="csharp" Title="HealthCheckService.cs" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div>)
+
+        <!-- ===== SECTION 19: Security ===== -->
+        @Section(T("Seguranca e Autenticacao","Security & Authentication"), @<div>
+            <XFGrid Cols="1" Md="2" Gap="4">
+                @foreach (var item in SecurityItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 20: Streaming & Performance ===== -->
+        @Section(T("Streaming e Performance","Streaming & Performance"), @<div>
+            <XFGrid Cols="1" Md="2" Gap="4">
+                @foreach (var item in StreamingItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 21: Accessibility ===== -->
+        @Section(T("Acessibilidade","Accessibility"), @<div>
+            <XFGrid Cols="1" Md="2" Gap="4">
+                @foreach (var item in AccessibilityItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 22: Enterprise Scenarios ===== -->
+        @Section(T("Cenarios Enterprise","Enterprise Scenarios"), @<div>
+            <XFGrid Cols="1" Md="3" Gap="4">
+                @foreach (var item in ScenarioItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 23: Best Practices ===== -->
+        @Section(T("Boas Praticas","Best Practices"), @<div>
+            <XFGrid Cols="1" Md="2" Gap="4">
+                @foreach (var item in BestPracticeItems) { @Tile(item) }
+            </XFGrid>
+        </div>)
+
+        <!-- ===== SECTION 24: FAQ ===== -->
+        @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta","Question"), T("Resposta","Answer"))</div>)
+
+        <!-- ===== SECTION 25: Known Limitations ===== -->
+        @Section(T("Limitacoes Conhecidas","Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao","Limitation"), T("Status","Status"))</div>)
+
+        <!-- ===== SECTION 26: Changelog ===== -->
+        @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao","Version"), T("Mudanca","Change"))</div>)
+
+    <XForgeDocsPageStandard ComponentName="AiConfigurationOverviewDocs" />
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+
+    // === HELPERS ===
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment WarningTile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "IAiProvider / AiProviderBase"),
+        new("Namespace", "XForge.DesignSystem.Services.AI"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "AI / Providers"),
+        new("Status", T("Estavel","Stable")),
+        new("Providers", "8 (OpenAI, Ollama, Gemini, Azure, Anthropic, LocalLlm, OpenRouter, Generic)"),
+        new("Theme support", T("Light, dark e data-brand via tokens.","Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new("IAiProvider", T("Interface unificada para todos os provedores de IA.","Unified interface for all AI providers."), "plug"),
+        new("AiProviderBase", T("Classe abstrata com retry, health check e helpers comuns.","Abstract class with retry, health check and common helpers."), "cubes"),
+        new(T("8 Providers","8 Providers"), T("OpenAI, Ollama, Gemini, Azure, Anthropic, LocalLlm, OpenRouter, Generic.","OpenAI, Ollama, Gemini, Azure, Anthropic, LocalLlm, OpenRouter, Generic."), "server"),
+        new("Streaming", T("Suporte a streaming SSE em tempo real para todos os providers.","Real-time SSE streaming support for all providers."), "bolt"),
+        new("Tools / Function Calling", T("Chamada de funcoes externas via tool use em todos os providers.","External function calling via tool use in all providers."), "wrench"),
+        new("Embeddings", T("Geracao de embeddings para RAG e busca semantica.","Embedding generation for RAG and semantic search."), "vector-square")
+    ];
+
+    // === PURPOSE ===
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Chat / Completion","Chat / Completion"), T("Interacoes conversacionais com LLMs.","Conversational interactions with LLMs."), "comments"),
+        new(T("RAG","RAG"), T("Retrieval-Augmented Generation com embeddings.","Retrieval-Augmented Generation with embeddings."), "database"),
+        new(T("Agentes","Agents"), T("Tool calling para agentes autônomos.","Tool calling for autonomous agents."), "robot")
+    ];
+
+    // === PROBLEM SOLVED ===
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes","Before"), T("Cada provider tem API diferente e logica duplicada.","Each provider has different API and duplicated logic."), "xmark"),
+        new(T("Depois","After"), T("Uma interface IAiProvider para todos os providers.","One IAiProvider interface for all providers."), "check"),
+        new(T("Acessibilidade","Accessibility"), T("Health check, retry e monitoring padronizados.","Standardized health check, retry and monitoring."), "universal-access")
+    ];
+
+    // === WHEN TO USE ===
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Chat","Chat"), T("Interacoes conversacionais com usuarios.","Conversational interactions with users."), "comments"),
+        new(T("RAG","RAG"), T("Busca semantica e generation baseada em contexto.","Semantic search and context-based generation."), "search"),
+        new(T("Agentes","Agents"), T("Automacao com tool calling e function calling.","Automation with tool calling and function calling."), "robot"),
+        new(T("Embeddings","Embeddings"), T("Vetorizacao para busca e clustering.","Vectorization for search and clustering."), "vector-square")
+    ];
+
+    // === WHEN NOT TO USE ===
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Templates estaticos","Static Templates"), T("Use Razor templates para conteudo fixo.","Use Razor templates for fixed content."), "file"),
+        new(T("Processamento em lote puro","Pure Batch Processing"), T("Use BackgroundService para tarefas sem IA.","Use BackgroundService for tasks without AI."), "gears")
+    ];
+
+    // === ARCHITECTURE ===
+    private IReadOnlyList<DocTile> ArchitectureItems => [
+        new("IAiProvider", T("Interface com CompleteAsync, StreamAsync, EmbedAsync, CheckHealthAsync.","Interface with CompleteAsync, StreamAsync, EmbedAsync, CheckHealthAsync."), "plug"),
+        new("AiProviderBase", T("Classe abstrata com retry, circuit breaker e logging.","Abstract class with retry, circuit breaker and logging."), "shield"),
+        new("HttpClient", T("Cada provider recebe HttpClient via DI, com configuracao por provider.","Each provider receives HttpClient via DI, with per-provider configuration."), "network")
+    ];
+
+    // === DESIGN PRINCIPLES ===
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Interface unica","Single Interface"), T("Um contrato IAiProvider para todos os providers.","One IAiProvider contract for all providers."), "plug"),
+        new(T("Fail-safe","Fail-safe"), T("Retry automatico e health checks para resiliencia.","Automatic retry and health checks for resilience."), "shield"),
+        new(T("Zero-config","Zero-config"), T("Defaults inteligentes. Funciona com configuracao minima.","Smart defaults. Works with minimal configuration."), "bolt")
+    ];
+
+    // === SECURITY ===
+    private IReadOnlyList<DocTile> SecurityItems => [
+        new(T("Bearer Token","Bearer Token"), T("OpenAI e OpenRouter usam Bearer token no header Authorization.","OpenAI and OpenRouter use Bearer token in Authorization header."), "key"),
+        new(T("API Key Header","API Key Header"), T("Anthropic usa x-api-key. Azure usa api-key como header customizado.","Anthropic uses x-api-key. Azure uses api-key as custom header."), "lock"),
+        new(T("Query Key","Query Key"), T("Gemini envia API key como query string (?key=...).","Gemini sends API key as query string (?key=...)."), "link"),
+        new(T("No Auth","No Auth"), T("Ollama e LocalLlm nao requerem autenticacao por padrao.","Ollama and LocalLlm do not require authentication by default."), "unlock")
+    ];
+
+    // === STREAMING ===
+    private IReadOnlyList<DocTile> StreamingItems => [
+        new("SSE", T("Server-Sent Events para streaming token a token.","Server-Sent Events for token-by-token streaming."), "bolt"),
+        new("IAsyncEnumerable", T("Retorno via IAsyncEnumerable para async enumeration.","Return via IAsyncEnumerable for async enumeration."), "arrows-rotate"),
+        new("Buffer", T("Buffer configuravel para controle de memoria.","Configurable buffer for memory control."), "maximize"),
+        new("Cancellation", T("Suporte a CancellationToken para cancelamento.","CancellationToken support for cancellation."), "ban")
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Log de erros","Error Logging"), T("Todos os erros sao logados com provider ID e mensagem.","All errors are logged with provider ID and message."), "exclamation-triangle"),
+        new(T("Health monitoring","Health Monitoring"), T("CheckHealthAsync retorna status detalhado por provider.","CheckHealthAsync returns detailed status per provider."), "heart-pulse"),
+        new(T("Metrics","Metrics"), T("Contadores de requisicao, latencia e erros para observabilidade.","Request, latency and error counters for observability."), "chart-line")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("ERP Inteligente","Smart ERP"), T("Chatbot para consultas fiscais com RAG.","Chatbot for tax queries with RAG."), "building"),
+        new(T("Code Assistant","Code Assistant"), T("Assistente de codigo com tool calling para repositorios.","Code assistant with tool calling for repositories."), "code"),
+        new(T("Data Pipeline","Data Pipeline"), T("Embeddings para indexacao de documentos.","Embeddings for document indexing."), "database"),
+        new(T("Multi-provider","Multi-provider"), T("Failover automatico entre providers.","Automatic failover between providers."), "arrows-rotate"),
+        new(T("A/B Testing","A/B Testing"), T("Comparacao de respostas entre providers diferentes.","Compare responses across different providers."), "scale-balanced"),
+        new(T("Edge","Edge"), T("Ollama/LocalLlm para rodar sem internet.","Ollama/LocalLlm to run without internet."), "wifi")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Usar keyed DI","Use Keyed DI"), T("Registre providers com AddKeyedSingleton para selecao por nome.","Register providers with AddKeyedSingleton for selection by name."), "key"),
+        new(T("Retry em todos","Retry Always"), T("Nunca desative o retry em producao.","Never disable retry in production."), "shield"),
+        new(T("Health check periodico","Periodic Health Check"), T("Execute health checks a cada 5 minutos em background.","Run health checks every 5 minutes in background."), "heart-pulse"),
+        new(T("Streaming para UX","Streaming for UX"), T("Use streaming para respostas longas para melhor experiencia.","Use streaming for long responses for better experience."), "bolt")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual provider usar?","Which provider to use?"), T("Ollama para dev, Azure para enterprise, OpenRouter para multi-modelo.","Ollama for dev, Azure for enterprise, OpenRouter for multi-model.")),
+        new(T("Como adicionar um provider customizado?","How to add a custom provider?"), T("Extenda AiProviderBase e implemente CompleteAsync, StreamAsync, EmbedAsync.","Extend AiProviderBase and implement CompleteAsync, StreamAsync, EmbedAsync.")),
+        new(T("O retry funciona para todos os providers?","Does retry work for all providers?"), T("Sim. Retry com exponential backoff e implementado em AiProviderBase.","Yes. Retry with exponential backoff is implemented in AiProviderBase.")),
+        new(T("Posso usar multiplos providers ao mesmo tempo?","Can I use multiple providers at the same time?"), T("Sim. Registre com AddKeyedSingleton e injete por nome.","Yes. Register with AddKeyedSingleton and inject by name.")),
+        new(T("Os providers suportam function calling?","Do providers support function calling?"), T("Sim, exceto LocalLlm e GenericAi que dependem da API do backend.","Yes, except LocalLlm and GenericAi which depend on the backend API."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("Azure nao suporta embeddings","Azure no embeddings"), T("AzureOpenAiProvider nao suporta EmbedAsync por limitacao da API.","AzureOpenAiProvider does not support EmbedAsync due to API limitation.")),
+        new(T("Anthropic sem embeddings","Anthropic no embeddings"), T("Anthropic nao oferece modelo de embeddings.","Anthropic does not offer an embedding model.")),
+        new(T("LocalLlm sem tools","LocalLlm no tools"), T("LocalLlmProvider nao suporta function calling nativo.","LocalLlmProvider does not support native function calling.")),
+        new(T("GenericAi limitacoes","GenericAi limitations"), T("Funcionalidade depende da API backend implementada.","Functionality depends on the implemented backend API.")),
+        new(T("Rate limits","Rate limits"), T("Cada provider tem seus proprios limites de taxa. Verifique a documentacao de cada um.","Each provider has its own rate limits. Check each one's documentation."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Pagina criada com 4 secoes iniciais.","Page created with 4 initial sections.")),
+        new("2026-06-12", T("Expandida para 26 secoes no padrao enterprise com @T(), hero, badges e tiles.","Expanded to 26 sections in enterprise standard with @T(), hero, badges and tiles."))
+    ];
+
+    // === CODE SAMPLES ===
+    private const string MultiProviderCode = "// Registre multiplos providers com nomes\nbuilder.Services.AddKeyedHttpClient&lt;IAiProvider, OpenAiProvider&gt;(\"openai\",\n    (sp, client) =&gt; new OpenAiProvider(client, \"sk-...\"));\n\nbuilder.Services.AddKeyedHttpClient&lt;IAiProvider, OllamaProvider&gt;(\"ollama\",\n    (sp, client) =&gt; new OllamaProvider(client, \"http://localhost:11434\"));\n\nbuilder.Services.AddKeyedHttpClient&lt;IAiProvider, OpenRouterProvider&gt;(\"openrouter\",\n    (sp, client) =&gt; new OpenRouterProvider(client, \"sk-or-...\"));";
+
+    private const string HealthCheckCode = "public class AiHealthBackgroundService : BackgroundService\n{\n    private readonly IEnumerable&lt;IAiProvider&gt; _providers;\n\n    public AiHealthBackgroundService(IEnumerable&lt;IAiProvider&gt; providers)\n        =&gt; _providers = providers;\n\n    protected override async Task ExecuteAsync(CancellationToken ct)\n    {\n        while (!ct.IsCancellationRequested)\n        {\n            foreach (var provider in _providers)\n            {\n                if (provider is AiProviderBase baseProvider)\n                {\n                    var health = await baseProvider.CheckHealthAsync(ct);\n                    if (!health.IsHealthy)\n                        Log.Warning(\"Provider {Provider} unhealthy\", provider.ProviderId);\n                }\n            }\n            await Task.Delay(TimeSpan.FromMinutes(5), ct);\n        }\n    }\n}";
+
+    private const string OpenAiCode = "builder.Services.AddKeyedHttpClient&lt;IAiProvider, OpenAiProvider&gt;(\"openai\",\n    (sp, client) =&gt; new OpenAiProvider(client, \"sk-your-key-here\"));";
+
+    private const string OllamaCode = "builder.Services.AddKeyedHttpClient&lt;IAiProvider, OllamaProvider&gt;(\"ollama\",\n    (sp, client) =&gt; new OllamaProvider(client, \"http://localhost:11434\"));";
+
+    private const string GeminiCode = "builder.Services.AddKeyedHttpClient&lt;IAiProvider, GeminiProvider&gt;(\"gemini\",\n    (sp, client) =&gt; new GeminiProvider(client, \"AIza...your-key\"));";
+
+    private const string AzureOpenAiCode = "builder.Services.AddKeyedHttpClient&lt;IAiProvider, AzureOpenAiProvider&gt;(\"azure\",\n    (sp, client) =&gt; new AzureOpenAiProvider(client,\n        resourceName: \"my-resource\",\n        deploymentName: \"gpt-4o\",\n        apiKey: \"your-azure-key\"));";
+
+    private const string AnthropicCode = "builder.Services.AddKeyedHttpClient&lt;IAiProvider, AnthropicProvider&gt;(\"anthropic\",\n    (sp, client) =&gt; new AnthropicProvider(client, \"sk-ant-...your-key\"));";
+
+    private const string OtherProvidersCode = "// LocalLlm - endpoint customizado\nbuilder.Services.AddKeyedHttpClient&lt;IAiProvider, LocalLlmProvider&gt;(\"locallm\",\n    (sp, client) =&gt; new LocalLlmProvider(client, \"http://localhost:5000/v1\"));\n\n// OpenRouter - 300+ modelos\nbuilder.Services.AddKeyedHttpClient&lt;IAiProvider, OpenRouterProvider&gt;(\"openrouter\",\n    (sp, client) =&gt; new OpenRouterProvider(client, \"sk-or-...your-key\"));\n\n// GenericAi - API compativel com OpenAI\nbuilder.Services.AddKeyedHttpClient&lt;IAiProvider, GenericAiProvider&gt;(\"generic\",\n    (sp, client) =&gt; new GenericAiProvider(client, \"http://custom-api.com/v1\"));";
+}

@@ -1,0 +1,103 @@
+@inherits XForgeComponentBase
+@implements IDisposable
+
+<div class="@RootClass"
+     role="region"
+     aria-label="@AriaLabel"
+     aria-busy="@(_state == XFAiLazyLoadState.Loading ? "true" : null)"
+     @attributes="AdditionalAttributes">
+
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between border-b border-border-light px-4 py-2.5">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-text-primary">@Title</span>
+                <span class="@GetStateBadgeClass()">@GetStateLabel()</span>
+            </div>
+            @if (_state == XFAiLazyLoadState.Loaded && _loadTimeMs > 0)
+            {
+                <span class="text-xs text-text-muted">@_loadTimeMs.ToString("F0")ms</span>
+            }
+        </div>
+    }
+
+    <div class="relative">
+        @if (_state == XFAiLazyLoadState.NotLoaded)
+        {
+            <div class="flex flex-col items-center justify-center gap-3 py-10">
+                @if (!string.IsNullOrWhiteSpace(PlaceholderIcon))
+                {
+                    <span class="text-3xl opacity-40">@PlaceholderIcon</span>
+                }
+                <span class="text-sm text-text-muted">@PlaceholderText</span>
+                @if (AutoLoad)
+                {
+                    <button class="rounded-md border border-border-light bg-bg-surface px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-primary/30 hover:text-primary"
+                            @onclick="LoadAsync"
+                            aria-label="Carregar componente">
+                        Carregar agora
+                    </button>
+                }
+            </div>
+        }
+        else if (_state == XFAiLazyLoadState.Loading)
+        {
+            <div class="flex flex-col items-center justify-center gap-3 py-10">
+                <div class="h-8 w-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary"></div>
+                <span class="text-sm text-text-muted">@LoadingText</span>
+                @if (ShowProgress)
+                {
+                    <div class="h-1.5 w-48 overflow-hidden rounded-full bg-surface-200 dark:bg-slate-700">
+                        <div class="h-full rounded-full bg-primary transition-all duration-300" style="width: @(_progress.ToString("F0"))%"></div>
+                    </div>
+                }
+            </div>
+        }
+        else if (_state == XFAiLazyLoadState.Loaded)
+        {
+            @if (ChildContent is not null)
+            {
+                @ChildContent
+            }
+            else if (LoadedContent is not null)
+            {
+                @LoadedContent
+            }
+        }
+        else if (_state == XFAiLazyLoadState.Error)
+        {
+            <div class="flex flex-col items-center justify-center gap-3 py-10">
+                <svg class="h-8 w-8 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                <span class="text-sm text-red-600 dark:text-red-400">@(_errorMessage ?? "Erro ao carregar componente.")</span>
+                @if (MaxRetries > 0)
+                {
+                    <button class="rounded-md border border-border-light bg-bg-surface px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-primary/30 hover:text-primary"
+                            @onclick="RetryAsync"
+                            aria-label="Tentar novamente">
+                        Tentar novamente (@(_retryCount)/@MaxRetries)
+                    </button>
+                }
+            </div>
+        }
+        else if (_state == XFAiLazyLoadState.Timeout)
+        {
+            <div class="flex flex-col items-center justify-center gap-3 py-10">
+                <svg class="h-8 w-8 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                <span class="text-sm text-amber-600 dark:text-amber-400">Tempo limite excedido (@TimeoutMs ms)</span>
+                <button class="rounded-md border border-border-light bg-bg-surface px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-primary/30 hover:text-primary"
+                        @onclick="RetryAsync"
+                        aria-label="Tentar novamente">
+                    Tentar novamente
+                </button>
+            </div>
+        }
+    </div>
+
+    @if (ShowFooter && _state == XFAiLazyLoadState.Loaded)
+    {
+        <div class="flex items-center justify-between border-t border-border-light px-4 py-2 text-xs text-text-muted">
+            <span>Carregado em @_loadTimeMs.ToString("F0")ms</span>
+            <span>Tentativas: @_retryCount</span>
+        </div>
+    }
+</div>

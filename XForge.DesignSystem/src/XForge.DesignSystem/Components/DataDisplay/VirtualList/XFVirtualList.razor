@@ -1,0 +1,95 @@
+@typeparam TItem
+@inherits XForgeComponentBase
+
+<div id="@Id" class="@RootClass" style="@Style" @attributes="AdditionalAttributes">
+    @if (Title is not null)
+    {
+        <div class="mb-2 text-sm font-semibold text-text-primary">@Title</div>
+    }
+
+    @if (ItemsProvider is not null)
+    {
+        <Virtualize TItem="TItem"
+                    ItemsProvider="@ItemsProvider"
+                    ItemSize="@ItemSize"
+                    OverscanCount="@OverscanCount"
+                    Context="item">
+            <Placeholder>
+                @if (LoadingContent is not null)
+                {
+                    @LoadingContent
+                }
+                else
+                {
+                    <div class="@PlaceholderClass">
+                        <div class="h-4 w-3/4 animate-pulse rounded bg-surface-200"></div>
+                    </div>
+                }
+            </Placeholder>
+            <ItemContent>
+                @if (ItemTemplate is not null)
+                {
+                    @ItemTemplate(item)
+                }
+            </ItemContent>
+            <EmptyContent>
+                @if (EmptyContent is not null)
+                {
+                    @EmptyContent
+                }
+                else
+                {
+                    <div class="@EmptyClass">@EmptyText</div>
+                }
+            </EmptyContent>
+        </Virtualize>
+    }
+    else if (Items is not null)
+    {
+        <Virtualize TItem="TItem"
+                    Items="@Items"
+                    ItemSize="@ItemSize"
+                    OverscanCount="@OverscanCount"
+                    Context="item">
+            <Placeholder>
+                @if (LoadingContent is not null)
+                {
+                    @LoadingContent
+                }
+                else
+                {
+                    <div class="@PlaceholderClass">
+                        <div class="h-4 w-3/4 animate-pulse rounded bg-surface-200"></div>
+                    </div>
+                }
+            </Placeholder>
+            <ItemContent>
+                @if (ItemTemplate is not null)
+                {
+                    @ItemTemplate(item)
+                }
+            </ItemContent>
+            <EmptyContent>
+                @if (EmptyContent is not null)
+                {
+                    @EmptyContent
+                }
+                else
+                {
+                    <div class="@EmptyClass">@EmptyText</div>
+                }
+            </EmptyContent>
+        </Virtualize>
+    }
+    else
+    {
+        @if (EmptyContent is not null)
+        {
+            @EmptyContent
+        }
+        else
+        {
+            <div class="@EmptyClass">@EmptyText</div>
+        }
+    }
+</div>

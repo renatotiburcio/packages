@@ -1,0 +1,15 @@
+@namespace XForge.Components.Charts
+@inherits XForgeComponentBase
+
+<div class="xf-orgchart">
+  <ul>@RenderNode(Root)</ul>
+</div>
+
+@code {
+  public class OrgNode
+  {
+    public string Title { get; set; } = "";
+    public string? Name { get; set; }
+    public IReadOnlyList<OrgNode> Children { get; set; } = new List<OrgNode>();
+  }
+}

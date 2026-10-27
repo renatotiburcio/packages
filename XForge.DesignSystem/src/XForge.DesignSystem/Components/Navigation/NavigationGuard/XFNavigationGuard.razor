@@ -1,0 +1,42 @@
+@using XForge.DesignSystem.Services
+@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager Navigation
+@inject XFNavigationGuardService NavigationGuardService
+@implements IDisposable
+
+<NavigationLock ConfirmExternalNavigation="@NavigationGuardService.HasPendingChanges" />
+
+@code {
+    private IDisposable? locationChangingRegistration;
+    private bool navigationApproved;
+
+    protected override void OnInitialized()
+    {
+        locationChangingRegistration = Navigation.RegisterLocationChangingHandler(HandleLocationChangingAsync);
+    }
+
+    private async ValueTask HandleLocationChangingAsync(LocationChangingContext context)
+    {
+        if (navigationApproved || !NavigationGuardService.HasPendingChanges)
+        {
+            navigationApproved = false;
+            return;
+        }
+
+        context.PreventNavigation();
+
+        var approved = await NavigationGuardService.ConfirmNavigationAsync(context.TargetLocation);
+        if (!approved)
+        {
+            return;
+        }
+
+        navigationApproved = true;
+        Navigation.NavigateTo(context.TargetLocation);
+    }
+
+    public void Dispose()
+    {
+        locationChangingRegistration?.Dispose();
+    }
+}

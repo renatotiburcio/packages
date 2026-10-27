@@ -1,0 +1,478 @@
+@page "/ai/performance-monitor"
+@using XForge.DesignSystem.Components.AI.Performance
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="@L.Text("Performance Monitor", "Performance Monitor")"
+                 Status="@L.Text("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiPerformanceMonitor" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("Monitoramento em tempo real", "Real-time monitoring")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Monitor de performance em tempo real com metricas, sparklines, timeline e benchmarks.",
+                                   "Real-time performance monitor with metrics, sparklines, timeline and benchmarks.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Rastreia tempo de render, exibe cards de metricas com cores de severidade, sparklines SVG, barras de timeline e resultados de benchmark contra thresholds configuraveis.",
+                                   "Tracks render time, displays metric cards with severity colors, SVG sparklines, timeline bars and benchmark results against configurable thresholds.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@L.Text("Parcial", "Partial")" /></XFTableCell><XFTableCell>@L.Text("Renderiza sem interatividade.", "Renders without interactivity.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Basico", "1. Basic"), L.Text("Monitor com metricas e timeline.", "Monitor with metrics and timeline."), ExBasic(), Code1)
+            @Example(L.Text("2. Sem Sparkline", "2. Without Sparkline"), L.Text("Metricas sem mini-graficos.", "Metrics without mini-charts."), ExNoSparkline(), Code2)
+            @Example(L.Text("3. Apenas Timeline", "3. Timeline Only"), L.Text("Somente barras de timeline.", "Timeline bars only."), ExTimelineOnly(), Code3)
+            @Example(L.Text("4. Com Benchmarks", "4. With Benchmarks"), L.Text("Resultado de benchmarks contra thresholds.", "Benchmark results against thresholds."), ExBenchmarks(), Code4)
+            @Example(L.Text("5. Grid 2 Colunas", "5. Grid 2 Columns"), L.Text("Metricas em grid de 2 colunas.", "Metrics in 2-column grid."), ExGrid2Cols(), Code5)
+            @Example(L.Text("6. Compacto", "6. Compact"), L.Text("Sem cabecalho, rodape ou metricas.", "Without header, footer or metrics."), ExCompact(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Tipos", "Types"), @<div>@NameValueTable(TypeRows, L.Text("Tipo", "Type"), L.Text("Descricao", "Description"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFAiPerformanceMonitor
+        Title="Performance Monitor"
+        ShowHeader="true"
+        ShowMetrics="true"
+        ShowTimeline="true"
+        ShowSparkline="true"
+        ShowBenchmarks="true"
+        GridCols="4"
+        MaxRenderTimeMs="16" />;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("Metricas em tempo real", "Real-time metrics"), L.Text("Cards de render time, sparklines e cores de severidade.", "Render time cards, sparklines and severity colors."), "gauge"),
+        new(L.Text("Timeline visual", "Visual timeline"), L.Text("Barras de render time com cores semanticas.", "Render time bars with semantic colors."), "bars"),
+        new(L.Text("Benchmarks", "Benchmarks"), L.Text("Comparacao contra thresholds configuraveis.", "Comparison against configurable thresholds."), "bullseye")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiPerformanceMonitor"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Performance"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Performance"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-live=polite.", "role=region, aria-label, aria-live=polite.")),
+        new("Theme support", L.Text("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Monitor de performance", "Performance monitor"), L.Text("Rastreio de tempo de render em tempo real.", "Real-time render time tracking."), "gauge"),
+        new(L.Text("Metricas com severidade", "Metrics with severity"), L.Text("Good, Warning e Critical com cores semanticas.", "Good, Warning and Critical with semantic colors."), "palette"),
+        new(L.Text("Benchmarks", "Benchmarks"), L.Text("Comparacao contra thresholds configuraveis.", "Comparison against configurable thresholds."), "bullseye")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Debug de performance", "Performance debugging"), L.Text("Identificar componentes lentos em tempo real.", "Identify slow components in real time."), "bug"),
+        new(L.Text("Monitoramento continuo", "Continuous monitoring"), L.Text("Rastrear regressao de performance ao longo do tempo.", "Track performance regression over time."), "eye"),
+        new(L.Text("Benchmarks automatizados", "Automated benchmarks"), L.Text("Validar performance contra thresholds pre-definidos.", "Validate performance against pre-defined thresholds."), "check-double")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Sem visibilidade sobre performance de render.", "No visibility into render performance."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Metricas em tempo real com timeline e benchmarks.", "Real-time metrics with timeline and benchmarks."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=region com aria-label e aria-live para updates.", "role=region with aria-label and aria-live for updates."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Debug de UI", "UI debugging"), L.Text("Identificar componentes que causam jank.", "Identify components causing jank."), "bug"),
+        new(L.Text("Benchmarks de regressao", "Regression benchmarks"), L.Text("Validar que PRs nao degradam performance.", "Validate PRs don't degrade performance."), "check-double"),
+        new(L.Text("Monitoramento de producao", "Production monitoring"), L.Text("Monitorar performance em ambientes reais.", "Monitor performance in real environments."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Metricas de negocio", "Business metrics"), L.Text("Use dashboard especifico para KPIs.", "Use specific dashboard for KPIs."), "chart-line"),
+        new(L.Text("Logging de erros", "Error logging"), L.Text("Use XFAiAuditTimeline para erros.", "Use XFAiAuditTimeline for errors."), "clipboard")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Header", L.Text("Titulo, badge de status e botao limpar.", "Title, status badge and clear button."), "heading"),
+        new("Metric Cards", L.Text("Grid de cards com valor, unidade e sparkline SVG.", "Grid of cards with value, unit and SVG sparkline."), "chart-bar"),
+        new("Timeline", L.Text("Barras verticais com tempo de render por snapshot.", "Vertical bars with render time per snapshot."), "bars"),
+        new("Benchmarks", L.Text("Lista de resultados contra thresholds.", "List of results against thresholds."), "bullseye"),
+        new("Footer", L.Text("Contagem de snapshots e modo de monitoramento.", "Snapshot count and monitoring mode."), "rectangle-list")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt"),
+        new(L.Text("Cor = severidade", "Color = severity"), L.Text("Green < 16ms, Yellow < 50ms, Red >= 50ms.", "Green < 16ms, Yellow < 50ms, Red >= 50ms."), "palette"),
+        new(L.Text("Sparklines compactos", "Compact sparklines"), L.Text("Mini-graficos SVG para historico visual.", "SVG mini-charts for visual history."), "chart-line")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFAiPerformanceMonitor
+        Title="App Performance"
+        ShowHeader="true"
+        ShowMetrics="true"
+        ShowTimeline="true"
+        ShowSparkline="true"
+        ShowBenchmarks="true"
+        GridCols="4" />;
+
+    private RenderFragment ExNoSparkline() => @<XFAiPerformanceMonitor
+        Title="Sem Sparkline"
+        ShowHeader="true"
+        ShowMetrics="true"
+        ShowTimeline="true"
+        ShowSparkline="false"
+        ShowBenchmarks="false"
+        GridCols="3" />;
+
+    private RenderFragment ExTimelineOnly() => @<XFAiPerformanceMonitor
+        Title="Timeline"
+        ShowHeader="true"
+        ShowMetrics="false"
+        ShowTimeline="true"
+        ShowSparkline="false"
+        ShowBenchmarks="false" />;
+
+    private RenderFragment ExBenchmarks() => @<XFAiPerformanceMonitor
+        Title="Benchmarks"
+        ShowHeader="true"
+        ShowMetrics="false"
+        ShowTimeline="false"
+        ShowSparkline="false"
+        ShowBenchmarks="true" />;
+
+    private RenderFragment ExGrid2Cols() => @<XFAiPerformanceMonitor
+        Title="Grid 2 Colunas"
+        ShowHeader="true"
+        ShowMetrics="true"
+        ShowTimeline="false"
+        ShowSparkline="true"
+        ShowBenchmarks="false"
+        GridCols="2" />;
+
+    private RenderFragment ExCompact() => @<XFAiPerformanceMonitor
+        Title="Compacto"
+        ShowHeader="false"
+        ShowFooter="false"
+        ShowMetrics="false"
+        ShowTimeline="true"
+        ShowSparkline="false"
+        ShowBenchmarks="false" />;
+
+    private const string Code1 = @"<XFAiPerformanceMonitor
+    Title=""App Performance""
+    ShowHeader=""true""
+    ShowMetrics=""true""
+    ShowTimeline=""true""
+    ShowSparkline=""true""
+    ShowBenchmarks=""true""
+    GridCols=""4"" />";
+    private const string Code2 = @"<XFAiPerformanceMonitor
+    Title=""Sem Sparkline""
+    ShowHeader=""true""
+    ShowMetrics=""true""
+    ShowTimeline=""true""
+    ShowSparkline=""false""
+    ShowBenchmarks=""false""
+    GridCols=""3"" />";
+    private const string Code3 = @"<XFAiPerformanceMonitor
+    Title=""Timeline""
+    ShowHeader=""true""
+    ShowMetrics=""false""
+    ShowTimeline=""true""
+    ShowSparkline=""false""
+    ShowBenchmarks=""false"" />";
+    private const string Code4 = @"<XFAiPerformanceMonitor
+    Title=""Benchmarks""
+    ShowHeader=""true""
+    ShowMetrics=""false""
+    ShowTimeline=""false""
+    ShowSparkline=""false""
+    ShowBenchmarks=""true"" />";
+    private const string Code5 = @"<XFAiPerformanceMonitor
+    Title=""Grid 2 Colunas""
+    ShowHeader=""true""
+    ShowMetrics=""true""
+    ShowTimeline=""false""
+    ShowSparkline=""true""
+    ShowBenchmarks=""false""
+    GridCols=""2"" />";
+    private const string Code6 = @"<XFAiPerformanceMonitor
+    Title=""Compacto""
+    ShowHeader=""false""
+    ShowFooter=""false""
+    ShowMetrics=""false""
+    ShowTimeline=""true""
+    ShowSparkline=""false""
+    ShowBenchmarks=""false"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Title", "string", "\"Performance Monitor\"", L.Text("Titulo do monitor.", "Monitor title.")),
+        new("AriaLabel", "string", "\"Monitor de performance em tempo real\"", L.Text("Label ARIA para acessibilidade.", "ARIA label for accessibility.")),
+        new("ShowHeader", "bool", "true", L.Text("Exibe barra de cabecalho com titulo e status.", "Displays header bar with title and status.")),
+        new("ShowFooter", "bool", "true", L.Text("Exibe barra de rodape com snapshots e modo.", "Displays footer bar with snapshots and mode.")),
+        new("ShowMetrics", "bool", "true", L.Text("Exibe grid de cards de metricas.", "Displays metrics card grid.")),
+        new("ShowTimeline", "bool", "true", L.Text("Exibe barras de timeline.", "Displays timeline bars.")),
+        new("ShowSparkline", "bool", "true", L.Text("Exibe sparklines SVG nos cards de metrica.", "Displays SVG sparklines in metric cards.")),
+        new("ShowBenchmarks", "bool", "true", L.Text("Exibe resultados de benchmark.", "Displays benchmark results.")),
+        new("Mode", "XFAiMonitorMode", "Realtime", L.Text("Modo de monitoramento: Realtime, Summary, Detailed.", "Monitoring mode: Realtime, Summary, Detailed.")),
+        new("Metrics", "IReadOnlyList<XFAiMetricDataPoint>", "[]", L.Text("Metricas iniciais para exibir.", "Initial metrics to display.")),
+        new("BenchmarkTargets", "IReadOnlyList<XFAiBenchmarkTarget>", "[]", L.Text("Alvos de benchmark para avaliar.", "Benchmark targets to evaluate.")),
+        new("MaxRenderTimeMs", "double", "16", L.Text("Tempo maximo de render para benchmark 60fps.", "Maximum render time for 60fps benchmark.")),
+        new("GridCols", "int", "4", L.Text("Numero de colunas no grid de metricas.", "Number of columns in metrics grid.")),
+        new("BarHeight", "int", "48", L.Text("Altura das barras de timeline em pixels.", "Timeline bar height in pixels."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnSnapshotRecorded", L.Text("Disparado quando um snapshot e registrado. Retorna XFAiRenderSnapshot.", "Fired when a snapshot is recorded. Returns XFAiRenderSnapshot."))
+    ];
+
+    private IReadOnlyList<NameValueRow> TypeRows => [
+        new("XFAiMetricDataPoint", L.Text("Record com Label, Value, Unit, Severity, Timestamp.", "Record with Label, Value, Unit, Severity, Timestamp.")),
+        new("XFAiRenderSnapshot", L.Text("Record com ComponentName, RenderTimeMs, ParametersChanged, ChildrenRendered, CapturedAt.", "Record with ComponentName, RenderTimeMs, ParametersChanged, ChildrenRendered, CapturedAt.")),
+        new("XFAiBenchmarkTarget", L.Text("Record com Name, ThresholdMs, Operator, Unit.", "Record with Name, ThresholdMs, Operator, Unit.")),
+        new("XFAiBenchmarkResult", L.Text("Record com Name, MeasuredValue, ThresholdValue, Operator, Passed, Unit.", "Record with Name, MeasuredValue, ThresholdValue, Operator, Passed, Unit.")),
+        new("XFAiMonitorMode", L.Text("Enum: Realtime, Summary, Detailed.", "Enum: Realtime, Summary, Detailed.")),
+        new("XFAiBenchmarkOperator", L.Text("Enum: LessThan, LessThanOrEqual, GreaterThan, GreaterThanOrEqual, Equal.", "Enum: LessThan, LessThanOrEqual, GreaterThan, GreaterThanOrEqual, Equal.")),
+        new("XFSeverity", L.Text("Enum: Good, Warning, Critical.", "Enum: Good, Warning, Critical."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Container principal usa role=region para leitores de tela.", "Main container uses role=region for screen readers."), "universal-access"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Label descritivo do monitor de performance.", "Descriptive label for performance monitor."), "tag"),
+        new(L.Text("aria-live=polite", "aria-live=polite"), L.Text("Atualizacoes de metricas notificam leitores de tela.", "Metric updates notify screen readers."), "volume-high"),
+        new(L.Text("Severidade visual", "Visual severity"), L.Text("Cores Good/Warning/Critical comunicam estado.", "Good/Warning/Critical colors communicate state."), "palette")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega entre botoes de limpar e secoes.", "Navigates between clear button and sections.")),
+        new("Enter/Space", L.Text("Ativa botao Limpar snapshots.", "Activates Clear snapshots button.")),
+        new("Escape", L.Text("Nao possui acao especifica.", "No specific action."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Grid responsivo", "Responsive grid"), L.Text("GridCols ajusta entre 2, 3 e 4 colunas.", "GridCols adjusts between 2, 3 and 4 columns."), "maximize"),
+        new(L.Text("Timeline adaptativa", "Adaptive timeline"), L.Text("Barras se ajustam a largura disponivel.", "Bars adjust to available width."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Sparklines SVG", "SVG sparklines"), L.Text("Mini-graficos em SVG puro, sem lib externa.", "Mini-charts in pure SVG, no external lib."), "chart-line"),
+        new(L.Text("Memoria leve", "Light memory"), L.Text("Snapshots em lista com limite implicito.", "Snapshots in list with implicit limit."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Debug de componente", "Component debugging"), L.Text("Identificar renders lentos durante desenvolvimento.", "Identify slow renders during development."), "bug"),
+        new(L.Text("Regressao de PR", "PR regression"), L.Text("Validar que mudancas nao degradam performance.", "Validate changes don't degrade performance."), "code-branch"),
+        new(L.Text("Producao", "Production"), L.Text("Monitorar performance de apps em producao.", "Monitor app performance in production."), "server")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("Monitor + XFCard", "Monitor + XFCard"), L.Text("Envolver em XFCard para contexto de pagina.", "Wrap in XFCard for page context."), "square"),
+        new(L.Text("Monitor + Benchmark", "Monitor + Benchmark"), L.Text("Combinar com BenchmarkTargets para validacao.", "Combine with BenchmarkTargets for validation."), "bullseye"),
+        new(L.Text("Monitor + Timeline", "Monitor + Timeline"), L.Text("Timeline isolada para foco em render time.", "Isolated timeline for render time focus."), "bars")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("MaxRenderTimeMs=16", "MaxRenderTimeMs=16"), L.Text("Use 16ms como threshold para 60fps.", "Use 16ms as threshold for 60fps."), "gauge"),
+        new(L.Text("Benchmarks para CI", "Benchmarks for CI"), L.Text("Configure BenchmarkTargets para validacao automatizada.", "Configure BenchmarkTargets for automated validation."), "check-double"),
+        new(L.Text("GridCols=4", "GridCols=4"), L.Text("4 colunas para desktop, 2 para mobile.", "4 columns for desktop, 2 for mobile."), "maximize"),
+        new(L.Text("ClearSnapshots", "ClearSnapshots"), L.Text("Limpe snapshots periodicamente para evitar memory leak.", "Clear snapshots periodically to prevent memory leak."), "trash")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("ShowBenchmarks sem targets", "ShowBenchmarks without targets"), L.Text("Benchmarks vazio e inutil para o usuario.", "Empty benchmarks are useless to the user."), "xmark"),
+        new(L.Text("Sem limpeza de snapshots", "No snapshot cleanup"), L.Text("Snapshots acumulados causam memory leak.", "Accumulated snapshots cause memory leak."), "ban"),
+        new(L.Text("GridCols=1 em desktop", "GridCols=1 on desktop"), L.Text("Grid de 1 coluna desperdicia espaco.", "1-column grid wastes space."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", L.Text("overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-sm.", "overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-sm.")),
+        new("metric-card", L.Text("flex flex-col gap-1 rounded-lg border p-3 com cores de severidade.", "flex flex-col gap-1 rounded-lg border p-3 with severity colors.")),
+        new("sparkline", L.Text("svg h-4 w-full com polyline colorido por severidade.", "svg h-4 w-full with polyline colored by severity.")),
+        new("timeline-bar", L.Text("flex-1 rounded-t transition-all com cores semânticas.", "flex-1 rounded-t transition-all with semantic colors."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", L.Text("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Render, props, metrics, timeline, benchmarks, clear, sparkline.", "Render, props, metrics, timeline, benchmarks, clear, sparkline.")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-live, severidade visual.", "role=region, aria-label, aria-live, visual severity."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(L.Text("Snapshot em memoria", "In-memory snapshots"), L.Text("Snapshots nao persistem entre sessoes.", "Snapshots do not persist between sessions.")),
+        new(L.Text("Modo Summary limitado", "Limited Summary mode"), L.Text("Summary exibe media, nao historico detalhado.", "Summary shows average, not detailed history."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiMemoryProfiler", L.Text("Perfilador de memoria WASM.", "WASM memory profiler."), "memory"),
+        new("XFAiBundleAnalyzer", L.Text("Analise de tamanho de bundle.", "Bundle size analysis."), "box-open"),
+        new("XFAiVirtualScroller", L.Text("Virtualizacao de listas para performance.", "List virtualization for performance."), "bars")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Como registrar snapshots?", "How to record snapshots?"), L.Text("Chame RecordSnapshotAsync com XFAiRenderSnapshot.", "Call RecordSnapshotAsync with XFAiRenderSnapshot.")),
+        new(L.Text("Como rodar benchmarks?", "How to run benchmarks?"), L.Text("Chame RunBenchmarks com dict de valores medidos.", "Call RunBenchmarks with dict of measured values.")),
+        new(L.Text("Qual o threshold de 60fps?", "What is the 60fps threshold?"), L.Text("16ms (MaxRenderTimeMs=16). Abaixo = Good, acima = Warning/Critical.", "16ms (MaxRenderTimeMs=16). Below = Good, above = Warning/Critical.")),
+        new(L.Text("Sparkline funciona sem snapshots?", "Sparkline without snapshots?"), L.Text("Nao. Precisa de pelo menos 2 snapshots para renderizar.", "No. Needs at least 2 snapshots to render."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", L.Text("Componente criado com metricas, timeline e benchmarks.", "Component created with metrics, timeline and benchmarks.")),
+        new("2026-06-12", L.Text("Documentacao completa AppShellDocs com 26 secoes.", "Complete AppShellDocs documentation with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

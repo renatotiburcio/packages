@@ -1,0 +1,140 @@
+@inherits XForgeComponentBase
+
+<section @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@RootClass"
+         style="@Style"
+         role="region"
+         aria-label="@AriaLabel">
+
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between gap-3 border-b border-border-light px-4 py-3">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex h-5 w-5 items-center justify-center text-purple-500" aria-hidden="true">
+                    @XFSvgIcons.Markup("diagram-project")
+                </span>
+                <span class="text-sm font-semibold text-text-primary">@Title</span>
+                <span class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-surface-100 px-1.5 text-[10px] font-bold text-text-secondary">@Nodes.Count nos</span>
+                <span class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-surface-100 px-1.5 text-[10px] font-bold text-text-secondary">@Connections.Count arestas</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <button class="rounded p-1 text-text-muted hover:bg-surface-100 hover:text-text-primary transition-colors"
+                        aria-label="Zoom mais" @onclick="ZoomIn">
+                    @XFSvgIcons.Markup("magnifying-glass-plus")
+                </button>
+                <span class="text-xs text-text-muted w-12 text-center">@($"{_zoom:P0}")</span>
+                <button class="rounded p-1 text-text-muted hover:bg-surface-100 hover:text-text-primary transition-colors"
+                        aria-label="Zoom menos" @onclick="ZoomOut">
+                    @XFSvgIcons.Markup("magnifying-glass-minus")
+                </button>
+                <button class="rounded p-1 text-text-muted hover:bg-surface-100 hover:text-text-primary transition-colors"
+                        aria-label="Resetar zoom" @onclick="ResetZoom">
+                    @XFSvgIcons.Markup("arrows-rotate")
+                </button>
+            </div>
+        </div>
+    }
+
+    @if (ShowPalette)
+    {
+        <div class="flex flex-wrap items-center gap-2 border-b border-border-light px-4 py-2">
+            <span class="text-xs font-semibold text-text-muted">Arrastar para adicionar:</span>
+            @foreach (var type in _paletteTypes)
+            {
+                var color = GetNodeColor(type);
+                <span class="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-medium cursor-grab select-none transition-colors hover:opacity-80 @color"
+                      draggable="true"
+                      role="button"
+                      aria-label="Arrastar no @GetNodeLabel(type)">
+                    <span class="inline-flex h-3 w-3 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup(GetNodeIcon(type))</span>
+                    @GetNodeLabel(type)
+                </span>
+            }
+        </div>
+    }
+
+    <div class="@CanvasClass"
+         style="min-height: @(CanvasHeight)px; transform: scale(@_zoom); transform-origin: top left;"
+         role="application"
+         aria-label="Canvas do workflow com @Nodes.Count nos">
+
+        @if (Connections.Count > 0)
+        {
+            <svg class="pointer-events-none absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                    <marker id="@($"arrow-{Id}")" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="currentColor" />
+                    </marker>
+                </defs>
+                @foreach (var conn in Connections)
+                {
+                    var src = Nodes.FirstOrDefault(n => n.Id == conn.SourceNodeId);
+                    var tgt = Nodes.FirstOrDefault(n => n.Id == conn.TargetNodeId);
+                    if (src is not null && tgt is not null)
+                    {
+                        var x1 = src.X + src.Width;
+                        var y1 = src.Y + src.Height / 2;
+                        var x2 = tgt.X;
+                        var y2 = tgt.Y + tgt.Height / 2;
+                        var midX = (x1 + x2) / 2;
+                        var pathColor = conn.IsActive ? "text-emerald-500" : conn.IsConditional ? "text-amber-500" : "text-slate-400 dark:text-slate-500";
+                        var sw = conn.IsActive ? "2.5" : "1.5";
+
+                        <path d="M @x1 @y1 C @midX @y1, @midX @y2, @x2 @y2"
+                              fill="none" stroke="currentColor" stroke-width="@sw"
+                              class="@pathColor" marker-end="url(#arrow-{Id})" />
+                    }
+                }
+            </svg>
+        }
+
+        @foreach (var node in Nodes)
+        {
+            var cardClass = GetNodeCardClass(node);
+            <div class="@cardClass"
+                 style="left: @(node.X)px; top: @(node.Y)px; width: @(node.Width)px; min-height: @(node.Height)px;"
+                 role="button"
+                 tabindex="0"
+                 aria-label="@($"{node.Label} — {GetNodeLabel(node.Type)}")">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/60" aria-hidden="true">
+                        @XFSvgIcons.Markup(GetNodeIcon(node.Type))
+                    </span>
+                    <span class="text-xs font-semibold truncate">@node.Label</span>
+                </div>
+                @if (node.Description is not null)
+                {
+                    <p class="mt-1 text-[10px] opacity-70 truncate">@node.Description</p>
+                }
+                @if (node.IsActive)
+                {
+                    <span class="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white animate-pulse"></span>
+                }
+                @if (node.IsCompleted)
+                {
+                    <span class="absolute -right-1 -top-1 inline-flex h-3 w-3 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-white">
+                        @XFSvgIcons.MarkupWithSize("check", 8)
+                    </span>
+                }
+            </div>
+        }
+    </div>
+
+    @if (Nodes.Count == 0)
+    {
+        <div class="flex flex-col items-center justify-center gap-2 px-4 py-12 text-center">
+            @if (EmptyContent is not null)
+            {
+                @EmptyContent
+            }
+            else
+            {
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-surface-100 text-text-muted" aria-hidden="true">
+                    @XFSvgIcons.Markup("diagram-project")
+                </span>
+                <p class="text-sm text-text-secondary">@EmptyText</p>
+            }
+        </div>
+    }
+</section>

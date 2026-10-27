@@ -1,0 +1,77 @@
+@implements IDisposable
+@inject XFDialogService DialogService
+
+@if (CurrentRequest is not null)
+{
+    <XFDialog Open="@Open"
+              OpenChanged="HandleOpenChangedAsync"
+              Title="@CurrentRequest.Options.Title"
+              Description="@CurrentRequest.Options.Description"
+              Size="@CurrentRequest.Options.Size"
+              Tone="@CurrentRequest.Options.Tone"
+              Placement="@CurrentRequest.Options.Placement"
+              Alert="@CurrentRequest.Options.Alert"
+              CloseOnEscape="@CurrentRequest.Options.CloseOnEscape"
+              CloseOnOverlayClick="@CurrentRequest.Options.CloseOnOverlayClick"
+              ShowCloseButton="@CurrentRequest.Options.ShowCloseButton">
+        <ChildContent>
+            @if (CurrentRequest.ChildContent is not null)
+            {
+                @CurrentRequest.ChildContent(CurrentRequest.Controller)
+            }
+        </ChildContent>
+        <Footer>
+            @if (CurrentRequest.Footer is not null)
+            {
+                @CurrentRequest.Footer(CurrentRequest.Controller)
+            }
+        </Footer>
+    </XFDialog>
+}
+
+@code {
+    private XFDialogRequest? CurrentRequest { get; set; }
+    private bool Open { get; set; }
+
+    protected override void OnInitialized()
+    {
+        DialogService.Requested += ShowAsync;
+    }
+
+    private Task ShowAsync(XFDialogRequest request)
+    {
+        request.Closed = CloseCurrentAsync;
+        request.Changed = RefreshAsync;
+        CurrentRequest = request;
+        Open = true;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    private async Task HandleOpenChangedAsync(bool open)
+    {
+        Open = open;
+        if (!open && CurrentRequest is not null)
+        {
+            var request = CurrentRequest;
+            CurrentRequest = null;
+            await request.Controller.CancelAsync();
+        }
+    }
+
+    private Task CloseCurrentAsync()
+    {
+        Open = false;
+        CurrentRequest = null;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    private Task RefreshAsync()
+    {
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        DialogService.Requested -= ShowAsync;
+    }
+}

@@ -1,0 +1,17 @@
+﻿@namespace XForge.Components.Lgpd
+<div class="xf-lgpd-delete" data-user-id="@UserId">
+  <h3>Excluir meus dados (LGPD art. 18, VI)</h3>
+  <p><strong>Atencao:</strong> Esta acao e irreversivel. Todos os seus dados serao anonimizados.</p>
+  <label><input type="checkbox" @bind="Confirm1" /> Entendo que esta acao nao pode ser desfeita</label>
+  <label><input type="checkbox" @bind="Confirm2" /> Confirmo que sou o titular dos dados</label>
+  <input type="password" placeholder="Confirme sua senha" @bind="Password" />
+  <button disabled="@(!CanDelete)" @onclick="Delete">Excluir conta</button>
+</div>
+@code {
+  [Parameter] public string UserId { get; set; } = "";
+  [Parameter] public EventCallback OnDeleteRequested { get; set; }
+  bool Confirm1, Confirm2;
+  string Password { get; set; } = "";
+  bool CanDelete => Confirm1 && Confirm2 && !string.IsNullOrEmpty(Password);
+  void Delete() => OnDeleteRequested.InvokeAsync();
+}

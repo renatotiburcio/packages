@@ -1,0 +1,403 @@
+@page "/components/spreadsheet-toolbar"
+@using XForge.Components.Editors
+@using XForge.DesignSystem.Components.Layout
+@using XForge.DesignSystem.Components.Typography
+@using XForge.DesignSystem.Components.DataDisplay.Card
+@using XForge.DesignSystem.Components.DataDisplay.Badge
+@using XForge.DesignSystem.Components.Shared
+@using XForge.DesignSystem.Docs.Shared.Contracts
+@using XForge.DesignSystem.Docs.Shared.Navigation
+@using XForge.DesignSystem.Docs.Shared.Components
+@using XForge.DesignSystem.Core.Primitives
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSpreadsheetToolbar" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("35 ferramentas", "35 tools")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("35 ferramentas de toolbar para o editor de planilha.",
+                               "35 toolbar tools for the spreadsheet editor.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFSpreadsheetToolbar fornece 35 ferramentas de toolbar para operacoes de planilha incluindo arquivo, edicao, formatacao, insercao, alinhamento, bordas e dados. Cada ferramenta e um componente independente que pode ser combinado sob demanda.",
+                               "XFSpreadsheetToolbar provides 35 toolbar tools for spreadsheet operations including file, editing, formatting, insertion, alignment, borders and data. Each tool is an independent component that can be combined as needed.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== METADATA ===== -->
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        <!-- ===== OVERVIEW / PURPOSE / WHEN TO USE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+        </XFStack>
+
+        <!-- ===== EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Toolbar basica", "1. Basic toolbar"),
+                T("Toolbar com ferramentas de formatacao de texto.", "Toolbar with text formatting tools."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Toolbar completa", "2. Full toolbar"),
+                T("Toolbar com todas as 35 ferramentas disponiveis.", "Toolbar with all 35 available tools."),
+                ExFull(), CodeFull)
+
+            @Example(T("3. Toolbar customizada", "3. Custom toolbar"),
+                T("Toolbar com apenas ferramentas selecionadas.", "Toolbar with only selected tools."),
+                ExCustom(), CodeCustom)
+        </XFStack>
+
+        <!-- ===== TOOLS LIST ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Ferramentas disponiveis", "Available Tools"), @<div>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Arquivo", "File")</XFTypography>
+                    @NameValueTable(FileTools, T("Ferramenta", "Tool"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Edicao", "Editing")</XFTypography>
+                    @NameValueTable(EditTools, T("Ferramenta", "Tool"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Formatacao de texto", "Text Formatting")</XFTypography>
+                    @NameValueTable(TextFormatTools, T("Ferramenta", "Tool"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Alinhamento", "Alignment")</XFTypography>
+                    @NameValueTable(AlignmentTools, T("Ferramenta", "Tool"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Insercao", "Insertion")</XFTypography>
+                    @NameValueTable(InsertTools, T("Ferramenta", "Tool"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Dados", "Data")</XFTypography>
+                    @NameValueTable(DataTools, T("Ferramenta", "Tool"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Formatacao de celular", "Cell Formatting")</XFTypography>
+                    @NameValueTable(CellFormatTools, T("Ferramenta", "Tool"), T("Comando", "Command"))
+                </XFStack>
+            </div>)
+        </XFStack>
+
+        <!-- ===== API ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API: XFSpreadsheetToolbar", @<div>@ApiTable(ToolbarApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Descricao", "Description"))</div>)
+        </XFStack>
+
+        <!-- ===== ACCESSIBILITY ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 3)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Acao", "Action"))</div>)
+        </XFStack>
+
+        <!-- ===== FAQ / CHANGELOG ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+    private string ProductLabelText => "XFSpreadsheetToolbar";
+    private string PageTitleText => "Spreadsheet Toolbar";
+    private string PageStatusText => T("Stable", "Stable");
+
+    // ==================== HERO ====================
+    private RenderFragment HeroPreview() => @<div class="flex items-center justify-center rounded-lg border border-border-light bg-surface-50 p-8">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="4" Alignment="XFAlignment.Center">
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Toolbar com 35 ferramentas para planilha", "Toolbar with 35 tools for spreadsheet")</XFTypography>
+        </XFStack>
+    </div>;
+
+    // ==================== QUICK FACTS ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("35 ferramentas", "35 tools"), T("Conjunto completo para operacoes de planilha.", "Complete set for spreadsheet operations."), "bars"),
+        new(T("7 categorias", "7 categories"), T("Arquivo, edicao, formatacao, alinhamento, insercao, dados, celular.", "File, editing, formatting, alignment, insertion, data, cell."), "layer-group"),
+        new(T("WAI-ARIA", "WAI-ARIA"), T("role=toolbar com navegacao por teclado.", "role=toolbar with keyboard navigation."), "universal-access"),
+        new(T("Componivel", "Composable"), T("Inclua apenas as ferramentas que seu editor precisa.", "Include only the tools your editor needs."), "puzzle-piece")
+    ];
+
+    // ==================== METADATA ====================
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFSpreadsheetToolbar"),
+        new("Namespace", "XForge.Components.Editors"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Editors"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=toolbar, roving tabindex, aria-pressed, aria-label.", "role=toolbar, roving tabindex, aria-pressed, aria-label.")),
+        new("Theme support", T("Light e dark via CSS variables.", "Light and dark via CSS variables."))
+    ];
+
+    // ==================== OVERVIEW ====================
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("35 componentes", "35 components"), T("Cada ferramenta da toolbar e um componente Blazor independente.", "Each toolbar tool is an independent Blazor component."), "bars"),
+        new(T("7 categorias", "7 categories"), T("Organizadas por funcao: arquivo, edicao, formatacao, etc.", "Organized by function: file, editing, formatting, etc."), "layer-group"),
+        new(T("Acessivel", "Accessible"), T("Container com role=toolbar e navegacao roving tabindex.", "Container with role=toolbar and roving tabindex navigation."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Planilha", "Spreadsheet"), T("Toolbar padrao para XFSpreadsheet.", "Standard toolbar for XFSpreadsheet."), "table-cells"),
+        new(T("Formatacao", "Formatting"), T("Negrito, italico, fonte, alinhamento, bordas.", "Bold, italic, font, alignment, borders."), "text-height"),
+        new(T("Dados", "Data"), T("Filtro, ordenacao, formato condicional, validacao.", "Filter, sort, conditional format, validation."), "database")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Toolbars de planilha sem padrao e sem acessibilidade.", "Spreadsheet toolbars without standard and accessibility."), "xmark"),
+        new(T("Depois", "After"), T("35 ferramentas acessiveis e componiveis.", "35 accessible and composable tools."), "check"),
+        new(T("Flexibilidade", "Flexibility"), T("Inclua apenas as ferramentas que seu editor precisa.", "Include only the tools your editor needs."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Planilhas financeiras", "Financial spreadsheets"), T("Toolbar completa com formatacao e dados.", "Complete toolbar with formatting and data."), "dollar-sign"),
+        new(T("Editores de dados", "Data editors"), T("Toolbar com ferramentas de dados e validacao.", "Toolbar with data and validation tools."), "database")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Editores de texto", "Text editors"), T("Para edicao de texto, use XFRichTextEditorToolbar.", "For text editing, use XFRichTextEditorToolbar."), "xmark"),
+        new(T("Editores simples", "Simple editors"), T("Para edicao basica, use XFTextInput.", "For basic editing, use XFTextInput."), "triangle-exclamation")
+    ];
+
+    // ==================== EXAMPLES ====================
+    private RenderFragment ExBasic() => @<div class="flex flex-col gap-4">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Toolbar com formatacao de texto", "Toolbar with text formatting")</XFTypography>
+        </XFStack>
+    </div>;
+
+    private string CodeBasic => @"<XFSpreadsheetToolbar>
+    <XFSpreadsheetBold />
+    <XFSpreadsheetItalic />
+    <XFSpreadsheetUnderline />
+    <XFSpreadsheetStrikethrough />
+</XFSpreadsheetToolbar>";
+
+    private RenderFragment ExFull() => @<div class="flex flex-col gap-4">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Toolbar completa com todas as 35 ferramentas", "Full toolbar with all 35 tools")</XFTypography>
+        </XFStack>
+    </div>;
+
+    private string CodeFull => @"<XFSpreadsheetToolbar>
+    <!-- Arquivo -->
+    <XFSpreadsheetNew />
+    <XFSpreadsheetOpen />
+    <XFSpreadsheetSave />
+    <XFSpreadsheetExport />
+
+    <!-- Edicao -->
+    <XFSpreadsheetUndo />
+    <XFSpreadsheetRedo />
+    <XFSpreadsheetCut />
+    <XFSpreadsheetCopy />
+
+    <!-- Formatacao de texto -->
+    <XFSpreadsheetBold />
+    <XFSpreadsheetItalic />
+    <XFSpreadsheetUnderline />
+    <XFSpreadsheetStrikethrough />
+
+    <!-- Fonte -->
+    <XFSpreadsheetFontFamily />
+    <XFSpreadsheetFontSize />
+    <XFSpreadsheetFontColor />
+    <XFSpreadsheetBackgroundColor />
+
+    <!-- Alinhamento -->
+    <XFSpreadsheetAlignLeft />
+    <XFSpreadsheetAlignCenter />
+    <XFSpreadsheetAlignRight />
+    <XFSpreadsheetVerticalAlign />
+    <XFSpreadsheetMergeCells />
+    <XFSpreadsheetCellBorders />
+    <XFSpreadsheetTextWrap />
+    <XFSpreadsheetFreeze />
+
+    <!-- Insercao -->
+    <XFSpreadsheetInsertRow />
+    <XFSpreadsheetInsertColumn />
+    <XFSpreadsheetInsertChart />
+    <XFSpreadsheetInsertHyperlink />
+
+    <!-- Dados -->
+    <XFSpreadsheetAutoFilter />
+    <XFSpreadsheetSort />
+    <XFSpreadsheetConditionalFormat />
+    <XFSpreadsheetDataValidation />
+
+    <!-- Numeros -->
+    <XFSpreadsheetIncreaseDecimals />
+    <XFSpreadsheetDecreaseDecimals />
+</XFSpreadsheetToolbar>";
+
+    private RenderFragment ExCustom() => @<div class="flex flex-col gap-4">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Toolbar customizada com ferramentas selecionadas", "Custom toolbar with selected tools")</XFTypography>
+        </XFStack>
+    </div>;
+
+    private string CodeCustom => @"<XFSpreadsheetToolbar>
+    <XFSpreadsheetNew />
+    <XFSpreadsheetOpen />
+    <XFSpreadsheetSave />
+    <XFSpreadsheetExport />
+    <XFSpreadsheetBold />
+    <XFSpreadsheetItalic />
+    <XFSpreadsheetAlignLeft />
+    <XFSpreadsheetAlignCenter />
+    <XFSpreadsheetInsertRow />
+    <XFSpreadsheetInsertColumn />
+</XFSpreadsheetToolbar>";
+
+    // ==================== TOOLS LIST ====================
+    private IReadOnlyList<NameValueRow> FileTools => [
+        new("XFSpreadsheetNew", T("Cria uma nova planilha.", "Creates a new spreadsheet.")),
+        new("XFSpreadsheetOpen", T("Abre um arquivo de planilha existente.", "Opens an existing spreadsheet file.")),
+        new("XFSpreadsheetSave", T("Salva a planilha atual.", "Saves the current spreadsheet.")),
+        new("XFSpreadsheetExport", T("Exporta a planilha em formato alternativo.", "Exports the spreadsheet in alternative format."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EditTools => [
+        new("XFSpreadsheetUndo", T("Desfaz a ultima acao.", "Undoes the last action.")),
+        new("XFSpreadsheetRedo", T("Refaz a ultima acao desfeita.", "Redoes the last undone action.")),
+        new("XFSpreadsheetCut", T("Recorta as celulas selecionadas.", "Cuts selected cells.")),
+        new("XFSpreadsheetCopy", T("Copia as celulas selecionadas.", "Copies selected cells."))
+    ];
+
+    private IReadOnlyList<NameValueRow> TextFormatTools => [
+        new("XFSpreadsheetBold", T("Aplica negrito ao texto da celula.", "Applies bold to cell text.")),
+        new("XFSpreadsheetItalic", T("Aplica italico ao texto da celula.", "Applies italic to cell text.")),
+        new("XFSpreadsheetUnderline", T("Aplica sublinhado ao texto da celula.", "Applies underline to cell text.")),
+        new("XFSpreadsheetStrikethrough", T("Aplica tachado ao texto da celula.", "Applies strikethrough to cell text.")),
+        new("XFSpreadsheetFontFamily", T("Seleciona a familia da fonte.", "Selects font family.")),
+        new("XFSpreadsheetFontSize", T("Seleciona o tamanho da fonte.", "Selects font size.")),
+        new("XFSpreadsheetFontColor", T("Seleciona a cor do texto.", "Selects text color.")),
+        new("XFSpreadsheetBackgroundColor", T("Seleciona a cor de fundo da celula.", "Selects cell background color."))
+    ];
+
+    private IReadOnlyList<NameValueRow> AlignmentTools => [
+        new("XFSpreadsheetAlignLeft", T("Alinha o texto a esquerda.", "Aligns text to the left.")),
+        new("XFSpreadsheetAlignCenter", T("Centraliza o texto na celula.", "Centers text in the cell.")),
+        new("XFSpreadsheetAlignRight", T("Alinha o texto a direita.", "Aligns text to the right.")),
+        new("XFSpreadsheetVerticalAlign", T("Alinha o texto verticalmente.", "Vertically aligns text.")),
+        new("XFSpreadsheetMergeCells", T("Combina celulas selecionadas.", "Merges selected cells.")),
+        new("XFSpreadsheetCellBorders", T("Aplica bordas nas celulas.", "Applies borders to cells.")),
+        new("XFSpreadsheetTextWrap", T("Ativa/desativa quebra de texto.", "Toggles text wrapping.")),
+        new("XFSpreadsheetFreeze", T("Congela linhas ou colunas.", "Freezes rows or columns."))
+    ];
+
+    private IReadOnlyList<NameValueRow> InsertTools => [
+        new("XFSpreadsheetInsertRow", T("Insere uma nova linha.", "Inserts a new row.")),
+        new("XFSpreadsheetInsertColumn", T("Insere uma nova coluna.", "Inserts a new column.")),
+        new("XFSpreadsheetInsertChart", T("Insere um grafico na planilha.", "Inserts a chart in the spreadsheet.")),
+        new("XFSpreadsheetInsertHyperlink", T("Insere um hyperlink na celula.", "Inserts a hyperlink in the cell."))
+    ];
+
+    private IReadOnlyList<NameValueRow> DataTools => [
+        new("XFSpreadsheetAutoFilter", T("Ativa/desativa filtro automatico.", "Toggles auto filter.")),
+        new("XFSpreadsheetSort", T("Ordena as celulas selecionadas.", "Sorts selected cells.")),
+        new("XFSpreadsheetConditionalFormat", T("Aplica formato condicional.", "Applies conditional formatting.")),
+        new("XFSpreadsheetDataValidation", T("Configura validacao de dados.", "Configures data validation."))
+    ];
+
+    private IReadOnlyList<NameValueRow> CellFormatTools => [
+        new("XFSpreadsheetIncreaseDecimals", T("Aumenta casas decimais.", "Increases decimal places.")),
+        new("XFSpreadsheetDecreaseDecimals", T("Diminui casas decimais.", "Decreases decimal places."))
+    ];
+
+    // ==================== API ====================
+    private IReadOnlyList<ApiRow> ToolbarApiRows => [
+        new("ChildContent", "RenderFragment", "-", T("Ferramentas da toolbar.", "Toolbar tools.")),
+        new("Disabled", "bool", "false", T("Desabilita todas as ferramentas.", "Disables all tools.")),
+        new("AriaLabel", "string?", @"""Toolbar de planilha""", T("Aria-label da toolbar.", "Toolbar aria-label."))
+    ];
+
+    // ==================== EVENTS ====================
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("CommandExecuted", T("Dispara apos executar um comando da toolbar.", "Fires after executing a toolbar command."))
+    ];
+
+    // ==================== ACCESSIBILITY ====================
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("role=toolbar", T("Container com semantica WAI-ARIA.", "Container with WAI-ARIA semantics."), "universal-access"),
+        new("Roving tabindex", T("Navegacao por setas entre ferramentas.", "Arrow key navigation between tools."), "keyboard"),
+        new("aria-pressed", T("Ferramentas toggle recebem aria-pressed.", "Toggle tools receive aria-pressed."), "tag"),
+        new("aria-label", T("Cada ferramenta tem aria-label descritivo.", "Each tool has descriptive aria-label."), "heading"),
+        new("Keyboard shortcuts", T("Atalhos de teclado para cada acao.", "Keyboard shortcuts for each action."), "keyboard"),
+        new("Focus visible", T("Indicador visual de foco para navegacao por teclado.", "Visual focus indicator for keyboard navigation."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre ferramentas da toolbar.", "Navigates between toolbar tools.")),
+        new("ArrowRight / ArrowDown", T("Move foco para a proxima ferramenta.", "Moves focus to the next tool.")),
+        new("ArrowLeft / ArrowUp", T("Move foco para a ferramenta anterior.", "Moves focus to the previous tool.")),
+        new("Home", T("Move foco para a primeira ferramenta.", "Moves focus to the first tool.")),
+        new("End", T("Move foco para a ultima ferramenta.", "Moves focus to the last tool.")),
+        new("Enter / Space", T("Ativa a ferramenta focada.", "Activates the focused tool.")),
+        new("Ctrl+Z", T("Desfaz (atalho global).", "Undo (global shortcut).")),
+        new("Ctrl+Y", T("Refaz (atalho global).", "Redo (global shortcut)."))
+    ];
+
+    // ==================== FAQ ====================
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Preciso usar todas as 35 ferramentas?", "Do I need to use all 35 tools?"), T("Nao, cada ferramenta e independente. Inclua apenas as que seu editor precisa.", "No, each tool is independent. Include only what your editor needs.")),
+        new(T("A toolbar funciona sem a planilha?", "Does the toolbar work without the spreadsheet?"), T("Sim, a toolbar funciona independente. Conecte a planilha via eventos.", "Yes, the toolbar works independently. Connect to the spreadsheet via events.")),
+        new(T("Posso adicionar ferramentas customizadas?", "Can I add custom tools?"), T("Sim, use ChildContent para injetar componentes adicionais na toolbar.", "Yes, use ChildContent to inject additional components into the toolbar."))
+    ];
+
+    // ==================== CHANGELOG ====================
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-30", T("Documentacao inicial da toolbar com 35 ferramentas.", "Initial toolbar documentation with 35 tools."))
+    ];
+
+    // ==================== HELPERS ====================
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6 pb-2"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="flex flex-col"><div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int cols) => @<XFGrid Cols="1" Md="@Math.Min(cols, 2)" Lg="@cols" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string h1, string h2) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@h1</XFTableCell><XFTableCell Header="true">@h2</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var r in rows) { <XFTableRow><XFTableCell><XFCode Text="@r.Name" /></XFTableCell><XFTableCell>@r.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var r in rows) { <XFTableRow><XFTableCell><XFCode Text="@r.Name" /></XFTableCell><XFTableCell>@r.Type</XFTableCell><XFTableCell><XFCode Text="@r.DefaultValue" /></XFTableCell><XFTableCell>@r.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,0 +1,51 @@
+@typeparam TItem
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass() @(_isDragOver ? "ring-2 ring-primary ring-offset-2" : "")"
+     style="@Style"
+     @ondragover="OnDragOverAsync"
+     @ondragleave="OnDragLeaveAsync"
+     @ondrop="OnDropAsync">
+
+    @* ── Header *@
+    @if (Header is not null)
+    {
+        <div class="mb-2 text-sm font-medium text-text-primary">@Header</div>
+    }
+
+    @* ── Items *@
+    <div class="flex flex-wrap gap-2">
+        @foreach (var item in Items)
+        {
+            var itemContext = new XFDropZoneItemContext<TItem>(item, this);
+            <div draggable="true"
+                 @ondragstart="@(e => OnDragStartAsync(e, item))"
+                 class="cursor-grab rounded-lg border border-surface-200 bg-bg-surface px-3 py-2 text-sm transition-all hover:shadow-md active:cursor-grabbing">
+                @if (ItemTemplate is not null)
+                {
+                    @ItemTemplate(itemContext)
+                }
+                else
+                {
+                    @item?.ToString()
+                }
+            </div>
+        }
+    </div>
+
+    @* ── Empty State *@
+    @if (!Items.Any() && EmptyTemplate is not null)
+    {
+        <div class="flex items-center justify-center py-4 text-text-muted">
+            @EmptyTemplate
+        </div>
+    }
+
+    @* ── Footer *@
+    @if (Footer is not null)
+    {
+        <div class="mt-2 text-xs text-text-secondary">@Footer</div>
+    }
+</div>

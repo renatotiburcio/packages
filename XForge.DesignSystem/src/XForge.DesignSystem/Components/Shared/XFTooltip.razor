@@ -1,0 +1,132 @@
+@inherits XForgeComponentBase
+@implements IAsyncDisposable
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<span @attributes="AdditionalAttributes"
+      id="@Id"
+      class="@GetComponentClass()"
+      data-tooltip-id="@_tooltipId"
+      data-tooltip-text="@Text"
+      data-tooltip-position="@PositionValue"
+      data-tooltip-theme="@ThemeValue"
+      data-tooltip-trigger="@TriggerValue"
+      data-tooltip-delay="@Delay"
+      data-tooltip-hide-delay="@HideDelay"
+      data-tooltip-max-width="@MaxWidth"
+      data-tooltip-multiline="@Multiline.ToString().ToLowerInvariant()"
+      data-tooltip-arrow="@ShowArrow.ToString().ToLowerInvariant()"
+      data-tooltip-disabled="@Disabled.ToString().ToLowerInvariant()"
+      aria-describedby="@_tooltipId"
+      @ref="_triggerRef"
+      @onkeydown="HandleKeyDownAsync">
+    @ChildContent
+</span>
+
+@code {
+    protected override string BaseClass => "xf-tooltip";
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string Text { get; set; } = "";
+    [Parameter] public XFTooltipPosition Position { get; set; } = XFTooltipPosition.Right;
+    [Parameter] public XFTooltipTheme Theme { get; set; } = XFTooltipTheme.Dark;
+    [Parameter] public XFTooltipTrigger Trigger { get; set; } = XFTooltipTrigger.HoverFocus;
+    [Parameter] public int Delay { get; set; } = 200;
+    [Parameter] public int HideDelay { get; set; } = 100;
+    [Parameter] public string? MaxWidth { get; set; }
+    [Parameter] public bool Multiline { get; set; }
+    [Parameter] public bool ShowArrow { get; set; } = true;
+
+    private ElementReference _triggerRef;
+    private string _tooltipId = string.Empty;
+    private bool _initialized;
+    private string PositionValue => Position.ToString().ToLowerInvariant();
+    private string ThemeValue => Theme.ToString().ToLowerInvariant();
+    private string TriggerValue => Trigger == XFTooltipTrigger.HoverFocus ? "hover-focus" : Trigger.ToString().ToLowerInvariant();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_initialized)
+        {
+            _tooltipId = $"xf-tt-{Guid.NewGuid():N}";
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("xfTooltip.init", _triggerRef, _tooltipId);
+            }
+            catch (InvalidOperationException)
+            {
+                // JS not available during prerender
+            }
+            catch (JSDisconnectedException)
+            {
+                // JS runtime disconnected
+            }
+            _initialized = true;
+        }
+        else if (_initialized)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("xfTooltip.update", _triggerRef);
+            }
+            catch (InvalidOperationException)
+            {
+                // JS not available during prerender
+            }
+            catch (JSDisconnectedException)
+            {
+                // JS runtime disconnected
+            }
+        }
+    }
+
+    private async Task HandleKeyDownAsync(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+        {
+            await HideAsync();
+        }
+    }
+
+    public async Task ShowAsync()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("xfTooltip.show", _triggerRef);
+        }
+        catch (InvalidOperationException)
+        {
+            // JS not available during prerender
+        }
+        catch (JSDisconnectedException)
+        {
+            // JS runtime disconnected
+        }
+    }
+
+    public async Task HideAsync()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("xfTooltip.hide", _triggerRef);
+        }
+        catch (InvalidOperationException)
+        {
+            // JS not available during prerender
+        }
+        catch (JSDisconnectedException)
+        {
+            // JS runtime disconnected
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("xfTooltip.dispose", _triggerRef);
+        }
+        catch (JSDisconnectedException) { }
+        catch (InvalidOperationException) { }
+    }
+}

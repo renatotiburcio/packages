@@ -1,0 +1,16 @@
+@namespace XForge.Components.DataGrid
+@inherits XForgeComponentBase
+
+<div class="xf-treegrid" data-nodes="@Nodes.Count">
+  <ul>@RenderTree(Nodes)</ul>
+</div>
+
+@code {
+  public class TreeNode
+  {
+    public string Id { get; set; } = "";
+    public string Label { get; set; } = "";
+    public IReadOnlyList<TreeNode> Children { get; set; } = new List<TreeNode>();
+    public IReadOnlyDictionary<string, object>? Data { get; set; }
+  }
+}

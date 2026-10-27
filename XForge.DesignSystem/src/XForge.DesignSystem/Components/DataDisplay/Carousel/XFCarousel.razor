@@ -1,0 +1,88 @@
+@inherits XForgeComponentBase
+
+<CascadingValue Value="this">
+    <section class="@RootClass"
+             style="@Style"
+             aria-roledescription="carousel"
+             aria-label="@AriaLabel"
+             aria-describedby="@(Autoplay && (PauseOnHover || PauseOnFocus) ? PauseDescriptionId : null)"
+             @onkeydown="HandleKeyDownAsync"
+             @onmouseenter="() => SetPointerPaused(true)"
+             @onmouseleave="() => SetPointerPaused(false)"
+             @onfocusin="() => SetFocusPaused(true)"
+             @onfocusout="() => SetFocusPaused(false)">
+        @if (Autoplay && (PauseOnHover || PauseOnFocus))
+        {
+            <span id="@PauseDescriptionId" class="sr-only">@PauseLabel</span>
+        }
+
+        @if (ShowIndicators && IndicatorPosition == XFCarouselIndicatorPosition.Top)
+        {
+            @Indicators()
+        }
+
+        <div class="@ViewportClass"
+             aria-live="@LiveMode"
+             data-xf-carousel-viewport
+             @onpointerdown="HandlePointerDown"
+             @onpointerup="HandlePointerUpAsync"
+             @onpointercancel="HandlePointerCancel">
+            <div class="@TrackClass" style="@GetTrackStyle()">
+                @ChildContent
+            </div>
+
+            @if (ShowControls && SlideCount > 1)
+            {
+                <div class="@ControlsClass">
+                    <button type="button" class="@ControlButtonClass" disabled="@(!CanGoPrevious)" aria-label="@PreviousLabel" @onclick="PreviousAsync">
+                        @if (PreviousIcon is not null)
+                        {
+                            @PreviousIcon
+                        }
+                        else
+                        {
+                            <span aria-hidden="true">‹</span>
+                        }
+                    </button>
+                    <button type="button" class="@ControlButtonClass" disabled="@(!CanGoNext)" aria-label="@NextLabel" @onclick="NextAsync">
+                        @if (NextIcon is not null)
+                        {
+                            @NextIcon
+                        }
+                        else
+                        {
+                            <span aria-hidden="true">›</span>
+                        }
+                    </button>
+                </div>
+            }
+
+            @if (ShowIndicators && IndicatorPosition == XFCarouselIndicatorPosition.Overlay)
+            {
+                @Indicators()
+            }
+        </div>
+
+        @if (ShowIndicators && IndicatorPosition == XFCarouselIndicatorPosition.Bottom)
+        {
+            @Indicators()
+        }
+    </section>
+</CascadingValue>
+
+@code {
+    private RenderFragment Indicators() => @<div class="@IndicatorShellClass" role="tablist" aria-label="@IndicatorsLabel">
+        @for (var index = 0; index < SlideCount; index++)
+        {
+            var slideIndex = index;
+            <button type="button"
+                    class="@GetIndicatorClass(slideIndex)"
+                    role="tab"
+                    aria-label="@GetIndicatorLabel(slideIndex)"
+                    aria-selected="@(slideIndex == CurrentIndex ? "true" : "false")"
+                    aria-controls="@GetSlideDomId(slideIndex)"
+                    @onclick="() => GoToAsync(slideIndex)">
+            </button>
+        }
+    </div>;
+}

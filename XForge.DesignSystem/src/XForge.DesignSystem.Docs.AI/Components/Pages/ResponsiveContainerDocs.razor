@@ -1,0 +1,443 @@
+@page "/ai/responsive-container"
+@using XForge.DesignSystem.Components.Utilities.BreakpointObserver
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="XFResponsiveContainer"
+                 Status="@L.Text("Estavel", "Stable")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFResponsiveContainer" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Breakpoints", "Breakpoints")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Mobile/Tablet/Desktop", "Mobile/Tablet/Desktop")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Container adaptativo para compor experiencias AI em desktop, tablet e mobile.",
+                               "Adaptive container for composing AI experiences on desktop, tablet and mobile.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Detecta breakpoints responsivos via XFBreakpointService, categoriza em mobile/tablet/desktop e notifica mudancas em tempo real.",
+                               "Detects responsive breakpoints via XFBreakpointService, categorizes into mobile/tablet/desktop and notifies changes in real time.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Deteccao completa via BreakpointService.", "Full detection via BreakpointService.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Deteccao via resize observer.", "Detection via resize observer.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Limitado", "Limited")" /></XFTableCell><XFTableCell>@T("Deteccao pos-render com Xs padrao.", "Post-render detection with Xs default.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Dependencia JS", "JS Dependency")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("XFBreakpointService detecta resize via JS interop para atualizar breakpoint em tempo real.", "XFBreakpointService detects resize via JS interop to update breakpoint in real time.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Deteccao de breakpoint", "1. Breakpoint Detection"), T("Exibe breakpoint atual e categoria.", "Shows current breakpoint and category."), ExBreakpointDetection(), Code1)
+            @Example(T("2. Categorias customizadas", "2. Custom Categories"), T("Limites ajustaveis para mobile/tablet/desktop.", "Adjustable limits for mobile/tablet/desktop."), ExCustomCategories(), Code2)
+            @Example(T("3. Callback de mudanca", "3. Change Callback"), T("Notificacao em tempo real de mudanca de breakpoint.", "Real-time notification of breakpoint change."), ExChangeCallback(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFResponsiveContainer>
+            <ChildContent>
+                @if (ctx is not null)
+                {
+                    <div class="flex items-center gap-3 rounded-lg border border-border-light bg-surface-50 px-4 py-2 text-sm">
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@ctx.Breakpoint.ToString()" />
+                        <span class="text-text-secondary">
+                            @(ctx.IsMobile ? "Mobile" : ctx.IsTablet ? "Tablet" : ctx.IsDesktop ? "Desktop" : "Unknown")
+                        </span>
+                    </div>
+                }
+            </ChildContent>
+        </XFResponsiveContainer>
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("6 breakpoints", "6 breakpoints"), T("Xs, Sm, Md, Lg, Xl, Xxl.", "Xs, Sm, Md, Lg, Xl, Xxl."), "arrows-maximize"),
+        new(T("3 categorias", "3 categories"), T("Mobile, Tablet e Desktop.", "Mobile, Tablet and Desktop."), "mobile-screen"),
+        new(T("Tempo real", "Real-time"), T("Notificacao via OnBreakpointChanged.", "Notification via OnBreakpointChanged."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFResponsiveContainer"),
+        new("Namespace", "XForge.DesignSystem.Components.CrossPlatform"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "CrossPlatform / Responsive"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("data-breakpoint para CSS e analytics.", "data-breakpoint for CSS and analytics.")),
+        new("JS Dependency", "XFBreakpointService (resize observer)"),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("6 breakpoints", "6 breakpoints"), T("Xs, Sm, Md, Lg, Xl, Xxl.", "Xs, Sm, Md, Lg, Xl, Xxl."), "arrows-maximize"),
+        new(T("3 categorias", "3 categories"), T("Mobile, Tablet e Desktop configuraveis.", "Configurable Mobile, Tablet and Desktop."), "mobile-screen"),
+        new(T("BreakpointChanged", "BreakpointChanged"), T("EventCallback com XFResponsiveContext.", "EventCallback with XFResponsiveContext."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Layout adaptativo", "Adaptive layout"), T("Renderizar conteudo por categoria de dispositivo.", "Render content by device category."), "arrows-maximize"),
+        new(T("Experiencia AI", "AI experience"), T("Adaptar fluxos de AI por viewport.", "Adapt AI flows by viewport."), "robot"),
+        new(T("Navegacao responsiva", "Responsive navigation"), T("Alternar entre menu mobile e desktop.", "Switch between mobile and desktop menu."), "route")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("CSS media queries sem contexto Blazor.", "CSS media queries without Blazor context."), "xmark"),
+        new(T("Depois", "After"), T("XFResponsiveContext com breakpoint e categorias.", "XFResponsiveContext with breakpoint and categories."), "check"),
+        new(T("Callbacks", "Callbacks"), T("OnBreakpointChanged para reagir em tempo real.", "OnBreakpointChanged for real-time reactions."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Dashboard responsivo", "Responsive dashboard"), T("Adaptar widgets por viewport.", "Adapt widgets by viewport."), "chart-bar"),
+        new(T("Formularios adaptativos", "Adaptive forms"), T("Layout de formulario por dispositivo.", "Form layout by device."), "pen")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("CSS puro", "Pure CSS"), T("Para layout visual sem logica Blazor, use Tailwind.", "For visual layout without Blazor logic, use Tailwind."), "css3"),
+        new(T("Deteccao de plataforma", "Platform detection"), T("Use XFDeviceBridge para deteccao de plataforma.", "Use XFDeviceBridge for platform detection."), "laptop")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("ChildContent", T("Render fragment com XFResponsiveContext.", "Render fragment with XFResponsiveContext."), "puzzle"),
+        new("XFResponsiveContext", T("Registro com Breakpoint, IsMobile, IsTablet, IsDesktop.", "Record with Breakpoint, IsMobile, IsTablet, IsDesktop."), "database"),
+        new("data-breakpoint", T("Atributo HTML com breakpoint atual.", "HTML attribute with current breakpoint."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Breakpoint-first", "Breakpoint-first"), T("Deteccao baseada em breakpoints padrao web.", "Detection based on standard web breakpoints."), "arrows-maximize"),
+        new(T("Categorias flexiveis", "Flexible categories"), T("Limites de mobile/tablet/desktop configuraveis.", "Configurable mobile/tablet/desktop limits."), "sliders"),
+        new(T("Notificacao reativa", "Reactive notification"), T("OnBreakpointChanged para reacoes em tempo real.", "OnBreakpointChanged for real-time reactions."), "bell")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBreakpointDetection() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFResponsiveContainer>
+            <ChildContent>
+                @if (ctx is not null)
+                {
+                    <div class="rounded-lg border border-border-light bg-surface-50 p-4 text-sm">
+                        <div class="font-semibold mb-2">Breakpoint: @ctx.Breakpoint</div>
+                        <div class="text-text-secondary">
+                            @T("Mobile: ", "Mobile: ")@(ctx.IsMobile ? "Sim" : "Nao") |
+                            @T("Tablet: ", "Tablet: ")@(ctx.IsTablet ? "Sim" : "Nao") |
+                            @T("Desktop: ", "Desktop: ")@(ctx.IsDesktop ? "Sim" : "Nao")
+                        </div>
+                    </div>
+                }
+            </ChildContent>
+        </XFResponsiveContainer>
+    </XFStack>;
+
+    private RenderFragment ExCustomCategories() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFResponsiveContainer MobileUpTo="XFBreakpoint.Sm" TabletFrom="XFBreakpoint.Md" TabletUpTo="XFBreakpoint.Lg" DesktopFrom="XFBreakpoint.Xl">
+            <ChildContent>
+                @if (ctx is not null)
+                {
+                    <div class="rounded-lg border border-border-light bg-surface-50 p-4 text-sm">
+                        <div class="font-semibold mb-2">@T("Categorias customizadas", "Custom Categories")</div>
+                        <div class="text-text-secondary">Breakpoint: @ctx.Breakpoint | Category: @(ctx.IsMobile ? "Mobile" : ctx.IsTablet ? "Tablet" : "Desktop")</div>
+                    </div>
+                }
+            </ChildContent>
+        </XFResponsiveContainer>
+    </XFStack>;
+
+    private RenderFragment ExChangeCallback() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFResponsiveContainer OnBreakpointChanged="HandleBreakpointChanged">
+            <ChildContent>
+                @if (ctx is not null)
+                {
+                    <div class="rounded-lg border border-border-light bg-surface-50 p-4 text-sm">
+                        <div class="font-semibold mb-2">@T("Ultimo breakpoint", "Last breakpoint"): @lastBreakpoint</div>
+                        <div class="text-text-secondary">Atual: @ctx.Breakpoint</div>
+                    </div>
+                }
+            </ChildContent>
+        </XFResponsiveContainer>
+    </XFStack>;
+
+    private const string Code1 = @"<XFResponsiveContainer>
+    <ChildContent>
+        @if (ctx is not null)
+        {
+            <div>Breakpoint: @ctx.Breakpoint</div>
+            <div>Mobile: @ctx.IsMobile</div>
+        }
+    </ChildContent>
+</XFResponsiveContainer>";
+
+    private const string Code2 = @"<XFResponsiveContainer MobileUpTo=""XFBreakpoint.Sm""
+                     TabletFrom=""XFBreakpoint.Md""
+                     TabletUpTo=""XFBreakpoint.Lg""
+                     DesktopFrom=""XFBreakpoint.Xl"">
+    <ChildContent>
+        @if (ctx is not null)
+        {
+            <div>Category: @(ctx.IsMobile ? ""Mobile"" : ctx.IsTablet ? ""Tablet"" : ""Desktop"")</div>
+        }
+    </ChildContent>
+</XFResponsiveContainer>";
+
+    private const string Code3 = @"<XFResponsiveContainer OnBreakpointChanged=""@HandleBreakpointChanged"">
+    <ChildContent>
+        @if (ctx is not null)
+        {
+            <div>Breakpoint: @ctx.Breakpoint</div>
+        }
+    </ChildContent>
+</XFResponsiveContainer>";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("ChildContent", "RenderFragment<XFResponsiveContext>?", "null", T("Conteudo com contexto responsivo.", "Content with responsive context.")),
+        new("MobileUpTo", "XFBreakpoint", "Sm", T("Breakpoint maximo para categoria mobile.", "Maximum breakpoint for mobile category.")),
+        new("TabletFrom", "XFBreakpoint", "Md", T("Breakpoint minimo para categoria tablet.", "Minimum breakpoint for tablet category.")),
+        new("TabletUpTo", "XFBreakpoint", "Lg", T("Breakpoint maximo para categoria tablet.", "Maximum breakpoint for tablet category.")),
+        new("DesktopFrom", "XFBreakpoint", "Xl", T("Breakpoint minimo para categoria desktop.", "Minimum breakpoint for desktop category.")),
+        new("OnBreakpointChanged", "EventCallback<XFResponsiveContext>", "EventCallback", T("Dispara quando breakpoint muda.", "Fires when breakpoint changes.")),
+        new("Class", "string?", "null", T("Classes CSS adicionais.", "Additional CSS classes.")),
+        new("Style", "string?", "null", T("Estilos inline.", "Inline styles."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnBreakpointChanged", T("Dispara quando breakpoint muda. Recebe XFResponsiveContext com Breakpoint, IsMobile, IsTablet, IsDesktop.", "Fires when breakpoint changes. Receives XFResponsiveContext with Breakpoint, IsMobile, IsTablet, IsDesktop."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("data-breakpoint", "data-breakpoint"), T("Atributo HTML para CSS e testes.", "HTML attribute for CSS and tests."), "tag"),
+        new(T("xf-responsive-mobile", "xf-responsive-mobile"), T("Classe CSS quando mobile.", "CSS class when mobile."), "mobile-screen"),
+        new(T("xf-responsive-desktop", "xf-responsive-desktop"), T("Classe CSS quando desktop.", "CSS class when desktop."), "laptop")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("6 breakpoints padrao", "6 standard breakpoints"), T("Xs < Sm < Md < Lg < Xl < Xxl.", "Xs < Sm < Md < Lg < Xl < Xxl."), "arrows-maximize"),
+        new(T("Limites ajustaveis", "Adjustable limits"), T("MobileUpTo, TabletFrom, TabletUpTo, DesktopFrom.", "MobileUpTo, TabletFrom, TabletUpTo, DesktopFrom."), "sliders")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Resize observer", "Resize observer"), T("Deteccao via ResizeObserver, nao polling.", "Detection via ResizeObserver, not polling."), "bolt"),
+        new(T("Lazy detection", "Lazy detection"), T("Inicializa apenas no primeiro render.", "Initializes only on first render."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Dashboard responsivo", "Responsive dashboard"), T("Adaptar layout de widgets por viewport.", "Adapt widget layout by viewport."), "chart-bar"),
+        new(T("Formularios mobile", "Mobile forms"), T("Layout de formulario adaptativo.", "Adaptive form layout."), "pen"),
+        new(T("Navegacao AI", "AI navigation"), T("Menu de navegacao adaptado por dispositivo.", "Device-adapted navigation menu."), "route")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Responsive + Bridge", "Responsive + Bridge"), T("Combinar com XFDeviceBridge para contexto completo.", "Combine with XFDeviceBridge for full context."), "laptop"),
+        new(T("Responsive + Gesture", "Responsive + Gesture"), T("Combinar com XFGestureHandler para touch.", "Combine with XFGestureHandler for touch."), "hand-pointer"),
+        new(T("Responsive + Storage", "Responsive + Storage"), T("Combinar com XFOfflineStorage.", "Combine with XFOfflineStorage."), "database")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Limites padrao", "Default limits"), T("Use limites padrao salvo necessidade especifica.", "Use default limits unless specific need."), "sliders"),
+        new(T("OnBreakpointChanged", "OnBreakpointChanged"), T("Use callback para reagir a mudancas de viewport.", "Use callback to react to viewport changes."), "bolt"),
+        new(T("Combinar com Bridge", "Combine with Bridge"), T("Para deteccao completa, combine com XFDeviceBridge.", "For full detection, combine with XFDeviceBridge."), "laptop")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("CSS puro", "Pure CSS"), T("Nao recrie media queries - use o componente.", "Do not recreate media queries - use the component."), "xmark"),
+        new(T("Muitos containers", "Too many containers"), T("Aninhe XFResponsiveContainer quando necessario.", "Nest XFResponsiveContainer when needed."), "ban"),
+        new(T("Ignorar SSR", "Ignore SSR"), T("Teste em Static SSR para fallback correto.", "Test in Static SSR for correct fallback."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("xf-responsive-container", T("Container principal do container.", "Main container.")),
+        new("xf-responsive-mobile", T("Classe quando mobile.", "Class when mobile.")),
+        new("xf-responsive-tablet", T("Classe quando tablet.", "Class when tablet.")),
+        new("xf-responsive-desktop", T("Classe quando desktop.", "Class when desktop.")),
+        new("data-breakpoint", T("Atributo com breakpoint atual.", "Attribute with current breakpoint."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, Breakpoint, IsMobile, IsTablet, IsDesktop, OnBreakpointChanged.", "Render, Breakpoint, IsMobile, IsTablet, IsDesktop, OnBreakpointChanged.")),
+        new("Extended", T("Todos os 6 breakpoints e 3 categorias.", "All 6 breakpoints and 3 categories."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Static SSR", T("Deteccao completa so apos render no cliente.", "Full detection only after client render.")),
+        new("BreakpointService", T("Requer injecao de XFBreakpointService.", "Requires injection of XFBreakpointService.")),
+        new("Resize observer", T("Requer suporte a ResizeObserver no navegador.", "Requires ResizeObserver support in browser."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFDeviceBridge", T("Deteccao de plataforma e form factor.", "Platform and form factor detection."), "laptop"),
+        new("XFGestureHandler", T("Captura de gestos touch.", "Touch gesture capture."), "hand-pointer"),
+        new("XFOfflineStorage", T("Persistencia offline com sync.", "Offline persistence with sync."), "database")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Funciona no SSR?", "Works on SSR?"), T("Limitado. Deteccao completa pos-render.", "Limited. Full detection post-render.")),
+        new(T("Como customizar limites?", "How to customize limits?"), T("Use MobileUpTo, TabletFrom, TabletUpTo, DesktopFrom.", "Use MobileUpTo, TabletFrom, TabletUpTo, DesktopFrom.")),
+        new(T("Precisa de JS?", "Needs JS?"), T("Sim. XFBreakpointService usa ResizeObserver.", "Yes. XFBreakpointService uses ResizeObserver."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Componente criado com 6 breakpoints e 3 categorias.", "Component created with 6 breakpoints and 3 categories.")),
+        new("2026-06-12", T("Documentacao completa no padrao AppShellDocs com 3 exemplos.", "Full documentation in AppShellDocs pattern with 3 examples."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+
+    // === DATA ===
+    private XFResponsiveContext? ctx;
+    private string lastBreakpoint = "Xs";
+
+    private void HandleBreakpointChanged(XFResponsiveContext context)
+    {
+        lastBreakpoint = context.Breakpoint.ToString();
+    }
+}

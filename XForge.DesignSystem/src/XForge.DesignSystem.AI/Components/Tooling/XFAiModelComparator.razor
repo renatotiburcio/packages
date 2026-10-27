@@ -1,0 +1,10 @@
+@namespace XForge.DesignSystem.AI.Components
+@inherits XForgeComponentBase
+
+<div class="xf-ai-model-comparator" data-runs="@Runs.Count">
+  @foreach (var r in Runs) { <div class="xf-ai-mc-run" data-winner="@(r.IsWinner)"><h4>@r.ModelName</h4><p>Latency: @r.LatencyMs ms</p><p>Tokens: @r.Tokens</p><p>Cost: $@r.Cost</p><p>Score: @r.Score</p>@if(r.IsWinner){<span class="badge">Winner</span>}</div> }
+</div>
+
+@code {
+  public record ModelRun(string RunId, string ModelName, double LatencyMs, int Tokens, decimal Cost, double Score, string? Output, bool IsWinner = false);
+}

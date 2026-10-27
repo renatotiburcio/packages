@@ -1,0 +1,6 @@
+@namespace XForge.Components.Pivot
+@inherits XForgeComponentBase
+
+<div class="xf-pivotfieldlist">
+  @foreach (var f in AvailableFields) { <span @onclick="() => Toggle(f)">@f</span> }
+</div>

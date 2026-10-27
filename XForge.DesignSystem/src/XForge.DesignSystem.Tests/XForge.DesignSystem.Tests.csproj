@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="bunit" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Moq" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XForge.DesignSystem\XForge.DesignSystem.csproj" />
+    <ProjectReference Include="..\XForge.DesignSystem.AI\XForge.DesignSystem.AI.csproj" />
+    <ProjectReference Include="..\XForge.DesignSystem.Analyzers\XForge.DesignSystem.Analyzers.csproj" />
+    <ProjectReference Include="..\XForge.DesignSystem.Benchmarks\XFBenchmarkProject.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="DocsQualityTests\**\*.cs" />
+    <None Remove="DocsQualityTests\**\*.cs" />
+  </ItemGroup>
+</Project>

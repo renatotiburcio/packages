@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>XForge.DesignSystem.Docs.AI</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="./_content/XForge.DesignSystem/css/xf-designsystem.css" rel="stylesheet" />
+    <link href="./_content/XForge.DesignSystem/css/xf-select.css" rel="stylesheet" />
+    <link href="./_content/XForge.DesignSystem/css/xf-scrollbar.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <script src="./_content/XForge.DesignSystem/js/xf-theme.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-nav-state.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-tooltip.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-focus-trap.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-dialog.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-popover.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-one-time-input.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-splitter.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-split-button.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-select.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-signature-pad.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-animate.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="fixed inset-0 z-[9999] flex items-center justify-center" style="background: radial-gradient(circle at 30% 40%, rgba(180, 200, 255, 0.4), transparent 50%), radial-gradient(circle at 70% 60%, rgba(200, 180, 255, 0.35), transparent 50%), radial-gradient(circle at 50% 80%, rgba(160, 200, 255, 0.25), transparent 45%), #f8fafc;">
+            <div class="relative flex min-w-[280px] flex-col items-center rounded-2xl bg-white p-12 shadow-xl">
+                <div class="relative mb-6 h-16 w-16">
+                    <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                    <div class="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-r-blue-500 border-t-blue-500" style="animation-duration: 1.2s;"></div>
+                </div>
+                <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white shadow-lg shadow-blue-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 17l6-6 4 4 8-8" />
+                        <path d="M14 7h7v7" />
+                    </svg>
+                </div>
+                <div class="text-center">
+                    <h3 class="mb-1 text-sm font-semibold text-slate-800">Carregando XForge</h3>
+                    <p class="text-xs uppercase tracking-wide text-slate-400">Aguarde um momento...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui" style="display: none;">
+        <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+            <div class="flex w-full max-w-sm flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-2xl dark:border-slate-700/50 dark:bg-slate-800">
+                <div class="relative mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                    <div class="absolute inset-0 animate-ping rounded-full border border-red-500/50"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                </div>
+                <h3 id="error-title" class="mb-2 text-lg font-bold text-slate-900 dark:text-white">Ops, algo deu errado...</h3>
+                <p id="error-message" class="mb-6 text-sm text-slate-500 dark:text-slate-400">A aplicacao encontrou um erro critico. Tentando reestabelecer conexao...</p>
+                <div class="mb-6 w-full rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/50">
+                    <div class="mb-1 flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400">
+                        <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                        </svg>
+                        <span class="text-sm font-medium">Recarregando automaticamente:</span>
+                    </div>
+                    <div class="text-4xl font-black tabular-nums tracking-tight text-slate-800 dark:text-slate-200">
+                        <span id="error-countdown">10</span><span class="ml-1 text-lg font-medium text-slate-400">seg</span>
+                    </div>
+                </div>
+                <div class="flex w-full gap-3">
+                    <button class="dismiss w-full rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600" onclick="stopCountdown()">Sair</button>
+                    <a href="" class="reload flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700">Recarregar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        let countdownTimer;
+        let countdownValue = 10;
+        let isOfflineMode = false;
+
+        function stopCountdown() {
+            if (countdownTimer) clearInterval(countdownTimer);
+            document.getElementById('error-countdown').innerText = 'Parado';
+        }
+
+        function startCountdown() {
+            countdownValue = 10;
+            document.getElementById('error-countdown').innerText = countdownValue;
+            if (countdownTimer) clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                countdownValue--;
+                if (countdownValue <= 0) {
+                    clearInterval(countdownTimer);
+                    location.reload();
+                } else {
+                    document.getElementById('error-countdown').innerText = countdownValue;
+                }
+            }, 1000);
+        }
+
+        const errorUi = document.getElementById('blazor-error-ui');
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.attributeName === 'style') {
+                    if (errorUi.style.display !== 'none' && !isOfflineMode) {
+                        document.getElementById('error-title').innerText = 'Ops, algo deu errado...';
+                        document.getElementById('error-message').innerText = 'A aplicacao encontrou um erro critico. Tentando reestabelecer conexao...';
+                        startCountdown();
+                    } else if (errorUi.style.display === 'none') {
+                        stopCountdown();
+                    }
+                }
+            });
+        });
+        observer.observe(errorUi, { attributes: true });
+
+        window.addEventListener('offline', () => {
+            isOfflineMode = true;
+            document.getElementById('error-title').innerText = 'Sem Conexao';
+            document.getElementById('error-message').innerText = 'Sua internet caiu. A aplicacao voltara automaticamente quando a conexao for reestabelecida.';
+            errorUi.style.display = 'block';
+            startCountdown();
+        });
+
+        window.addEventListener('online', () => {
+            if (isOfflineMode) {
+                isOfflineMode = false;
+                errorUi.style.display = 'none';
+                stopCountdown();
+            }
+        });
+    </script>
+</body>
+</html>

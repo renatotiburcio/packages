@@ -1,0 +1,774 @@
+@page "/components/fab"
+@using XForge.DesignSystem.Core.Primitives
+@using Microsoft.AspNetCore.Components.Web
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFFAB" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Acao flutuante", "Floating action")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Viewport fixo", "Fixed viewport")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("AriaLabel obrigatorio", "Required AriaLabel")" />
+                    </XFStack>
+
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("A acao primaria sempre ao alcance, sem disputar espaco com o conteudo.",
+                               "The primary action always within reach, without competing with content.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFFAB e o Floating Action Button do XForge para criar, anexar, iniciar fluxo ou abrir um menu curto de acoes contextuais. Ele fica fixo no viewport, suporta modo estendido com texto, menu linear, estados controlados e exige nome acessivel explicito.",
+                               "XFFAB is the XForge Floating Action Button for creating, attaching, starting a flow or opening a short contextual action menu. It is fixed to the viewport, supports extended text mode, a linear menu, controlled state and requires an explicit accessible name.")
+                        </XFTypography>
+                    </XFStack>
+
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts)
+                            {
+                                @Tile(item)
+                            }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Preview renderizado", "Live Preview"),
+                T("FAB contido dentro do preview da documentacao para nao sobrepor a pagina inteira.", "FAB contained inside the documentation preview so it does not overlay the whole page."),
+                BasicPreview(),
+                BasicCode)
+
+            @Example(T("Cobertura de exemplos: menu curto", "Example Coverage: short menu"),
+                T("Itens de criacao e upload usam XFFABMenuItem e fecham o menu ao selecionar.", "Creation and upload items use XFFABMenuItem and close the menu when selected."),
+                MenuPreview(),
+                MenuCode)
+
+            @Example(T("Posicoes, cores e tamanhos", "Placements, colors and sizes"),
+                T("Placement fixa o canto do viewport; em docs usamos Class para simular dentro do card.", "Placement anchors the viewport corner; in docs we use Class to simulate it inside the card."),
+                PlacementPreview(),
+                PlacementCode)
+
+            @Example(T("Estado controlado e modo estendido", "Controlled state and extended mode"),
+                T("Open/OpenChanged permite controlar abertura; Text transforma o botao em FAB estendido.", "Open/OpenChanged enables controlled opening; Text turns the button into an extended FAB."),
+                ExtendedPreview(),
+                ExtendedCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Uso", "Usage"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegacao enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Exemplos de integracao", "Integration Examples"), @<div>@TileGrid(IntegrationItems, 2)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Seguranca", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migracao", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("FAB", "FAB");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+    private int createCount;
+    private string lastAction = "Nenhuma acao executada";
+    private bool controlledOpen = true;
+
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private IReadOnlyList<XFFABMenuItem> CreateItems => [
+        new() { Text = T("Novo cliente", "New customer"), Value = "customer" },
+        new() { Text = T("Nova oportunidade", "New opportunity"), Value = "opportunity" },
+        new() { Text = T("Nova tarefa", "New task"), Value = "task" }
+    ];
+
+    private IReadOnlyList<XFFABMenuItem> ImportItems => [
+        new() { Text = T("Importar planilha", "Import spreadsheet"), Value = "spreadsheet" },
+        new() { Text = T("Anexar arquivo", "Attach file"), Value = "attachment" },
+        new() { Text = T("Sincronizar origem", "Sync source"), Value = "sync" }
+    ];
+
+    private IReadOnlyList<XFFABMenuItem> ExportItems => [
+        new() { Text = T("Exportar CSV", "Export CSV"), Value = "csv" },
+        new() { Text = T("Exportar PDF", "Export PDF"), Value = "pdf", Disabled = true },
+        new() { Text = T("Enviar por email", "Send by email"), Value = "email" }
+    ];
+
+    private RenderFragment HeroPreview() => @<div class="relative min-h-72 overflow-hidden rounded-lg border border-border-light bg-bg-surface p-5 shadow-[0_20px_60px_rgb(15_23_42/.08)]">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Preview contido no card", "Preview contained in the card")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Criacao rapida", "Quick creation")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">
+                @T("O FAB real e fixo no produto. Na documentacao, a Class sobrescreve para absolute e preserva a leitura da pagina.",
+                   "The real FAB is fixed in the product. In documentation, Class overrides it to absolute and preserves page reading.")
+            </XFTypography>
+            <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Text="bottom-end" />
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="aria-label" />
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("menu opcional", "optional menu")" />
+            </XFStack>
+        </XFStack>
+
+        <XFFAB AriaLabel="@T("Abrir acoes de criacao", "Open creation actions")"
+               Items="CreateItems"
+               ItemSelected="SelectFabItemAsync"
+               MenuLabel="@T("Acoes de criacao", "Creation actions")"
+               OpenMenuAriaLabel="@T("Abrir acoes rapidas", "Open quick actions")"
+               CloseMenuAriaLabel="@T("Fechar acoes rapidas", "Close quick actions")"
+               Placement="XFFABPlacement.BottomEnd"
+               Class="!absolute !bottom-5 !right-5 !z-10" />
+    </div>;
+
+    private RenderFragment BasicPreview() => @<div class="relative min-h-56 overflow-hidden rounded-lg border border-border-light bg-surface-50 p-5">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Pipeline comercial", "Sales pipeline")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Clique no FAB para criar uma oportunidade.", "Click the FAB to create an opportunity.")</XFTypography>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T($"{createCount} criacao(oes)", $"{createCount} creation(s)")" />
+        </XFStack>
+        <XFFAB AriaLabel="@T("Criar oportunidade", "Create opportunity")"
+               OnClick="CreateRecordAsync"
+               Placement="XFFABPlacement.BottomEnd"
+               Class="!absolute !bottom-4 !right-4 !z-10" />
+    </div>;
+
+    private RenderFragment MenuPreview() => @<div class="relative min-h-72 overflow-hidden rounded-lg border border-border-light bg-surface-50 p-5">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Acoes de criacao", "Creation actions")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Ultima acao", "Last action"): <span class="font-semibold text-text-primary">@lastAction</span></XFTypography>
+        </XFStack>
+        <XFFAB AriaLabel="@T("Abrir acoes de criacao", "Open creation actions")"
+               Items="CreateItems"
+               ItemSelected="SelectFabItemAsync"
+               MenuLabel="@T("Acoes de criacao", "Creation actions")"
+               Class="!absolute !bottom-4 !right-4 !z-10" />
+    </div>;
+
+    private RenderFragment PlacementPreview() => @<XFGrid Cols="1" Md="2" Gap="3">
+        @foreach (var placement in PlacementPreviews)
+        {
+            <div class="relative min-h-40 overflow-hidden rounded-lg border border-border-light bg-surface-50 p-4">
+                <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@placement.Label</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@placement.Token</XFTypography>
+                <XFFAB AriaLabel="@placement.AriaLabel"
+                       Placement="@placement.Placement"
+                       Size="XFExtendedSize.Sm"
+                       Color="@placement.Color"
+                       Class="@placement.Class" />
+            </div>
+        }
+    </XFGrid>;
+
+    private RenderFragment ExtendedPreview() => @<div class="relative min-h-72 overflow-hidden rounded-lg border border-border-light bg-surface-50 p-5">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3">
+            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Importacao assistida", "Assisted import")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Open esta controlado por estado externo e inicia aberto.", "Open is controlled by external state and starts open.")</XFTypography>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Text="Open/OpenChanged" />
+        </XFStack>
+        <XFFAB AriaLabel="@T("Abrir importacoes", "Open imports")"
+               Text="@T("Importar", "Import")"
+               Items="ImportItems"
+               Open="controlledOpen"
+               OpenChanged="SetControlledOpenAsync"
+               ItemSelected="SelectFabItemAsync"
+               Color="XFButtonColor.Success"
+               Class="!absolute !bottom-4 !right-4 !z-10" />
+    </div>;
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header>
+            <div class="px-6 pt-6 pb-2">
+                <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+            </div>
+        </Header>
+        <ChildContent>
+            <div class="flex flex-col">
+                <div class="border-t border-border-light p-6">@preview</div>
+                <div class="border-t border-border-light bg-surface-50 p-6">
+                    <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                </div>
+            </div>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">
+        @foreach (var item in items)
+        {
+            @Tile(item)
+        }
+    </XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">
+        @foreach (var item in items)
+        {
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                        <div class="flex items-center gap-4">
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                            <div class="min-w-0">
+                                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                            </div>
+                        </div>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        }
+    </XFGrid>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                    <div class="min-w-0">
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                    </div>
+                </div>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@nameHeader</XFTableCell>
+                <XFTableCell Header="true">@valueHeader</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Value</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+                <XFTableCell Header="true">Type</XFTableCell>
+                <XFTableCell Header="true">Default</XFTableCell>
+                <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Type</XFTableCell>
+                    <XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell>
+                    <XFTableCell>@row.Description</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private IReadOnlyList<PlacementPreviewRow> PlacementPreviews => [
+        new("Bottom end", "XFFABPlacement.BottomEnd", T("Acao inferior direita", "Bottom right action"), XFFABPlacement.BottomEnd, XFButtonColor.Primary, "!absolute !bottom-4 !right-4 !z-10"),
+        new("Bottom start", "XFFABPlacement.BottomStart", T("Acao inferior esquerda", "Bottom left action"), XFFABPlacement.BottomStart, XFButtonColor.Success, "!absolute !bottom-4 !left-4 !right-auto !z-10"),
+        new("Top end", "XFFABPlacement.TopEnd", T("Acao superior direita", "Top right action"), XFFABPlacement.TopEnd, XFButtonColor.Warning, "!absolute !top-4 !right-4 !bottom-auto !z-10"),
+        new("Top start", "XFFABPlacement.TopStart", T("Acao superior esquerda", "Top left action"), XFFABPlacement.TopStart, XFButtonColor.Neutral, "!absolute !top-4 !left-4 !bottom-auto !right-auto !z-10")
+    ];
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new("AriaLabel", T("Obrigatorio para todo FAB, especialmente icon-only.", "Required for every FAB, especially icon-only."), "tag"),
+        new("Placement", T("Ancora em BottomEnd, BottomStart, TopEnd ou TopStart.", "Anchors to BottomEnd, BottomStart, TopEnd or TopStart."), "location-dot"),
+        new("Items", T("Menu opcional com poucas acoes da mesma familia.", "Optional menu with a few actions from the same family."), "rectangle-list")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFFAB"),
+        new("Namespace", "XForge.DesignSystem.Components.Button.FAB"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Buttons"),
+        new("Route", "/components/fab"),
+        new("Primary role", T("Acao primaria flutuante", "Floating primary action"))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Fixo no viewport", "Fixed to viewport"), T("A raiz usa posicao fixed, z-index e placement para manter a acao visivel.", "The root uses fixed positioning, z-index and placement to keep the action visible."), "location-dot"),
+        new(T("Icon-only ou estendido", "Icon-only or extended"), T("Sem Text e circular; com Text vira um FAB estendido em formato pill.", "Without Text it is circular; with Text it becomes an extended pill FAB."), "plus"),
+        new(T("Menu curto", "Short menu"), T("Items cria role=menu com itens role=menuitem.", "Items creates role=menu with role=menuitem entries."), "rectangle-list")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Acao principal", "Primary action"), T("Destacar criar, anexar, importar ou iniciar fluxo quando a tela e operacional.", "Highlight create, attach, import or start flow when the screen is operational."), "plus"),
+        new(T("Baixo ruido", "Low noise"), T("Evita adicionar uma toolbar inteira para uma decisao recorrente.", "Avoids adding an entire toolbar for one recurring decision."), "eye"),
+        new(T("Alcance mobile", "Mobile reach"), T("Mantem o comando no canto previsivel em telas touch.", "Keeps the command in a predictable corner on touch screens."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Criacao dispersa", "Scattered creation"), T("Concentra a criacao global da pagina em um ponto consistente.", "Concentrates page-wide creation in a consistent point."), "route"),
+        new(T("Menus improvisados", "Improvised menus"), T("Substitui menus locais de criacao por XFFABMenuItem.", "Replaces local creation menus with XFFABMenuItem."), "rectangle-list"),
+        new(T("Acessibilidade esquecida", "Forgotten accessibility"), T("Forca AriaLabel e estados aria-haspopup, aria-controls e aria-expanded.", "Requires AriaLabel and aria-haspopup, aria-controls and aria-expanded states."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Listas de cadastro", "Record lists"), T("Novo cliente, nova tarefa, nova oportunidade ou novo documento.", "New customer, task, opportunity or document."), "plus"),
+        new(T("Uploads operacionais", "Operational uploads"), T("Anexar XML, importar planilha ou sincronizar fonte.", "Attach XML, import spreadsheet or sync source."), "arrow-up-from-square"),
+        new(T("Fluxos assistidos", "Assisted flows"), T("Iniciar assistente, automacao ou captura rapida.", "Start an assistant, automation or quick capture."), "sparkles"),
+        new(T("Poucas variacoes", "Few variations"), T("Duas ou tres opcoes da mesma intencao, nao um menu geral.", "Two or three options from the same intent, not a general menu."), "list-ul")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Mais de um FAB", "More than one FAB"), T("Dois FABs disputam a acao principal e aumentam ruido.", "Two FABs compete for the primary action and increase noise."), "xmark"),
+        new(T("Navegacao", "Navigation"), T("Nao substitua rail, sidebar, tabs ou menu de aplicacao.", "Do not replace rail, sidebar, tabs or application menu."), "xmark"),
+        new(T("Menu longo", "Long menu"), T("Se houver muitas opcoes, use DropdownMenu, Drawer ou Command Palette.", "If there are many options, use DropdownMenu, Drawer or Command Palette."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Wrapper", "Wrapper"), T("Elemento raiz com fixed, z-40, flex column e placement.", "Root element with fixed, z-40, flex column and placement."), "square"),
+        new(T("Acionador", "Trigger"), T("Botao circular ou estendido com foco visivel, sombra e tom semantico.", "Circular or extended button with visible focus, shadow and semantic tone."), "arrow-pointer"),
+        new("Icon", T("RenderFragment opcional ou icone padrao plus/chevron-down.", "Optional RenderFragment or default plus/chevron-down icon."), "sparkles"),
+        new("Menu", T("Lista vertical renderizada somente com Open=true e Items preenchido.", "Vertical list rendered only when Open=true and Items is populated."), "rectangle-list")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Comando protagonista", "Primary command"), T("O FAB deve ser a acao mais importante da superficie.", "The FAB should be the most important action on the surface."), "bullseye"),
+        new(T("Sombra funcional", "Functional shadow"), T("Elevation separa o comando do conteudo sem virar decoracao.", "Elevation separates the command from content without becoming decoration."), "cubes-stacked"),
+        new(T("Texto so quando ajuda", "Text only when useful"), T("Use Text quando a acao precisa ser lida imediatamente.", "Use Text when the action needs to be read immediately."), "font")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Uma intencao", "One intent"), T("Items devem ser variacoes da mesma familia de comando.", "Items should be variations of the same command family."), "route"),
+        new(T("Sem surpresa", "No surprise"), T("OnClick alterna menu quando Items existe; documente esse comportamento.", "OnClick toggles the menu when Items exists; document this behavior."), "circle-info"),
+        new(T("Contido em docs", "Contained in docs"), T("Em paginas de manual, use Class para transformar fixed em absolute no preview.", "In docs pages, use Class to turn fixed into absolute in the preview."), "window-restore")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Icon-only", T("Sem Text, botao circular com icone central.", "Without Text, circular button with centered icon.")),
+        new("Extended", T("Com Text, pill com gap e label visivel.", "With Text, pill with gap and visible label.")),
+        new("Menu", T("Com Items, abre role=menu e altera aria-expanded.", "With Items, opens role=menu and changes aria-expanded.")),
+        new("Mini", T("Mini reduz as dimensoes para superficies densas.", "Mini reduces dimensions for dense surfaces."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Exibe plus ou Icon customizado.", "Shows plus or a custom Icon.")),
+        new("Open", T("Exibe menu, aria-expanded=true e chevron-down quando nao ha Icon customizado.", "Shows menu, aria-expanded=true and chevron-down when there is no custom Icon.")),
+        new("Disabled", T("Nao alterna menu, nao dispara eventos e aplica opacidade.", "Does not toggle menu, does not raise events and applies opacity.")),
+        new("Item Disabled", T("Item desabilitado nao dispara ItemSelected.", "Disabled item does not raise ItemSelected.")),
+        new("Controlled", T("Open/OpenChanged permite sincronizar estado externo.", "Open/OpenChanged enables external state synchronization."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("AriaLabel", "string", "string.Empty", T("Nome acessivel obrigatorio do botao.", "Required accessible name for the button.")),
+        new("Text", "string?", "null", T("Quando preenchido, ativa modo estendido.", "When filled, enables extended mode.")),
+        new("Icon", "RenderFragment?", "null", T("Substitui o icone padrao plus/chevron-down.", "Replaces the default plus/chevron-down icon.")),
+        new("Items", "IReadOnlyList<XFFABMenuItem>", "Array.Empty<XFFABMenuItem>()", T("Itens opcionais do menu.", "Optional menu items.")),
+        new("Placement", "XFFABPlacement", "BottomEnd", T("Canto do viewport.", "Viewport corner.")),
+        new("Color", "XFButtonColor", "Primary", T("Tom visual do acionador.", "Visual tone of the trigger.")),
+        new("Size", "XFExtendedSize", "Lg", T("Dimensao do FAB.", "FAB dimension.")),
+        new("Mini", "bool", "false", T("Usa tabela de tamanhos reduzida.", "Uses the reduced size table.")),
+        new("Open", "bool", "false", T("Estado aberto do menu.", "Open state of the menu.")),
+        new("OpenChanged", "EventCallback<bool>", "default", T("Callback para estado controlado.", "Callback for controlled state.")),
+        new("OnClick", "EventCallback<MouseEventArgs>", "default", T("Dispara no clique do acionador; com Items tambem alterna Open.", "Raised on trigger click; with Items it also toggles Open.")),
+        new("ItemSelected", "EventCallback<XFFABMenuItem>", "default", T("Dispara ao selecionar item habilitado.", "Raised when an enabled item is selected.")),
+        new("MenuLabel", "string", "\"Acoes\"", T("aria-label do container role=menu.", "aria-label for the role=menu container.")),
+        new("OpenMenuAriaLabel", "string?", "null", T("Nome acessivel quando o menu esta fechado.", "Accessible name when the menu is closed.")),
+        new("CloseMenuAriaLabel", "string?", "null", T("Nome acessivel quando o menu esta aberto.", "Accessible name when the menu is open.")),
+        new("Disabled", "bool", "false", T("Parametro herdado que bloqueia o acionador.", "Inherited parameter that blocks the trigger.")),
+        new("Class", "string?", "null", T("Parametro herdado; util para conter previews com !absolute.", "Inherited parameter; useful for containing previews with !absolute."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnClick", T("Recebe MouseEventArgs quando o acionador e clicado.", "Receives MouseEventArgs when the trigger is clicked.")),
+        new("OpenChanged", T("Recebe true/false quando o menu alterna.", "Receives true/false when the menu toggles.")),
+        new("ItemSelected", T("Recebe XFFABMenuItem habilitado e fecha o menu.", "Receives the enabled XFFABMenuItem and closes the menu."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new(T("Metodos publicos", "Public methods"), T("Nao aplicavel; XFFAB nao expoe metodos publicos via @ref.", "Not applicable; XFFAB exposes no public @ref methods.")),
+        new("HandleClickAsync", T("Metodo interno que alterna Open e dispara OnClick.", "Internal method that toggles Open and raises OnClick.")),
+        new("SelectItemAsync", T("Metodo interno que dispara ItemSelected e fecha o menu.", "Internal method that raises ItemSelected and closes the menu."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("AriaLabel", T("Deve descrever a acao final, como Criar pedido, nao o icone.", "Must describe the final action, such as Create order, not the icon."), "tag"),
+        new("aria-haspopup", T("Quando Items existe, o acionador anuncia que abre menu.", "When Items exists, the trigger announces that it opens a menu."), "rectangle-list"),
+        new("aria-expanded", T("Reflete Open enquanto o menu esta visivel.", "Reflects Open while the menu is visible."), "eye"),
+        new("Disabled", T("Usa disabled nativo no acionador e nos itens.", "Uses native disabled on the trigger and items."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [
+        new(T("Tab previsivel", "Predictable Tab"), T("Foco entra no acionador e depois nos itens quando abertos.", "Focus enters the trigger and then the items when open."), "keyboard"),
+        new(T("Menu curto", "Short menu"), T("Como nao ha navegacao por setas customizada, mantenha poucos itens.", "Because there is no custom arrow navigation, keep few items."), "list-ul"),
+        new(T("Acao segura", "Safe action"), T("Evite destructive como unica acao icon-only.", "Avoid destructive as the only icon-only action."), "shield-check"),
+        new(T("Fechamento", "Closing"), T("Selecionar item fecha o menu via OpenChanged(false).", "Selecting an item closes the menu through OpenChanged(false)."), "xmark")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Move foco para o acionador e para itens habilitados quando o menu esta aberto.", "Moves focus to the trigger and enabled items when the menu is open.")),
+        new("Enter/Space", T("Ativa o botao nativo; no acionador alterna Open e dispara OnClick.", "Activates the native button; on the trigger it toggles Open and raises OnClick.")),
+        new("Shift+Tab", T("Retorna para o elemento anterior no fluxo de foco.", "Returns to the previous element in the focus flow.")),
+        new("Escape", T("Ainda nao implementado no componente; use menus curtos e previsiveis.", "Not implemented in the component yet; use short predictable menus.")),
+        new("Arrow keys", T("Ainda nao implementado; comportamento atual segue botoes nativos.", "Not implemented; current behavior follows native buttons."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Mobile", "Mobile"), T("Use canto que nao colida com bottom bars, toast ou chat.", "Use a corner that does not collide with bottom bars, toast or chat."), "mobile-screen"),
+        new(T("Desktop", "Desktop"), T("Evite esconder acoes de toolbar que precisam comparacao frequente.", "Avoid hiding toolbar actions that need frequent comparison."), "display"),
+        new("Mini", T("Use para superficies densas ou paines secundarios.", "Use for dense surfaces or secondary panels."), "sliders"),
+        new("Extended", T("Use Text quando o icone sozinho nao explica a acao.", "Use Text when the icon alone does not explain the action."), "font")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Sem JS", "No JS"), T("Nao usa JavaScript para posicionar, abrir ou fechar.", "Uses no JavaScript for positioning, opening or closing."), "code"),
+        new(T("Render condicional", "Conditional render"), T("Menu so entra no DOM quando Open=true.", "Menu only enters the DOM when Open=true."), "bolt"),
+        new(T("Lista curta", "Short list"), T("Itens demais aumentam markup, foco e ruido visual.", "Too many items increase markup, focus flow and visual noise."), "list-ul"),
+        new(T("Layout estavel", "Stable layout"), T("Use preview relativo em docs e valide sobreposicao no app real.", "Use relative preview in docs and validate overlay in the real app."), "window-restore")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Financeiro", "Finance"), T("Novo titulo, nova conciliacao ou importacao de remessa.", "New receivable, reconciliation or remittance import."), "money-bill"),
+        new(T("Fiscal", "Tax"), T("Anexar XML, criar validacao ou iniciar conferencia.", "Attach XML, create validation or start review."), "calculator"),
+        new(T("Estoque", "Inventory"), T("Nova contagem, novo lote ou upload de evidencia.", "New count, batch or evidence upload."), "box-archive"),
+        new("CRM", T("Nova oportunidade, nova tarefa ou registro de contato.", "New opportunity, task or contact record."), "briefcase"),
+        new(T("RH", "HR"), T("Novo colaborador, documento ou aprovacao rapida.", "New employee, document or quick approval."), "users"),
+        new(T("Administrativo", "Administration"), T("Criar chamado, anexar comprovante ou iniciar fluxo.", "Create ticket, attach receipt or start flow."), "building")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("Shell", T("Valide sobreposicao com rail, sidebar, footer e topbar.", "Validate overlap with rail, sidebar, footer and topbar."), "window-restore"),
+        new("Card", T("Em docs, sobrescreva fixed com Class !absolute no preview.", "In docs, override fixed with Class !absolute in the preview."), "square"),
+        new("Dropdown", T("Use Items apenas para menu linear curto.", "Use Items only for a short linear menu."), "rectangle-list"),
+        new("Dialog", T("Use Dialog para confirmacao destrutiva depois do FAB.", "Use Dialog for destructive confirmation after the FAB."), "window-restore"),
+        new("Upload", T("FAB pode iniciar fluxo de anexo, mas upload pesado deve abrir drawer/dialog.", "FAB can start attachment flow, but heavy upload should open drawer/dialog."), "arrow-up-from-square"),
+        new("AI", T("Pode iniciar assistente contextual da tela.", "Can start a contextual assistant for the screen."), "sparkles")
+    ];
+
+    private IReadOnlyList<DocTile> IntegrationItems => [
+        new("XFFABMenuItem", T("Use Text, Value, Disabled e Icon para itens simples.", "Use Text, Value, Disabled and Icon for simple items."), "rectangle-list"),
+        new("Open/OpenChanged", T("Controle abertura por estado externo quando precisa sincronizar com shell.", "Control opening through external state when you need shell synchronization."), "sliders"),
+        new("Class", T("Use !absolute em previews e testes visuais localizados.", "Use !absolute in localized previews and visual tests."), "code"),
+        new("Aria labels", T("Use OpenMenuAriaLabel e CloseMenuAriaLabel quando o estado muda a intencao.", "Use OpenMenuAriaLabel and CloseMenuAriaLabel when state changes intent."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Um por superficie", "One per surface"), T("A pagina deve ter um unico FAB protagonista.", "The page should have one primary FAB."), "bullseye"),
+        new(T("Label especifico", "Specific label"), T("Prefira Criar pedido a Adicionar.", "Prefer Create order over Add."), "tag"),
+        new(T("Itens relacionados", "Related items"), T("Todas as opcoes do menu devem ser da mesma intencao.", "Every menu option should belong to the same intent."), "route"),
+        new(T("Teste sobreposicao", "Test overlay"), T("Verifique mobile, footer fixo, toast e modo dark.", "Check mobile, fixed footer, toast and dark mode."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Substituir toolbar", "Replacing toolbar"), T("FAB nao e inventario de acoes.", "FAB is not an action inventory."), "xmark"),
+        new(T("Acao destrutiva primaria", "Primary destructive action"), T("Nao coloque excluir como FAB principal sem confirmacao.", "Do not put delete as the main FAB without confirmation."), "triangle-exclamation"),
+        new(T("Sem AriaLabel", "No AriaLabel"), T("Icone plus nao e nome acessivel suficiente.", "A plus icon is not a sufficient accessible name."), "eye-slash"),
+        new(T("Docs sobreposto", "Overlaid docs"), T("Nao renderize FAB fixed real dentro da documentacao sem conter o preview.", "Do not render a real fixed FAB inside docs without containing the preview."), "window-restore")
+    ];
+
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("border-primary/status, bg-primary/status, text-primary-contrast e text-white.", "border-primary/status, bg-primary/status, text-primary-contrast and text-white.")),
+        new("typography", T("text-sm font-semibold no modo estendido e menu.", "text-sm font-semibold in extended mode and menu.")),
+        new("radius", T("rounded-full no acionador e itens; rounded-lg em containers de docs.", "rounded-full on trigger and items; rounded-lg in docs containers.")),
+        new("elevation", T("shadow-[0_14px_30px] no acionador e shadow-[0_10px_24px] no menu.", "shadow-[0_14px_30px] on trigger and shadow-[0_10px_24px] on menu.")),
+        new("spacing", "bottom-6/right-6, gap-3, px-4, h-8..h-16."),
+        new("borders", "border-border-light, border-primary/status."),
+        new("motion", "transition-all duration-200 ease-out, hover:-translate-y-0.5.")
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Usa tokens CSS do DesignSystem e responde a light/dark.", "Uses DesignSystem CSS tokens and responds to light/dark."), "moon"),
+        new("data-brand", T("Primary acompanha o brand ativo; status continuam semanticos.", "Primary follows the active brand; statuses remain semantic."), "swatchbook"),
+        new(T("Menu", "Menu"), T("Itens usam bg-bg-surface, border-light e text-primary.", "Items use bg-bg-surface, border-light and text-primary."), "rectangle-list"),
+        new(T("Foco", "Focus"), T("focus-visible usa ring tokenizado.", "focus-visible uses tokenized ring."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [
+        new(T("Sem HTML externo", "No external HTML"), T("Text de XFFABMenuItem e renderizado pelo Blazor; nao injete markup nao confiavel.", "XFFABMenuItem Text is rendered by Blazor; do not inject untrusted markup."), "shield-check"),
+        new(T("Permissao", "Permission"), T("Itens sem permissao devem ficar Disabled e explicar contexto fora do menu.", "Unauthorized items should be Disabled and explain context outside the menu."), "users"),
+        new("Value", T("Nao grave dados sensiveis em Value se eventos forem logados.", "Do not store sensitive data in Value if events are logged."), "lock"),
+        new(T("Destrutivo", "Destructive"), T("Combine Danger com confirmacao em Dialog para acoes irreversiveis.", "Combine Danger with Dialog confirmation for irreversible actions."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("XFFABComponentTest cobre AriaLabel, menu, selecao, labels de estado, Text, Mini e Size.", "XFFABComponentTest covers AriaLabel, menu, selection, state labels, Text, Mini and Size.")),
+        new("Accessibility", T("Testes verificam aria-label, aria-haspopup, aria-controls e aria-expanded.", "Tests verify aria-label, aria-haspopup, aria-controls and aria-expanded.")),
+        new("Interaction", T("Click_WithItems_TogglesMenu e SelectItem_RaisesEventAndClosesMenu validam fluxo principal.", "Click_WithItems_TogglesMenu and SelectItem_RaisesEventAndClosesMenu validate the main flow.")),
+        new("Visual", T("Render_WithText e Render_WithMini cobrem variante estendida e tamanhos reduzidos.", "Render_WithText and Render_WithMini cover extended variant and reduced sizes."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Escape", T("Ainda nao ha fechamento por Escape implementado no componente.", "Escape closing is not implemented in the component yet.")),
+        new("Arrow navigation", T("Ainda nao ha navegacao por setas customizada para menu.", "Custom arrow navigation for menu is not implemented yet.")),
+        new("Nested menu", T("Nao aplicavel; XFFABMenuItem e lista plana.", "Not applicable; XFFABMenuItem is a flat list.")),
+        new("Href", T("Nao aplicavel; FAB executa comandos, nao links.", "Not applicable; FAB executes commands, not links."))
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("Botao fixo custom", "Custom fixed button"), T("Migrar para XFFAB com AriaLabel, Placement e Color.", "Migrate to XFFAB with AriaLabel, Placement and Color."), "arrow-rotate-left"),
+        new(T("Menu local", "Local menu"), T("Migrar para Items de XFFABMenuItem.", "Migrate to XFFABMenuItem Items."), "rectangle-list"),
+        new(T("Icone sem label", "Icon without label"), T("Adicionar AriaLabel especifico e labels abrir/fechar quando houver menu.", "Add specific AriaLabel and open/close labels when there is a menu."), "tag"),
+        new(T("CSS solto", "Loose CSS"), T("Usar Color, Size, Mini, Text e Placement antes de classes locais.", "Use Color, Size, Mini, Text and Placement before local classes."), "swatchbook")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFButton", T("Use para acao inline ou toolbar.", "Use for inline or toolbar action."), "arrow-pointer"),
+        new("XFSplitButton", T("Use para acao primaria com menu acoplado no fluxo.", "Use for primary action with attached menu in flow."), "list-dropdown"),
+        new("XFDropdownMenu", T("Use para menu como elemento principal.", "Use for a menu as the main element."), "rectangle-list"),
+        new("XFDialog", T("Use para confirmar acoes criticas iniciadas pelo FAB.", "Use to confirm critical actions started by the FAB."), "window-restore"),
+        new("XFUpload", T("Use dentro do fluxo aberto por um FAB de anexos.", "Use inside the flow opened by an attachment FAB."), "arrow-up-from-square")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Posso ter mais de um FAB?", "Can I have more than one FAB?"), T("Evite; use um por superficie operacional.", "Avoid it; use one per operational surface.")),
+        new(T("AriaLabel e obrigatorio?", "Is AriaLabel required?"), T("Sim. O componente marca o parametro como EditorRequired e precisa de nome acessivel.", "Yes. The component marks the parameter as EditorRequired and needs an accessible name.")),
+        new(T("O FAB pode ter texto?", "Can the FAB have text?"), T("Sim. Text ativa o modo estendido.", "Yes. Text enables extended mode.")),
+        new(T("O menu suporta item desabilitado?", "Does the menu support disabled items?"), T("Sim. XFFABMenuItem.Disabled usa disabled nativo e nao dispara ItemSelected.", "Yes. XFFABMenuItem.Disabled uses native disabled and does not raise ItemSelected."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-05-25", T("Pagina refeita por completo no padrao enterprise, multi idioma, com API real, exemplos renderizados, acessibilidade, teclado, performance, tokens e cenarios ERP.", "Page fully rebuilt in the enterprise multilingual standard with real API, rendered examples, accessibility, keyboard, performance, tokens and ERP scenarios.")),
+        new("Tests", T("Documentacao alinhada a XFFABComponentTest e ao contrato real de XFFAB.", "Documentation aligned with XFFABComponentTest and the real XFFAB contract."))
+    ];
+
+    private string BasicCode => T("""
+<XFFAB AriaLabel="Criar oportunidade"
+       OnClick="CreateRecordAsync"
+       Placement="XFFABPlacement.BottomEnd" />
+
+@code {
+    private int createCount;
+
+    private Task CreateRecordAsync(MouseEventArgs args)
+    {
+        createCount++;
+        return Task.CompletedTask;
+    }
+}
+""", """
+<XFFAB AriaLabel="Create opportunity"
+       OnClick="CreateRecordAsync"
+       Placement="XFFABPlacement.BottomEnd" />
+
+@code {
+    private int createCount;
+
+    private Task CreateRecordAsync(MouseEventArgs args)
+    {
+        createCount++;
+        return Task.CompletedTask;
+    }
+}
+""");
+
+    private string MenuCode => T("""
+<XFFAB AriaLabel="Abrir acoes de criacao"
+       Items="CreateItems"
+       ItemSelected="SelectFabItemAsync"
+       MenuLabel="Acoes de criacao" />
+
+@code {
+    private static readonly IReadOnlyList<XFFABMenuItem> CreateItems =
+    [
+        new() { Text = "Novo cliente", Value = "customer" },
+        new() { Text = "Nova oportunidade", Value = "opportunity" },
+        new() { Text = "Nova tarefa", Value = "task" }
+    ];
+
+    private Task SelectFabItemAsync(XFFABMenuItem item)
+    {
+        return Task.CompletedTask;
+    }
+}
+""", """
+<XFFAB AriaLabel="Open creation actions"
+       Items="CreateItems"
+       ItemSelected="SelectFabItemAsync"
+       MenuLabel="Creation actions" />
+
+@code {
+    private static readonly IReadOnlyList<XFFABMenuItem> CreateItems =
+    [
+        new() { Text = "New customer", Value = "customer" },
+        new() { Text = "New opportunity", Value = "opportunity" },
+        new() { Text = "New task", Value = "task" }
+    ];
+
+    private Task SelectFabItemAsync(XFFABMenuItem item)
+    {
+        return Task.CompletedTask;
+    }
+}
+""");
+
+    private string PlacementCode => T("""
+<XFFAB AriaLabel="Acao inferior direita"
+       Placement="XFFABPlacement.BottomEnd"
+       Color="XFButtonColor.Primary" />
+
+<XFFAB AriaLabel="Acao inferior esquerda"
+       Placement="XFFABPlacement.BottomStart"
+       Color="XFButtonColor.Success" />
+
+<XFFAB AriaLabel="Acao superior direita"
+       Placement="XFFABPlacement.TopEnd"
+       Color="XFButtonColor.Warning" />
+""", """
+<XFFAB AriaLabel="Bottom right action"
+       Placement="XFFABPlacement.BottomEnd"
+       Color="XFButtonColor.Primary" />
+
+<XFFAB AriaLabel="Bottom left action"
+       Placement="XFFABPlacement.BottomStart"
+       Color="XFButtonColor.Success" />
+
+<XFFAB AriaLabel="Top right action"
+       Placement="XFFABPlacement.TopEnd"
+       Color="XFButtonColor.Warning" />
+""");
+
+    private string ExtendedCode => T("""
+<XFFAB AriaLabel="Abrir importacoes"
+       Text="Importar"
+       Items="ImportItems"
+       Open="controlledOpen"
+       OpenChanged="SetControlledOpenAsync"
+       Color="XFButtonColor.Success" />
+
+@code {
+    private bool controlledOpen;
+
+    private Task SetControlledOpenAsync(bool open)
+    {
+        controlledOpen = open;
+        return Task.CompletedTask;
+    }
+}
+""", """
+<XFFAB AriaLabel="Open imports"
+       Text="Import"
+       Items="ImportItems"
+       Open="controlledOpen"
+       OpenChanged="SetControlledOpenAsync"
+       Color="XFButtonColor.Success" />
+
+@code {
+    private bool controlledOpen;
+
+    private Task SetControlledOpenAsync(bool open)
+    {
+        controlledOpen = open;
+        return Task.CompletedTask;
+    }
+}
+""");
+
+    private Task CreateRecordAsync(MouseEventArgs args)
+    {
+        createCount++;
+        lastAction = T("Criar oportunidade", "Create opportunity");
+        return Task.CompletedTask;
+    }
+
+    private Task SelectFabItemAsync(XFFABMenuItem item)
+    {
+        lastAction = item.Text;
+        return Task.CompletedTask;
+    }
+
+    private Task SetControlledOpenAsync(bool open)
+    {
+        controlledOpen = open;
+        return Task.CompletedTask;
+    }
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+    private sealed record PlacementPreviewRow(string Label, string Token, string AriaLabel, XFFABPlacement Placement, XFButtonColor Color, string Class);
+}

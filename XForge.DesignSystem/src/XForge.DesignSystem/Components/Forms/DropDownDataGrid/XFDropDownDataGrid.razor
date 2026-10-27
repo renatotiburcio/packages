@@ -1,0 +1,147 @@
+@typeparam TItem
+@typeparam TValue
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style" @onkeydown="HandleKeyDownAsync">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@ShellWrapClass">
+        <div class="@FieldShellClass">
+            @if (StartIcon is not null)
+            {
+                <div class="@AdornmentClass">@StartIcon</div>
+            }
+
+            <input @ref="InputRef"
+                   @attributes="AdditionalAttributes"
+                   id="@Id"
+                   name="@Name"
+                   class="@InputClass"
+                   type="text"
+                   autocomplete="off"
+                   placeholder="@Placeholder"
+                   disabled="@Disabled"
+                   readonly="@ReadOnly"
+                   required="@Required"
+                   aria-label="@AriaLabel"
+                   aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                   aria-invalid="@AriaInvalid"
+                   aria-required="@Required"
+                   aria-readonly="@ReadOnly"
+                   aria-describedby="@DescribedBy"
+                   aria-expanded="@IsOpen"
+                   aria-controls="@ListboxId"
+                   role="combobox"
+                   value="@DisplayText"
+                   @oninput="HandleInputAsync"
+                   @onfocus="HandleFocusAsync" />
+
+            @if (Loading)
+            {
+                <div class="@AdornmentClass">
+                    <span class="h-4 w-4 animate-spin rounded-full border-2 border-[color-mix(in_oklab,var(--color-primary)_25%,transparent)] border-t-primary" aria-label="@LoadingText"></span>
+                </div>
+            }
+            else if (Clearable && HasSelection && !Disabled && !ReadOnly)
+            {
+                <button type="button" class="@IconButtonClass" aria-label="@ClearLabel" @onclick="ClearAsync">
+                    <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("xmark")</span>
+                </button>
+            }
+
+            <button type="button"
+                    class="@ToggleButtonClass"
+                    disabled="@Disabled"
+                    aria-label="@ToggleLabel"
+                    aria-expanded="@IsOpen"
+                    aria-controls="@ListboxId"
+                    @onclick="ToggleAsync">
+                <span class="@ChevronClass">@XFSvgIcons.Markup("chevron-down")</span>
+            </button>
+        </div>
+
+        @if (IsOpen)
+        {
+            <div id="@ListboxId" class="@DropdownClass" role="listbox" aria-label="@ListboxLabel">
+                @if (ShowSearch)
+                {
+                    <div class="border-b border-border-light p-2">
+                        <input class="w-full rounded-md border border-border-light bg-bg-surface px-3 py-1.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                               type="text"
+                               placeholder="@SearchPlaceholder"
+                               value="@SearchText"
+                               @oninput="HandleSearchInputAsync"
+                               @onkeydown="HandleSearchKeyDownAsync" />
+                    </div>
+                }
+
+                @if (FilteredItems.Count == 0)
+                {
+                    <div class="@StateRowClass">@EmptyText</div>
+                }
+                else
+                {
+                    <div class="overflow-auto" style="max-height: @($"{MaxDropdownHeight}px")">
+                        <table class="w-full text-sm">
+                            @if (Columns is not null)
+                            {
+                                <thead class="sticky top-0 z-10 bg-surface-50 text-xs font-semibold uppercase text-text-secondary">
+                                    <tr>
+                                        @foreach (var column in Columns)
+                                        {
+                                            <th class="px-3 py-2 text-left">@column.Title</th>
+                                        }
+                                    </tr>
+                                </thead>
+                            }
+                            <tbody>
+                                @foreach (var indexedItem in FilteredItems.Select((item, index) => new { item, index }))
+                                {
+                                    var isSelected = IsSelected(indexedItem.item);
+                                    <tr class="@GetRowClass(indexedItem.index, isSelected)"
+                                        role="option"
+                                        aria-selected="@isSelected.ToString().ToLowerInvariant()"
+                                        @onclick="@(() => SelectItemAsync(indexedItem.item))">
+                                        @if (Columns is not null)
+                                        {
+                                            @foreach (var column in Columns)
+                                            {
+                                                <td class="px-3 py-2">@(column.Template?.Invoke(indexedItem.item))</td>
+                                            }
+                                        }
+                                        else if (ItemTemplate is not null)
+                                        {
+                                            <td class="px-3 py-2">@ItemTemplate(indexedItem.item)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="px-3 py-2">@GetItemText(indexedItem.item)</td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">@FirstValidationMessage</div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">@HelperText</div>
+    }
+</div>

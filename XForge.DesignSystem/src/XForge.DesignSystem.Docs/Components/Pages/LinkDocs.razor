@@ -1,0 +1,332 @@
+@page "/components/link"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Form", "Form")"
+                 Title="@T("Link", "Link")"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFLink" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="Navigation" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Anchor" />
+                    </XFStack>
+                    <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                        @T("Link de navegacao estilizado com suporte a icon, target e estados.",
+                           "Styled navigation link with icon, target and states support.")
+                    </XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                        @T("Elemento anchor nativo com estilos do design system, suporte a icon, target externo e estados disabled.",
+                           "Native anchor element with design system styles, external target support and disabled states.")
+                    </XFTypography>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Link simples com Href e Text.", "Simple link with Href and Text."), ExBasic(), Code1)
+            @Example(T("2. Com icon e target", "2. With icon and target"), T("Link externo com icon e target=_blank.", "External link with icon and target=_blank."), ExIcon(), Code2)
+            @Example(T("3. Enterprise", "3. Enterprise"), T("Links de navegacao do sistema.", "System navigation links."), ExEnterprise(), Code3)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Form", "Form");
+    private string PageTitleText => T("XFLink", "XFLink");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" FullWidth="true">
+        <XFLink Href="/home" Text="Inicio" />
+        <XFLink Href="/docs" Text="Documentacao" />
+        <XFLink Href="https://example.com" Text="Externo" Target="_blank" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Link nativo", "Native link"), T("Elemento <a> com estilos do design system.", "Anchor element with design system styles."), "link"),
+        new(T("Target externo", "External target"), T("Suporte a target=_blank.", "Support for target=_blank."), "arrow-up-right-from-square"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFLink"),
+        new("Namespace", "XForge.DesignSystem.Components.Form.Link"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Form / Link"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("Elemento <a> nativo. href, target, rel.", "Native <a> element. href, target, rel.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Link", "Link"), T("Elemento <a> estilizado.", "Styled anchor element."), "link"),
+        new(T("Navegacao", "Navigation"), T("Navegacao interna ou externa.", "Internal or external navigation."), "route"),
+        new(T("Icon", "Icon"), T("Icone opcional ao lado do texto.", "Optional icon next to text."), "icon")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Navegacao", "Navigation"), T("Links entre paginas e rotas.", "Links between pages and routes."), "route"),
+        new(T("Acoes", "Actions"), T("Links que disparam acoes.", "Links that trigger actions."), "bolt"),
+        new(T("Recursos externos", "External resources"), T("Links para sites externos.", "Links to external sites."), "arrow-up-right-from-square")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Links HTML sem estilo consistente.", "HTML links without consistent styling."), "xmark"),
+        new(T("Depois", "After"), T("Link estilizado com hover, focus e disabled.", "Styled link with hover, focus and disabled states."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("Elemento <a> nativo, focus ring, aria.", "Native <a> element, focus ring, aria."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Navegacao", "Navigation"), T("Entre paginas do sistema.", "Between system pages."), "route"),
+        new(T("Links externos", "External links"), T("Para documentacao, APIs.", "To documentation, APIs."), "arrow-up-right-from-square")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Acoes complexas", "Complex actions"), T("Use XFButton para acoes.", "Use XFButton for actions."), "square"),
+        new(T("Toggle", "Toggle"), T("Use XFSwitch para on/off.", "Use XFSwitch for on/off."), "toggle-on")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Text", T("Texto do link.", "Link text."), "font"),
+        new("Href", T("Destino da navegacao.", "Navigation destination."), "route"),
+        new("Icon", T("Icone opcional.", "Optional icon."), "icon"),
+        new("Target", T("Janela de destino.", "Target window."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Nativo", "Native"), T("Elemento <a> HTML padrao.", "Standard HTML <a> element."), "code"),
+        new(T("Clareza", "Clarity"), T("Texto descritivo do destino.", "Descriptive destination text."), "font"),
+        new(T("Feedback", "Feedback"), T("Hover e focus visiveis.", "Visible hover and focus states."), "eye")
+    ];
+
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" FullWidth="true">
+        <XFLink Href="/home" Text="Inicio" />
+        <XFLink Href="/docs" Text="Documentacao" />
+        <XFLink Href="/about" Text="Sobre" />
+    </XFStack>;
+
+    private RenderFragment ExIcon() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" FullWidth="true">
+        <XFLink Href="https://example.com" Text="Site externo" Target="_blank" Icon="arrow-up-right-from-square" />
+        <XFLink Href="/docs" Text="Documentacao" Icon="book" />
+    </XFStack>;
+
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLink Href="/dashboard" Text="Dashboard" Icon="gauge" />
+        <XFLink Href="/reports" Text="Relatorios" Icon="chart-bar" />
+        <XFLink Href="/settings" Text="Configuracoes" Icon="gear" />
+        <XFLink Href="/help" Text="Ajuda" Icon="circle-question" Disabled="true" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFLink Href=""/home"" Text=""Inicio"" />
+<XFLink Href=""/docs"" Text=""Documentacao"" />";
+    private const string Code2 = @"<XFLink Href=""https://example.com"" Text=""Externo""
+       Target=""_blank"" Icon=""arrow-up-right-from-square"" />";
+    private const string Code3 = @"<XFLink Href=""/dashboard"" Text=""Dashboard"" Icon=""gauge"" />
+<XFLink Href=""/reports"" Text=""Relatorios"" Icon=""chart-bar"" />
+<XFLink Href=""/settings"" Text=""Configuracoes"" Icon=""gear"" />";
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Href", "string?", "null", T("Destino da navegacao.", "Navigation destination.")),
+        new("Text", "string?", "null", T("Texto do link.", "Link text.")),
+        new("Target", "string?", "null", T("Janela de destino (_blank, _self).", "Target window (_blank, _self).")),
+        new("Icon", "string?", "null", T("Nome do icon.", "Icon name.")),
+        new("Disabled", "bool", "false", T("Desabilita o link.", "Disables the link."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnClick", T("Disparado ao clicar no link.", "Fired when link is clicked."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Elemento <a>", "Anchor element"), T("Link nativo HTML.", "Native HTML anchor."), "code"),
+        new(T("href", "href"), T("Destino da navegacao.", "Navigation destination."), "route"),
+        new(T("target", "target"), T("Janela de destino.", "Target window."), "square"),
+        new(T("Focus ring", "Focus ring"), T("Indicador de foco visivel.", "Visible focus indicator."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura responsiva", "Responsive width"), T("Link adapta ao container.", "Link adapts to container."), "maximize"),
+        new(T("Touch 44px", "Touch 44px"), T("Area clicavel minima.", "Minimum click area."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Leve", "Light"), T("Elemento <a> nativo.", "Native <a> element."), "feather")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Navegacao interna", "Internal nav"), T("Entre paginas do sistema.", "Between system pages."), "route"),
+        new(T("Links externos", "External links"), T("Para documentacao, APIs, suporte.", "To documentation, APIs, support."), "arrow-up-right-from-square"),
+        new(T("Breadcrumbs", "Breadcrumbs"), T("Navegacao hierarquica.", "Hierarchical navigation."), "caret-right")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Texto descritivo", "Descriptive text"), T("Nao use 'clique aqui'.", "Do not use 'click here'."), "font"),
+        new(T("Target=_blank com rel", "Target=_blank with rel"), T("Use rel=noopener para links externos.", "Use rel=noopener for external links."), "shield"),
+        new(T("Disabled quando necessario", "Disabled when necessary"), T("Desabilite links indisponiveis.", "Disable unavailable links."), "ban")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("'Clique aqui'", "'Click here'"), T("Texto descritivo e melhor.", "Descriptive text is better."), "xmark"),
+        new(T("Sem href", "No href"), T("Link sem destino e confuso.", "Link without destination is confusing."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("text", T("text-primary underline-offset-2.", "text-primary underline-offset-2.")),
+        new("hover", T("hover:text-primary-hover.", "hover:text-primary-hover.")),
+        new("focus", T("focus-visible:ring-2 focus-visible:ring-primary/24%.", "focus-visible:ring-2 focus-visible:ring-primary/24%."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, Href, Target, Disabled.", "Render, props, Href, Target, Disabled tests.")),
+        new("Accessibility", T("Elemento <a>, href, target, focus ring.", "Anchor element, href, target, focus ring."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Href", T("Href e obrigatorio para navegacao.", "Href is required for navigation.")),
+        new("Disabled", T("Link disabled nao navega.", "Disabled link does not navigate."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFButton", T("Botao de acao.", "Action button."), "square"),
+        new("XFNavLink", T("Link de navegacao ativo.", "Active navigation link."), "route"),
+        new("XFBreadcrumb", T("Navegacao hierarquica.", "Hierarchical navigation."), "caret-right")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Link vs Button?", "Link vs Button?"), T("Link = navegacao. Button = acao.", "Link = navigation. Button = action.")),
+        new(T("Como abrir em nova aba?", "How to open in new tab?"), T("Use Target=\"_blank\".", "Use Target=\"_blank\".")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-30", T("Pagina criada no padrao enterprise com 3 exemplos.", "Page created in enterprise standard with 3 examples."))
+    ];
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

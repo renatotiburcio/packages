@@ -1,0 +1,31 @@
+﻿@namespace XForge.DesignSystem.Components.Icon
+<div class="xf-icon-color-picker" role="radiogroup" aria-label="Icon color">
+  @foreach (var c in _colors)
+  {
+    <button type="button" role="radio" aria-checked="@(c == Color)"
+            class="xf-icon-color-picker__swatch" data-color="@c"
+            style="background: @XFIconColorMap.ToCssVariable(c)"
+            @onclick="() => SetColor(c)" @key="c">
+      <span class="xf-icon" aria-hidden="true">@((MarkupString)_previewSvg)</span>
+    </button>
+  }
+  <label class="xf-icon-color-picker__custom">
+    <span>Custom</span>
+    <input type="color" value="@(CustomColor ?? "#0078d4")" @oninput="OnCustom" />
+    <input type="text" placeholder="#hex" value="@CustomColor" @oninput="OnCustom" />
+  </label>
+</div>
+@code {
+    [Parameter] public XFIconColor Color { get; set; } = XFIconColor.Accent;
+    [Parameter] public EventCallback<XFIconColor> ColorChanged { get; set; }
+    [Parameter] public string? CustomColor { get; set; }
+    [Parameter] public EventCallback<string> CustomColorChanged { get; set; }
+    private static readonly XFIconColor[] _colors = { XFIconColor.Accent, XFIconColor.Lightweight, XFIconColor.Success, XFIconColor.Warning, XFIconColor.Error, XFIconColor.Important };
+    private string _previewSvg = "<svg viewBox=\"0 0 20 20\" width=\"16\" height=\"16\"><circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"currentColor\"/></svg>";
+    private async Task SetColor(XFIconColor c) { Color = c; await ColorChanged.InvokeAsync(c); }
+    private async Task OnCustom(ChangeEventArgs e)
+    {
+        CustomColor = e.Value?.ToString();
+        if (!string.IsNullOrEmpty(CustomColor)) await CustomColorChanged.InvokeAsync(CustomColor);
+    }
+}

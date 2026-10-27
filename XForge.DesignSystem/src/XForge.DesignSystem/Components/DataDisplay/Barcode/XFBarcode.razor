@@ -1,0 +1,27 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes" id="@Id" class="@RootClass" role="img" aria-label="@ResolvedAriaLabel">
+    @if (CanRender)
+    {
+        <svg class="block h-auto w-full"
+             viewBox="@ViewBox"
+             preserveAspectRatio="xMidYMid meet"
+             xmlns="http://www.w3.org/2000/svg">
+            <rect width="@SvgWidth" height="@SvgHeight" fill="@BackgroundColor" />
+            @foreach (var bar in Bars)
+            {
+                <rect x="@bar.X" y="@QuietZone" width="@bar.Width" height="@BarHeight" fill="@ForegroundColor" />
+            }
+            @if (ShowText)
+            {
+                @((MarkupString)TextElement)
+            }
+        </svg>
+    }
+    else
+    {
+        <div class="rounded-lg border border-dashed border-border-light bg-surface-50 px-4 py-6 text-center text-sm text-text-secondary">
+            @EmptyText
+        </div>
+    }
+</div>

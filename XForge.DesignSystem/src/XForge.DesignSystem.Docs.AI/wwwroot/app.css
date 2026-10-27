@@ -1,0 +1,302 @@
+/* ============================================================================
+ * XForge Docs — Tailwind v4 entry point
+ *
+ * This file contains ONLY:
+ *   - Tailwind directives (@import, @source, @theme, @custom-variant)
+ *   - Tailwind-specific base reset (ring vars)
+ *   - Docs-specific page reset (html, body)
+ *
+ * All design-system-owned CSS (theme tokens, bridge utilities, component styles,
+ * accessibility, keyframes) lives in XForge.DesignSystem/wwwroot/css/xf-designsystem.css
+ * and is loaded via <link> in index.html.
+ * ============================================================================ */
+@import "tailwindcss";
+
+@source "../**/*.razor";
+@source "../**/*.html";
+@source "../**/*.cs";
+@source "../**/*.cshtml";
+@source "../../XForge.DesignSystem.Docs.Shared/**/*.razor";
+@source "../../XForge.DesignSystem.Docs.Shared/**/*.cs";
+@source "../../XForge.DesignSystem/**/*.razor";
+@source "../../XForge.DesignSystem/**/*.cs";
+@source "../../XForge.DesignSystem/**/*.razor.cs";
+@source "../../XForge.DesignSystem.AI/**/*.razor";
+@source "../../XForge.DesignSystem.AI/**/*.cs";
+@source "../../XForge.DesignSystem.AI/**/*.razor.cs";
+
+/* ============================================================================
+ * TAILWIND v4 THEME — values used to generate utility classes
+ * These are static build-time values. Runtime theme switching is handled by
+ * CSS custom properties in xf-designsystem.css (:root[data-theme], :root[data-brand]).
+ * ============================================================================ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Text colors */
+  --color-text-primary: rgb(15 23 42);
+  --color-text-secondary: rgb(51 65 85);
+  --color-text-muted: rgb(100 116 139);
+  --color-text-subtle: rgb(148 163 184);
+  --color-text-inverse: rgb(255 255 255);
+
+  /* Semantic text colors (AA-compliant on bg-surface) */
+  --color-primary-link: rgb(37 99 235);
+  --color-success-text: rgb(21 128 61);
+  --color-warning-text: rgb(120 53 15);
+  --color-danger-text: rgb(153 27 27);
+  --color-info-text: rgb(29 78 216);
+
+  /* Border colors */
+  --color-border: rgb(226 232 240);
+  --color-border-light: rgb(241 245 249);
+  --color-border-focus: rgb(59 130 246);
+
+  /* Backgrounds */
+  --color-bg: rgb(241 245 249);
+  --color-bg-surface: rgb(255 255 255);
+
+  /* Surfaces */
+  --color-surface-50: rgb(248 250 252);
+  --color-surface-100: rgb(241 245 249);
+  --color-surface-200: rgb(226 232 240);
+  --color-surface-300: rgb(203 213 225);
+  --color-surface-400: rgb(148 163 184);
+  --color-surface-500: rgb(100 116 139);
+  --color-surface-600: rgb(71 85 105);
+  --color-surface-700: rgb(51 65 85);
+  --color-surface-800: rgb(30 41 59);
+  --color-surface-900: rgb(15 23 42);
+  --color-surface-950: rgb(2 6 23);
+}
+
+/* ============================================================================
+ * DARK MODE variant
+ * ============================================================================ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ============================================================================
+ * BASE — Tailwind ring vars reset (docs-specific)
+ * ============================================================================ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    --tw-ring-inset: ;
+    --tw-ring-color: var(--color-border-focus);
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: var(--color-bg-surface);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  #app {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+}
+
+/* ============================================================================
+ * BRAND THEME — Primary color scale per brand (light + dark)
+ * Each brand overrides the primary palette when [data-brand] is set on :root.
+ * Dark mode shifts primary to step 400 and inverts hover/active for visibility.
+ * ============================================================================ */
+@layer base {
+/* --- ai-core (#7c3aed) --- */
+:root[data-brand="brand-ai-core"] {
+  --color-primary-50: rgb(247 243 254);
+  --color-primary-100: rgb(237 227 252);
+  --color-primary-200: rgb(218 200 250);
+  --color-primary-300: rgb(192 160 246);
+  --color-primary-400: rgb(161 113 242);
+  --color-primary-500: rgb(124 58 237);
+  --color-primary-600: rgb(109 51 209);
+  --color-primary-700: rgb(94 44 180);
+  --color-primary-800: rgb(77 36 147);
+  --color-primary-900: rgb(60 28 114);
+  --color-primary-950: rgb(40 19 76);
+  --color-primary: var(--color-primary-500);
+  --color-primary-hover: var(--color-primary-600);
+  --color-primary-active: var(--color-primary-700);
+  --color-primary-contrast: rgb(255 255 255);
+}
+
+:root[data-theme="dark"][data-brand="brand-ai-core"] {
+  --color-primary-50: rgb(247 243 254);
+  --color-primary-100: rgb(237 227 252);
+  --color-primary-200: rgb(218 200 250);
+  --color-primary-300: rgb(192 160 246);
+  --color-primary-400: rgb(161 113 242);
+  --color-primary-500: rgb(124 58 237);
+  --color-primary-600: rgb(109 51 209);
+  --color-primary-700: rgb(94 44 180);
+  --color-primary-800: rgb(77 36 147);
+  --color-primary-900: rgb(60 28 114);
+  --color-primary-950: rgb(40 19 76);
+  --color-primary: var(--color-primary-400);
+  --color-primary-hover: var(--color-primary-300);
+  --color-primary-active: var(--color-primary-500);
+  --color-primary-contrast: rgb(255 255 255);
+}
+
+/* --- ai-agents (#059669) --- */
+:root[data-brand="brand-ai-agents"] {
+  --color-primary-50: rgb(240 249 246);
+  --color-primary-100: rgb(220 240 234);
+  --color-primary-200: rgb(185 226 213);
+  --color-primary-300: rgb(135 205 183);
+  --color-primary-400: rgb(75 179 147);
+  --color-primary-500: rgb(5 150 105);
+  --color-primary-600: rgb(4 132 92);
+  --color-primary-700: rgb(4 114 80);
+  --color-primary-800: rgb(3 93 65);
+  --color-primary-900: rgb(2 72 50);
+  --color-primary-950: rgb(2 48 34);
+  --color-primary: var(--color-primary-500);
+  --color-primary-hover: var(--color-primary-600);
+  --color-primary-active: var(--color-primary-700);
+  --color-primary-contrast: rgb(15 23 42);
+}
+
+:root[data-theme="dark"][data-brand="brand-ai-agents"] {
+  --color-primary-50: rgb(240 249 246);
+  --color-primary-100: rgb(220 240 234);
+  --color-primary-200: rgb(185 226 213);
+  --color-primary-300: rgb(135 205 183);
+  --color-primary-400: rgb(75 179 147);
+  --color-primary-500: rgb(5 150 105);
+  --color-primary-600: rgb(4 132 92);
+  --color-primary-700: rgb(4 114 80);
+  --color-primary-800: rgb(3 93 65);
+  --color-primary-900: rgb(2 72 50);
+  --color-primary-950: rgb(2 48 34);
+  --color-primary: var(--color-primary-400);
+  --color-primary-hover: var(--color-primary-300);
+  --color-primary-active: var(--color-primary-500);
+  --color-primary-contrast: rgb(15 23 42);
+}
+
+/* --- ai-business (#0284c7) --- */
+:root[data-brand="brand-ai-business"] {
+  --color-primary-50: rgb(240 248 252);
+  --color-primary-100: rgb(220 238 247);
+  --color-primary-200: rgb(184 221 239);
+  --color-primary-300: rgb(134 196 228);
+  --color-primary-400: rgb(73 166 215);
+  --color-primary-500: rgb(2 132 199);
+  --color-primary-600: rgb(2 116 175);
+  --color-primary-700: rgb(2 100 151);
+  --color-primary-800: rgb(1 82 123);
+  --color-primary-900: rgb(1 63 96);
+  --color-primary-950: rgb(1 42 64);
+  --color-primary: var(--color-primary-500);
+  --color-primary-hover: var(--color-primary-600);
+  --color-primary-active: var(--color-primary-700);
+  --color-primary-contrast: rgb(15 23 42);
+}
+
+:root[data-theme="dark"][data-brand="brand-ai-business"] {
+  --color-primary-50: rgb(240 248 252);
+  --color-primary-100: rgb(220 238 247);
+  --color-primary-200: rgb(184 221 239);
+  --color-primary-300: rgb(134 196 228);
+  --color-primary-400: rgb(73 166 215);
+  --color-primary-500: rgb(2 132 199);
+  --color-primary-600: rgb(2 116 175);
+  --color-primary-700: rgb(2 100 151);
+  --color-primary-800: rgb(1 82 123);
+  --color-primary-900: rgb(1 63 96);
+  --color-primary-950: rgb(1 42 64);
+  --color-primary: var(--color-primary-400);
+  --color-primary-hover: var(--color-primary-300);
+  --color-primary-active: var(--color-primary-500);
+  --color-primary-contrast: rgb(15 23 42);
+}
+
+/* --- ai-multimodal (#db2777) --- */
+:root[data-brand="brand-ai-multimodal"] {
+  --color-primary-50: rgb(253 242 247);
+  --color-primary-100: rgb(250 225 236);
+  --color-primary-200: rgb(245 195 217);
+  --color-primary-300: rgb(238 151 190);
+  --color-primary-400: rgb(229 99 157);
+  --color-primary-500: rgb(219 39 119);
+  --color-primary-600: rgb(193 34 105);
+  --color-primary-700: rgb(166 30 90);
+  --color-primary-800: rgb(136 24 74);
+  --color-primary-900: rgb(105 19 57);
+  --color-primary-950: rgb(70 12 38);
+  --color-primary: var(--color-primary-500);
+  --color-primary-hover: var(--color-primary-600);
+  --color-primary-active: var(--color-primary-700);
+  --color-primary-contrast: rgb(255 255 255);
+}
+
+:root[data-theme="dark"][data-brand="brand-ai-multimodal"] {
+  --color-primary-50: rgb(253 242 247);
+  --color-primary-100: rgb(250 225 236);
+  --color-primary-200: rgb(245 195 217);
+  --color-primary-300: rgb(238 151 190);
+  --color-primary-400: rgb(229 99 157);
+  --color-primary-500: rgb(219 39 119);
+  --color-primary-600: rgb(193 34 105);
+  --color-primary-700: rgb(166 30 90);
+  --color-primary-800: rgb(136 24 74);
+  --color-primary-900: rgb(105 19 57);
+  --color-primary-950: rgb(70 12 38);
+  --color-primary: var(--color-primary-400);
+  --color-primary-hover: var(--color-primary-300);
+  --color-primary-active: var(--color-primary-500);
+  --color-primary-contrast: rgb(255 255 255);
+}
+
+/* --- ai-governance (#d97706) --- */
+:root[data-brand="brand-ai-governance"] {
+  --color-primary-50: rgb(253 247 240);
+  --color-primary-100: rgb(250 236 220);
+  --color-primary-200: rgb(244 217 185);
+  --color-primary-300: rgb(237 190 135);
+  --color-primary-400: rgb(228 157 76);
+  --color-primary-500: rgb(217 119 6);
+  --color-primary-600: rgb(191 105 5);
+  --color-primary-700: rgb(165 90 5);
+  --color-primary-800: rgb(135 74 4);
+  --color-primary-900: rgb(104 57 3);
+  --color-primary-950: rgb(69 38 2);
+  --color-primary: var(--color-primary-500);
+  --color-primary-hover: var(--color-primary-600);
+  --color-primary-active: var(--color-primary-700);
+  --color-primary-contrast: rgb(15 23 42);
+}
+
+:root[data-theme="dark"][data-brand="brand-ai-governance"] {
+  --color-primary-50: rgb(253 247 240);
+  --color-primary-100: rgb(250 236 220);
+  --color-primary-200: rgb(244 217 185);
+  --color-primary-300: rgb(237 190 135);
+  --color-primary-400: rgb(228 157 76);
+  --color-primary-500: rgb(217 119 6);
+  --color-primary-600: rgb(191 105 5);
+  --color-primary-700: rgb(165 90 5);
+  --color-primary-800: rgb(135 74 4);
+  --color-primary-900: rgb(104 57 3);
+  --color-primary-950: rgb(69 38 2);
+  --color-primary: var(--color-primary-400);
+  --color-primary-hover: var(--color-primary-300);
+  --color-primary-active: var(--color-primary-500);
+  --color-primary-contrast: rgb(15 23 42);
+}
+}

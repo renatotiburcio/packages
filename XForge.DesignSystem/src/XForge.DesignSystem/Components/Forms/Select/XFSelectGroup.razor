@@ -1,0 +1,9 @@
+﻿@typeparam TValue
+
+<div class="xf-select-group-heading" role="group" aria-label="@Label">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <span>@Label</span>
+    }
+</div>
+@ChildContent

@@ -1,0 +1,39 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@RootClass"
+     style="@Style"
+     role="toolbar"
+     aria-label="@AriaLabel"
+     aria-orientation="@OrientationValue"
+     @onkeydown="HandleKeyDownAsync">
+    @if (StartContent is not null || Items.Count > 0)
+    {
+        <div class="@SectionClass">
+            @if (StartContent is not null)
+            {
+                @StartContent
+            }
+            @RenderItems(Items)
+        </div>
+    }
+
+    @if (ChildContent is not null)
+    {
+        <div class="@SectionClass">
+            @ChildContent
+        </div>
+    }
+
+    @if (EndContent is not null || EndItems.Count > 0)
+    {
+        <div class="@EndSectionClass">
+            @if (EndContent is not null)
+            {
+                @EndContent
+            }
+            @RenderItems(EndItems)
+        </div>
+    }
+</div>

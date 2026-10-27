@@ -1,0 +1,87 @@
+@typeparam TItem
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <section id="@Id" class="@GetComponentClass()" aria-label="@AriaLabel" @attributes="AdditionalAttributes">
+        @if (!string.IsNullOrWhiteSpace(Title) || !string.IsNullOrWhiteSpace(Description))
+        {
+            <header class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                <div class="min-w-0">
+                    @if (!string.IsNullOrWhiteSpace(Title))
+                    {
+                        <h3 class="truncate text-base font-bold text-text-primary">@Title</h3>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Description))
+                    {
+                        <p class="text-sm text-text-secondary">@Description</p>
+                    }
+                </div>
+                @if (ShowSummary && VisiblePointCount > 0)
+                {
+                    <span class="inline-flex w-fit rounded-md bg-[color-mix(in_oklab,var(--color-primary)_8%,transparent)] px-2 py-1 text-xs font-bold text-primary ring-1 ring-[color-mix(in_oklab,var(--color-primary)_14%,transparent)]">
+                        @FormatValue(Total)
+                    </span>
+                }
+            </header>
+        }
+
+        @if (VisiblePointCount == 0)
+        {
+            <div class="@EmptyClass">
+                @if (EmptyContent is not null)
+                {
+                    @EmptyContent
+                }
+                else
+                {
+                    <span>@EmptyText</span>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="@ChartHostClass"
+                 @ref="ChartElement"
+                 role="img"
+                 aria-labelledby="@TitleId @DescriptionId"
+                 data-xf-chart="@Type.ToString().ToLowerInvariant()"
+                 data-xf-chart-options="@CustomOptionsState">
+            </div>
+
+            <div class="sr-only">
+                <h4 id="@TitleId">@AccessibleTitle</h4>
+                <p id="@DescriptionId">@AccessibleDescription</p>
+                @foreach (var point in ActivePoints)
+                {
+                    <button type="button" data-xf-chart-point="@point.Label" @onclick="() => SelectPointAsync(point)">
+                        @point.Label: @FormatValue(point.Value)
+                    </button>
+                }
+                @foreach (var annotation in Annotations)
+                {
+                    <p data-xf-chart-annotation="@annotation.Label">@annotation.Label: @FormatValue(annotation.Value)</p>
+                }
+                @foreach (var trendline in Trendlines)
+                {
+                    <p data-xf-chart-trendline="@trendline.Name">@trendline.Name: @FormatValue(trendline.StartValue) - @FormatValue(trendline.EndValue)</p>
+                }
+                @if (ShowDataTable)
+                {
+                    <table>
+                        <caption>@AccessibleTitle</caption>
+                        <thead>
+                            <tr>@if (HasMultipleSeries) { <th>@SeriesHeaderText</th> }<th>@LabelHeaderText</th><th>@ValueHeaderText</th><th>@PercentHeaderText</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var point in ActivePoints)
+                            {
+                                <tr>@if (HasMultipleSeries) { <td>@point.SeriesName</td> }<td>@point.Label</td><td>@FormatValue(point.Value)</td><td>@point.Percent.ToString("P0", EffectiveCulture)</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        }
+    </section>
+}

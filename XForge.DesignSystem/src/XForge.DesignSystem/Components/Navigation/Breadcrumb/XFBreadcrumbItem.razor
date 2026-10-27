@@ -1,0 +1,21 @@
+@inherits XForgeComponentBase
+
+<li @attributes="AdditionalAttributes" id="@Id" class="@GetComponentClass()" style="@Style">
+    @if (Separator is not null)
+    {
+        <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center text-text-muted" aria-hidden="true">@Separator</span>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Href) && !Current)
+    {
+        <a href="@Href" class="@LinkClass">
+            @RenderContent()
+        </a>
+    }
+    else
+    {
+        <span class="@LinkClass" aria-current="@(Current ? "page" : null)">
+            @RenderContent()
+        </span>
+    }
+</li>

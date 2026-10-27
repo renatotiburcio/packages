@@ -1,0 +1,83 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inherits XForgeComponentBase
+
+<div class="@RootClass" style="@Style"
+     role="group"
+     aria-label="@Label"
+     aria-busy="@IsUploading.ToString().ToLowerInvariant()">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <label class="@DropZoneClass"
+           aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+           aria-describedby="@DescribedBy">
+        <InputFile @attributes="AdditionalAttributes"
+                   class="@NativeInputClass"
+                   id="@Id"
+                   OnChange="HandleChangeAsync"
+                   multiple="@Multiple"
+                   accept="@Accept"
+                   disabled="@Disabled" />
+
+        <span class="@IconWrapClass" aria-hidden="true">
+            <span class="inline-block h-5 w-5">@XFSvgIcons.Markup("file-arrow-up")</span>
+        </span>
+
+        <span class="min-w-0 flex-1 space-y-1">
+            <span class="@TitleClass">@ResolvedTitle</span>
+            <span class="@DescriptionClass">@ResolvedDescription</span>
+        </span>
+
+        <span class="@ButtonClass">@ChooseText</span>
+    </label>
+
+    @if (Items.Count > 0)
+    {
+        <div class="@ListClass">
+            @foreach (var item in Items)
+            {
+                <div class="@GetItemClass(item)">
+                    <div class="min-w-0 flex-1">
+                        <div class="truncate text-sm font-medium text-text-primary">@item.Name</div>
+                        <div class="text-xs text-text-secondary">@FormatFileMetadata(item)</div>
+                        @if (ShowProgress && item.Status != XFFileInputStatus.Pending)
+                        {
+                            <div class="mt-2 space-y-1">
+                                <div class="h-1.5 w-full overflow-hidden rounded-full bg-surface-200">
+                                    <div class="@("h-full rounded-full transition-[width] duration-300 ease-out " + GetProgressClass(item.Status))" style="@GetProgressStyle(item.Progress)"></div>
+                                </div>
+                                <div class="@("text-xs font-medium " + GetStatusColorClass(item.Status))">@GetStatusText(item)</div>
+                            </div>
+                        }
+                    </div>
+                    @if (!item.IsValid)
+                    {
+                        <span class="shrink-0 rounded-md bg-[color-mix(in_oklab,var(--color-danger)_8%,transparent)] px-2 py-1 text-xs font-medium text-danger">@item.Error</span>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(ResolvedHelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @ResolvedHelperText
+        </div>
+    }
+</div>
+

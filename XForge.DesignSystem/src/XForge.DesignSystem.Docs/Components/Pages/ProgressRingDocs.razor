@@ -1,0 +1,554 @@
+@page "/feedback/progress-ring"
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.Feedback.Progress
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFProgressRing" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Determinado e indeterminado", "Determinate and indeterminate")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Zero JS", "Zero JS")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Indicador circular semantico para progresso determinado ou indeterminado.",
+                               "Semantic circular indicator for determinate or indeterminate progress.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Anel SVG com 7 cores, 5 tamanhos, label, valor, pausa, formato custom e animacao indeterminada. Puro C# + Tailwind.",
+                               "SVG ring with 7 colors, 5 sizes, label, value, pause, custom format and indeterminate animation. Pure C# + Tailwind.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Progresso circular determinado com valor e cor.", "Determinate circular progress with value and color."), ExBasic(), Code1)
+            @Example(T("2. Indeterminado", "2. Indeterminate"), T("Animacao continua para operacoes sem tempo estimado.", "Continuous animation for operations without estimated time."), ExIndeterminate(), Code2)
+            @Example(T("3. Tamanhos", "3. Sizes"), T("5 tamanhos: Xs, Sm, Md, Lg, Xl.", "5 sizes: Xs, Sm, Md, Lg, Xl."), ExSizes(), Code3)
+            @Example(T("4. Cores", "4. Colors"), T("7 cores semanticas com SVG animado.", "7 semantic colors with animated SVG."), ExColors(), Code4)
+            @Example(T("5. Customizacao de valor", "5. Value customization"), T("Formato, unidade e valor customizado.", "Format, unit and custom value."), ExValueCustomization(), Code5)
+            @Example(T("6. Pausado", "6. Paused"), T("Indeterminado pausado e retomado.", "Paused and resumed indeterminate."), ExPaused(), Code6)
+            @Example(T("7. ChildContent", "7. ChildContent"), T("Conteudo customizado no centro do anel.", "Custom content in ring center."), ExChildContent(), Code7)
+            @Example(T("8. Cenario enterprise", "8. Enterprise scenario"), T("Dashboard KPIs com progresso circular.", "Dashboard KPIs with circular progress."), ExEnterprise(), Code8)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFProgressRing", "XFProgressRing");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private RenderFragment HeroPreview() => @<div class="flex items-center justify-center gap-6 p-4">
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Color="XFProgressColor.Primary" Size="XFExtendedSize.Lg" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">72%</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Indeterminate="true" Color="XFProgressColor.Info" Size="XFExtendedSize.Lg" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Carregando", "Loading")</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="45" ShowValue="true" Color="XFProgressColor.Success" Size="XFExtendedSize.Lg" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">45%</XFTypography>
+        </div>
+    </div>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Circular SVG", "Circular SVG"), T("Anel SVG puro sem canvas.", "Pure SVG ring without canvas."), "circle-notch"),
+        new(T("Determinado e indeterminado", "Determinate and indeterminate"), T("Valor numerico ou animacao continua.", "Numeric value or continuous animation."), "arrows-left-right"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFProgressRing"),
+        new("Namespace", "XForge.DesignSystem.Components.Feedback.Progress"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Feedback / Progress"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=progressbar, aria-valuenow, aria-valuemin, aria-valuemax, aria-valuetext, aria-label.", "role=progressbar, aria-valuenow, aria-valuemin, aria-valuemax, aria-valuetext, aria-label.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Indicador circular", "Circular indicator"), T("Anel SVG com preenchimento percentual.", "SVG ring with percentage fill."), "circle-notch"),
+        new(T("Valor ou indeterminado", "Value or indeterminate"), T("Mostra percentual ou animacao continua.", "Shows percentage or continuous animation."), "arrows-left-right"),
+        new(T("Compacto", "Compact"), T("Ocupa pouco espaco. Ideal para dashboards.", "Takes up little space. Ideal for dashboards."), "minimize")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Dashboards", "Dashboards"), T("KPIs e metricas visuais.", "Visual KPIs and metrics."), "chart-pie"),
+        new(T("Uploads", "Uploads"), T("Progresso circular de upload.", "Circular upload progress."), "upload"),
+        new(T("Loading states", "Loading states"), T("Indicador durante carregamento.", "Indicator during loading."), "spinner")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Spinner generico sem contexto.", "Generic spinner without context."), "xmark"),
+        new(T("Depois", "After"), T("Anel semantico com cor, valor e label.", "Semantic ring with color, value and label."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=progressbar, aria-valuetext, aria-label.", "role=progressbar, aria-valuetext, aria-label."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Dashboards KPI", "KPI dashboards"), T("Percentual de meta atingida.", "Percentage of target reached."), "chart-pie"),
+        new(T("Uploads longos", "Long uploads"), T("Progresso de upload de arquivos grandes.", "Large file upload progress."), "upload")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Barras", "Bars"), T("Use XFProgress para barras horizontais.", "Use XFProgress for horizontal bars."), "bars"),
+        new(T("Contagem regressiva", "Countdown"), T("Use XFTimeSpan para contagem.", "Use XFTimeSpan for countdown."), "clock")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Track", T("Anel de fundo com cor neutra.", "Background ring with neutral color."), "circle"),
+        new("Fill", T("Arco de preenchimento com cor semantica.", "Fill arc with semantic color."), "circle-notch"),
+        new("Center", T("Texto central com valor ou ChildContent.", "Center text with value or ChildContent."), "font")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Compactness", "Compactness"), T("Ocupa espaco minimo com impacto visual maximo.", "Takes minimum space with maximum visual impact."), "minimize"),
+        new(T("Cor = significado", "Color = meaning"), T("Success=concluido, Info=andamento, Warning=atraso.", "Success=done, Info=in-progress, Warning=delayed."), "palette"),
+        new(T("Simplicidade", "Simplicity"), T("Um anel, uma metrica. Sem sobrecarga.", "One ring, one metric. No overload."), "feather")
+    ];
+
+    private RenderFragment ExBasic() => @<div class="flex items-center gap-6">
+        <XFProgressRing Value="25" ShowValue="true" Color="XFProgressColor.Primary" />
+        <XFProgressRing Value="60" ShowValue="true" Color="XFProgressColor.Success" />
+        <XFProgressRing Value="90" ShowValue="true" Color="XFProgressColor.Warning" />
+    </div>;
+
+    private RenderFragment ExIndeterminate() => @<div class="flex items-center gap-6">
+        <XFProgressRing Indeterminate="true" Color="XFProgressColor.Primary" />
+        <XFProgressRing Indeterminate="true" Color="XFProgressColor.Info" LoadingText="@T("Sincronizando...", "Syncing...")" />
+    </div>;
+
+    private RenderFragment ExSizes() => @<div class="flex items-end gap-4">
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Size="XFExtendedSize.Xs" Color="XFProgressColor.Primary" />
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Xs" />
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Size="XFExtendedSize.Sm" Color="XFProgressColor.Primary" />
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Sm" />
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Size="XFExtendedSize.Md" Color="XFProgressColor.Primary" />
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Md" />
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Size="XFExtendedSize.Lg" Color="XFProgressColor.Primary" />
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Lg" />
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Size="XFExtendedSize.Xl" Color="XFProgressColor.Primary" />
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Xl" />
+        </div>
+    </div>;
+
+    private RenderFragment ExColors() => @<div class="flex flex-wrap items-center gap-5">
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Color="XFProgressColor.Primary" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Primary</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Color="XFProgressColor.Secondary" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Secondary</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Color="XFProgressColor.Success" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Success</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Color="XFProgressColor.Warning" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Warning</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Color="XFProgressColor.Danger" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Danger</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Color="XFProgressColor.Info" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Info</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" ShowValue="true" Color="XFProgressColor.Neutral" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Neutral</XFTypography>
+        </div>
+    </div>;
+
+    private RenderFragment ExValueCustomization() => @<div class="flex flex-wrap items-center gap-6">
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="47850" Max="100000" Unit=" R$" ShowValue="true" Color="XFProgressColor.Primary" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Unit=" R$"</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="83" Unit="" ShowValue="true" Color="XFProgressColor.Success" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Unit=""</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="5" Min="0" Max="5" Unit="/5" ShowValue="true" Color="XFProgressColor.Warning" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Unit="/5"</XFTypography>
+        </div>
+    </div>;
+
+    private RenderFragment ExPaused() => @<div class="flex items-center gap-6">
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Indeterminate="true" Paused="true" Color="XFProgressColor.Primary" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Pausado", "Paused")</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Indeterminate="true" Color="XFProgressColor.Primary" />
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Ativo", "Active")</XFTypography>
+        </div>
+    </div>;
+
+    private RenderFragment ExChildContent() => @<div class="flex items-center gap-6">
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="72" Color="XFProgressColor.Primary">
+                <span class="text-xs font-semibold text-text-primary">72%</span>
+            </XFProgressRing>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">ChildContent</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Value="45" Color="XFProgressColor.Success" Size="XFExtendedSize.Lg">
+                <div class="flex flex-col items-center gap-1">
+                    <span class="text-sm font-bold text-text-primary">45</span>
+                    <span class="text-[9px] text-text-secondary">pontos</span>
+                </div>
+            </XFProgressRing>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Valor + label", "Value + label")</XFTypography>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <XFProgressRing Indeterminate="true" Color="XFProgressColor.Info" Size="XFExtendedSize.Lg">
+                <span class="text-xs font-semibold text-info">OK</span>
+            </XFProgressRing>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Indeterminado + texto", "Indeterminate + text")</XFTypography>
+        </div>
+    </div>;
+
+    private RenderFragment ExEnterprise() => @<div class="overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-sm">
+        <div class="flex items-center justify-between border-b border-border-light bg-surface-50/80 px-5 py-3">
+            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Dashboard KPIs", "Dashboard KPIs")</XFTypography>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Atualizado", "Updated")" />
+        </div>
+        <div class="grid gap-6 p-6 sm:grid-cols-3">
+            <div class="flex flex-col items-center gap-3">
+                <XFProgressRing Value="87" ShowValue="true" Color="XFProgressColor.Success" Size="XFExtendedSize.Lg" />
+                <div class="text-center">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("Meta de vendas", "Sales target")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">87% @T("atingido", "reached")</XFTypography>
+                </div>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+                <XFProgressRing Indeterminate="true" Color="XFProgressColor.Info" Size="XFExtendedSize.Lg" LoadingText="@T("Sincronizando...", "Syncing...")" />
+                <div class="text-center">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("Backup ERP", "ERP Backup")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Em andamento", "In progress")</XFTypography>
+                </div>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+                <XFProgressRing Value="23" ShowValue="true" Color="XFProgressColor.Danger" Size="XFExtendedSize.Lg" />
+                <div class="text-center">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("Estoque baixo", "Low stock")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">23 @T("itens restantes", "items left")</XFTypography>
+                </div>
+            </div>
+        </div>
+    </div>;
+
+    private const string Code1 = @"<XFProgressRing Value=""25"" ShowValue=""true"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Value=""60"" ShowValue=""true"" Color=""XFProgressColor.Success"" />
+<XFProgressRing Value=""90"" ShowValue=""true"" Color=""XFProgressColor.Warning"" />";
+    private const string Code2 = @"<XFProgressRing Indeterminate=""true"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Indeterminate=""true"" Color=""XFProgressColor.Info"" LoadingText=""Sincronizando..."" />";
+    private const string Code3 = @"<XFProgressRing Value=""72"" ShowValue=""true"" Size=""XFExtendedSize.Xs"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Size=""XFExtendedSize.Sm"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Size=""XFExtendedSize.Md"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Size=""XFExtendedSize.Lg"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Size=""XFExtendedSize.Xl"" Color=""XFProgressColor.Primary"" />";
+    private const string Code4 = @"<XFProgressRing Value=""72"" ShowValue=""true"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Color=""XFProgressColor.Secondary"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Color=""XFProgressColor.Success"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Color=""XFProgressColor.Warning"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Color=""XFProgressColor.Danger"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Color=""XFProgressColor.Info"" />
+<XFProgressRing Value=""72"" ShowValue=""true"" Color=""XFProgressColor.Neutral"" />";
+    private const string Code5 = @"<XFProgressRing Value=""47850"" Max=""100000"" Unit="" R$"" ShowValue=""true"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Value=""83"" Unit="""" ShowValue=""true"" Color=""XFProgressColor.Success"" />
+<XFProgressRing Value=""5"" Min=""0"" Max=""5"" Unit=""/5"" ShowValue=""true"" Color=""XFProgressColor.Warning"" />";
+    private const string Code6 = @"<XFProgressRing Indeterminate=""true"" Paused=""true"" Color=""XFProgressColor.Primary"" />
+<XFProgressRing Indeterminate=""true"" Color=""XFProgressColor.Primary"" />";
+    private const string Code7 = @"<XFProgressRing Value=""72"" Color=""XFProgressColor.Primary"">
+    <span class=""text-xs font-semibold text-text-primary"">72%</span>
+</XFProgressRing>
+<XFProgressRing Value=""45"" Color=""XFProgressColor.Success"" Size=""XFExtendedSize.Lg"">
+    <div class=""flex flex-col items-center gap-1"">
+        <span class=""text-sm font-bold text-text-primary"">45</span>
+        <span class=""text-[9px] text-text-secondary"">pontos</span>
+    </div>
+</XFProgressRing>";
+    private const string Code8 = @"<div class=""grid gap-6 sm:grid-cols-3"">
+    <div class=""flex flex-col items-center gap-3"">
+        <XFProgressRing Value=""87"" ShowValue=""true"" Color=""XFProgressColor.Success"" Size=""XFExtendedSize.Lg"" />
+        <div class=""text-center"">
+            <p class=""text-sm font-semibold"">Meta de vendas</p>
+            <p class=""text-xs text-text-secondary"">87% atingido</p>
+        </div>
+    </div>
+    <div class=""flex flex-col items-center gap-3"">
+        <XFProgressRing Indeterminate=""true"" Color=""XFProgressColor.Info"" Size=""XFExtendedSize.Lg"" LoadingText=""Sincronizando..."" />
+        <div class=""text-center"">
+            <p class=""text-sm font-semibold"">Backup ERP</p>
+            <p class=""text-xs text-text-secondary"">Em andamento</p>
+        </div>
+    </div>
+    <div class=""flex flex-col items-center gap-3"">
+        <XFProgressRing Value=""23"" ShowValue=""true"" Color=""XFProgressColor.Danger"" Size=""XFExtendedSize.Lg"" />
+        <div class=""text-center"">
+            <p class=""text-sm font-semibold"">Estoque baixo</p>
+            <p class=""text-xs text-text-secondary"">23 itens restantes</p>
+        </div>
+    </div>
+</div>";
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "double", "0", T("Valor atual (entre Min e Max).", "Current value (between Min and Max).")),
+        new("Min", "double", "0", T("Valor minimo.", "Minimum value.")),
+        new("Max", "double", "100", T("Valor maximo.", "Maximum value.")),
+        new("Indeterminate", "bool", "false", T("Estado indeterminado (animacao continua).", "Indeterminate state (continuous animation).")),
+        new("Visible", "bool", "true", T("Controla visibilidade do componente.", "Controls component visibility.")),
+        new("ShowValue", "bool", "false", T("Exibe valor percentual no centro.", "Displays percentage value in center.")),
+        new("Rounded", "bool", "true", T("Formato do stroke (round ou butt).", "Stroke shape (round or butt).")),
+        new("Paused", "bool", "false", T("Pausa animacao indeterminada.", "Pauses indeterminate animation.")),
+        new("AriaLabel", "string?", "null", T("Label de acessibilidade.", "Accessibility label.")),
+        new("LoadingText", "string", T("\"Carregando\"", "\"Loading\""), T("Texto exibido quando indeterminado.", "Text shown when indeterminate.")),
+        new("Unit", "string?", "\"%\"", T("Unidade do valor (ex: %, R$, /5).", "Value unit (e.g. %, R$, /5).")),
+        new("ValueFormat", "string?", "null", T("Formato custom do valor (string.Format).", "Custom value format (string.Format).")),
+        new("Color", "XFProgressColor", "Primary", T("Primary, Secondary, Success, Warning, Danger, Info, Neutral.", "Primary, Secondary, Success, Warning, Danger, Info, Neutral.")),
+        new("Size", "XFExtendedSize", "Md", T("Xs, Sm, Md, Lg, Xl.", "Xs, Sm, Md, Lg, Xl.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo custom no centro do anel.", "Custom content in ring center."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=progressbar", "role=progressbar"), T("Anel usa role=progressbar para leitores de tela.", "Ring uses role=progressbar for screen readers."), "universal-access"),
+        new(T("aria-valuenow", "aria-valuenow"), T("Valor numerico atual quando determinado.", "Current numeric value when determinate."), "font"),
+        new(T("aria-valuetext", "aria-valuetext"), T("Texto legivel do valor ou LoadingText.", "Readable value text or LoadingText."), "tag"),
+        new(T("aria-label", "aria-label"), T("Label descritivo da operacao.", "Descriptive operation label."), "bookmark")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Tamanhos adaptivos", "Adaptive sizes"), T("Xs para mobile, Lg para desktop.", "Xs for mobile, Lg for desktop."), "mobile-screen"),
+        new(T("Compacto", "Compact"), T("Ocupa espaco minimo em qualquer viewport.", "Takes minimum space in any viewport."), "minimize")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("SVG leve", "Light SVG"), T("Dois circulos SVG. Sem canvas ou lib externa.", "Two SVG circles. No canvas or external lib."), "feather"),
+        new(T("Transicao CSS", "CSS transition"), T("stroke-dashoffset com transition 300ms.", "stroke-dashoffset with 300ms transition."), "arrows-rotate")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Dashboard KPI", "KPI dashboard"), T("Percentual de meta de vendas.", "Sales target percentage."), "chart-pie"),
+        new(T("Upload de arquivo", "File upload"), T("Progresso de upload de XML fiscal.", "Fiscal XML upload progress."), "upload"),
+        new(T("Sincronizacao", "Synchronization"), T("Indicador de sync entre sistemas.", "Sync indicator between systems."), "arrows-rotate")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Ring + Label", "Ring + Label"), T("Label descritivo abaixo do anel.", "Descriptive label below ring."), "tag"),
+        new(T("Ring + Value", "Ring + Value"), T("ShowValue ou ChildContent no centro.", "ShowValue or ChildContent in center."), "percent"),
+        new(T("Ring + Card", "Ring + Card"), T("Dentro de XFCard para contexto de dashboard.", "Inside XFCard for dashboard context."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("ShowValue em dashboards", "ShowValue in dashboards"), T("Percentual visivel melhora a leitura rapida.", "Visible percentage improves quick reading."), "percent"),
+        new(T("Cor semantica", "Semantic color"), T("Success=concluido, Info=andamento, Warning=atraso.", "Success=done, Info=in-progress, Warning=delayed."), "palette"),
+        new(T("Indeterminado para loading", "Indeterminate for loading"), T("Use quando nao ha estimativa de tempo.", "Use when no time estimate available."), "spinner"),
+        new(T("Tamanho adequado", "Adequate size"), T("Md para texto, Lg para destaque visual.", "Md for text, Lg for visual emphasis."), "maximize")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Muitos rings", "Too many rings"), T("Evite mais de 4 rings simultaneos.", "Avoid more than 4 simultaneous rings."), "ban"),
+        new(T("Sem label", "No label"), T("Ring sem contexto e confuso.", "Ring without context is confusing."), "xmark"),
+        new(T("Valor enorme no centro", "Huge value in center"), T("Valores longos quebram o layout.", "Long values break the layout."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("track", T("stroke-surface-200, fundo do anel.", "stroke-surface-200, ring background.")),
+        new("fill", T("stroke-{color} com transition 300ms.", "stroke-{color} with 300ms transition.")),
+        new("size-xs", T("h-8 w-8, stroke 8px.", "h-8 w-8, 8px stroke.")),
+        new("size-sm", T("h-12 w-12, stroke 9px.", "h-12 w-12, 9px stroke.")),
+        new("size-md", T("h-16 w-16, stroke 10px.", "h-16 w-16, 10px stroke.")),
+        new("size-lg", T("h-24 w-24, stroke 11px.", "h-24 w-24, 11px stroke.")),
+        new("size-xl", T("h-32 w-32, stroke 12px.", "h-32 w-32, 12px stroke."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, sizes, colors, indeterminate, paused.", "Render, props, sizes, colors, indeterminate, paused tests.")),
+        new("Accessibility", T("role=progressbar, aria-valuenow, aria-valuemin, aria-valuemax, aria-valuetext, aria-label.", "role=progressbar, aria-valuenow, aria-valuemin, aria-valuemax, aria-valuetext, aria-label."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Valor", T("Value deve estar entre Min e Max.", "Value must be between Min and Max.")),
+        new("Indeterminado", T("Nao mostra valor numerico quando indeterminado.", "Does not show numeric value when indeterminate.")),
+        new("ValueFormat", T("Requer string.Format valido para 2 argumentos (valor, percent).", "Requires valid string.Format for 2 arguments (value, percent)."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFProgress", T("Barra de progresso horizontal.", "Horizontal progress bar."), "bars"),
+        new("XFSkeleton", T("Placeholder de carregamento.", "Loading placeholder."), "square"),
+        new("XFSpinner", T("Spinner simples.", "Simple spinner."), "circle-notch")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Progress vs ProgressRing?", "Progress vs ProgressRing?"), T("Progress = barra horizontal. ProgressRing = circular.", "Progress = horizontal bar. ProgressRing = circular.")),
+        new(T("Como atualizar o valor?", "How to update value?"), T("Use @bind-Value ou ValueChanged.", "Use @bind-Value or ValueChanged.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop. SVG puro.", "Yes. No JavaScript interop. Pure SVG.")),
+        new(T("Como pausar?", "How to pause?"), T("Use Paused=\"true\" com Indeterminate=\"true\".", "Use Paused=\"true\" with Indeterminate=\"true\".")),
+        new(T("Como formatar o valor?", "How to format value?"), T("Use Unit para sufixo ou ValueFormat para formato custom.", "Use Unit for suffix or ValueFormat for custom format."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina criada com secoes basicas de compatibilidade.", "Page created with basic compatibility sections.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes, 8 exemplos renderizados e API completa.", "Refactored to AppShellDocs pattern with 26 sections, 8 rendered examples and full API."))
+    ];
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

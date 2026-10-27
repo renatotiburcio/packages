@@ -1,0 +1,94 @@
+# Build outputs
+dist/
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.egg-info/
+.eggs/
+*.egg
+.Python
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.mypy_cache/
+
+# Node
+node_modules/
+.next/
+out/
+.turbo/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.*
+*.pfx
+*.pem
+*.key
+*.snk
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Packages
+*.zip
+*.tar.gz
+*.nupkg
+
+# RAG generated (auto-rebuilt)
+.xforge/rag/chunks/
+.xforge/rag/indexes/
+.xforge/rag/reports/
+.xforge/rag/manifest.json
+
+# Backups
+.engineer-backups/
+.engineer-restore-temp/
+.engineer-restore-review/
+.playwright-mcp/
+.xforge/research/
+
+# Temporary build scripts
+.kilo/*.ps1
+.kilo/*.js
+gen.py
+gen_test.py
+gen_test2.py
+
+# Temporary files (use tmp/ folder for disposable files)
+tmp/
+__tmp.py
+__cs.py
+_write_select.ps1
+build-output.txt
+build-output2.txt
+test-output.txt
+select-docs-dom.yml
+select-docs-initial.png
+select-domsnap.yml
+select-fixed.png
+select-layout-fixed.png
+select-page.png
+select-reloaded.png
+
+# Test artifacts
+TestResults/
+coverage/
+*.trx

@@ -1,0 +1,107 @@
+@implements IDisposable
+
+<div class="@ContainerClass" style="@Style" data-platform="@_platform.ToString().ToLower()"
+     data-form-factor="@_formFactor.ToString().ToLower()" @attributes="AdditionalAttributes">
+    @if (ChildContent is not null)
+    {
+        @ChildContent(new XFDeviceContext(_platform, _formFactor, _features, _isOnline))
+    }
+</div>
+
+@code {
+    private XFDevicePlatform _platform = XFDevicePlatform.Web;
+    private XFDeviceFormFactor _formFactor = XFDeviceFormFactor.Desktop;
+    private List<XFDeviceFeatureInfo> _features = new();
+    private bool _isOnline = true;
+
+    [Parameter] public RenderFragment<XFDeviceContext>? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    [Parameter] public string? Style { get; set; }
+
+    [Parameter] public XFDevicePlatform? ForcePlatform { get; set; }
+
+    [Parameter] public XFDeviceFormFactor? ForceFormFactor { get; set; }
+
+    [Parameter] public EventCallback<bool> OnOnlineStatusChanged { get; set; }
+
+    [Parameter] public EventCallback<XFDevicePlatform> OnPlatformDetected { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string ContainerClass => string.Join(" ", new[]
+    {
+        "xf-device-bridge",
+        _isOnline ? "xf-device-online" : "xf-device-offline",
+        $"xf-device-{_platform.ToString().ToLower()}",
+        $"xf-device-{_formFactor.ToString().ToLower()}",
+        Class
+    }.Where(s => !string.IsNullOrEmpty(s)));
+
+    protected override void OnInitialized()
+    {
+        _platform = ForcePlatform ?? DetectPlatform();
+        _formFactor = ForceFormFactor ?? DetectFormFactor();
+        _features = DetectFeatures();
+    }
+
+    private static XFDevicePlatform DetectPlatform()
+    {
+        // Pure Blazor detection — defaults to Web.
+        // MAUI apps override via ForcePlatform parameter.
+        return XFDevicePlatform.Web;
+    }
+
+    private static XFDeviceFormFactor DetectFormFactor()
+    {
+        // Default to Desktop — breakpoint service provides runtime detection.
+        return XFDeviceFormFactor.Desktop;
+    }
+
+    private static List<XFDeviceFeatureInfo> DetectFeatures()
+    {
+        return new List<XFDeviceFeatureInfo>
+        {
+            new() { Feature = XFDeviceFeature.Camera, IsAvailable = true, Permission = XFPermissionStatus.Unknown, Description = "Capture de câmera via MediaDevices API" },
+            new() { Feature = XFDeviceFeature.Geolocation, IsAvailable = true, Permission = XFPermissionStatus.Unknown, Description = "Geolocalização via Navigator API" },
+            new() { Feature = XFDeviceFeature.Biometrics, IsAvailable = false, Permission = XFPermissionStatus.Unknown, Description = "Biometria requer MAUI ou WebAuthn" },
+            new() { Feature = XFDeviceFeature.Haptics, IsAvailable = true, Permission = XFPermissionStatus.Granted, Description = "Vibração via Navigator.vibrate()" },
+            new() { Feature = XFDeviceFeature.Notifications, IsAvailable = true, Permission = XFPermissionStatus.Unknown, Description = "Notificações via Notification API" },
+            new() { Feature = XFDeviceFeature.FileSystem, IsAvailable = true, Permission = XFPermissionStatus.Unknown, Description = "File System Access API" },
+            new() { Feature = XFDeviceFeature.Accelerometer, IsAvailable = false, Permission = XFPermissionStatus.Unknown, Description = "Acelerômetro requer Generic Sensor API" },
+            new() { Feature = XFDeviceFeature.Gyroscope, IsAvailable = false, Permission = XFPermissionStatus.Unknown, Description = "Giroscópio requer Generic Sensor API" },
+            new() { Feature = XFDeviceFeature.Bluetooth, IsAvailable = false, Permission = XFPermissionStatus.Unknown, Description = "Bluetooth requer Web Bluetooth API" },
+            new() { Feature = XFDeviceFeature.Nfc, IsAvailable = false, Permission = XFPermissionStatus.Unknown, Description = "NFC requer Web NFC API" },
+        };
+    }
+
+    /// <summary>Update online status (called from JS or parent).</summary>
+    public void SetOnlineStatus(bool isOnline)
+    {
+        if (_isOnline != isOnline)
+        {
+            _isOnline = isOnline;
+            if (OnOnlineStatusChanged.HasDelegate)
+            {
+                _ = OnOnlineStatusChanged.InvokeAsync(isOnline);
+            }
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>Update detected form factor (called from breakpoint service).</summary>
+    public void SetFormFactor(XFDeviceFormFactor formFactor)
+    {
+        if (_formFactor != formFactor)
+        {
+            _formFactor = formFactor;
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        // No unmanaged resources to dispose
+    }
+}

@@ -1,0 +1,11 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<select class="xf-ncm-select" @bind="Value" @bind:after="() => ValueChanged.InvokeAsync(Value)">
+  <option value="">--</option>
+  @foreach (var n in Ncms) { <option value="@n.Code">@n.Code - @n.Description (@n.Ipi%)</option> }
+</select>
+
+@code {
+  public record NcmItem(string Code, string Description, decimal Ipi);
+}

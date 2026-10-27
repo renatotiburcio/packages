@@ -1,0 +1,450 @@
+@page "/overlays/overview"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+
+<XForgeDocsShell ProductLabel="Core Open Source" Title="Overlays Overview" Status="Category standard" Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Text="Overlays" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Warning" />
+                        <XFBadge Text="Layered UX" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" />
+                        <XFBadge Text="Focus managed" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" />
+                    </XFStack>
+
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            Camadas contextuais para decidir, editar e agir sem perder o Fluxo principal.
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            A categoria Overlays cobre dialog, drawer, dropdown menu, popover e context menu.
+                            Ela existe para padronizar camadas temporarias com foco, bloqueio, escape, responsividade,
+                            contraste e governanca visual em Fluxos enterprise densos.
+                        </XFTypography>
+                    </XFStack>
+
+                    <XFGrid Cols="1" Gap="4" Class="lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in HeroFacts)
+                            {
+                                @InfoTile(item)
+                            }
+                        </XFStack>
+                    </XFGrid>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">Blazor Server e Blazor WebAssembly</XFTypography></Header>
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                    <XFTable Striped="true" Hoverable="true" Compact="true">
+                        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                        <XFTableBody>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                        </XFTableBody>
+                    </XFTable>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependências JS", "No JS Dependencies")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente não utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Overview" Items="OverviewItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Philosophy" Items="PhilosophyItems" />
+            <XForgeCategoryOverviewSection Title="Category Objectives" Items="ObjectiveItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewComponentTable Rows="ComponentRows"
+                                                  Description="Componentes de Overlays controlam camadas temporarias para decisoes, edicao contextual, acoes locais e informacoes ancoradas." />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Visual Language" Items="VisualLanguageItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="UX Standards" Items="UxStandardItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Accessibility Standards" Items="AccessibilityItems" />
+            <XForgeCategoryOverviewSection Title="Responsiveness Standards" Items="ResponsiveItems" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Theme Standards" Items="ThemeItems" />
+            <XForgeCategoryOverviewNameDescriptionTable Title="Design Tokens"
+                                                        NameHeader="Token Group"
+                                                        DescriptionHeader="Purpose"
+                                                        CodeName="true"
+                                                        Rows="TokenRows" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Common Patterns" Items="PatternItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Enterprise Scenários" Items="ScenárioItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewExampleGallery Examples="Examples" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Documentation Standards" Items="DocumentationItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Anti-patterns" Items="AntiPatternItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Migration Guidance" Items="MigrationItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Best Practices" Items="BestPracticeItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewNameDescriptionTable Title="Related Categories"
+                                                        NameHeader="Category"
+                                                        DescriptionHeader="Relationship"
+                                                        Rows="RelatedCategories" />
+        </XFStack>
+    </XFStack>
+
+    <XForgeDocsPageStandard ComponentName="OverlaysOverviewDocs" IsOverview="true" />
+</XForgeDocsShell>
+
+@code {
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+
+    private IReadOnlyList<XForgeCategoryOverviewExample> Examples =>
+    [
+        new("Approval dialog contract", "Dialog de decisao com risco, resumo e acoes explicitas.", ApprovalDialogPreview(), ApprovalDialogCode),
+        new("Contextual drawer", "Drawer de detalhe preserva a lista e concentra edicao contextual.", DrawerPreview(), DrawerCode),
+        new("Action menu and popover", "Dropdown menu e popover organizam acoes e ajuda ancorada sem trocar rota.", MenuPopoverPreview(), MenuPopoverCode)
+    ];
+
+    private static RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFGrid Cols="1" Md="12" Gap="4">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg" Class="md:col-span-7">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                        <XFStack Orientation="XFOrientation.Horizontal" JustifyContent="XFJustifyContent.SpaceBetween" AlignItems="XFAlignItems.Center" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">Aprovacao de Pagamento</XFTypography>
+                            <XFBadge Text="Dialog" Color="XFBadgeColor.Warning" Variant="XFBadgeVariant.Soft" />
+                        </XFStack>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                            Confirme uma decisao sensivel com contexto, risco e acao primaria clara.
+                        </XFTypography>
+                        <XFGrid Cols="1" Sm="3" Gap="3">
+                            <XFBadge Text="R$ 84.200" Color="XFBadgeColor.Info" />
+                            <XFBadge Text="Alto impacto" Color="XFBadgeColor.Warning" />
+                            <XFBadge Text="2 Aprovadores" Color="XFBadgeColor.Primary" />
+                        </XFGrid>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg" Class="md:col-span-5">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">Detalhes laterais</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">Drawer para editar sem sair da fila.</XFTypography>
+                        <XFBadge Text="Focus trap ativo" Color="XFBadgeColor.Success" Variant="XFBadgeVariant.Soft" />
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        </XFGrid>
+
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFDropdownMenu ButtonText="Acoes" Items="ActionItems" Open="true" ActiveTone="XFSemanticColor.Primary" MenuAriaLabel="Acoes do registro" />
+            <XFPopover ButtonText="Ajuda" Open="true" Size="XFSize.Sm" PanelAriaLabel="Ajuda contextual">
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">Politica de aprovacao</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Secondary">Pagamentos acima do limite exigem segundo Aprovador.</XFTypography>
+                </XFStack>
+            </XFPopover>
+        </XFStack>
+    </XFStack>;
+
+    private static RenderFragment ApprovalDialogPreview() => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFStack Orientation="XFOrientation.Horizontal" JustifyContent="XFJustifyContent.SpaceBetween" AlignItems="XFAlignItems.Center" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">Confirmar aprovacao fiscal</XFTypography>
+                    <XFBadge Text="crítico" Color="XFBadgeColor.Danger" />
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                    Esta acao libera o Pagamento e registra auditoria para o periodo fiscal.
+                </XFTypography>
+                <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                    <XFButton Text="Cancelar" Variant="XFButtonVariant.Outline" />
+                    <XFButton Text="Confirmar" Color="XFButtonColor.Danger" />
+                </XFStack>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private static RenderFragment DrawerPreview() => @<XFGrid Cols="1" Md="12" Gap="4">
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg" Class="md:col-span-7">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">Fila de pedidos</XFTypography>
+                    <XFBadge Text="Pedido 2048 selecionado" Color="XFBadgeColor.Info" Variant="XFBadgeVariant.Soft" />
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">A lista permanece visivel enquanto o painel lateral recebe edicao contextual.</XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" Class="md:col-span-5">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">Detalhes do pedido</XFTypography>
+                    <XFBadge Text="Drawer right" Color="XFBadgeColor.Primary" />
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">Dados resumidos, acoes e campos ficam isolados da tabela.</XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+    </XFGrid>;
+
+    private static RenderFragment MenuPopoverPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFDropdownMenu ButtonText="Acoes do contrato" Items="ContractActionItems" Open="true" ActiveTone="XFSemanticColor.Warning" MenuAriaLabel="Acoes do contrato" />
+            <XFPopover ButtonText="SLA" Open="true" Size="XFSize.Sm" PanelAriaLabel="Resumo de SLA">
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">SLA 98.4%</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Secondary">Sem incidentes críticos no periodo.</XFTypography>
+                </XFStack>
+            </XFPopover>
+        </XFStack>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+            <ChildContent>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">Context menu segue o mesmo contrato de itens do dropdown, aplicado a superfícies interativas.</XFTypography>
+            </ChildContent>
+        </XFCard>
+    </XFStack>;
+
+    private RenderFragment InfoTile(XForgeCategoryOverviewItem item) => @<XForgeCategoryOverviewTile Item="item" />;
+
+    private static readonly IReadOnlyList<XFDropdownMenuItem> ActionItems =
+    [
+        new() { Text = "Aprovar", Description = "Libera o Fluxo", Shortcut = "A", Tone = XFSemanticColor.Success },
+        new() { Text = "Solicitar ajuste", Badge = "2" },
+        new() { Text = "Rejeitar", Tone = XFSemanticColor.Danger }
+    ];
+
+    private static readonly IReadOnlyList<XFDropdownMenuItem> ContractActionItems =
+    [
+        new() { Text = "Renovar contrato", Tone = XFSemanticColor.Primary },
+        new() { Text = "Enviar para juridico", Tone = XFSemanticColor.Warning },
+        new() { Text = "Arquivar", Tone = XFSemanticColor.Neutral }
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> HeroFacts =
+    [
+        new("Objetivo enterprise", "Permitir decisoes e edicoes contextuais sem quebrar a jornada principal.", "window-restore"),
+        new("Acessibilidade", "Camadas devem gerenciar foco, escape, labels e retorno ao gatilho.", "universal-access"),
+        new("Performance", "Overlays devem montar apenas quando necessario e evitar layout shift.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> OverviewItems =
+    [
+        new("Modal decisions", "Dialog bloqueia o Fluxo quando uma decisao precisa de confirmacao.", "window-restore"),
+        new("Side panels", "Drawer mostra detalhes e formulários sem trocar rota.", "table-columns"),
+        new("Anchored help", "Popover explica contexto perto do elemento relacionado.", "circle-info"),
+        new("Action menus", "Dropdown menu agrupa comandos secundarios e perigosos.", "list-ul"),
+        new("Surface actions", "Context menu atende Interações locais em tabelas e listas.", "hand-pointer"),
+        new("Layer governance", "Z-index, foco, scroll e fechamento seguem contrato único.", "layer-group")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> PhilosophyItems =
+    [
+        new("Use layers sparingly", "Overlay deve resolver contexto temporario, não substituir arquitetura de Página.", "shield-check"),
+        new("Focus is state", "Abrir uma camada muda o Fluxo de foco e precisa devolver controle ao usuario.", "keyboard"),
+        new("Escape always matters", "Fechamento por Escape, overlay e acao explicita precisa ser previsivel.", "arrow-rotate-left"),
+        new("Risk is visible", "Acoes destrutivas precisam de tom, texto e confirmacao adequados.", "triangle-exclamation")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ObjectiveItems =
+    [
+        new("Decision clarity", "Separar confirmar, cancelar, descartar e revisar.", "circle-check"),
+        new("Context retention", "Manter a Página de origem visivel ou recuperavel.", "route"),
+        new("Layer consistency", "Padronizar sombra, borda, backdrop, raio e motion.", "paintbrush"),
+        new("Accessibility", "Garantir role, aria-modal, labels e foco visível.", "universal-access"),
+        new("Responsiveness", "Drawer vira sheet e dialog respeita viewport.", "mobile-screen"),
+        new("Performance", "Evitar renderizar camadas pesadas quando fechadas.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewComponentRow> ComponentRows =
+    [
+        new("XFDialog", "Overlay modal de decisao.", "Confirmacoes, formulários curtos e alert dialogs.", "Aprovacoes fiscais, descarte de alterações e risco operacional.", "High", "High"),
+        new("XFDrawer", "Painel lateral ou inferior.", "Detalhes, filtros e edicao contextual.", "Editar registro sem sair da fila ou dashboard.", "High", "High"),
+        new("XFDropdownMenu", "Menu de comandos ancorado.", "Acoes secundarias, grupos e atalhos.", "Acoes por linha, split buttons e comandos de registro.", "High", "Medium"),
+        new("XFPopover", "Camada ancorada informativa.", "Ajuda, resumos e controles leves.", "Explicar SLA, regra fiscal ou indicador sem trocar Página.", "High", "Medium"),
+        new("XFContextMenu", "Menu contextual por superficie.", "Acoes por clique direito ou gesto contextual.", "Tabelas, mapas, listas e workspaces operacionais.", "High", "High")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> VisualLanguageItems =
+    [
+        new("Elevation", "Camadas usam sombra mais forte que cards, mas sem competir com modais críticos.", "window-restore"),
+        new("Backdrop", "Dialog e drawer modal escurecem o fundo para indicar bloqueio.", "moon"),
+        new("Tone", "Warning e danger aparecem apenas quando existe impacto real.", "triangle-exclamation"),
+        new("Anchor", "Popover e dropdown devem parecer conectados ao gatilho.", "link"),
+        new("Spacing", "Header, body e footer preservam densidade e leitura.", "arrows-up-down"),
+        new("Motion", "Entrada e saída sao curtas, reversiveis e respeitam motion-reduce.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> UxStandardItems =
+    [
+        new("Primary action", "Uma acao primaria clara por dialog ou drawer.", "check"),
+        new("Destructive clarity", "Acoes destrutivas precisam de texto especifico e tom danger.", "triangle-exclamation"),
+        new("Dismissal", "Fechar deve ser possível por botao, Escape e regra configurada.", "xmark"),
+        new("Scroll Containment", "Conteudo longo rola dentro da camada, não na Página inteira.", "arrows-up-down"),
+        new("Trigger return", "Ao fechar, foco retorna para o elemento que abriu a camada.", "hand-pointer"),
+        new("Nested restraint", "Evite empilhar overlays sem justificativa forte.", "layer-group")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> AccessibilityItems =
+    [
+        new("Focus trap", "Dialog e drawer modal precisam prender foco enquanto Abertos.", "keyboard"),
+        new("Accessible names", "Toda camada precisa de Título, aria-label ou aria-labelledby.", "tag"),
+        new("ARIA", "Dialog usa role apropriado; menus usam menuitem e estados checked/disabled.", "code"),
+        new("Escape", "Escape fecha quando habilitado e não perde estado da Página.", "arrow-rotate-left"),
+        new("Screen readers", "Descrições devem explicar consequencia de acoes sensiveis.", "universal-access"),
+        new("Reduced motion", "Transicoes respeitam preferencia de movimento reduzido.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ResponsiveItems =
+    [
+        new("Dialog sizing", "Modais respeitam max-width, max-height e scroll interno.", "desktop"),
+        new("Drawer sheet", "Drawer lateral pode virar bottom sheet em mobile.", "mobile-screen"),
+        new("Popover collision", "Popover reposiciona com flip e padding de colisao.", "arrows-left-right"),
+        new("Touch targets", "Menus preservam altura e Espaçamento adequados.", "hand-pointer"),
+        new("Footer wrapping", "Acoes de footer quebram linha sem ocultar comandos.", "arrows-up-down"),
+        new("Viewport safety", "Nenhuma camada deve escapar da area util.", "window-frame")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ThemeItems =
+    [
+        new("Tokenized surface", "Painel, backdrop, borda e sombra usam tokens de tema.", "swatchbook"),
+        new("Dark mode", "Backdrops, shadows e textos mantem contraste em dark.", "moon"),
+        new("Status tones", "Danger, warning, success e primary seguem semântica do DesignSystem.", "paintbrush"),
+        new("Brand safe", "Overlays respeitam data-brand sem alterar significado de risco.", "shield-check")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewNameDescription> TokenRows =
+    [
+        new("colors", "Surface, backdrop, primary, danger, warning e text contrast para camadas."),
+        new("typography", "Título, Descrição, item de menu, shortcut e texto auxiliar."),
+        new("radius", "Painel, gatilho, menu item e sheet usam raios consistentes."),
+        new("elevation", "Sombras de overlay diferenciam camada ativa de cards comuns."),
+        new("spacing", "Padding de header, body, footer, grupos de menu e popovers."),
+        new("borders", "Separadores de header/footer e contorno de painel."),
+        new("motion", "duração e easing de Entrada, saída, backdrop e reposicionamento.")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> PatternItems =
+    [
+        new("Confirm dangerous action", "Use XFDialog para consequencias irreversiveis.", "triangle-exclamation"),
+        new("Edit selected record", "Use XFDrawer para detalhes sem trocar a lista.", "table-columns"),
+        new("Secondary commands", "Use XFDropdownMenu para comandos de menor frequencia.", "list-ul"),
+        new("Explain inline rule", "Use XFPopover para regra curta perto do campo ou KPI.", "circle-info"),
+        new("Right-click workspace", "Use XFContextMenu para superfícies densas.", "hand-pointer"),
+        new("Footer actions", "Acoes ficam no footer da camada quando fecham ou salvam.", "check")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ScenárioItems =
+    [
+        new("Payment approval", "Dialog confirma aprovacao financeira com risco e auditoria.", "briefcase"),
+        new("Order detail", "Drawer mostra dados do pedido ao lado da fila.", "file-lines"),
+        new("Grid actions", "Dropdown menu agrupa acoes de uma linha.", "table-cells"),
+        new("Policy help", "Popover explica regra fiscal sem abrir nova Página.", "circle-info"),
+        new("Map/list action", "Context menu oferece comandos por coordenada ou item.", "route"),
+        new("AI review", "Drawer ou dialog hospeda explicacao e aprovacao humana.", "sparkles")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> DocumentationItems =
+    [
+        new("Closed and open", "Documente estado Fechado, Aberto, loading e disabled.", "eye"),
+        new("Focus behavior", "Explique foco inicial, trap e retorno ao gatilho.", "keyboard"),
+        new("Dismiss rules", "Documente Escape, overlay click e botao fechar.", "xmark"),
+        new("Responsive mode", "Mostre comportamento mobile de drawer e dialog.", "mobile-screen"),
+        new("Risk copy", "Inclua exemplos de texto para acoes críticas.", "file-lines"),
+        new("Copyable code", "Todo exemplo precisa de XFCode Razor valido.", "code")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> AntiPatternItems =
+    [
+        new("Raw absolute panel", "Divs absolutas locais quebram tema, z-index e foco.", "xmark"),
+        new("No accessible name", "Overlay sem Título ou aria-label fica invisivel para leitores de tela.", "tag"),
+        new("Body scroll leak", "Página rolar por baixo de modal causa perda de contexto.", "arrows-up-down"),
+        new("Unclear danger", "Botao destrutivo generico sem consequencia explicita gera erro operacional.", "triangle-exclamation"),
+        new("Nested overlays", "Camadas empilhadas sem governanca confundem foco e escape.", "layer-group"),
+        new("Always mounted", "Overlays pesados sempre renderizados prejudicam performance.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> MigrationItems =
+    [
+        new("custom modal", "Migrar modais locais para XFDialog.", "window-restore"),
+        new("side panel css", "Migrar paineis laterais para XFDrawer.", "table-columns"),
+        new("manual action list", "Migrar menus de acoes para XFDropdownMenu.", "list-ul"),
+        new("tooltip-as-form", "Migrar conteudo interativo de tooltip para XFPopover.", "circle-info"),
+        new("right-click script", "Migrar menus contextuais manuais para XFContextMenu.", "hand-pointer"),
+        new("z-index local", "Remover z-index ad hoc e usar contrato do componente.", "layer-group")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> BestPracticeItems =
+    [
+        new("Pick the smallest layer", "Use popover antes de drawer; drawer antes de dialog quando não bloquear.", "shield-check"),
+        new("Name every layer", "Forneca Título ou aria-label em todos os overlays.", "tag"),
+        new("Return focus", "Garanta retorno para o gatilho apos fechar.", "hand-pointer"),
+        new("Use tones intentionally", "Danger e warning apenas para risco real.", "triangle-exclamation"),
+        new("Contain scroll", "Defina scroll interno para conteudo longo.", "arrows-up-down"),
+        new("Validate mobile", "Teste viewport pequena, teclado e motion-reduce.", "mobile-screen")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewNameDescription> RelatedCategories =
+    [
+        new("Feedback", "Dialog, drawer e popover frequentemente comúnicam erro, sucesso, progresso e confirmacao."),
+        new("Forms", "Drawers e dialogs hospedam edicao contextual e Validação."),
+        new("Navigation", "Dropdown menu, context menu e popover usam gatilhos e foco compartilhados."),
+        new("Layout", "Shell, scroll areas e z-index definem onde as camadas vivem."),
+        new("Components", "Button, icon, badge, card e typography compoem gatilhos e conteudo."),
+        new("AI", "Fluxos comerciais de AI usam overlays para aprovacao humana, explicacao e auditoria.")
+    ];
+
+    private const string ApprovalDialogCode = """
+<XFDialog Open="true"
+          Title="Confirmar aprovacao fiscal"
+          Description="Esta acao libera o Pagamento e registra auditoria."
+          Tone="XFSemanticColor.Danger"
+          Alert="true">
+    <Footer>
+        <XFButton Text="Cancelar" Variant="XFButtonVariant.Outline" />
+        <XFButton Text="Confirmar" Color="XFButtonColor.Danger" />
+    </Footer>
+</XFDialog>
+""";
+
+    private const string DrawerCode = """
+<XFDrawer Open="true"
+          Title="Detalhes do pedido"
+          Description="Resumo operacional"
+          Placement="XFDrawerPlacement.Right"
+          Size="XFOverlaySize.Sm">
+    <XFTypography Variant="XFTypographyVariant.Body2">
+        Edite dados laterais mantendo o contexto da lista.
+    </XFTypography>
+</XFDrawer>
+""";
+
+    private const string MenuPopoverCode = """
+<XFDropdownMenu ButtonText="Acoes do contrato"
+                Items="ContractActionItems"
+                ActiveTone="XFSemanticColor.Warning"
+                MenuAriaLabel="Acoes do contrato" />
+
+<XFPopover ButtonText="SLA" PanelAriaLabel="Resumo de SLA">
+    <XFTypography Variant="XFTypographyVariant.Body2">SLA 98.4%</XFTypography>
+</XFPopover>
+""";
+}

@@ -1,0 +1,109 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@FieldShellClass">
+        @if (StartIcon is not null)
+        {
+            <div class="@AdornmentClass">@StartIcon</div>
+        }
+
+        <div class="flex items-center gap-0.5" role="group" aria-label="@AriaLabel">
+            @if (ShowDays)
+            {
+                <input @ref="_daysRef"
+                       class="@SegmentClass"
+                       type="number"
+                       min="0"
+                       max="@MaxDays"
+                       disabled="@Disabled"
+                       readonly="@ReadOnly"
+                       value="@DaysValue"
+                       aria-label="@DaysLabel"
+                       @oninput="@(e => HandleSegmentInputAsync(e, TimeSpanSegment.Days))"
+                       @onchange="@(e => HandleSegmentChangeAsync(e, TimeSpanSegment.Days))"
+                       @onkeydown="@(e => HandleKeyDownAsync(e, TimeSpanSegment.Days))" />
+                <span class="@SeparatorClass">d</span>
+            }
+
+            <input @ref="_hoursRef"
+                   class="@SegmentClass"
+                   type="number"
+                   min="0"
+                   max="23"
+                   disabled="@Disabled"
+                   readonly="@ReadOnly"
+                   value="@HoursValue"
+                   aria-label="@HoursLabel"
+                   @oninput="@(e => HandleSegmentInputAsync(e, TimeSpanSegment.Hours))"
+                   @onchange="@(e => HandleSegmentChangeAsync(e, TimeSpanSegment.Hours))"
+                   @onkeydown="@(e => HandleKeyDownAsync(e, TimeSpanSegment.Hours))" />
+            <span class="@SeparatorClass">:</span>
+
+            <input @ref="_minutesRef"
+                   class="@SegmentClass"
+                   type="number"
+                   min="0"
+                   max="59"
+                   disabled="@Disabled"
+                   readonly="@ReadOnly"
+                   value="@MinutesValue"
+                   aria-label="@MinutesLabel"
+                   @oninput="@(e => HandleSegmentInputAsync(e, TimeSpanSegment.Minutes))"
+                   @onchange="@(e => HandleSegmentChangeAsync(e, TimeSpanSegment.Minutes))"
+                   @onkeydown="@(e => HandleKeyDownAsync(e, TimeSpanSegment.Minutes))" />
+
+            @if (Precision == XFTimeSpanPrecision.Second)
+            {
+                <span class="@SeparatorClass">:</span>
+                <input @ref="_secondsRef"
+                       class="@SegmentClass"
+                       type="number"
+                       min="0"
+                       max="59"
+                       disabled="@Disabled"
+                       readonly="@ReadOnly"
+                       value="@SecondsValue"
+                       aria-label="@SecondsLabel"
+                       @oninput="@(e => HandleSegmentInputAsync(e, TimeSpanSegment.Seconds))"
+                       @onchange="@(e => HandleSegmentChangeAsync(e, TimeSpanSegment.Seconds))"
+                       @onkeydown="@(e => HandleKeyDownAsync(e, TimeSpanSegment.Seconds))" />
+            }
+        </div>
+
+        @if (ShowSteppers)
+        {
+            <div class="@StepperWrapClass">
+                <button type="button" class="@StepperButtonClass" aria-label="@IncrementLabel" disabled="@StepperDisabled" @onclick="IncrementAsync">
+                    <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("plus")</span>
+                </button>
+                <button type="button" class="@StepperButtonClass" aria-label="@DecrementLabel" disabled="@StepperDisabled" @onclick="DecrementAsync">
+                    <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("minus")</span>
+                </button>
+            </div>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+</div>

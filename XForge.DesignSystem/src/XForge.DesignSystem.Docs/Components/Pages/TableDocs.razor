@@ -1,0 +1,695 @@
+@page "/display/table"
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.DataDisplay.Table
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFTable" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("6 componentes", "6 components")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Tabela semantica para dados tabulares com header, body, footer e celulas acessiveis.",
+                               "Semantic table for tabular data with header, body, footer and accessible cells.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Container estruturado para exibir dados em linhas e colunas, com suporte a zebra, hover, sticky, alinhamento e tamanhos responsivos. Para dados avancados com paginacao e ordenacao, use XFDataGrid.",
+                               "Structured container to display data in rows and columns, with support for striping, hover, sticky, alignment and responsive sizes. For advanced data with pagination and sorting, use XFDataGrid.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Tabela simples com header e body.", "Simple table with header and body."), ExBasic(), Code1)
+            @Example(T("2. Zebra + Hover", "2. Striped + Hover"), T("Linhas alternadas com destaque ao passar o mouse.", "Alternating rows with hover highlight."), ExStripedHover(), Code2)
+            @Example(T("3. Compacta", "3. Compact"), T("Tamanho reduzido para muitos dados.", "Reduced size for dense data."), ExCompact(), Code3)
+            @Example(T("4. Sticky Header + Scroll", "4. Sticky Header + Scroll"), T("Header fixo com scroll vertical controlado.", "Fixed header with controlled vertical scroll."), ExStickyHeader(), Code4)
+            @Example(T("5. Footer com Totais", "5. Footer with Totals"), T("Rodape com somas e media de colunas numericas.", "Footer with sums and average of numeric columns."), ExFooter(), Code5)
+            @Example(T("6. Celulas com Alinhamento", "6. Cell Alignment"), T("Alinhamento Start, Center e End em colunas.", "Start, Center and End alignment in columns."), ExAlignment(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">XFTable</XFTypography>
+                    @ApiTable(XFTableApiRows)
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">XFTableCell</XFTypography>
+                    @ApiTable(XFTableCellApiRows)
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">XFTableRow</XFTypography>
+                    @ApiTable(XFTableRowApiRows)
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">XFTableHeader / XFTableBody / XFTableFooter</XFTypography>
+                    @ApiTable(XFTableContainerApiRows)
+                </XFStack>
+            </div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFTable", "XFTable");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFTable Caption="@T("Resumo operacional", "Operational summary")" Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Modulo", "Module")</XFTableCell>
+                <XFTableCell Header="true">@T("Status", "Status")</XFTableCell>
+                <XFTableCell Header="true">@T("SLA", "SLA")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            <XFTableRow><XFTableCell>Pedidos</XFTableCell><XFTableCell>Online</XFTableCell><XFTableCell>99.9%</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Fiscal</XFTableCell><XFTableCell>Atencao</XFTableCell><XFTableCell>98.4%</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Estoque</XFTableCell><XFTableCell>Online</XFTableCell><XFTableCell>99.7%</XFTableCell></XFTableRow>
+        </XFTableBody>
+    </XFTable>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("6 componentes", "6 components"), T("XFTable, XFTableHeader, XFTableBody, XFTableRow, XFTableCell, XFTableFooter.", "XFTable, XFTableHeader, XFTableBody, XFTableRow, XFTableCell, XFTableFooter."), "cubes"),
+        new(T("Semantico e acessivel", "Semantic and accessible"), T("Table HTML nativo com role, scope e caption para leitores de tela.", "Native HTML table with role, scope and caption for screen readers."), "universal-access"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFTable, XFTableHeader, XFTableBody, XFTableRow, XFTableCell, XFTableFooter"),
+        new("Namespace", "XForge.DesignSystem.Components.DataDisplay.Table"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Data Display / Table"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=table, caption, scope=col, th semantico.", "role=table, caption, scope=col, semantic th.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Container de tabela", "Table container"), T("Wrapper semantic com suporte a caption e aria.", "Semantic wrapper with caption and aria support."), "table"),
+        new(T("Header, Body, Footer", "Header, Body, Footer"), T("Regioes semanticas thead, tbody e tfoot.", "Semantic thead, tbody and tfoot regions."), "layer-group"),
+        new(T("Celulas acessiveis", "Accessible cells"), T("th com scope=col e td com alinhamento.", "th with scope=col and td with alignment."), "check-double")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Dados tabulares", "Tabular data"), T("Exibir dados estruturados em linhas e colunas.", "Display structured data in rows and columns."), "table"),
+        new(T("Relatorios", "Reports"), T("Resumos operacionais e financeiros.", "Operational and financial summaries."), "chart-bar"),
+        new(T("Listas simples", "Simple lists"), T("Dados estaticos sem necessidade de paginacao.", "Static data without need for pagination."), "list")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("HTML bruto sem padrao, inconsistente entre paginas.", "Raw HTML without pattern, inconsistent across pages."), "xmark"),
+        new(T("Depois", "After"), T("Componente padronizado com zebra, hover, sticky e alinhamento.", "Standardized component with striping, hover, sticky and alignment."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("Table nativo com caption, scope e th semantico.", "Native table with caption, scope and semantic th."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Dados estaticos", "Static data"), T("Dados que nao precisam de paginacao ou ordenacao client-side.", "Data that does not need client-side pagination or sorting."), "database"),
+        new(T("Resumos", "Summaries"), T("Dashboards e relatorios com poucas linhas.", "Dashboards and reports with few rows."), "chart-bar")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Milhares de linhas", "Thousands of rows"), T("Use XFDataGrid para dados massivos com virtualizacao.", "Use XFDataGrid for massive data with virtualization."), "ban"),
+        new(T("Ordenacao e filtragem", "Sorting and filtering"), T("Use XFDataGrid que suporta sort e filter nativos.", "Use XFDataGrid which supports native sort and filter."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Caption", "Caption"), T("Legenda acessivel da tabela (aria).", "Accessible table caption (aria)."), "tag"),
+        new(T("XFTableHeader", "XFTableHeader"), T("thead com headers das colunas em th.", "thead with column headers in th."), "heading"),
+        new(T("XFTableBody", "XFTableBody"), T("tbody com dados em XFTableRow + XFTableCell.", "tbody with data in XFTableRow + XFTableCell."), "align-justify"),
+        new(T("XFTableRow", "XFTableRow"), T("Linha individual com suporte a click e selected.", "Individual row with click and selected support."), "minus"),
+        new(T("XFTableCell", "XFTableCell"), T("Celula com align, colSpan, rowSpan e sticky.", "Cell with align, colSpan, rowSpan and sticky."), "square"),
+        new(T("XFTableFooter", "XFTableFooter"), T("tfoot para totais ou notas de rodape.", "tfoot for totals or footer notes."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("HTML semantico", "Semantic HTML"), T("Table nativo com thead, tbody, tfoot, th e caption.", "Native table with thead, tbody, tfoot, th and caption."), "code"),
+        new(T("Separacao de concerns", "Separation of concerns"), T("Cada sub-componente tem uma responsabilidade unica.", "Each sub-component has a single responsibility."), "layer-group"),
+        new(T("Progressive enhancement", "Progressive enhancement"), T("Funciona sem JS. Melhora com interacoes.", "Works without JS. Improves with interactions."), "arrow-up")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFTable Caption="@T("Resumo operacional", "Operational summary")">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Modulo", "Module")</XFTableCell>
+                <XFTableCell Header="true">@T("Status", "Status")</XFTableCell>
+                <XFTableCell Header="true">@T("SLA", "SLA")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            <XFTableRow><XFTableCell>Pedidos</XFTableCell><XFTableCell>Online</XFTableCell><XFTableCell>99.9%</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Fiscal</XFTableCell><XFTableCell>Atencao</XFTableCell><XFTableCell>98.4%</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Estoque</XFTableCell><XFTableCell>Online</XFTableCell><XFTableCell>99.7%</XFTableCell></XFTableRow>
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ExStripedHover() => @<XFTable Caption="@T("Financeiro", "Financial")" Striped="true" Hoverable="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Conta", "Account")</XFTableCell>
+                <XFTableCell Header="true">@T("Tipo", "Type")</XFTableCell>
+                <XFTableCell Header="true">@T("Saldo", "Balance")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            <XFTableRow><XFTableCell>Caixa</XFTableCell><XFTableCell>Ativo</XFTableCell><XFTableCell>R$ 120.000</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Banco BB</XFTableCell><XFTableCell>Ativo</XFTableCell><XFTableCell>R$ 450.000</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Fornecedores</XFTableCell><XFTableCell>Passivo</XFTableCell><XFTableCell>R$ -80.000</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Clientes</XFTableCell><XFTableCell>Ativo</XFTableCell><XFTableCell>R$ 230.000</XFTableCell></XFTableRow>
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ExCompact() => @<XFTable Caption="@T("Usuarios", "Users")" Compact="true" Size="XFSize.Sm">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Nome", "Name")</XFTableCell>
+                <XFTableCell Header="true">Email</XFTableCell>
+                <XFTableCell Header="true">@T("Perfil", "Profile")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            <XFTableRow><XFTableCell>Ana Silva</XFTableCell><XFTableCell>ana@empresa.com</XFTableCell><XFTableCell>Admin</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Carlos Lima</XFTableCell><XFTableCell>carlos@empresa.com</XFTableCell><XFTableCell>User</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Maria Souza</XFTableCell><XFTableCell>maria@empresa.com</XFTableCell><XFTableCell>User</XFTableCell></XFTableRow>
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ExStickyHeader() => @<XFTable Caption="@T("Historico de transacoes", "Transaction history")" StickyHeader="true" ViewportRows="5">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Data", "Date")</XFTableCell>
+                <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+                <XFTableCell Header="true">@T("Valor", "Value")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            <XFTableRow><XFTableCell>2026-06-01</XFTableCell><XFTableCell>Pedido #1001</XFTableCell><XFTableCell>R$ 1.500,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>2026-06-02</XFTableCell><XFTableCell>Pedido #1002</XFTableCell><XFTableCell>R$ 2.300,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>2026-06-03</XFTableCell><XFTableCell>Pedido #1003</XFTableCell><XFTableCell>R$ 800,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>2026-06-04</XFTableCell><XFTableCell>Pedido #1004</XFTableCell><XFTableCell>R$ 3.100,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>2026-06-05</XFTableCell><XFTableCell>Pedido #1005</XFTableCell><XFTableCell>R$ 950,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>2026-06-06</XFTableCell><XFTableCell>Pedido #1006</XFTableCell><XFTableCell>R$ 1.200,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>2026-06-07</XFTableCell><XFTableCell>Pedido #1007</XFTableCell><XFTableCell>R$ 4.000,00</XFTableCell></XFTableRow>
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ExFooter() => @<XFTable Caption="@T("Resumo financeiro", "Financial summary")" Striped="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Produto", "Product")</XFTableCell>
+                <XFTableCell Header="true">@T("Qtd", "Qty")</XFTableCell>
+                <XFTableCell Header="true">@T("Valor Unit.", "Unit Price")</XFTableCell>
+                <XFTableCell Header="true">@T("Total", "Total")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            <XFTableRow><XFTableCell>Notebook</XFTableCell><XFTableCell>5</XFTableCell><XFTableCell>R$ 3.500,00</XFTableCell><XFTableCell>R$ 17.500,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Monitor</XFTableCell><XFTableCell>10</XFTableCell><XFTableCell>R$ 1.200,00</XFTableCell><XFTableCell>R$ 12.000,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell>Teclado</XFTableCell><XFTableCell>20</XFTableCell><XFTableCell>R$ 150,00</XFTableCell><XFTableCell>R$ 3.000,00</XFTableCell></XFTableRow>
+        </XFTableBody>
+        <XFTableFooter>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Total Geral", "Grand Total")</XFTableCell>
+                <XFTableCell>35</XFTableCell>
+                <XFTableCell>-</XFTableCell>
+                <XFTableCell><strong>R$ 32.500,00</strong></XFTableCell>
+            </XFTableRow>
+        </XFTableFooter>
+    </XFTable>;
+
+    private RenderFragment ExAlignment() => @<XFTable Caption="@T("Alinhamento de colunas", "Column alignment")" Striped="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true" Align="XFTableAlign.Start">@T("Texto (Start)", "Text (Start)")</XFTableCell>
+                <XFTableCell Header="true" Align="XFTableAlign.Center">@T("Centro (Center)", "Center (Center)")</XFTableCell>
+                <XFTableCell Header="true" Align="XFTableAlign.End">@T("Numero (End)", "Number (End)")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            <XFTableRow><XFTableCell Align="XFTableAlign.Start">Produto A</XFTableCell><XFTableCell Align="XFTableAlign.Center">5</XFTableCell><XFTableCell Align="XFTableAlign.End">R$ 1.500,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell Align="XFTableAlign.Start">Produto B</XFTableCell><XFTableCell Align="XFTableAlign.Center">12</XFTableCell><XFTableCell Align="XFTableAlign.End">R$ 3.200,00</XFTableCell></XFTableRow>
+            <XFTableRow><XFTableCell Align="XFTableAlign.Start">Produto C</XFTableCell><XFTableCell Align="XFTableAlign.Center">8</XFTableCell><XFTableCell Align="XFTableAlign.End">R$ 900,00</XFTableCell></XFTableRow>
+        </XFTableBody>
+    </XFTable>;
+
+    private const string Code1 = @"<XFTable Caption=""Resumo operacional"">
+    <XFTableHeader>
+        <XFTableRow>
+            <XFTableCell Header=""true"">Modulo</XFTableCell>
+            <XFTableCell Header=""true"">Status</XFTableCell>
+            <XFTableCell Header=""true"">SLA</XFTableCell>
+        </XFTableRow>
+    </XFTableHeader>
+    <XFTableBody>
+        <XFTableRow>
+            <XFTableCell>Pedidos</XFTableCell>
+            <XFTableCell>Online</XFTableCell>
+            <XFTableCell>99.9%</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Fiscal</XFTableCell>
+            <XFTableCell>Atencao</XFTableCell>
+            <XFTableCell>98.4%</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Estoque</XFTableCell>
+            <XFTableCell>Online</XFTableCell>
+            <XFTableCell>99.7%</XFTableCell>
+        </XFTableRow>
+    </XFTableBody>
+</XFTable>";
+
+    private const string Code2 = @"<XFTable Caption=""Financeiro"" Striped=""true"" Hoverable=""true"">
+    <XFTableHeader>
+        <XFTableRow>
+            <XFTableCell Header=""true"">Conta</XFTableCell>
+            <XFTableCell Header=""true"">Tipo</XFTableCell>
+            <XFTableCell Header=""true"">Saldo</XFTableCell>
+        </XFTableRow>
+    </XFTableHeader>
+    <XFTableBody>
+        <XFTableRow>
+            <XFTableCell>Caixa</XFTableCell>
+            <XFTableCell>Ativo</XFTableCell>
+            <XFTableCell>R$ 120.000</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Banco BB</XFTableCell>
+            <XFTableCell>Ativo</XFTableCell>
+            <XFTableCell>R$ 450.000</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Fornecedores</XFTableCell>
+            <XFTableCell>Passivo</XFTableCell>
+            <XFTableCell>R$ -80.000</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Clientes</XFTableCell>
+            <XFTableCell>Ativo</XFTableCell>
+            <XFTableCell>R$ 230.000</XFTableCell>
+        </XFTableRow>
+    </XFTableBody>
+</XFTable>";
+
+    private const string Code3 = @"<XFTable Caption=""Usuarios"" Compact=""true"" Size=""XFSize.Sm"">
+    <XFTableHeader>
+        <XFTableRow>
+            <XFTableCell Header=""true"">Nome</XFTableCell>
+            <XFTableCell Header=""true"">Email</XFTableCell>
+            <XFTableCell Header=""true"">Perfil</XFTableCell>
+        </XFTableRow>
+    </XFTableHeader>
+    <XFTableBody>
+        <XFTableRow>
+            <XFTableCell>Ana Silva</XFTableCell>
+            <XFTableCell>ana@empresa.com</XFTableCell>
+            <XFTableCell>Admin</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Carlos Lima</XFTableCell>
+            <XFTableCell>carlos@empresa.com</XFTableCell>
+            <XFTableCell>User</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Maria Souza</XFTableCell>
+            <XFTableCell>maria@empresa.com</XFTableCell>
+            <XFTableCell>User</XFTableCell>
+        </XFTableRow>
+    </XFTableBody>
+</XFTable>";
+
+    private const string Code4 = @"<XFTable Caption=""Historico de transacoes"" StickyHeader=""true"" ViewportRows=""5"">
+    <XFTableHeader>
+        <XFTableRow>
+            <XFTableCell Header=""true"">Data</XFTableCell>
+            <XFTableCell Header=""true"">Descricao</XFTableCell>
+            <XFTableCell Header=""true"">Valor</XFTableCell>
+        </XFTableRow>
+    </XFTableHeader>
+    <XFTableBody>
+        <XFTableRow>
+            <XFTableCell>2026-06-01</XFTableCell>
+            <XFTableCell>Pedido #1001</XFTableCell>
+            <XFTableCell>R$ 1.500,00</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>2026-06-02</XFTableCell>
+            <XFTableCell>Pedido #1002</XFTableCell>
+            <XFTableCell>R$ 2.300,00</XFTableCell>
+        </XFTableRow>
+    </XFTableBody>
+</XFTable>";
+
+    private const string Code5 = @"<XFTable Caption=""Resumo financeiro"" Striped=""true"">
+    <XFTableHeader>
+        <XFTableRow>
+            <XFTableCell Header=""true"">Produto</XFTableCell>
+            <XFTableCell Header=""true"">Qtd</XFTableCell>
+            <XFTableCell Header=""true"">Valor Unit.</XFTableCell>
+            <XFTableCell Header=""true"">Total</XFTableCell>
+        </XFTableRow>
+    </XFTableHeader>
+    <XFTableBody>
+        <XFTableRow>
+            <XFTableCell>Notebook</XFTableCell>
+            <XFTableCell>5</XFTableCell>
+            <XFTableCell>R$ 3.500,00</XFTableCell>
+            <XFTableCell>R$ 17.500,00</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Monitor</XFTableCell>
+            <XFTableCell>10</XFTableCell>
+            <XFTableCell>R$ 1.200,00</XFTableCell>
+            <XFTableCell>R$ 12.000,00</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell>Teclado</XFTableCell>
+            <XFTableCell>20</XFTableCell>
+            <XFTableCell>R$ 150,00</XFTableCell>
+            <XFTableCell>R$ 3.000,00</XFTableCell>
+        </XFTableRow>
+    </XFTableBody>
+    <XFTableFooter>
+        <XFTableRow>
+            <XFTableCell Header=""true"">Total Geral</XFTableCell>
+            <XFTableCell>35</XFTableCell>
+            <XFTableCell>-</XFTableCell>
+            <XFTableCell><strong>R$ 32.500,00</strong></XFTableCell>
+        </XFTableRow>
+    </XFTableFooter>
+</XFTable>";
+
+    private const string Code6 = @"<XFTable Caption=""Alinhamento de colunas"" Striped=""true"">
+    <XFTableHeader>
+        <XFTableRow>
+            <XFTableCell Header=""true"" Align=""XFTableAlign.Start"">Texto (Start)</XFTableCell>
+            <XFTableCell Header=""true"" Align=""XFTableAlign.Center"">Centro (Center)</XFTableCell>
+            <XFTableCell Header=""true"" Align=""XFTableAlign.End"">Numero (End)</XFTableCell>
+        </XFTableRow>
+    </XFTableHeader>
+    <XFTableBody>
+        <XFTableRow>
+            <XFTableCell Align=""XFTableAlign.Start"">Produto A</XFTableCell>
+            <XFTableCell Align=""XFTableAlign.Center"">5</XFTableCell>
+            <XFTableCell Align=""XFTableAlign.End"">R$ 1.500,00</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell Align=""XFTableAlign.Start"">Produto B</XFTableCell>
+            <XFTableCell Align=""XFTableAlign.Center"">12</XFTableCell>
+            <XFTableCell Align=""XFTableAlign.End"">R$ 3.200,00</XFTableCell>
+        </XFTableRow>
+        <XFTableRow>
+            <XFTableCell Align=""XFTableAlign.Start"">Produto C</XFTableCell>
+            <XFTableCell Align=""XFTableAlign.Center"">8</XFTableCell>
+            <XFTableCell Align=""XFTableAlign.End"">R$ 900,00</XFTableCell>
+        </XFTableRow>
+    </XFTableBody>
+</XFTable>";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> XFTableApiRows => [
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo da tabela (header, body, footer).", "Table content (header, body, footer).")),
+        new("Caption", "string?", "null", T("Legenda acessivel da tabela (aria).", "Accessible table caption (aria).")),
+        new("EmptyText", "string?", T("'Nenhum dado para exibir.'", "'No data to display.'"), T("Texto quando a tabela esta vazia.", "Text when the table is empty.")),
+        new("Visible", "bool", "true", T("Se false, a tabela nao e renderizada.", "If false, the table is not rendered.")),
+        new("Striped", "bool", "false", T("Linhas alternadas (zebra).", "Alternating rows (striped).")),
+        new("Hoverable", "bool", "true", T("Destaque ao passar o mouse nas linhas.", "Highlight rows on mouse hover.")),
+        new("StickyHeader", "bool", "false", T("Header fixo ao rolar verticalmente.", "Fixed header on vertical scroll.")),
+        new("FullWidth", "bool", "true", T("Tabela ocupa 100% da largura.", "Table occupies 100% width.")),
+        new("ViewportRows", "int?", "null", T("Altura fixa do viewport (5, 10, 15, 20 linhas).", "Fixed viewport height (5, 10, 15, 20 rows).")),
+        new("Size", "XFSize", "Md", T("Tamanho do espacamento das celulas: Sm, Md, Lg.", "Cell spacing size: Sm, Md, Lg.")),
+        new("Variant", "XFListVariant", "Bordered", T("Variante visual: Plain, Bordered, Soft.", "Visual variant: Plain, Bordered, Soft."))
+    ];
+
+    private IReadOnlyList<ApiRow> XFTableCellApiRows => [
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo da celula.", "Cell content.")),
+        new("Header", "bool", "false", T("Se true, renderiza como th ao inves de td.", "If true, renders as th instead of td.")),
+        new("Visible", "bool", "true", T("Se false, a celula nao e renderizada.", "If false, the cell is not rendered.")),
+        new("Scope", "string", "col", T("Atributo scope para th (col, row).", "Scope attribute for th (col, row).")),
+        new("ColSpan", "int?", "null", T("Numero de colunas que a celula ocupa.", "Number of columns the cell spans.")),
+        new("RowSpan", "int?", "null", T("Numero de linhas que a celula ocupa.", "Number of rows the cell spans.")),
+        new("Align", "XFTableAlign", "Start", T("Alinhamento do texto: Start, Center, End.", "Text alignment: Start, Center, End.")),
+        new("Sticky", "bool", "false", T("Celula fixa ao rolar horizontalmente.", "Cell fixed on horizontal scroll.")),
+        new("StickySide", "XFTableStickySide", "Start", T("Lado da fixacao: Start, End.", "Sticky side: Start, End.")),
+        new("StickyOffset", "XFTableStickyOffset", "None", T("Offset da fixacao: None, Sm, Md, Lg, Xl.", "Sticky offset: None, Sm, Md, Lg, Xl."))
+    ];
+
+    private IReadOnlyList<ApiRow> XFTableRowApiRows => [
+        new("ChildContent", "RenderFragment?", "null", T("Celulas da linha.", "Row cells.")),
+        new("Visible", "bool", "true", T("Se false, a linha nao e renderizada.", "If false, the row is not rendered.")),
+        new("Selected", "bool", "false", T("Estado selecionado com fundo destacado.", "Selected state with highlighted background.")),
+        new("OnClick", "EventCallback<MouseEventArgs>", "-", T("Evento de clique na linha.", "Row click event."))
+    ];
+
+    private IReadOnlyList<ApiRow> XFTableContainerApiRows => [
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo do componente.", "Component content.")),
+        new("Visible", "bool", "true", T("Se false, nao e renderizado.", "If false, not rendered."))
+    ];
+
+    // === EVENTS ===
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("XFTableRow.OnClick", T("Evento de clique na linha inteira. Dispara ao clicar em qualquer celula da linha.", "Row click event. Fires when any cell in the row is clicked."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Table semantico", "Semantic table"), T("HTML nativo com thead, tbody, tfoot, th e caption.", "Native HTML with thead, tbody, tfoot, th and caption."), "universal-access"),
+        new(T("Caption acessivel", "Accessible caption"), T("Parametro Caption renderiza caption para leitores de tela.", "Caption parameter renders caption for screen readers."), "tag"),
+        new(T("Scope=col", "scope=col"), T("th com scope=col para associacao correta de colunas.", "th with scope=col for correct column association."), "heading"),
+        new(T("Zebra e hover", "Striping and hover"), T("Melhoram legibilidade visual sem depender apenas de cor.", "Improve visual legibility without relying solely on color."), "eye")
+    ];
+
+    // === KEYBOARD ===
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre celulas interativas quando ha botoes ou links dentro das celulas.", "Navigates between interactive cells when buttons or links are inside cells.")),
+        new("Enter", T("Ativa o clique na linha quando OnClick esta definido.", "Activates row click when OnClick is defined.")),
+        new("Escape", T("Remove foco da celula atual.", "Removes focus from current cell."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("FullWidth", "FullWidth"), T("Tabela ocupa 100% do container por padrao.", "Table occupies 100% of container by default."), "maximize"),
+        new(T("Overflow auto", "Overflow auto"), T("Wrapper com overflow-auto permite scroll horizontal.", "Wrapper with overflow-auto allows horizontal scroll."), "mobile-screen"),
+        new(T("Tamanho responsivo", "Responsive size"), T("Sm para mobile, Md para desktop, Lg para telas grandes.", "Sm for mobile, Md for desktop, Lg for large screens."), "arrows-left-right")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt"),
+        new(T("Render leve", "Light render"), T("Tag table nativa sem wrappers desnecessarios.", "Native table tag without unnecessary wrappers."), "feather"),
+        new(T("Viewport virtual", "Viewport virtual"), T("ViewportRows controla altura sem carregar todos os dados.", "ViewportRows controls height without loading all data."), "maximize")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Dashboard ERP", "ERP dashboard"), T("Tabela de modulos com status e SLA.", "Module table with status and SLA."), "chart-bar"),
+        new(T("Relatorio financeiro", "Financial report"), T("Extrato com footer de totais.", "Statement with totals footer."), "calculator"),
+        new(T("Lista de usuarios", "User list"), T("Tabela compacta com email e perfil.", "Compact table with email and profile."), "users")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Table + Footer", "Table + Footer"), T("XFTableFooter com totais e medias.", "XFTableFooter with totals and averages."), "file-lines"),
+        new(T("Table + Sticky", "Table + Sticky"), T("StickyHeader + ViewportRows para scroll controlado.", "StickyHeader + ViewportRows for controlled scroll."), "thumbtack"),
+        new(T("Table + Selected", "Table + Selected"), T("XFTableRow com Selected=true para selecao visual.", "XFTableRow with Selected=true for visual selection."), "check")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Sempre usar Caption", "Always use Caption"), T("Caption e acessivel e melhora SEO.", "Caption is accessible and improves SEO."), "tag"),
+        new(T("Alinhar numeros a direita", "Right-align numbers"), T("Use Align=End para colunas numericas.", "Use Align=End for numeric columns."), "align-right"),
+        new(T("Usar Header=true em th", "Use Header=true on th"), T("Garante renderizacao semantica de th com scope.", "Ensures semantic rendering of th with scope."), "heading"),
+        new(T("ViewportRows para scroll", "ViewportRows for scroll"), T("Use para tabelas com muitas linhas fixando a altura.", "Use for tables with many rows fixing the height."), "maximize")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem Caption", "No Caption"), T("Tabela sem legenda e inacessivel.", "Table without caption is inaccessible."), "xmark"),
+        new(T("Muitas colunas", "Too many columns"), T("Evite mais de 8 colunas. Use XFDataGrid para dados complexos.", "Avoid more than 8 columns. Use XFDataGrid for complex data."), "ban"),
+        new(T("HTML bruto", "Raw HTML"), T("Nao use table HTML direto. Use os componentes XFTable.", "Do not use raw HTML table. Use XFTable components."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("border-separate", T("Separação de bordas entre celulas.", "Border separation between cells.")),
+        new("bg-surface-50", T("Fundo do header (thead).", "Header background (thead).")),
+        new("bg-bg-surface", T("Fundo da tabela e celulas.", "Table and cell background.")),
+        new("border-border-light", T("Borda de celulas e linhas.", "Cell and row borders.")),
+        new("text-text-primary", T("Cor do texto das celulas.", "Cell text color.")),
+        new("text-text-secondary", T("Cor do texto do header (th).", "Header text color (th).")),
+        new("hover:bg-primary/5", T("Destaque ao passar o mouse.", "Hover highlight."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render com caption, striped, hoverable, compact, sticky, size, variant.", "Render with caption, striped, hoverable, compact, sticky, size, variant.")),
+        new("Accessibility", T("Table nativo com caption, th com scope=col, role implicito.", "Native table with caption, th with scope=col, implicit role.")),
+        new("Interaction", T("OnClick no XFTableRow dispara evento corretamente.", "OnClick on XFTableRow fires event correctly."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("ViewportRows", T("Altura fixa nao e responsiva. Use 5, 10, 15 ou 20.", "Fixed height is not responsive. Use 5, 10, 15 or 20.")),
+        new("Sticky", T("Sticky requer container com overflow. Funciona em XFTable e XFTableCell.", "Sticky requires container with overflow. Works on XFTable and XFTableCell.")),
+        new("Ordenacao", T("Nao suporta ordenacao nativa. Use XFDataGrid.", "Does not support native sorting. Use XFDataGrid."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFDataGrid", T("Tabela avancada com paginacao, ordenacao e filtragem.", "Advanced table with pagination, sorting and filtering."), "database"),
+        new("XFBadge", T("Indicadores visuais dentro de celulas.", "Visual indicators inside cells."), "badge"),
+        new("XFSkeleton", T("Placeholder de carregamento antes dos dados.", "Loading placeholder before data."), "square")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("XFTable vs XFDataGrid?", "XFTable vs XFDataGrid?"), T("XFTable = dados estaticos. XFDataGrid = dados dinamicos com paginacao/sort/filter.", "XFTable = static data. XFDataGrid = dynamic data with pagination/sort/filter.")),
+        new(T("Como usar footer?", "How to use footer?"), T("Adicione XFTableFooter dentro de XFTable apos XFTableBody.", "Add XFTableFooter inside XFTable after XFTableBody.")),
+        new(T("Sticky funciona em mobile?", "Sticky works on mobile?"), T("Sim, mas teste em dispositivos reais. Funciona em todos os navegadores modernos.", "Yes, but test on real devices. Works on all modern browsers.")),
+        new(T("Posso usar Selected com OnClick?", "Can I use Selected with OnClick?"), T("Sim. Selected e visual. OnClick e comportamental. Sao independentes.", "Yes. Selected is visual. OnClick is behavioral. They are independent."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina refeita no padrao enterprise com 3 exemplos renderizados.", "Page rewritten in enterprise standard with 3 rendered examples.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes e 6 exemplos completos.", "Refactored to AppShellDocs pattern with 26 sections and 6 complete examples."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

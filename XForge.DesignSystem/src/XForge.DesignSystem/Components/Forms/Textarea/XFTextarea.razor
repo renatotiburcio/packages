@@ -1,0 +1,60 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@FieldShellClass">
+        <textarea @ref="InputRef"
+                  @attributes="AdditionalAttributes"
+                  id="@Id"
+                  name="@Name"
+                  class="@TextareaClass"
+                  placeholder="@Placeholder"
+                  rows="@Rows"
+                  cols="@Cols"
+                  maxlength="@MaxLength"
+                  minlength="@MinLength"
+                  disabled="@Disabled"
+                  readonly="@ReadOnly"
+                  required="@Required"
+                  spellcheck="@SpellCheck"
+                  aria-label="@AriaLabel"
+                  aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                  aria-invalid="@AriaInvalid"
+                  aria-required="@Required"
+                  aria-readonly="@ReadOnly"
+                  aria-describedby="@DescribedBy"
+                  value="@CurrentValue"
+                  @oninput="HandleInputAsync"
+                  @onchange="HandleChangeAsync"></textarea>
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (ShowMetaRow)
+    {
+        <div class="@MetaRowClass">
+            @if (!string.IsNullOrWhiteSpace(HelperText))
+            {
+                <span id="@HelperId">@HelperText</span>
+            }
+            @if (ShowCount)
+            {
+                <span class="@CounterClass">@CharacterCountText</span>
+            }
+        </div>
+    }
+</div>

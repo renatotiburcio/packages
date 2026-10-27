@@ -1,0 +1,406 @@
+@page "/ai/batch-processor"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiBatchProcessor" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("Fila e processamento em lote", "Batch queue and processing")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Processador visual de lotes com progresso, status por item, filtragem e cancelamento.",
+                                   "Visual batch processor with progress, per-item status, filtering and cancellation.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Motor de processamento em lote para tarefas comerciais assistidas por AI, com barra de progresso segmentada, status por item, filtros e cancelamento. Puro Blazor, sem JavaScript interop.",
+                                   "Batch processing engine for AI-assisted commercial tasks, with segmented progress bar, per-item status, filters and cancellation. Pure Blazor, no JavaScript interop.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes. Execucao reativa.", "Works without restrictions. Reactive execution.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Processamento ativo", "1. Active Processing"), L.Text("Lote em processamento com progresso segmentado e status por item.", "Batch in progress with segmented progress and per-item status."), ExActive(), Code1)
+            @Example(L.Text("2. Sem itens", "2. No Items"), L.Text("Estado vazio com mensagem de configuracao.", "Empty state with configuration message."), ExEmpty(), Code2)
+            @Example(L.Text("3. Lote concluido", "3. Completed Batch"), L.Text("Lote finalizado com todos os itens processados.", "Batch finished with all items processed."), ExCompleted(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => L.Text("AI Commercial", "AI Commercial");
+    private string PageTitleText => L.Text("XFAiBatchProcessor", "XFAiBatchProcessor");
+    private string PageStatusText => L.Text("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    private static readonly XFAiBatchState MockState = new()
+    {
+        OperationName = "Importacao fiscal",
+        Status = XFAiWfExecutionStatus.Running,
+        TotalItems = 8,
+        ProcessedItems = 5,
+        SuccessfulItems = 3,
+        FailedItems = 1,
+        CancelledItems = 1,
+        StartedAt = DateTime.UtcNow.AddMinutes(-2)
+    };
+
+    private static readonly IReadOnlyList<XFAiBatchItem> MockItems = [
+        new() { Label = "NFe-001", Status = XFAiBatchItemStatus.Completed, Result = "Importada", DurationMs = 320 },
+        new() { Label = "NFe-002", Status = XFAiBatchItemStatus.Completed, Result = "Importada", DurationMs = 280 },
+        new() { Label = "NFe-003", Status = XFAiBatchItemStatus.Failed, ErrorMessage = "XML invalido" },
+        new() { Label = "NFe-004", Status = XFAiBatchItemStatus.Completed, Result = "Importada", DurationMs = 410 },
+        new() { Label = "NFe-005", Status = XFAiBatchItemStatus.Cancelled }
+    ];
+
+    private static readonly XFAiBatchState CompletedState = new()
+    {
+        OperationName = "Exportacao de relatorios",
+        Status = XFAiWfExecutionStatus.Completed,
+        TotalItems = 4,
+        ProcessedItems = 4,
+        SuccessfulItems = 4,
+        FailedItems = 0,
+        CancelledItems = 0,
+        StartedAt = DateTime.UtcNow.AddMinutes(-5),
+        CompletedAt = DateTime.UtcNow.AddMinutes(-1)
+    };
+
+    private static readonly IReadOnlyList<XFAiBatchItem> CompletedItems = [
+        new() { Label = "Relatorio mensal", Status = XFAiBatchItemStatus.Completed, Result = "Exportado", DurationMs = 520 },
+        new() { Label = "Relatorio fiscal", Status = XFAiBatchItemStatus.Completed, Result = "Exportado", DurationMs = 380 },
+        new() { Label = "Relatorio de vendas", Status = XFAiBatchItemStatus.Completed, Result = "Exportado", DurationMs = 290 },
+        new() { Label = "Relatorio de estoque", Status = XFAiBatchItemStatus.Completed, Result = "Exportado", DurationMs = 310 }
+    ];
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiBatchProcessor Title="Importacao fiscal" State="MockState" Items="MockItems" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("Fila de processamento", "Processing queue"), L.Text("Itens em fila com status e resultado por item.", "Queued items with status and result per item."), "layer-group"),
+        new(L.Text("Progresso segmentado", "Segmented progress"), L.Text("Barra com cores para sucesso, falha e cancelado.", "Bar with colors for success, failure and cancelled."), "arrows-left-right"),
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiBatchProcessor"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Workflow"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Workflow"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, aria-label, role=progressbar, aria-valuenow.", "role=region, aria-label, role=progressbar, aria-valuenow.")),
+        new("Theme support", L.Text("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Processador de lotes", "Batch processor"), L.Text("Motor de processamento em lote com progresso visual.", "Batch processing engine with visual progress."), "layer-group"),
+        new(L.Text("Status por item", "Per-item status"), L.Text("Cada item tem status, resultado e duracao individual.", "Each item has individual status, result and duration."), "list-check"),
+        new(L.Text("Filtros de status", "Status filters"), L.Text("Filtros rapidos para todos, falhas e processando.", "Quick filters for all, failures and processing."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Importacao de dados", "Data import"), L.Text("Processar lotes de XML, CSV ou arquivos fiscal.", "Process batches of XML, CSV or fiscal files."), "file-import"),
+        new(L.Text("Exportacao de relatorios", "Report export"), L.Text("Exportar multiplos relatorios em paralelo.", "Export multiple reports in parallel."), "file-export"),
+        new(L.Text("Automacao comercial", "Commercial automation"), L.Text("Automatizar tarefas repetitivas de vendas.", "Automate repetitive sales tasks."), "robot")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Processamento sem visibilidade do progresso.", "Processing without progress visibility."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Lote com barra de progresso segmentada e status.", "Batch with segmented progress bar and status."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=progressbar, aria-valuenow, aria-label.", "role=progressbar, aria-valuenow, aria-label."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Lotes grandes", "Large batches"), L.Text("Processar dezenas ou centenas de itens.", "Process dozens or hundreds of items."), "layer-group"),
+        new(L.Text("Retentativa", "Retry"), L.Text("Permitir retry de itens que falharam.", "Allow retry of failed items."), "rotate")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Tarefas unicas", "Single tasks"), L.Text("Para tarefas unicas, use XFAiWorkflowExecutor.", "For single tasks, use XFAiWorkflowExecutor."), "play"),
+        new(L.Text("Processamento offline", "Offline processing"), L.Text("Para processamento sem UI, use background services.", "For processing without UI, use background services."), "server")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(L.Text("Header", "Header"), L.Text("Barra com titulo, badge de status e botoes de acao.", "Bar with title, status badge and action buttons."), "bars"),
+        new(L.Text("Progress bar", "Progress bar"), L.Text("Barra segmentada com sucesso, falha e cancelado.", "Segmented bar with success, failure and cancelled."), "arrows-left-right"),
+        new(L.Text("Item list", "Item list"), L.Text("Tabela com nome, status, resultado e duracao por item.", "Table with name, status, result and duration per item."), "list"),
+        new(L.Text("Empty state", "Empty state"), L.Text("Estado vazio com mensagem e icone.", "Empty state with message and icon."), "inbox")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Visibilidade total", "Full visibility"), L.Text("Progresso e status sempre visiveis.", "Progress and status always visible."), "eye"),
+        new(L.Text("Controle do usuario", "User control"), L.Text("Iniciar, cancelar e filtrar com facilidade.", "Start, cancel and filter with ease."), "hand-pointer"),
+        new(L.Text("Cores semanticas", "Semantic colors"), L.Text("Sucesso=verde, Erro=vermelho, Cancelado=amarelo.", "Success=green, Error=red, Cancelled=yellow."), "palette")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExActive() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiBatchProcessor Title="Importacao fiscal" State="MockState" Items="MockItems" />
+    </XFStack>;
+
+    private RenderFragment ExEmpty() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiBatchProcessor Title="Processador de lote" />
+    </XFStack>;
+
+    private RenderFragment ExCompleted() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiBatchProcessor Title="Exportacao de relatorios" State="CompletedState" Items="CompletedItems" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFAiBatchProcessor Title=""Importacao fiscal"" State=""@_state"" Items=""@_items"" />";
+    private const string Code2 = @"<XFAiBatchProcessor Title=""Processador de lote"" />";
+    private const string Code3 = @"<XFAiBatchProcessor Title=""Exportacao de relatorios"" State=""@_state"" Items=""@_items"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Items", "IReadOnlyList<XFAiBatchItem>", "[]", L.Text("Itens para processar no lote.", "Items to process in the batch.")),
+        new("State", "XFAiBatchState?", "null", L.Text("Estado atual de processamento do lote.", "Current batch processing state.")),
+        new("Title", "string", "\"Processador em Lote\"", L.Text("Titulo do componente.", "Component title.")),
+        new("AriaLabel", "string", "\"Processador em lote\"", L.Text("Rotulo ARIA para acessibilidade.", "ARIA label for accessibility.")),
+        new("ShowHeader", "bool", "true", L.Text("Exibe a barra de cabecalho.", "Shows the header bar.")),
+        new("ShowItems", "bool", "true", L.Text("Exibe a lista de itens.", "Shows the item list.")),
+        new("MaxVisibleItems", "int", "50", L.Text("Maximo de itens visiveis antes do scroll.", "Max visible items before scrolling.")),
+        new("EmptyText", "string", "\"Nenhum item...\"", L.Text("Texto do estado vazio.", "Empty state text.")),
+        new("EmptyContent", "RenderFragment?", "null", L.Text("Conteudo customizado para estado vazio.", "Custom empty state content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnStart", L.Text("Disparado quando o usuario clica para iniciar o processamento.", "Fired when user clicks to start processing.")),
+        new("OnCancel", L.Text("Disparado quando o usuario solicita cancelar o processamento.", "Fired when user requests processing cancellation.")),
+        new("OnRetryItem", L.Text("Disparado quando um item falhado e solicitado para retry.", "Fired when a failed item is requested for retry."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Componente usa role=region para leitores de tela.", "Component uses role=region for screen readers."), "universal-access"),
+        new(L.Text("role=progressbar", "role=progressbar"), L.Text("Barra de progresso com aria-valuenow, aria-valuemin, aria-valuemax.", "Progress bar with aria-valuenow, aria-valuemin, aria-valuemax."), "arrows-left-right"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Botoes e barra com labels descritivos.", "Buttons and bar with descriptive labels."), "tag"),
+        new(L.Text("Status por item", "Per-item status"), L.Text("Status de cada item acessivel via tabela.", "Each item status accessible via table."), "list")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega entre botoes Processar/Cancelar e filtros.", "Navigates between Process/Cancel buttons and filters.")),
+        new("Enter", L.Text("Ativa o botao focado.", "Activates the focused button.")),
+        new("Space", L.Text("Ativa o botao focado.", "Activates the focused button."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Largura total", "Full width"), L.Text("Processador ocupa 100% do container.", "Processor occupies 100% of container."), "maximize"),
+        new(L.Text("Grid responsivo", "Responsive grid"), L.Text("Contadores de 2 colunas em mobile, 5 em desktop.", "Counters in 2 columns on mobile, 5 on desktop."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Render leve", "Light render"), L.Text("Atualizacoes parciais via StateHasChanged.", "Partial updates via StateHasChanged."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Importacao fiscal", "Tax import"), L.Text("Importacao de XML de NF-e em lote.", "Batch NF-e XML import."), "file-import"),
+        new(L.Text("Exportacao de relatorios", "Report export"), L.Text("Exportacao de multiplos relatorios.", "Export of multiple reports."), "file-export"),
+        new(L.Text("Sincronizacao de dados", "Data sync"), L.Text("Sincronizacao de dados entre sistemas.", "Data sync between systems."), "arrows-rotate")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("Processor + XFCard", "Processor + XFCard"), L.Text("Processador dentro de um card para contexto.", "Processor inside a card for context."), "square"),
+        new(L.Text("Processor + XFProgress", "Processor + XFProgress"), L.Text("Combinar com XFProgress para progresso global.", "Combine with XFProgress for global progress."), "arrows-left-right"),
+        new(L.Text("Processor + Alert", "Processor + Alert"), L.Text("Alerta de erro acima do processador em caso de falha.", "Error alert above processor on failure."), "triangle-exclamation")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("Mostrar progresso em tempo real", "Show real-time progress"), L.Text("Barra de progresso segmentada ajuda o usuario a entender o andamento.", "Segmented progress bar helps user understand advancement."), "arrows-left-right"),
+        new(L.Text("Permitir cancelamento", "Allow cancellation"), L.Text("Botao de cancelar durante processamento ativo.", "Cancel button during active processing."), "stop"),
+        new(L.Text("Filtrar por status", "Filter by status"), L.Text("Fornecer filtros para falhas e processando rapidamente.", "Provide filters for failures and processing quickly."), "filter"),
+        new(L.Text("Mostrar duracao por item", "Show duration per item"), L.Text("Tempo ajuda o usuario a identificar gargalos.", "Time helps user identify bottlenecks."), "clock")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Sem cancelamento", "No cancellation"), L.Text("Lote sem opcao de cancelar e perigoso.", "Batch without cancel option is dangerous."), "xmark"),
+        new(L.Text("Sem filtros", "No filters"), L.Text("Lote sem filtros e dificil de depurar.", "Batch without filters is hard to debug."), "ban"),
+        new(L.Text("Muitos itens visiveis", "Too many visible items"), L.Text("Evite mais de 50 itens visiveis sem scroll.", "Avoid more than 50 visible items without scroll."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("progress-segment", L.Text("h-3 flex rounded-full overflow-hidden.", "h-3 flex rounded-full overflow-hidden.")),
+        new("status-badge", L.Text("rounded-full px-2 py-0.5 text-[10px] font-bold.", "rounded-full px-2 py-0.5 text-[10px] font-bold.")),
+        new("item-row", L.Text("border-b border-border-light/50 hover:bg-surface-50.", "border-b border-border-light/50 hover:bg-surface-50."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Cores semanticas", L.Text("Sucesso=verde, Erro=vermelho, Cancelado=amarelo.", "Success=green, Error=red, Cancelled=yellow."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Testes de render, props, estados, eventos, filtros.", "Render, props, states, events, filters tests.")),
+        new("Accessibility", L.Text("role=region, role=progressbar, aria-valuenow, aria-label.", "role=region, role=progressbar, aria-valuenow, aria-label."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Progress", L.Text("Progresso e calculado automaticamente baseado em TotalItems e ProcessedItems.", "Progress is automatically calculated based on TotalItems and ProcessedItems.")),
+        new("Filtros", L.Text("Filtros sao internos. Para filtros customizados, use o componente diretamente.", "Filters are internal. For custom filters, use the component directly."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiWorkflowExecutor", L.Text("Execucao de workflows.", "Workflow execution."), "play"),
+        new("XFProgress", L.Text("Barra de progresso simples.", "Simple progress bar."), "arrows-left-right"),
+        new("XFAiScheduler", L.Text("Agendamento de tarefas.", "Task scheduling."), "clock")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Como atualizar o progresso?", "How to update progress?"), L.Text("Atualize o objeto XFAiBatchState. O componente re-renderiza automaticamente.", "Update the XFAiBatchState object. The component re-renders automatically.")),
+        new(L.Text("Posso personalizar o estado vazio?", "Can I customize the empty state?"), L.Text("Sim, use EmptyContent para customizar ou EmptyText para alterar o texto.", "Yes, use EmptyContent to customize or EmptyText to change the text.")),
+        new(L.Text("Funciona sem JS?", "Works without JS?"), L.Text("Sim. Nenhum JavaScript interop necessario.", "Yes. No JavaScript interop required."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", L.Text("Pagina refeita no padrao AppShellDocs com 26 secoes.", "Page rewritten in AppShellDocs standard with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

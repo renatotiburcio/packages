@@ -1,0 +1,57 @@
+@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <div @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@RootClass"
+         role="@Role"
+         aria-live="@AriaLive"
+         aria-busy="true"
+         aria-label="@AriaLabel">
+        <div class="@PanelClass">
+            <div class="@LogoClass" aria-hidden="@(Logo is null ? "true" : null)">
+                @if (Logo is not null)
+                {
+                    @Logo
+                }
+                else
+                {
+                    <span class="text-xl font-black">@Initials</span>
+                }
+            </div>
+
+            <div class="grid gap-1 text-center">
+                @if (!string.IsNullOrWhiteSpace(Title))
+                {
+                    <div class="text-lg font-semibold text-text-primary">@Title</div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Message))
+                {
+                    <div class="text-sm text-text-secondary">@Message</div>
+                }
+            </div>
+
+            @if (Progress is not null)
+            {
+                <div class="w-full max-w-xs">
+                    <div class="h-2 overflow-hidden rounded-full bg-surface-200">
+                        <div class="@ProgressBarClass" style="@ProgressStyle"></div>
+                    </div>
+                    @if (ShowProgressValue)
+                    {
+                        <div class="mt-2 text-center text-xs font-medium text-text-secondary">@ProgressValueText</div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="h-2 w-32 overflow-hidden rounded-full bg-surface-200">
+                    <div class="h-full w-1/2 rounded-full bg-primary motion-safe:animate-pulse"></div>
+                </div>
+            }
+
+            @ChildContent
+        </div>
+    </div>
+}

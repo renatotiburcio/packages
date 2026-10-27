@@ -1,0 +1,460 @@
+@page "/ai/compliance-panel"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFCompliancePanel" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("LGPD, GDPR, CCPA", "LGPD, GDPR, CCPA")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Painel de conformidade para politicas, riscos e controles de IA comercial.",
+                               "Compliance panel for policies, risks and commercial AI controls.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Dashboard LGPD/GDPR com politicas de retencao, gestao de consentimentos, solicitacoes de exclusao e resumo de conformidade.",
+                               "LGPD/GDPR dashboard with retention policies, consent management, deletion requests and compliance summary.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Completo", "1. Full"), T("Painel completo com todas as secoes.", "Full panel with all sections."), ExFull(), Code1)
+            @Example(T("2. Sem acoes", "2. No actions"), T("Painel somente leitura sem botoes de acao.", "Read-only panel without action buttons."), ExReadOnly(), Code2)
+            @Example(T("3. Sem politicas", "3. No policies"), T("Painel com apenas resumo e solicitacoes.", "Panel with summary and requests only."), ExMinimal(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("AI Commercial", "AI Commercial");
+    private string PageTitleText => T("XFCompliancePanel", "XFCompliancePanel");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFCompliancePanel Report="SampleReport"
+                                                                DeletionRequests="SampleDeletions"
+                                                                Title="Conformidade"
+                                                                ShowRefreshButton="false"
+                                                                ShowActionButtons="true"
+                                                                MaxVisibleRequests="2" />;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("LGPD/GDPR", "LGPD/GDPR"), T("Suporte a multiplas regulacoes com badges visuais.", "Support for multiple regulations with visual badges."), "shield-check"),
+        new(T("Consentimentos", "Consents"), T("Gestao de consentimentos por categoria com barras de progresso.", "Consent management by category with progress bars."), "check-double"),
+        new(T("Exclusao", "Deletion"), T("Solicitacoes de exclusao com aprovar/rejeitar.", "Deletion requests with approve/reject."), "trash")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFCompliancePanel"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Enterprise"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Enterprise"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", "role=region, aria-label, aria-hidden em icones."),
+        new("Theme support", T("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Dashboard de conformidade", "Compliance dashboard"), T("Resumo visual de usuarios, consentimentos e exclusoes.", "Visual summary of users, consents and deletions."), "shield-check"),
+        new(T("Politicas de retencao", "Retention policies"), T("Politicas por categoria com periodo e base legal.", "Policies by category with period and legal basis."), "clock"),
+        new(T("Consentimentos por categoria", "Consent by category"), T("Barras de progresso por tipo de dado.", "Progress bars by data type."), "chart-bar")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Conformidade", "Compliance"), T("Atender LGPD, GDPR e CCPA com dashboard centralizado.", "Meet LGPD, GDPR and CCPA with centralized dashboard."), "shield-check"),
+        new(T("Gestao de dados", "Data management"), T("Gerenciar exclusoes e retencao de dados pessoais.", "Manage personal data deletion and retention."), "database"),
+        new(T("Transparencia", "Transparency"), T("Mostrar status de consentimentos e politicas para usuarios.", "Show consent status and policies to users."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Conformidade manual com planilhas e processos ad hoc.", "Manual compliance with spreadsheets and ad hoc processes."), "xmark"),
+        new(T("Depois", "After"), T("Dashboard automatizado com politicas, consentimentos e exclusoes.", "Automated dashboard with policies, consents and deletions."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=region com aria-label e botoes com aria-label.", "role=region with aria-label and buttons with aria-label."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Compliance officer", "Compliance officer"), T("Dashboard para gestores de conformidade.", "Dashboard for compliance managers."), "user-shield"),
+        new(T("DPO", "DPO"), T("Exclusao de dados e gestao de consentimentos.", "Data deletion and consent management."), "user-minus")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Auditoria imutavel", "Immutable audit"), T("Use XFAiAuditTimeline para trilha com hash.", "Use XFAiAuditTimeline for trail with hash."), "lock"),
+        new(T("Log operacional", "Operational log"), T("Use XFAuditLogger para logs de sistema.", "Use XFAuditLogger for system logs."), "scroll")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Header", T("Titulo e badges de regulacao.", "Title and regulation badges."), "bars"),
+        new("Summary Cards", T("Cards com metricas: usuarios, consentimentos, exclusoes.", "Cards with metrics: users, consents, deletions."), "chart-bar"),
+        new("Deletion Requests", T("Lista de solicitacoes com status e acoes.", "Request list with status and actions."), "trash"),
+        new("Retention Policies", T("Politicas por categoria com periodo e base legal.", "Policies by category with period and legal basis."), "clock"),
+        new("Consent by Category", T("Barras de progresso por tipo de dado.", "Progress bars by data type."), "chart-simple"),
+        new("Empty State", T("Mensagem quando nao ha dados.", "Message when no data available."), "inbox")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Visibilidade", "Visibility"), T("Todas as metricas e politicas visiveis de imediato.", "All metrics and policies visible immediately."), "eye"),
+        new(T("Acao rapida", "Quick action"), T("Botoes de aprovar/rejeitar inline para exclusoes.", "Inline approve/reject buttons for deletions."), "bolt"),
+        new(T("Regulacao clara", "Clear regulation"), T("Badges identificam quais regulacoes se aplicam.", "Badges identify which regulations apply."), "shield-check")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExFull() => @<XFCompliancePanel Report="SampleReport"
+                                                           DeletionRequests="SampleDeletions"
+                                                           Title="Conformidade"
+                                                           ShowRefreshButton="false"
+                                                           ShowActionButtons="true"
+                                                           MaxVisibleRequests="2" />;
+
+    private RenderFragment ExReadOnly() => @<XFCompliancePanel Report="SampleReport"
+                                                               DeletionRequests="SampleDeletions"
+                                                               Title="Conformidade (somente leitura)"
+                                                               ShowRefreshButton="false"
+                                                               ShowActionButtons="false"
+                                                               MaxVisibleRequests="2" />;
+
+    private RenderFragment ExMinimal() => @<XFCompliancePanel Report="MinimalReport"
+                                                              DeletionRequests="SampleDeletions"
+                                                              Title="Resumo"
+                                                              ShowRefreshButton="false"
+                                                              ShowActionButtons="false"
+                                                              MaxVisibleRequests="2" />;
+
+    private const string Code1 = @"<XFCompliancePanel Report=""@_report""
+    DeletionRequests=""@_deletions""
+    Title=""Conformidade""
+    ShowRefreshButton=""false""
+    ShowActionButtons=""true""
+    MaxVisibleRequests=""2"" />";
+
+    private const string Code2 = @"<XFCompliancePanel Report=""@_report""
+    DeletionRequests=""@_deletions""
+    Title=""Conformidade (somente leitura)""
+    ShowRefreshButton=""false""
+    ShowActionButtons=""false""
+    MaxVisibleRequests=""2"" />";
+
+    private const string Code3 = @"<XFCompliancePanel Report=""@_report""
+    DeletionRequests=""@_deletions""
+    Title=""Resumo""
+    ShowRefreshButton=""false""
+    ShowActionButtons=""false""
+    MaxVisibleRequests=""2"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Report", "XFComplianceReport?", "null", T("Dados do relatorio de conformidade.", "Compliance report data.")),
+        new("DeletionRequests", "IReadOnlyList<XFDeletionRequest>", "[]", T("Solicitacoes de exclusao pendentes.", "Pending deletion requests.")),
+        new("Title", "string", "\"Conformidade\"", T("Titulo do componente.", "Component title.")),
+        new("ShowRefreshButton", "bool", "true", T("Exibe botao de atualizacao.", "Displays refresh button.")),
+        new("ShowActionButtons", "bool", "true", T("Exibe botoes aprovar/rejeitar nas exclusoes.", "Displays approve/reject buttons on deletions.")),
+        new("MaxVisibleRequests", "int", "10", T("Maximo de solicitacoes de exclusao visiveis.", "Maximum visible deletion requests.")),
+        new("EmptyLabel", "string", "\"Nenhum relatorio de conformidade\"", T("Label do estado vazio.", "Empty state label.")),
+        new("UsersLabel", "string", "\"Usuarios\"", T("Label de Usuarios no resumo.", "Users label in summary.")),
+        new("ActiveConsentsLabel", "string", "\"Consentimentos ativos\"", T("Label de Consentimentos ativos.", "Active consents label.")),
+        new("RevokedConsentsLabel", "string", "\"Revogados\"", T("Label de Revogados.", "Revoked label.")),
+        new("PendingDeletionsLabel", "string", "\"Exclusoes pendentes\"", T("Label de Exclusoes pendentes.", "Pending deletions label.")),
+        new("DeletionRequestsLabel", "string", "\"Solicitacoes de exclusao\"", T("Label da secao de solicitacoes.", "Requests section label.")),
+        new("RetentionPoliciesLabel", "string", "\"Politicas de retencao\"", T("Label da secao de politicas.", "Policies section label.")),
+        new("ConsentByCategoryLabel", "string", "\"Consentimentos por categoria\"", T("Label da secao de consentimentos.", "Consents section label.")),
+        new("ApproveLabel", "string", "\"Aprovar\"", T("Label do botao Aprovar.", "Approve button label.")),
+        new("RejectLabel", "string", "\"Rejeitar\"", T("Label do botao Rejeitar.", "Reject button label."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnApproveDeletion", T("Disparado ao aprovar uma solicitacao de exclusao.", "Fired when approving a deletion request.")),
+        new("OnRejectDeletion", T("Disparado ao rejeitar uma solicitacao de exclusao.", "Fired when rejecting a deletion request.")),
+        new("OnRefresh", T("Disparado ao clicar no botao de atualizacao.", "Fired when refresh button is clicked."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("role=region", T("Container principal usa role=region.", "Main container uses role=region."), "universal-access"),
+        new("aria-label", T("Botoes e container tem aria-label descritivo.", "Buttons and container have descriptive aria-label."), "tag"),
+        new("aria-hidden", T("Icones decorativos marcados com aria-hidden.", "Decorative icons marked with aria-hidden."), "eye-slash"),
+        new("Contraste", T("Cores de status atendem WCAG AAA.", "Status colors meet WCAG AAA."), "palette")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Grid responsivo", "Responsive grid"), T("Summary cards: 4 colunas desktop, 2 mobile.", "Summary cards: 4 columns desktop, 2 mobile."), "maximize"),
+        new(T("Politicas flex", "Flexible policies"), T("Politicas se empilham em mobile.", "Policies stack on mobile."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("MaxVisibleRequests", "MaxVisibleRequests"), T("Limita solicitacoes renderizadas.", "Limits rendered requests."), "gauge"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Render leve", "Light render"), T("Cards nativos sem wrappers.", "Native cards without wrappers."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("LGPD", "LGPD"), T("Conformidade com Lei Geral de Protecao de Dados.", "Compliance with General Data Protection Law."), "shield-check"),
+        new(T("GDPR", "GDPR"), T("Conformidade com General Data Protection Regulation.", "Compliance with General Data Protection Regulation."), "shield-check"),
+        new(T("DPO Dashboard", "DPO Dashboard"), T("Painel para Data Protection Officer.", "Dashboard for Data Protection Officer."), "user-shield")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("Panel + Card", T("Painel dentro de XFCard para contexto.", "Panel inside XFCard for context."), "square"),
+        new("Panel + AuditTimeline", T("Combinar com timeline para trilha completa.", "Combine with timeline for complete trail."), "clock-rotate-left"),
+        new("Panel + AuditLogger", T("Combinar com logger para detalhes operacionais.", "Combine with logger for operational details."), "scroll")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Aprovar com cautela", "Approve with caution"), T("Revisar solicitacoes antes de aprovar exclusoes.", "Review requests before approving deletions."), "shield-check"),
+        new(T("Periodo de retencao", "Retention period"), T("Definir politicas claras por categoria de dado.", "Define clear policies by data category."), "clock"),
+        new(T("Consentimento granular", "Granular consent"), T("Usar consentimentos por categoria, nao globais.", "Use consents by category, not global."), "check-double"),
+        new(T("Empty state", "Empty state"), T("Definir EmptyLabel para ausencia de dados.", "Set EmptyLabel for no data."), "inbox")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Aprovar sem revisar", "Approve without review"), T("Aprovacao automatica de exclusoes e arriscada.", "Automatic deletion approval is risky."), "triangle-exclamation"),
+        new(T("Sem politicas", "No policies"), T("Painel sem politicas de retencao e incompleto.", "Panel without retention policies is incomplete."), "xmark"),
+        new(T("Consentimento global", "Global consent"), T("Um unico consentimento para todos os dados.", "A single consent for all data."), "ban")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("summary-card", T("p-3 rounded-lg border.", "p-3 rounded-lg border.")),
+        new("header", T("flex items-center justify-between mb-4.", "flex items-center justify-between mb-4.")),
+        new("progress-bar", T("w-full h-1.5 bg-gray-200 rounded-full.", "w-full h-1.5 bg-gray-200 rounded-full."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Badges de regulacao seguem marca ativa.", "Regulation badges follow active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, Report, DeletionRequests, vazio.", "Render, props, Report, DeletionRequests, empty tests.")),
+        new("Accessibility", T("role=region, aria-label, aria-hidden.", "role=region, aria-label, aria-hidden."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Dados estaticos", T("Report e DeletionRequests sao passados como props.", "Report and DeletionRequests are passed as props.")),
+        new("Acoes", T("Aprovar/Rejeitar dependem de implementacao externa.", "Approve/Reject depend on external implementation."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiAuditTimeline", T("Timeline imutavel com hash.", "Immutable timeline with hash."), "clock-rotate-left"),
+        new("XFAuditLogger", T("Log de auditoria operacional.", "Operational audit log."), "scroll"),
+        new("XFRbacComponent", T("Controle de acesso baseado em papel.", "Role-based access control."), "shield")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("LGPD vs GDPR?", "LGPD vs GDPR?"), T("Suporta ambos via enum XFComplianceRegulation.", "Supports both via XFComplianceRegulation enum.")),
+        new(T("Como aprovar exclusao?", "How to approve deletion?"), T("Use OnApproveDeletion com XFDeletionRequest.", "Use OnApproveDeletion with XFDeletionRequest.")),
+        new(T("Funciona sem Report?", "Works without Report?"), T("Sim. Mostra estado vazio com EmptyLabel.", "Yes. Shows empty state with EmptyLabel."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Pagina refeita no padrao enterprise com 3 exemplos renderizados.", "Page rewritten in enterprise standard with 3 rendered examples.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === SAMPLE DATA ===
+    private static readonly XFComplianceReport SampleReport = new()
+    {
+        TotalUsers = 1247,
+        ActiveConsents = 1180,
+        RevokedConsents = 67,
+        PendingDeletions = 12,
+        Regulations = [XFComplianceRegulation.LGPD, XFComplianceRegulation.GDPR],
+        RetentionPolicies =
+        [
+            new() { Category = XFDataCategory.Personal, RetentionDays = 730, AutoDelete = true, LegalBasis = XFLegalBasis.Consent },
+            new() { Category = XFDataCategory.Financial, RetentionDays = 2555, AutoDelete = false, LegalBasis = XFLegalBasis.LegalObligation }
+        ],
+        ConsentsByCategory = new Dictionary<XFDataCategory, int>
+        {
+            [XFDataCategory.Personal] = 850,
+            [XFDataCategory.Financial] = 230,
+            [XFDataCategory.Behavioral] = 100
+        }
+    };
+
+    private static readonly XFComplianceReport MinimalReport = new()
+    {
+        TotalUsers = 500,
+        ActiveConsents = 480,
+        RevokedConsents = 20,
+        PendingDeletions = 0,
+        Regulations = [XFComplianceRegulation.LGPD],
+        RetentionPolicies = [],
+        ConsentsByCategory = new Dictionary<XFDataCategory, int>
+        {
+            [XFDataCategory.Personal] = 480
+        }
+    };
+
+    private static readonly IReadOnlyList<XFDeletionRequest> SampleDeletions =
+    [
+        new()
+        {
+            UserId = "user-001",
+            Status = XFDeletionRequestStatus.Pending,
+            Reason = "Solicitacao de exclusao de dados pessoais",
+            RequestedAt = DateTimeOffset.UtcNow.AddHours(-2),
+            DataCategories = [XFDataCategory.Personal, XFDataCategory.Behavioral]
+        },
+        new()
+        {
+            UserId = "user-002",
+            Status = XFDeletionRequestStatus.Approved,
+            Reason = "Exclusao por encerramento de contrato",
+            RequestedAt = DateTimeOffset.UtcNow.AddDays(-3),
+            ApprovedBy = "admin@xforge.local",
+            DataCategories = [XFDataCategory.Financial]
+        }
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

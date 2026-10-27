@@ -1,0 +1,81 @@
+﻿@inherits XForgeComponentBase
+
+@if (Open)
+{
+    <div class="@OverlayClass" @onclick="HandleOverlayClickAsync">
+        <section @attributes="AdditionalAttributes"
+                 id="@Id"
+                 @ref="PanelReference"
+                 class="@PanelClass"
+                 style="@PanelStyle"
+                 role="@(Alert ? "alertdialog" : "dialog")"
+                 aria-modal="true"
+                 aria-labelledby="@AriaLabelledBy"
+                 aria-describedby="@AriaDescribedBy"
+                 aria-roledescription="@(Draggable || Resizable || EffectiveMaximized ? "janela de dialogo" : null)"
+                 data-xf-dialog-draggable="@Draggable"
+                 data-xf-dialog-resizable="@Resizable"
+                 data-xf-dialog-maximized="@EffectiveMaximized"
+                 data-xf-dialog-scroll="@ScrollMode.ToString().ToLowerInvariant()"
+                 @onclick:stopPropagation="true"
+                 @onkeydown="HandleKeyDownAsync"
+                 tabindex="-1">
+            @if (ShowHeader)
+            {
+                <header class="@HeaderClass" data-xf-dialog-drag-handle="@Draggable" aria-label="@(Draggable ? DragHandleLabel : null)">
+                    <div class="min-w-0 space-y-1">
+                        @if (Header is not null)
+                        {
+                            @Header
+                        }
+                        else
+                        {
+                            @if (!string.IsNullOrWhiteSpace(Title))
+                            {
+                                <h2 id="@TitleId" class="@TitleClass">@Title</h2>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(Description))
+                            {
+                                <p id="@DescriptionId" class="@DescriptionClass">@Description</p>
+                            }
+                        }
+                    </div>
+
+                    <span class="flex shrink-0 items-center gap-1">
+                        @if (Maximizable)
+                        {
+                            <button type="button" class="@HeaderActionClass" aria-label="@(EffectiveMaximized ? RestoreLabel : MaximizeLabel)" aria-pressed="@EffectiveMaximized" data-xf-dialog-maximize @onclick="ToggleMaximizedAsync">
+                                <span class="inline-block h-4 w-4">@XFSvgIcons.Markup(EffectiveMaximized ? "arrows-minimize" : "arrows-maximize")</span>
+                            </button>
+                        }
+
+                        @if (ShowCloseButton)
+                        {
+                            <button type="button" class="@CloseButtonClass" aria-label="@CloseLabel" @onclick="CloseAsync">
+                                <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("xmark")</span>
+                            </button>
+                        }
+                    </span>
+                </header>
+            }
+
+            <div class="@BodyClass" style="@BodyStyle" data-xf-dialog-body-scroll="@ScrollMode.ToString().ToLowerInvariant()">
+                @ChildContent
+            </div>
+
+            @if (Footer is not null)
+            {
+                <footer class="@FooterClass">
+                    @Footer
+                </footer>
+            }
+
+            @if (Resizable && !EffectiveMaximized)
+            {
+                <span class="@ResizeHandleClass" aria-label="@ResizeHandleLabel" role="separator" tabindex="0" data-xf-dialog-resize-handle></span>
+            }
+        </section>
+    </div>
+}
+

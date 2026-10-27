@@ -1,0 +1,21 @@
+﻿@namespace XForge.Components.Lgpd
+<div class="xf-lgpd-export" data-user-id="@UserId">
+  <h3>Exportar meus dados (LGPD art. 18, V)</h3>
+  <p>Voce tem o direito de receber uma copia de todos os dados pessoais que temos sobre voce.</p>
+  <select @bind="Format">
+    <option value="json">JSON</option>
+    <option value="csv">CSV</option>
+    <option value="pdf">PDF</option>
+  </select>
+  <button @onclick="Request">Solicitar Exportacao</button>
+  @if (Status == "processing") { <div class="xf-lgpd-status">Processando...</div> }
+  @if (Status == "ready" && DownloadUrl != null) { <a href="@DownloadUrl" class="btn-download">Download @Format.ToUpper()</a> }
+</div>
+@code {
+  [Parameter] public string UserId { get; set; } = "";
+  [Parameter] public string Status { get; set; } = "idle";
+  [Parameter] public string? DownloadUrl { get; set; }
+  [Parameter] public EventCallback OnExportRequested { get; set; }
+  string Format { get; set; } = "json";
+  void Request() => OnExportRequested.InvokeAsync();
+}

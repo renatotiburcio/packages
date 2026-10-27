@@ -1,0 +1,45 @@
+@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <span id="@Id"
+          class="@RootClass"
+          style="@Style"
+          role="@(Clickable ? "button" : null)"
+          tabindex="@(Clickable && !Disabled ? "0" : null)"
+          aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+          aria-label="@AriaLabel"
+          @onclick="HandleClickAsync"
+          @onkeydown="HandleKeyDownAsync"
+          @attributes="AdditionalAttributes">
+
+        @if (StartIcon is not null)
+        {
+            <span class="@IconClass" aria-hidden="true">@StartIcon</span>
+        }
+
+        @if (Avatar is not null)
+        {
+            <span class="@AvatarClass" aria-hidden="true">@Avatar</span>
+        }
+
+        <span class="min-w-0 truncate">@ChildContent</span>
+
+        @if (EndIcon is not null)
+        {
+            <span class="@IconClass" aria-hidden="true">@EndIcon</span>
+        }
+
+        @if (Dismissible)
+        {
+            <button type="button"
+                    class="@DismissButtonClass"
+                    aria-label="@DismissLabel"
+                    disabled="@Disabled"
+                    @onclick="HandleDismissAsync"
+                    @onclick:stopPropagation="true">
+                <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("xmark")</span>
+            </button>
+        }
+    </span>
+}

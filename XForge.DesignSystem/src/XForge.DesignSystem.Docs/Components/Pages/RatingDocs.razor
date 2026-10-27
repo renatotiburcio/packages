@@ -1,0 +1,447 @@
+@page "/forms/rating"
+@using Microsoft.AspNetCore.Components.Forms
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.Forms.Rating
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFRating" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Avaliacao por estrelas", "Star-based rating")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Avaliacao por valor discreto com suporte a meio-estrela, hover e reset.",
+                               "Discrete value rating with half-star, hover and reset support.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente interativo para satisfacao, prioridade e classificacao, com 6 tons, 4 tamanhos, icone customizavel e integracao total com EditContext.",
+                               "Interactive component for satisfaction, priority and classification, with 6 tones, 4 sizes, custom icons and full EditContext integration.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== METADATA ===== -->
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        <!-- ===== BLAZOR COMPAT ===== -->
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <!-- ===== TEXT SECTIONS ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Rating com valor, label e ShowValue.", "Rating with value, label and ShowValue."), ExBasic(), Code1)
+            @Example(T("2. Tamanhos e tons", "2. Sizes and Tones"), T("Diferentes tamanhos e cores semanticas.", "Different sizes and semantic colors."), ExSizesTones(), Code2)
+            @Example(T("3. Somente leitura", "3. Read Only"), T("Exibe avaliacao sem interacao.", "Displays rating without interaction."), ExReadOnly(), Code3)
+            @Example(T("4. Com reset e valor", "4. With reset and value"), T("Permite limpar avaliacao e mostra valor formatado.", "Allows clearing rating and shows formatted value."), ExReset(), Code4)
+            @Example(T("5. Icone customizado", "5. Custom Icon"), T("Renderiza coracao ao inves de estrela.", "Renders heart instead of star."), ExCustomIcon(), Code5)
+            @Example(T("6. Integracao EditContext", "6. EditContext Integration"), T("Rating com validacao obrigatoria e mensagens de erro.", "Rating with required validation and error messages."), ExEditContext(), Code6)
+        </XFStack>
+
+        <!-- ===== API ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <!-- ===== A11Y + KEYBOARD ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <!-- ===== ENTERPRISE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <!-- ===== TOKENS + THEME + TESTS ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFRating", "XFRating");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFRating Label="Servico" Value="4" ShowValue="true" Tone="XFSemanticColor.Warning" />
+        <XFRating Label="Produto" Value="3" Max="5" ShowValue="true" Tone="XFSemanticColor.Success" />
+        <XFRating Label="Entrega" Value="5" Max="5" ShowValue="true" Tone="XFSemanticColor.Primary" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Estrelas com meio-estrela", "Stars with half-star"), T("Valores fracionarios renderizam metade da estrela.", "Fractional values render half the star."), "star"),
+        new(T("6 tons semanticos", "6 semantic tones"), T("Primary, Secondary, Success, Warning, Danger, Neutral.", "Primary, Secondary, Success, Warning, Danger, Neutral."), "palette"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFRating"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.Rating"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Forms / Rating"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=radiogroup, role=radio, aria-checked, aria-label, aria-describedby.", "role=radiogroup, role=radio, aria-checked, aria-label, aria-describedby.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Rating por estrelas", "Star rating"), T("Selecao visual de valor discreto com estrelas.", "Visual discrete value selection with stars."), "star"),
+        new(T("Meio-estrela", "Half star"), T("Valores fracionarios como 3.5 renderizam metade.", "Fractional values like 3.5 render half."), "star-half"),
+        new(T("Reset e hover", "Reset and hover"), T("Limpa avaliacao e preview ao passar o mouse.", "Clears rating and previews on hover."), "rotate-left")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Satisfacao", "Satisfaction"), T("Avaliar satisfacao do usuario com servicos.", "Rate user satisfaction with services."), "face-smile"),
+        new(T("Prioridade", "Priority"), T("Classificar prioridade de tarefas ou bugs.", "Classify priority of tasks or bugs."), "flag"),
+        new(T("Classificacao", "Classification"), T("Pontuacao media de produtos ou conteudos.", "Average score of products or content."), "chart-simple")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Sem feedback visual padronizado de avaliacao.", "No standardized visual feedback for rating."), "xmark"),
+        new(T("Depois", "After"), T("Rating acessivel com tons, tamanhos e validacao.", "Accessible rating with tones, sizes and validation."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=radiogroup, aria-checked, navegacao por teclado.", "role=radiogroup, aria-checked, keyboard navigation."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Pesquisas", "Surveys"), T("Avaliacao de experiencia em formularios.", "Experience rating in forms."), "clipboard-list"),
+        new(T("Produtos", "Products"), T("Nota media de produtos em e-commerce.", "Average product score in e-commerce."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Escala contínua", "Continuous scale"), T("Use slider para escala continua.", "Use slider for continuous scale."), "arrows-left-right"),
+        new(T("Contador numerico", "Numeric counter"), T("Use XFInputNumber para contagem.", "Use XFInputNumber for counting."), "hashtag")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Star", T("Cada estrela e um botao radio com aria-checked.", "Each star is a radio button with aria-checked."), "star"),
+        new("Half star", T("Metade da estrela preenchida para valores fracionarios.", "Half star filled for fractional values."), "star-half"),
+        new("Clear button", T("Botao de limpeza quando AllowReset=true.", "Clear button when AllowReset=true."), "xmark"),
+        new("Value text", T("Texto do valor formatado quando ShowValue=true.", "Formatted value text when ShowValue=true."), "font"),
+        new("Label", T("Texto descritivo acima do rating.", "Descriptive text above rating."), "tag"),
+        new("Helper/Error", T("Texto auxiliar ou mensagem de erro abaixo.", "Helper text or error message below."), "circle-info")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Feedback visual", "Visual feedback"), T("Hover e selecao imediatos com animacao.", "Immediate hover and selection feedback with animation."), "eye"),
+        new(T("Ton = significado", "Tone = meaning"), T("Warning para avaliacao padrao, Success para positivo.", "Warning for default rating, Positive for success."), "palette"),
+        new(T("Acessibilidade", "Accessibility"), T("Navegacao por teclado com role=radiogroup.", "Keyboard navigation with role=radiogroup."), "universal-access")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFRating Label="Servico" Value="3" ShowValue="true" />
+    </XFStack>;
+
+    private RenderFragment ExSizesTones() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFRating Label="Pequeno" Value="4" Size="XFExtendedSize.Sm" Tone="XFSemanticColor.Primary" ShowValue="true" />
+        <XFRating Label="Medio" Value="3" Size="XFExtendedSize.Md" Tone="XFSemanticColor.Warning" ShowValue="true" />
+        <XFRating Label="Grande" Value="5" Size="XFExtendedSize.Lg" Tone="XFSemanticColor.Success" ShowValue="true" />
+        <XFRating Label="Extra grande" Value="2" Size="XFExtendedSize.Xl" Tone="XFSemanticColor.Danger" ShowValue="true" />
+    </XFStack>;
+
+    private RenderFragment ExReadOnly() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFRating Label="Avaliacao media" Value="3.5" Max="5" ReadOnly="true" ShowValue="true" />
+    </XFStack>;
+
+    private RenderFragment ExReset() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFRating Label="Nota" Value="4" AllowReset="true" ShowValue="true" />
+    </XFStack>;
+
+    private RenderFragment ExCustomIcon() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFRating Label="Favoritos" Value="3" Max="5" ShowValue="true" Tone="XFSemanticColor.Danger">
+            <Icon Context="ctx">
+                <span aria-hidden="true">@(ctx.Filled ? "❤" : "♡")</span>
+            </Icon>
+        </XFRating>
+    </XFStack>;
+
+    private RenderFragment ExEditContext() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <EditForm Model="editModel">
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFRating @bind-Value="editModel.Rating" Label="Avaliacao obrigatoria" Required="true" ShowValue="true" />
+                <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Type="XFButtonType.Submit">Enviar</XFButton>
+            </XFStack>
+        </EditForm>
+    </XFStack>;
+
+    private readonly EditModel editModel = new();
+
+    private sealed class EditModel
+    {
+        public double Rating { get; set; }
+    }
+
+    private const string Code1 = @"<XFRating Label=""Servico"" Value=""3"" ShowValue=""true"" />";
+    private const string Code2 = @"<XFRating Label=""Pequeno"" Value=""4"" Size=""XFExtendedSize.Sm"" Tone=""XFSemanticColor.Primary"" ShowValue=""true"" />
+<XFRating Label=""Medio"" Value=""3"" Size=""XFExtendedSize.Md"" Tone=""XFSemanticColor.Warning"" ShowValue=""true"" />
+<XFRating Label=""Grande"" Value=""5"" Size=""XFExtendedSize.Lg"" Tone=""XFSemanticColor.Success"" ShowValue=""true"" />
+<XFRating Label=""Extra grande"" Value=""2"" Size=""XFExtendedSize.Xl"" Tone=""XFSemanticColor.Danger"" ShowValue=""true"" />";
+    private const string Code3 = @"<XFRating Label=""Avaliacao media"" Value=""3.5"" Max=""5"" ReadOnly=""true"" ShowValue=""true"" />";
+    private const string Code4 = @"<XFRating Label=""Nota"" Value=""4"" AllowReset=""true"" ShowValue=""true"" />";
+    private const string Code5 = @"<XFRating Label=""Favoritos"" Value=""3"" Max=""5"" ShowValue=""true"" Tone=""XFSemanticColor.Danger"">
+    <Icon Context=""ctx"">
+        <span aria-hidden=""true"">@(ctx.Filled ? ""❤"" : ""♡"")</span>
+    </Icon>
+</XFRating>";
+    private const string Code6 = @"<EditForm Model=""editModel"">
+    <XFStack Orientation=""XFOrientation.Vertical"" Gap=""3"" FullWidth=""true"">
+        <XFRating @bind-Value=""editModel.Rating"" Label=""Avaliacao obrigatoria"" Required=""true"" ShowValue=""true"" />
+        <XFButton Variant=""XFButtonVariant.Solid"" Color=""XFButtonColor.Primary"" Type=""XFButtonType.Submit"">Enviar</XFButton>
+    </XFStack>
+</EditForm>";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "double", "0", T("Valor atual (0 a Max).", "Current value (0 to Max).")),
+        new("Max", "int", "5", T("Numero maximo de estrelas (1 a 20).", "Maximum number of stars (1 to 20).")),
+        new("Label", "string?", "null", T("Texto descritivo acima do rating.", "Descriptive text above rating.")),
+        new("AriaLabel", "string?", "null", T("Label acessivel para leitores de tela.", "Accessible label for screen readers.")),
+        new("HelperText", "string?", "null", T("Texto auxiliar abaixo do rating.", "Helper text below rating.")),
+        new("Name", "string?", "null", T("Atributo name dos botoes.", "Button name attribute.")),
+        new("Size", "XFExtendedSize", "Md", T("Sm, Md, Lg, Xl.", "Sm, Md, Lg, Xl.")),
+        new("Tone", "XFSemanticColor", "Warning", T("Primary, Secondary, Success, Warning, Danger, Neutral.", "Primary, Secondary, Success, Warning, Danger, Neutral.")),
+        new("ReadOnly", "bool", "false", T("Desabilita interacao mantendo visual.", "Disables interaction while keeping visual.")),
+        new("Required", "bool", "false", T("Obrigatorio para validacao do EditContext.", "Required for EditContext validation.")),
+        new("AllowReset", "bool", "false", T("Exibe botao de limpar avaliacao.", "Shows clear rating button.")),
+        new("ShowValue", "bool", "false", T("Exibe texto do valor formatado.", "Shows formatted value text.")),
+        new("Icon", "RenderFragment<XFRatingItemContext>?", "null", T("Template customizado para cada estrela.", "Custom template for each star.")),
+        new("GetItemLabel", "Func<int, string>?", "null", T("Funcao para label acessivel por estrela.", "Function for accessible label per star.")),
+        new("ClearLabel", "string", T("\"Limpar avaliacao\"", "\"Clear rating\""), T("Label acessivel do botao de limpar.", "Clear button accessible label.")),
+        new("ItemLabelFormat", "string", T("\"Avaliar {0} de {1}\"", "\"Rate {0} of {1}\""), T("Formato do label acessivel de cada estrela.", "Format of each star accessible label.")),
+        new("ValueTextFormat", "string", T("\"{0}/{1}\"", "\"{0}/{1}\""), T("Formato do texto de valor exibido.", "Format of displayed value text.")),
+        new("Culture", "CultureInfo?", "CultureInfo.CurrentCulture", T("Cultura para formatacao de numeros.", "Culture for number formatting."))
+    ];
+
+    // === EVENTS ===
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ValueChanged", T("Dispara ao alterar o valor. Usado com @bind-Value.", "Fires when value changes. Used with @bind-Value.")),
+        new("Change", T("Dispara ao alterar o valor (pos-clique).", "Fires when value changes (post-click).")),
+        new("HoverValueChanged", T("Dispara ao hover sobre uma estrela (int?).", "Fires when hovering over a star (int?)."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=radiogroup", "role=radiogroup"), T("Shell usa radiogroup para agrupar estrelas.", "Shell uses radiogroup to group stars."), "universal-access"),
+        new(T("role=radio", "role=radio"), T("Cada estrela e um radio com aria-checked.", "Each star is a radio with aria-checked."), "circle-dot"),
+        new(T("aria-checked", "aria-checked"), T("true quando selecionada, false caso contrario.", "true when selected, false otherwise."), "check"),
+        new(T("aria-describedby", "aria-describedby"), T("Aponta para HelperText ou mensagem de erro.", "Points to HelperText or error message."), "comment")
+    ];
+
+    // === KEYBOARD ===
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("ArrowRight / ArrowUp", T("Aumenta valor em 1.", "Increases value by 1.")),
+        new("ArrowLeft / ArrowDown", T("Diminui valor em 1.", "Decreases value by 1.")),
+        new("Home", T("Vai para o minimo (0 se AllowReset, senao 1).", "Goes to minimum (0 if AllowReset, else 1).")),
+        new("End", T("Vai para o Max.", "Goes to Max.")),
+        new("Delete / Backspace", T("Limpa avaliacao (apenas quando AllowReset).", "Clears rating (only when AllowReset)."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Inline-flex", "Inline-flex"), T("Ocupa apenas a largura necessaria.", "Takes only needed width."), "maximize"),
+        new(T("Tamanho responsivo", "Responsive size"), T("Sm para mobile, Md para desktop.", "Sm for mobile, Md for desktop."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Render leve", "Light render"), T("Botoes nativos sem wrappers.", "Native buttons without wrappers."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Pesquisa de satisfacao", "Satisfaction survey"), T("Avaliacao obrigatoria com validacao.", "Required rating with validation."), "clipboard-list"),
+        new(T("Avaliacao de produto", "Product rating"), T("Nota media com valor formatado.", "Average score with formatted value."), "tag"),
+        new(T("Feedback de suporte", "Support feedback"), T("Rating apos resolucao de chamado.", "Rating after ticket resolution."), "headset")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Rating + Label", "Rating + Label"), T("Label descritivo acima do rating.", "Descriptive label above rating."), "font"),
+        new(T("Rating + Value", "Rating + Value"), T("Valor numerico ao lado das estrelas.", "Numeric value alongside stars."), "hashtag"),
+        new(T("Rating + Helper", "Rating + Helper"), T("Texto auxiliar abaixo do rating.", "Helper text below rating."), "comment")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Label descritivo", "Descriptive label"), T("Sempre descreva o que esta sendo avaliado.", "Always describe what is being rated."), "align-left"),
+        new(T("Tone semantico", "Semantic tone"), T("Warning para avaliacao padrao, Success para positiva.", "Warning for default rating, Success for positive."), "palette"),
+        new(T("ShowValue quando util", "ShowValue when useful"), T("Valor numerico ajuda em comparacoes.", "Numeric value helps in comparisons."), "hashtag"),
+        new(T("AllowReset para formularios", "AllowReset for forms"), T("Permite corrigir avaliacao em pesquisas.", "Allows correcting rating in surveys."), "rotate-left")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem label", "No label"), T("Rating sem contexto e confuso.", "Rating without context is confusing."), "xmark"),
+        new(T("Max muito alto", "Too high Max"), T("Evite Max > 10. A maioria usa 5 ou 10.", "Avoid Max > 10. Most use 5 or 10."), "ban"),
+        new(T("Cor sem significado", "Color without meaning"), T("Nao use cores aleatorias nos tons.", "Do not use random colors in tones."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("star-filled", T("text-warning (Tone=Warning). text-success, text-primary, text-danger, text-text-secondary, text-text-primary.", "text-warning (Tone=Warning). text-success, text-primary, text-danger, text-text-secondary, text-text-primary.")),
+        new("star-empty", T("text-text-muted/45.", "text-text-muted/45.")),
+        new("star-size", T("h-8 w-8 text-xl (Md). Sm: h-7 w-7. Lg: h-10 w-10. Xl: h-12 w-12.", "h-8 w-8 text-xl (Md). Sm: h-7 w-7. Lg: h-10 w-10. Xl: h-12 w-12.")),
+        new("clear-button", T("text-text-muted hover:bg-danger/10 hover:text-danger.", "text-text-muted hover:bg-danger/10 hover:text-danger."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, valores, half-star, reset, ReadOnly, Required.", "Render, props, values, half-star, reset, ReadOnly, Required tests.")),
+        new("Accessibility", T("role=radiogroup, role=radio, aria-checked, aria-label, aria-describedby.", "role=radiogroup, role=radio, aria-checked, aria-label, aria-describedby."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Value range", T("Value deve estar entre 0 e Max.", "Value must be between 0 and Max.")),
+        new("Max limit", T("Max e limitado a 20 para nao comprometer usabilidade.", "Max is limited to 20 to preserve usability.")),
+        new("Half-star", T("Meio-estrela e renderizado visualmente mas o radio sempre aponta inteiro.", "Half-star renders visually but radio always points to integer."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFSlider", T("Entrada de valor continuo.", "Continuous value input."), "arrows-left-right"),
+        new("XFInputNumber", T("Entrada numerica precisa.", "Precise numeric input."), "hashtag"),
+        new("XFBadge", T("Exibe valor como badge.", "Displays value as badge."), "tag")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Rating vs Slider?", "Rating vs Slider?"), T("Rating = discrete stars. Slider = continuous value.", "Rating = discrete stars. Slider = continuous value.")),
+        new(T("Como permitir reset?", "How to allow reset?"), T("Use AllowReset=true. Clique na estrela selecionada zera o valor.", "Use AllowReset=true. Clicking selected star zeros value.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop.")),
+        new(T("Como customizar estrelas?", "How to customize stars?"), T("Use o parameter Icon com RenderFragment<XFRatingItemContext>.", "Use the Icon parameter with RenderFragment<XFRatingItemContext>."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Pagina inicial criada com exemplos basicos.", "Initial page created with basic examples.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

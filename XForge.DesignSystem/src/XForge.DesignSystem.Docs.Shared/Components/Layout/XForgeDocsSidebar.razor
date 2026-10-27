@@ -1,0 +1,202 @@
+﻿@using XForge.DesignSystem.Core.Primitives
+@implements IDisposable
+@inject NavigationStateService NavigationState
+@inject BrandMetadataService BrandMetadata
+@inject NavigationManager Navigation
+
+<XFSidebar>
+    <Header>
+        <div class="flex items-center gap-3 p-4">
+            <div class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded bg-primary text-primary-contrast shadow-sm">
+                @((MarkupString)BrandMetadata.GetBrandIconSvg(EffectiveBrand))
+            </div>
+            <div class="min-w-0">
+                <div class="truncate text-sm font-semibold text-text-primary">@BrandMetadata.GetBrandTitle(EffectiveBrand)</div>
+                <div class="truncate text-xs text-text-muted">@SidebarSubtitle</div>
+            </div>
+        </div>
+    </Header>
+    <ChildContent>
+        <div class="space-y-3 px-3 py-4">
+            @if (CurrentSection is not null)
+            {
+                <div class="space-y-2" data-brand="@CurrentSection.Brand">
+                    <h4 class="px-3 text-xs font-semibold uppercase tracking-wide text-text-muted">@CurrentSection.Title</h4>
+                    <XFMenu Items="@CurrentMenuItems"
+                            Variant="XFMenuVariant.Sidebar"
+                            Size="XFSize.Sm"
+                            ActiveTone="@CurrentMenuActiveTone"
+                            AriaLabel="@CurrentSection.Title"
+                            SelectedId="@SelectedMenuId"
+                            SelectedIdChanged="OnMenuSelectedChanged" />
+                </div>
+            }
+            else
+            {
+                <div>
+                    <h4 class="mb-3 text-sm font-semibold text-slate-800 dark:text-slate-200">@FallbackTitle</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Selecione uma categoria no rail para explorar os componentes.</p>
+                </div>
+            }
+        </div>
+    </ChildContent>
+</XFSidebar>
+
+@code {
+    [Parameter] public XForgeDocsProduct Product { get; set; } = XForgeDocsProduct.Core;
+
+    private IReadOnlyList<XForgeDocsSidebarSection> Sections => XForgeDocsNavigation.GetSidebarSections(Product);
+    private string currentPath = "/";
+
+    private string EffectiveBrand => XForgeDocsNavigation.IsAiProduct(Product)
+        ? ResolveAiBrand()
+        : ResolveCategoryBrand();
+
+    private string SidebarSubtitle => XForgeDocsNavigation.IsAiProduct(Product) ? "Docs comerciais" : "Docs open-source";
+    private string FallbackTitle => XForgeDocsNavigation.IsAiProduct(Product) ? "XForge AI" : "XForge";
+
+    private XForgeDocsSidebarSection? CurrentSection =>
+        Sections.FirstOrDefault(section => section.Brand.Equals(EffectiveBrand, StringComparison.OrdinalIgnoreCase));
+
+    private IReadOnlyList<XFMenuItem> CurrentMenuItems =>
+        CurrentSection?.Items
+            .Select(item =>
+            {
+                item.Selected = IsHrefActive(item.Href);
+                return item;
+            })
+            .ToArray() ?? Array.Empty<XFMenuItem>();
+
+    private string? SelectedMenuId => CurrentMenuItems.FirstOrDefault(item => item.Selected)?.Id;
+
+    private XFSemanticColor CurrentMenuActiveTone => EffectiveBrand.ToLowerInvariant() switch
+    {
+        "display" or "ai-business" => XFSemanticColor.Secondary,
+        "feedback" or "ai-governance" => XFSemanticColor.Warning,
+        "layout" or "ai-agents" => XFSemanticColor.Success,
+        "forms" or "ai-multimodal" => XFSemanticColor.Danger,
+        _ => XFSemanticColor.Primary
+    };
+
+    protected override void OnInitialized()
+    {
+        currentPath = Navigation.Uri;
+        Navigation.LocationChanged += OnLocationChanged;
+        NavigationState.BrandChanged += OnBrandChanged;
+        NavigationState.ActiveItemChanged += OnActiveItemChanged;
+    }
+
+    private string ResolveCategoryBrand()
+    {
+        if (!string.IsNullOrWhiteSpace(NavigationState.CurrentBrand)
+            && Sections.Any(section => section.Brand.Equals(NavigationState.CurrentBrand, StringComparison.OrdinalIgnoreCase)))
+        {
+            return NavigationState.CurrentBrand;
+        }
+
+        var path = GetCurrentPath();
+        var section = Sections.FirstOrDefault(candidate =>
+            candidate.Items.Any(item => IsHrefActive(item.Href, path)));
+
+        if (section is not null)
+        {
+            return section.Brand;
+        }
+
+        return NavigationState.GetActiveItem()?.Brand
+            ?? NavigationStateService.DeriveBrandFromPath(GetCurrentPath())
+            ?? "home";
+    }
+
+    private string ResolveAiBrand()
+    {
+        if (!string.IsNullOrWhiteSpace(NavigationState.CurrentBrand)
+            && Sections.Any(section => section.Brand.Equals(NavigationState.CurrentBrand, StringComparison.OrdinalIgnoreCase)))
+        {
+            return NavigationState.CurrentBrand;
+        }
+
+        var path = GetCurrentPath();
+        var section = Sections.FirstOrDefault(candidate =>
+            candidate.Items.Any(item => IsHrefActive(item.Href, path)));
+
+        return section?.Brand ?? Sections.FirstOrDefault()?.Brand ?? "ai-core";
+    }
+
+    private string GetCurrentPath()
+    {
+        if (string.IsNullOrWhiteSpace(currentPath))
+        {
+            return "/";
+        }
+
+        return Uri.TryCreate(currentPath, UriKind.Absolute, out var uri)
+            ? NormalizePath(uri.AbsolutePath)
+            : NormalizePath(currentPath);
+    }
+
+    private bool IsHrefActive(string? href) => IsHrefActive(href, GetCurrentPath());
+
+    private static bool IsHrefActive(string? href, string currentPath)
+    {
+        if (string.IsNullOrWhiteSpace(href))
+        {
+            return false;
+        }
+
+        return NormalizePath(href).Equals(NormalizePath(currentPath), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string NormalizePath(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return "/";
+        }
+
+        var normalized = path.Trim();
+        var queryIndex = normalized.IndexOf('?');
+        if (queryIndex >= 0)
+        {
+            normalized = normalized[..queryIndex];
+        }
+
+        var hashIndex = normalized.IndexOf('#');
+        if (hashIndex >= 0)
+        {
+            normalized = normalized[..hashIndex];
+        }
+
+        if (!normalized.StartsWith('/'))
+        {
+            normalized = "/" + normalized;
+        }
+
+        return normalized == "/" ? "/" : normalized.TrimEnd('/');
+    }
+
+    private Task OnMenuSelectedChanged(string? id) => Task.CompletedTask;
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        currentPath = args.Location;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnBrandChanged(object? sender, string brand)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnActiveItemChanged(object? sender, RailNavItem? item)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        NavigationState.BrandChanged -= OnBrandChanged;
+        NavigationState.ActiveItemChanged -= OnActiveItemChanged;
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
+}

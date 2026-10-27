@@ -1,0 +1,142 @@
+@namespace XForge.Components.Gantt
+@inherits XForgeComponentBase
+
+<div class="xf-gantt-advanced" @onpointermove="OnTimelinePointerMove" @onpointerup="OnTimelinePointerUp">
+    @* Toolbar *@
+    <div class="xf-gantt-toolbar">
+        <div class="flex items-center gap-2">
+            <h3 class="xf-gantt-title">Gantt Chart</h3>
+            <button class="xf-gantt-btn xf-gantt-btn-primary" @onclick="OpenCreateModal">+ Add Task</button>
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="xf-gantt-btn @(ViewMode == GanttViewMode.Day ? "active" : "")" @onclick="() => ViewMode = GanttViewMode.Day">Day</button>
+            <button class="xf-gantt-btn @(ViewMode == GanttViewMode.Week ? "active" : "")" @onclick="() => ViewMode = GanttViewMode.Week">Week</button>
+            <button class="xf-gantt-btn @(ViewMode == GanttViewMode.Month ? "active" : "")" @onclick="() => ViewMode = GanttViewMode.Month">Month</button>
+        </div>
+    </div>
+
+    <div class="xf-gantt-container">
+        @* Tree Panel *@
+        @if (ShowTreePanel)
+        {
+            <div class="xf-gantt-tree-panel">
+                <div class="xf-gantt-tree-header">
+                    <span>Task Name</span>
+                </div>
+                <div class="xf-gantt-tree-body">
+                    @foreach (var task in GetVisibleTasks())
+                    {
+                        var depth = GetTaskDepth(task);
+                        var isEditing = _editingTask?.Id == task.Id;
+
+                        <div class="xf-gantt-tree-row @(IsSelected(task) ? "selected" : "")"
+                             style="height:@(RowHeight)px; padding-left:@(depth * 20 + 8)px"
+                             @onclick="() => SelectTask(task)">
+
+                            @if (AllowCollapse && HasChildren(task))
+                            {
+                                <button class="xf-gantt-collapse-btn" @onclick:stopPropagation="true" @onclick="() => ToggleCollapse(task.Id)">
+                                    @(IsCollapsed(task.Id) ? "▶" : "▼")
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="xf-gantt-collapse-spacer"></span>
+                            }
+
+                            @if (isEditing)
+                            {
+                                <input type="text" class="xf-gantt-inline-edit" @bind="_editValue"
+                                       @onkeydown="e => OnEditKeyDown(e, task)"
+                                       @onblur="() => FinishEdit(task)" />
+                            }
+                            else
+                            {
+                                <span class="xf-gantt-task-name @(task.IsCritical ? "critical" : "") @(task.IsMilestone ? "milestone" : "")"
+                                      @ondblclick:stopPropagation="true" @ondblclick="() => StartEdit(task)">
+                                    @task.Name
+                                </span>
+                            }
+
+                            <span class="xf-gantt-task-progress">@(task.Progress * 100)%</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @* Timeline *@
+        <div class="xf-gantt-timeline" style="width:@(_timelineWidth)px">
+            @* Header *@
+            <div class="xf-gantt-timeline-header" style="width:@(_timelineWidth)px">
+                <svg width="@(_timelineWidth)" height="24">
+                    @((MarkupString)RenderTimelineHeader())
+                </svg>
+            </div>
+
+            @* Body *@
+            <div class="xf-gantt-timeline-body" style="width:@(_timelineWidth)px; height:@(GetVisibleTasks().Count * RowHeight)px">
+                <svg width="@(_timelineWidth)" height="@(GetVisibleTasks().Count * RowHeight)">
+                @* Grid lines *@
+                @for (int i = 0; i < _totalDays; i++)
+                {
+                    <line x1="@(i * ColumnWidth)" y1="0" x2="@(i * ColumnWidth)" y2="@(_calculatedHeight)"
+                          stroke="#f3f4f6" />
+                }
+
+                @* Task bars *@
+                @((MarkupString)RenderTaskBars())
+
+                @* Dependencies *@
+                @((MarkupString)RenderDependencies())
+
+                    @* Arrow marker *@
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Create Task Modal *@
+@if (_showCreateModal)
+{
+    <div class="xf-gantt-modal-overlay" @onclick="CloseCreateModal">
+        <div class="xf-gantt-modal" @onclick:stopPropagation="true">
+            <div class="xf-gantt-modal-header">
+                <h3>New Task</h3>
+                <button class="xf-gantt-modal-close" @onclick="CloseCreateModal">×</button>
+            </div>
+            <div class="xf-gantt-modal-body">
+                <div class="xf-gantt-form-group">
+                    <label>Name</label>
+                    <input type="text" class="xf-gantt-input" @bind="_newTask.Name" placeholder="Task name" />
+                </div>
+                <div class="xf-gantt-form-row">
+                    <div class="xf-gantt-form-group">
+                        <label>Start</label>
+                        <input type="date" class="xf-gantt-input" @bind="_newTask.Start" />
+                    </div>
+                    <div class="xf-gantt-form-group">
+                        <label>End</label>
+                        <input type="date" class="xf-gantt-input" @bind="_newTask.End" />
+                    </div>
+                </div>
+                <div class="xf-gantt-form-group">
+                    <label>
+                        <input type="checkbox" @bind="_newTask.IsMilestone" />
+                        Milestone
+                    </label>
+                </div>
+            </div>
+            <div class="xf-gantt-modal-footer">
+                <button class="xf-gantt-btn xf-gantt-btn-secondary" @onclick="CloseCreateModal">Cancel</button>
+                <button class="xf-gantt-btn xf-gantt-btn-primary" @onclick="CreateTask">Create</button>
+            </div>
+        </div>
+    </div>
+}

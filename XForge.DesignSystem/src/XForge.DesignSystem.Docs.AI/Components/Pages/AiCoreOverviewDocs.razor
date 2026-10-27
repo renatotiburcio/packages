@@ -1,0 +1,417 @@
+@page "/ai/core/overview"
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="AI Core" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="5 Components" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Provider abstraction", "Provider abstraction")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Infraestrutura base para todos os componentes AI: abstracao de providers, chat, prompt, command palette, suggestions e configuracao.",
+                               "Base infrastructure for all AI components: provider abstraction, chat, prompt, command palette, suggestions and configuration.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("O modulo AI Core do XForge.DesignSystem fornece os componentes fundamentais para construir experiencias IA conversacionais, com suporte a 8 providers, streaming, tools e acessibilidade WCAG.",
+                               "The XForge.DesignSystem AI Core module provides the fundamental components for building conversational AI experiences, with support for 8 providers, streaming, tools and WCAG accessibility.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== 1. Metadata ===== -->
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        <!-- ===== 2. Blazor Server e Blazor WebAssembly ===== -->
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Streaming via SignalR", "Streaming via SignalR")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Componentes AI usam StreamingHub para SSE via SignalR em Blazor Server. No WebAssembly, streaming e feito via HttpClient direto.", "AI components use StreamingHub for SSE via SignalR in Blazor Server. In WebAssembly, streaming is done via direct HttpClient.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <!-- ===== 3. Overview ===== -->
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            <!-- ===== 4. Purpose ===== -->
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            <!-- ===== 5. Problem Solved ===== -->
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            <!-- ===== 6. When To Use ===== -->
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            <!-- ===== 7. When Not To Use ===== -->
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            <!-- ===== 8. Architecture ===== -->
+            @Section(T("Arquitetura", "Architecture"), @<div>@TileGrid(ArchitectureItems, 3)</div>)
+            <!-- ===== 9. Design Principles ===== -->
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 10-13. COMPONENT PAGES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Componentes AI Core", "AI Core Components"), @<div>
+                <XFGrid Cols="1" Md="2" Lg="3" Gap="4">
+                    @foreach (var item in ComponentItems) { @ComponentCard(item) }
+                </XFGrid>
+            </div>)
+        </XFStack>
+
+        <!-- ===== 14. API ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <!-- ===== 13. Eventos ===== -->
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            <!-- ===== 14. Suporte de teclado ===== -->
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            <!-- ===== 15. Acessibilidade ===== -->
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            <!-- ===== 16. Responsividade ===== -->
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            <!-- ===== 17. Performance ===== -->
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <!-- ===== 18. Cenarios enterprise ===== -->
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            <!-- ===== 19. Padroes de composicao ===== -->
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            <!-- ===== 20. Boas praticas de UX ===== -->
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            <!-- ===== 21. Anti-padroes ===== -->
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <!-- ===== 22. Design Tokens ===== -->
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            <!-- ===== 23. Temas ===== -->
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            <!-- ===== 24. Testes ===== -->
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            <!-- ===== 25. Limitacoes conhecidas ===== -->
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            <!-- ===== 26. Componentes relacionados ===== -->
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Commercial AI", "Commercial AI");
+    private string PageTitleText => T("AI Core Overview", "AI Core Overview");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+            <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiChat" />
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Info" Text="XFAiPromptBox" />
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Warning" Text="XFAiCommandPalette" />
+            </XFStack>
+            <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap" Class="mt-2">
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="XFAiSuggestionPanel" />
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Secondary" Text="XFAiProviderConfig" />
+            </XFStack>
+        </div>
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("5 componentes AI Core", "5 AI Core components"), T("Chat, PromptBox, CommandPalette, SuggestionPanel, ProviderConfig.", "Chat, PromptBox, CommandPalette, SuggestionPanel, ProviderConfig."), "cubes"),
+        new(T("8 providers suportados", "8 providers supported"), T("OpenAI, Ollama, Gemini, Azure, Anthropic, LocalLlm, OpenRouter, Generic.", "OpenAI, Ollama, Gemini, Azure, Anthropic, LocalLlm, OpenRouter, Generic."), "plug"),
+        new(T("Streaming SSE", "Streaming SSE"), T("Server-Sent Events em tempo real para todos os providers.", "Real-time Server-Sent Events for all providers."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Module", "AI Core"),
+        new("Namespace", "XForge.DesignSystem.Components.AI"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "AI / Core"),
+        new("Status", T("Estavel", "Stable")),
+        new("Components", "5 (XFAiChat, XFAiPromptBox, XFAiCommandPalette, XFAiSuggestionPanel, XFAiProviderConfig)"),
+        new("Providers", "8 (OpenAI, Ollama, Gemini, Azure, Anthropic, LocalLlm, OpenRouter, Generic)"),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new("XFAiChat", T("Copilot conversacional com streaming, historico e anexos.", "Conversational copilot with streaming, history and attachments."), "comments"),
+        new("XFAiPromptBox", T("Caixa de prompt com autocompletar e variaveis.", "Prompt box with autocomplete and variables."), "terminal"),
+        new("XFAiCommandPalette", T("Paleta de comandos com busca fuzzy.", "Command palette with fuzzy search."), "magnifying-glass"),
+        new("XFAiSuggestionPanel", T("Painel de sugestoes contextuais AI.", "AI contextual suggestions panel."), "lightbulb"),
+        new("XFAiProviderConfig", T("Configuracao visual de providers AI.", "Visual AI provider configuration."), "gear"),
+        new("IAiProvider", T("Interface unificada para 8 providers.", "Unified interface for 8 providers."), "plug")
+    ];
+
+    // === PURPOSE ===
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Chat conversacional", "Conversational chat"), T("Interacoes IA com streaming e historico.", "AI interactions with streaming and history."), "comments"),
+        new(T("Prompt engineering", "Prompt engineering"), T("Construcao e gerenciamento de prompts.", "Prompt construction and management."), "pen"),
+        new(T("Navegacao por comandos", "Command navigation"), T("Acesso rapido a funcoes AI via paleta.", "Quick access to AI functions via palette."), "keyboard")
+    ];
+
+    // === PROBLEM SOLVED ===
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Cada integracao AI era feita do zero.", "Each AI integration was built from scratch."), "xmark"),
+        new(T("Depois", "After"), T("Componentes reutilizaveis com provider abstraction.", "Reusable components with provider abstraction."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("WCAG AAA em todos os componentes AI.", "WCAG AAA across all AI components."), "universal-access")
+    ];
+
+    // === WHEN TO USE ===
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Copilots", "Copilots"), T("Chatbots para suporte, atendimento e product tour.", "Chatbots for support, service and product tour."), "robot"),
+        new(T("Assistentes", "Assistants"), T("Assistentes de codigo, dados e financa.", "Code, data and finance assistants."), "wand-magic-sparkles"),
+        new(T("Navegacao AI", "AI Navigation"), T("Command palettes para acesso rapido a acoes AI.", "Command palettes for quick access to AI actions."), "terminal"),
+        new(T("Sugestoes", "Suggestions"), T("Paineis de sugestoes contextuais em forms e grids.", "Contextual suggestion panels in forms and grids."), "lightbulb")
+    ];
+
+    // === WHEN NOT TO USE ===
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Conteudo estatico", "Static content"), T("Use XFCard para conteudo que nao muda.", "Use XFCard for content that doesn't change."), "file"),
+        new(T("Formularios simples", "Simple forms"), T("Use XFField + XFInput para inputs diretos.", "Use XFField + XFInput for direct inputs."), "pen-to-square")
+    ];
+
+    // === ARCHITECTURE ===
+    private IReadOnlyList<DocTile> ArchitectureItems => [
+        new("IAiProvider", T("Interface com CompleteAsync, StreamAsync, EmbedAsync.", "Interface with CompleteAsync, StreamAsync, EmbedAsync."), "plug"),
+        new("StreamingHub", T("SignalR hub para SSE em Blazor Server.", "SignalR hub for SSE in Blazor Server."), "tower-broadcast"),
+        new("AiProviderBase", T("Classe abstrata com retry, circuit breaker e logging.", "Abstract class with retry, circuit breaker and logging."), "shield")
+    ];
+
+    // === DESIGN PRINCIPLES ===
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Component-first", "Component-first"), T("Cada feature AI e um componente Blazor reutilizavel.", "Each AI feature is a reusable Blazor component."), "cubes"),
+        new(T("Provider-agnostic", "Provider-agnostic"), T("Mesmos componentes para 8 providers diferentes.", "Same components for 8 different providers."), "plug"),
+        new(T("Streaming-first", "Streaming-first"), T("Respostas em tempo real para melhor UX.", "Real-time responses for better UX."), "bolt")
+    ];
+
+    // === COMPONENT PAGES ===
+    private IReadOnlyList<ComponentPage> ComponentItems => [
+        new("XFAiChat", T("Copilot conversacional enterprise com streaming, historico, anexos, voz e citacoes.", "Enterprise conversational copilot with streaming, history, attachments, voice and citations."), "/ai/chat", "comments", "XFBadgeColor.Primary"),
+        new("XFAiPromptBox", T("Caixa de prompt com autocomplete, variaveis, templates e validacao de tokens.", "Prompt box with autocomplete, variables, templates and token validation."), "/ai/prompt-box", "terminal", "XFBadgeColor.Info"),
+        new("XFAiCommandPalette", T("Paleta de comandos com busca fuzzy, categorias e execucao de acoes AI.", "Command palette with fuzzy search, categories and AI action execution."), "/ai/command-palette", "magnifying-glass", "XFBadgeColor.Warning"),
+        new("XFAiSuggestionPanel", T("Painel de sugestoes contextuais com scoring, filtros e acoes rapidas.", "Contextual suggestions panel with scoring, filters and quick actions."), "/ai/suggestion-panel", "lightbulb", "XFBadgeColor.Success"),
+        new("XFAiProviderConfig", T("Configuracao visual de providers com health check, testes e fallback.", "Visual provider configuration with health check, tests and fallback."), "/ai/providers", "gear", "XFBadgeColor.Secondary")
+    ];
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("XFAiChat", "Component", "-", T("Copilot conversacional com streaming e historico.", "Conversational copilot with streaming and history.")),
+        new("XFAiPromptBox", "Component", "-", T("Caixa de prompt com autocomplete e variaveis.", "Prompt box with autocomplete and variables.")),
+        new("XFAiCommandPalette", "Component", "-", T("Paleta de comandos com busca fuzzy.", "Command palette with fuzzy search.")),
+        new("XFAiSuggestionPanel", "Component", "-", T("Painel de sugestoes contextuais.", "Contextual suggestions panel.")),
+        new("XFAiProviderConfig", "Component", "-", T("Configuracao de providers AI.", "AI provider configuration.")),
+        new("IAiProvider", "Interface", "-", T("Interface unificada para todos os providers.", "Unified interface for all providers.")),
+        new("AiProviderBase", "Abstract", "-", T("Classe base com retry e health check.", "Base class with retry and health check."))
+    ];
+
+    // === EVENTS ===
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new(T("MessageSent", "MessageSent"), T("Disparado quando uma mensagem e enviada.","Fired when a message is sent.")),
+        new(T("StreamChunk", "StreamChunk"), T("Disparado para cada chunk de streaming.","Fired for each streaming chunk."))
+    ];
+
+    // === KEYBOARD ===
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Enter", T("Enviar mensagem.","Send message.")),
+        new("Escape", T("Fechar dropdown.","Close dropdown.")),
+        new("Tab", T("Navegar entre campos.","Navigate between fields."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("WCAG AAA", "WCAG AAA"), T("Todos os componentes seguem WCAG 2.1 nivel AAA.", "All components follow WCAG 2.1 level AAA."), "universal-access"),
+        new(T("role=chat", "role=chat"), T("XFAiChat usa role=chat para leitores de tela.", "XFAiChat uses role=chat for screen readers."), "comments"),
+        new(T("aria-live", "aria-live"), T("Respostas AI usam aria-live para anuncios.", "AI responses use aria-live for announcements."), "volume-high"),
+        new(T("Navegacao por teclado", "Keyboard navigation"), T("Tab, Enter, Escape em todos os componentes AI.", "Tab, Enter, Escape across all AI components."), "keyboard")
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Layout adaptativo", "Adaptive layout"), T("Colapsa para empilhado em mobile.", "Collapses to stacked on mobile."), "mobile-screen"),
+        new(T("Touch targets", "Touch targets"), T("Minimo 44px para todos os controles interativos.", "Minimum 44px for all interactive controls."), "hand-pointer")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Streaming token a token", "Token-by-token streaming"), T("Primeiro token em <200ms com streaming.", "First token in <200ms with streaming."), "bolt"),
+        new(T("Virtual scrolling", "Virtual scrolling"), T("Historico com virtual scroll para conversas longas.", "History with virtual scroll for long conversations."), "arrows-up-down"),
+        new(T("Lazy loading", "Lazy loading"), T("Componentes AI carregam sob demanda.", "AI components load on demand."), "clock")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("ERP Assistente", "ERP Assistant"), T("Chatbot para consultas fiscais com RAG.", "Chatbot for tax queries with RAG."), "building"),
+        new(T("Code Copilot", "Code Copilot"), T("Assistente de codigo com XFAiChat + tool calling.", "Code assistant with XFAiChat + tool calling."), "code"),
+        new(T("Data Explorer", "Data Explorer"), T("Navegacao por comandos para queries SQL.", "Command navigation for SQL queries."), "database"),
+        new(T("Form Assistant", "Form Assistant"), T("Sugestoes contextuais com XFAiSuggestionPanel.", "Contextual suggestions with XFAiSuggestionPanel."), "pen-to-square"),
+        new(T("Multi-provider", "Multi-provider"), T("Failover automatico entre providers.", "Automatic failover between providers."), "arrows-rotate"),
+        new(T("A/B Testing", "A/B Testing"), T("Comparacao de respostas entre providers.", "Compare responses across providers."), "scale-balanced")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Chat + PromptBox", "Chat + PromptBox"), T("Copilot com caixa de prompt integrada.", "Copilot with integrated prompt box."), "comments"),
+        new(T("Chat + SuggestionPanel", "Chat + SuggestionPanel"), T("Chat com sugestoes contextuais.", "Chat with contextual suggestions."), "lightbulb"),
+        new(T("CommandPalette + Chat", "CommandPalette + Chat"), T("Paleta que abre chat com contexto.", "Palette that opens chat with context."), "terminal"),
+        new(T("ProviderConfig + Chat", "ProviderConfig + Chat"), T("Configuracao conectada ao chat.", "Configuration connected to chat."), "gear"),
+        new(T("PromptBox + SuggestionPanel", "PromptBox + SuggestionPanel"), T("Prompt com sugestoes de templates.", "Prompt with template suggestions."), "pen"),
+        new(T("Todos juntos", "All together"), T("Combinacao completa para copilot enterprise.", "Full combination for enterprise copilot."), "cubes")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Streaming sempre", "Always stream"), T("Use streaming para melhor experiencia de usuario.", "Use streaming for better user experience."), "bolt"),
+        new(T("Provider key via DI", "Provider key via DI"), T("Registre providers com AddKeyedSingleton.", "Register providers with AddKeyedSingleton."), "key"),
+        new(T("Historico persistente", "Persistent history"), T("Salve historico para contextualizacao.", "Save history for contextualization."), "floppy-disk"),
+        new(T("Graceful degradation", "Graceful degradation"), T("Forneca fallback quando provider falhar.", "Provide fallback when provider fails."), "shield")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Chamar provider direto", "Call provider directly"), T("Use sempre o componente AI, nao o provider.", "Always use the AI component, not the provider directly."), "xmark"),
+        new(T("Ignorar erros", "Ignore errors"), T("Sempre trate erros de provider com retry.", "Always handle provider errors with retry."), "ban"),
+        new(T("Sem loading state", "No loading state"), T("Sempre mostre indicador durante streaming.", "Always show indicator during streaming."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("ai-chat-bg", T("bg-surface-50 para fundo do chat.", "bg-surface-50 for chat background.")),
+        new("ai-prompt-border", T("border-primary para borda ativa do prompt.", "border-primary for active prompt border.")),
+        new("ai-suggestion-bg", T("bg-primary/5 para fundo de sugestoes.", "bg-primary/5 for suggestion background.")),
+        new("ai-command-hover", T("bg-primary/10 para hover na paleta.", "bg-primary/10 for palette hover."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, streaming, providers.", "Render, props, streaming, provider tests.")),
+        new("Integration", T("Testes de chat completo com mock provider.", "Full chat tests with mock provider.")),
+        new("Accessibility", T("role=chat, aria-live, keyboard navigation.", "role=chat, aria-live, keyboard navigation."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Azure embeddings", T("AzureOpenAiProvider nao suporta EmbedAsync.", "AzureOpenAiProvider does not support EmbedAsync.")),
+        new("LocalLlm tools", T("LocalLlmProvider nao suporta function calling.", "LocalLlmProvider does not support function calling.")),
+        new("Streaming SSR", T("Static SSR nao suporta streaming em tempo real.", "Static SSR does not support real-time streaming."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiWorkflowDesigner", T("Designer de workflows AI.", "AI workflow designer."), "diagram-project"),
+        new("XFAiWorkflowExecutor", T("Executor de workflows AI.", "AI workflow executor."), "play"),
+        new("XFAiAgentConsole", T("Console de agentes AI.", "AI agent console."), "terminal"),
+        new("XFAiDashboardInsight", T("Insights AI para dashboards.", "AI insights for dashboards."), "chart-line"),
+        new("XFAiMemoryViewer", T("Visualizador de memoria AI.", "AI memory viewer."), "brain"),
+        new("XFAiSourceCitationList", T("Lista de citacoes fonte.", "Source citation list."), "quote-left")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual provider usar?","Which provider?"), T("OpenAI para producao, Ollama para desenvolvimento local.","OpenAI for production, Ollama for local development.")),
+        new(T("Como mudar de provider?","How to change provider?"), T("Altere o registro no DI container.","Change the registration in the DI container."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("v1.0.0", T("Overview inicial dos componentes AI Core.","Initial overview of AI Core components."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment ComponentCard(ComponentPage item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0">
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Name</XFTypography>
+                </div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+            <a href="@item.Route" class="text-sm font-medium text-primary hover:underline">@T("Ver documentacao", "View docs") →</a>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Componente", "Component")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+    private sealed record ComponentPage(string Name, string Description, string Route, string Icon, string BadgeColor);
+}

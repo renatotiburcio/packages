@@ -1,0 +1,103 @@
+@inherits XForgeComponentBase
+@using XForge.DesignSystem.Components.Forms.Select
+@using XForge.DesignSystem.Core.Primitives
+
+@if (!ShouldAutoHide)
+{
+    <nav @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@GetComponentClass()"
+         style="@Style"
+         aria-label="@AriaLabel">
+        @if (ShowSummary)
+        {
+            <div class="@SummaryClass">
+                @if (SummaryTemplate is not null)
+                {
+                    @SummaryTemplate(CurrentArgs)
+                }
+                else
+                {
+                    <span>@SummaryText</span>
+                }
+            </div>
+        }
+
+        <div class="@ControlsClass">
+            @if (ShowPageSize && NormalizedPageSizeOptions.Count > 0)
+            {
+                <div class="flex items-center gap-2 text-sm font-medium text-text-secondary">
+                    <span>@PageSizeLabel</span>
+                    <XFSelect TValue="int"
+                             Value="CurrentPageSize"
+                             Disabled="Disabled"
+                             Size="XFSize.Sm"
+                             AriaLabel="@PageSizeAriaLabel"
+                             ValueChanged="HandlePageSizeSelectAsync">
+                        @foreach (var option in NormalizedPageSizeOptions)
+                        {
+                            <XFSelectOption TValue="int" Value="option" Text="@option.ToString()" />
+                        }
+                    </XFSelect>
+                </div>
+            }
+
+            <div class="@ButtonsClass">
+                @if (ShowFirstLast)
+                {
+                    @RenderNavButton("first", FirstPageLabel, 1, !CanGoBack, FirstContent, RenderDoubleChevronLeft)
+                }
+
+                @if (ShowPrevNext)
+                {
+                    @RenderNavButton("previous", PreviousPageLabel, CurrentPage - 1, !CanGoBack, PreviousContent, RenderChevronLeft)
+                }
+
+                @if (ShowPageNumbers)
+                {
+                    @foreach (var item in PageItems)
+                    {
+                        if (item.HasValue)
+                        {
+                            @RenderPageButton(item.Value)
+                        }
+                        else
+                        {
+                            <span class="@EllipsisClass" aria-hidden="true">...</span>
+                        }
+                    }
+                }
+
+                @if (ShowPrevNext)
+                {
+                    @RenderNavButton("next", NextPageLabel, CurrentPage + 1, !CanGoForward, NextContent, RenderChevronRight)
+                }
+
+                @if (ShowFirstLast)
+                {
+                    @RenderNavButton("last", LastPageLabel, TotalPages, !CanGoForward, LastContent, RenderDoubleChevronRight)
+                }
+
+                @if (AllowReload)
+                {
+                    <button type="button"
+                            class="@NavButtonClass(false)"
+                            disabled="@Disabled"
+                            title="@ReloadLabel"
+                            aria-label="@ReloadLabel"
+                            data-xf-pagination-reload
+                            @onclick="HandleReloadAsync">
+                        @if (ReloadContent is not null)
+                        {
+                            @ReloadContent
+                        }
+                        else
+                        {
+                            @RenderReload
+                        }
+                    </button>
+                }
+            </div>
+        </div>
+    </nav>
+}

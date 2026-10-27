@@ -1,0 +1,233 @@
+@page "/tokens/borders"
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="@T("Tokens de Bordas", "Border Tokens")"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Design Tokens" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Bordas", "Borders")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Raio", "Radius")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Hierarquia", "Hierarchy")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Tokens de borda e raio para hierarquia, agrupamento e affordance visual.",
+                               "Border and radius tokens for hierarchy, grouping and visual affordance.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Os tokens de borda do XForge controlam cor, espessura e raio de borda como CSS custom properties e Tailwind utilities. Eles definem limites visuais para inputs, cards, tabelas e overlays em light/dark.",
+                               "XForge border tokens control border color, width and radius as CSS custom properties and Tailwind utilities. They define visual limits for inputs, cards, tables and overlays in light/dark.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts) { @Tile(item) }</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente não utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Preview renderizado", "Live Preview"), T("Bordas e raios aplicados a cards e inputs.", "Borders and radius applied to cards and inputs."), BorderPreview(), BorderCode)
+            @Example(T("Raios", "Radius"), T("rounded-none, rounded-sm, rounded-md, rounded-lg, rounded-xl, rounded-full.", "rounded-none, rounded-sm, rounded-md, rounded-lg, rounded-xl, rounded-full."), RadiusPreview(), RadiusCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes/Valores", "Variants/Values"), @<div>@NameValueTable(VariantRows, T("Token", "Token"), T("Valor", "Value"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section("CSS Variables", @<div>@NameValueTable(CssVariableRows, "Variable", T("Valor padrao", "Default Value"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegação enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("cenários enterprise", "Enterprise Scenários"), @<div>@TileGrid(ScenárioItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migração", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Guia de uso", "Usage Guide"), @<div>@TileGrid(UsageGuideItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div class="grid grid-cols-3 gap-4">
+            <div class="h-16 rounded-none border-2 border-primary bg-primary/10 flex items-center justify-center"><span class="text-xs font-medium">none</span></div>
+            <div class="h-16 rounded-md border-2 border-primary bg-primary/10 flex items-center justify-center"><span class="text-xs font-medium">md</span></div>
+            <div class="h-16 rounded-xl border-2 border-primary bg-primary/10 flex items-center justify-center"><span class="text-xs font-medium">xl</span></div>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+            <div class="h-12 rounded-lg border border-border bg-surface-50 flex items-center justify-center"><span class="text-xs">border</span></div>
+            <div class="h-12 rounded-lg border border-border-light bg-surface-50 flex items-center justify-center"><span class="text-xs">border-light</span></div>
+            <div class="h-12 rounded-lg border-2 border-border-focus bg-surface-50 flex items-center justify-center"><span class="text-xs">border-focus</span></div>
+        </div>
+    </XFStack>;
+
+    private RenderFragment BorderPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Body1">border (padrão)</XFTypography></ChildContent></XFCard>
+        <div class="rounded-lg border-2 border-border-focus p-4"><XFTypography Variant="XFTypographyVariant.Body1">border-focus (foco)</XFTypography></div>
+        <div class="rounded-lg border border-border-light p-4"><XFTypography Variant="XFTypographyVariant.Body1">border-light (sutil)</XFTypography></div>
+    </XFStack>;
+
+    private RenderFragment RadiusPreview() => @<div class="grid grid-cols-3 md:grid-cols-6 gap-4">
+        <div class="h-14 rounded-none border-2 border-primary bg-primary/10 flex items-center justify-center"><span class="text-[10px]">none</span></div>
+        <div class="h-14 rounded-sm border-2 border-primary bg-primary/10 flex items-center justify-center"><span class="text-[10px]">sm</span></div>
+        <div class="h-14 rounded-md border-2 border-primary bg-primary/10 flex items-center justify-center"><span class="text-[10px]">md</span></div>
+        <div class="h-14 rounded-lg border-2 border-primary bg-primary/10 flex items-center justify-center"><span class="text-[10px]">lg</span></div>
+        <div class="h-14 rounded-xl border-2 border-primary bg-primary/10 flex items-center justify-center"><span class="text-[10px]">xl</span></div>
+        <div class="h-14 w-14 rounded-full border-2 border-primary bg-primary/10 flex items-center justify-center mx-auto"><span class="text-[10px]">full</span></div>
+    </div>;
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Token","Token")</XFTableCell><XFTableCell Header="true">@T("Tipo","Type")</XFTableCell><XFTableCell Header="true">@T("padrão","Default")</XFTableCell><XFTableCell Header="true">@T("Descrição","Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private string BorderCode => @"<div class=""border border-border"">padrão</div>
+<div class=""border-2 border-border-focus"">Foco</div>
+<div class=""border border-border-light"">Sutil</div>";
+
+    private string RadiusCode => @"<div class=""rounded-none"">none</div>
+<div class=""rounded-sm"">sm</div>
+<div class=""rounded-md"">md</div>
+<div class=""rounded-lg"">lg</div>
+<div class=""rounded-xl"">xl</div>
+<div class=""rounded-full"">full</div>";
+
+    private IReadOnlyList<DocTile> QuickFacts => [new(T("3 cores", "3 colors"), T("border, border-light e border-focus.", "border, border-light and border-focus."), "border-all"), new(T("6 raios", "6 radius"), T("De none a full para qualquer forma.", "From none to full for any shape."), "circle"), new(T("Dark mode", "Dark mode"), T("Cores adaptam automaticamente.", "Colors adapt automatically."), "moon")];
+    private IReadOnlyList<NameValueRow> MetadataRows => [new("Category", T("Design Tokens / Bordas", "Design Tokens / Borders")), new("Package", "XForge.DesignSystem"), new("Status", T("Estavel", "Stable"))];
+    private IReadOnlyList<DocTile> OverviewItems => [new(T("Cores de borda", "Border colors"), T("3 niveis para hierarquia visual.", "3 levels for visual hierarchy."), "border-all"), new(T("Raios de borda", "Border radius"), T("6 valores para formas variadas.", "6 values for varied shapes."), "circle"), new(T("Espessura", "Width"), T("border e border-2 para enfase.", "border and border-2 for emphasis."), "arrows-up-down")];
+    private IReadOnlyList<DocTile> PurposeItems => [new(T("Limites visuais", "Visual limits"), T("Definem fronteiras entre elementos.", "Define boundaries between elements."), "border-all"), new(T("Affordance", "Affordance"), T("Bordas indicam campos interativos.", "Borders indicate interactive fields."), "hand-pointer")];
+    private IReadOnlyList<DocTile> ProblemItems => [new(T("Antes", "Before"), T("Bordas hardcoded inconsistentes.", "Inconsistent hardcoded borders."), "xmark"), new(T("Depois", "After"), T("Tokens semânticos com dark mode.", "Semantic tokens with dark mode."), "check")];
+    private IReadOnlyList<DocTile> UseItems => [new(T("Inputs", "Inputs"), T("border para campos de formulário.", "border for form fields."), "keyboard"), new(T("Cards", "Cards"), T("border-light para cards sutis.", "border-light for subtle cards."), "square"), new(T("Foco", "Focus"), T("border-focus para estados de foco.", "border-focus for focus states."), "eye")];
+    private IReadOnlyList<DocTile> AvoidItems => [new(T("Bordas coloridas hardcoded", "Hardcoded colored borders"), T("Use tokens semânticos.", "Use semantic tokens."), "xmark"), new(T("Raio inconsistente", "Inconsistent radius"), T("Mantenha raio padrão por tipo de componente.", "Keep default radius per component type."), "xmark")];
+    private IReadOnlyList<DocTile> AccessibilityItems => [new(T("foco visível", "Visible focus"), T("border-focus garante visibilidade de foco.", "border-focus ensures focus visibility."), "universal-access")];
+    private IReadOnlyList<DocTile> ResponsivenessItems => [new(T("Raio fluido", "Fluid radius"), T("Raios funcionam em qualquer viewport.", "Radius works in any viewport."), "mobile-screen")];
+    private IReadOnlyList<DocTile> PerformanceItems => [new(T("CSS puro", "Pure CSS"), T("Zero JavaScript.", "Zero JavaScript."), "bolt")];
+    private IReadOnlyList<DocTile> ScenárioItems => [new("ERP", T("Inputs e cards com bordas consistentes.", "Inputs and cards with consistent borders."), "briefcase"), new(T("formulários", "Forms"), T("foco visível em todos os campos.", "Visible focus on all fields."), "file-lines")];
+    private IReadOnlyList<DocTile> BestPracticeItems => [new(T("Foco consistente", "Consistent focus"), T("Use border-focus em todos os inputs.", "Use border-focus on all inputs."), "circle-check")];
+    private IReadOnlyList<DocTile> AntiPatternItems => [new(T("Bordas em tudo", "Borders on everything"), T("Nem todo elemento precisa de borda.", "Not every element needs a border."), "xmark")];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [new(T("Borda como limite", "Border as boundary"), T("Bordas definem fronteiras entre secoes.", "Borders define boundaries between sections."), "border-all"), new(T("Raio como suavizacao", "Radius as softening"), T("Raio maior indica container mais amigavel.", "Larger radius indicates friendlier container."), "circle"), new(T("Espessura como enfase", "Width as emphasis"), T("border-2 destaca elementos importantes.", "border-2 highlights important elements."), "arrows-up-down")];
+
+    private IReadOnlyList<NameValueRow> StateRows => [new("Default", T("Borda padrao do tema.", "Default theme border.")), new("Focus", T("border-focus para estados de foco.", "border-focus for focus states.")), new("Hover", T("Borda pode escurecer em hover.", "Border may darken on hover."))];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [new(T("Foco visivel", "Visible focus"), T("border-focus garante indicador de foco acessivel.", "border-focus ensures accessible focus indicator."), "keyboard")];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [new("Tab", T("Navega entre elementos interativos.", "Navigates between interactive items."))];
+
+    private IReadOnlyList<DocTile> SecurityItems => [new(T("Sem XSS", "No XSS"), T("Tokens sao CSS puro; sem risco de injecao.", "Tokens are pure CSS; no injection risk."), "shield-check")];
+
+    private IReadOnlyList<DocTile> MigrationItems => [new(T("Bordas hardcoded", "Hardcoded borders"), T("Substitua border: 1px solid #ccc por tokens semanticos.", "Replace border: 1px solid #ccc with semantic tokens."), "arrow-rotate-left")];
+    private IReadOnlyList<NameValueRow> TestingRows => [new("Visual regression", T("Snapshots verificam bordas.", "Snapshots verify borders."))];
+    private IReadOnlyList<DocTile> RelatedComponentItems => [new(T("Tokens de cores", "Color tokens"), T("Cores de borda pertencem a paleta.", "Border colors belong to palette."), "palette"), new(T("Tokens de sombra", "Shadow tokens"), T("Sombras complementam bordas.", "Shadows complement borders."), "layer-group")];
+    private IReadOnlyList<NameValueRow> FaqRows => [new(T("Qual raio para cards?", "Which radius for cards?"), T("rounded-lg para cards, rounded-md para inputs.", "rounded-lg for cards, rounded-md for inputs."))];
+    private IReadOnlyList<NameValueRow> ChangelogRows => [new("2026-05-26", T("Pagina refeita no padrao enterprise.", "Page rebuilt in the enterprise standard.")), new("2026-06-12", T("Adicionadas 7 secoes: Anatomia, Principios, CSS Variables, Composicao, Temas, Limitacoes, Guia de uso.", "Added 7 sections: Anatomy, Principles, CSS Variables, Composition, Themes, Limitations, Usage Guide."))];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [new(T("Cor de borda", "Border color"), T("Token de cor que define limites visuais.", "Color token that defines visual limits."), "palette"), new(T("Espessura de borda", "Border width"), T("border (1px) e border-2 (2px) para enfase.", "border (1px) and border-2 (2px) for emphasis."), "arrows-up-down"), new(T("Raio de borda", "Border radius"), T("6 niveis de raio para formas variadas.", "6 radius levels for varied shapes."), "circle")];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [new(T("Hierarquia visual", "Visual hierarchy"), T("Bordas definem niveis de importancia entre elementos.", "Borders define importance levels between elements."), "layer-group"), new(T("Consistencia", "Consistency"), T("Mesma borda para mesmo tipo de elemento.", "Same border for same element type."), "check-double"), new(T("Affordance", "Affordance"), T("Bordas indicam campos interativos e containers.", "Borders indicate interactive fields and containers."), "hand-pointer"), new(T("Minimalismo", "Minimalism"), T("Menos bordas = mais clareza visual.", "Fewer borders = more visual clarity."), "minimize")];
+
+    private IReadOnlyList<NameValueRow> CssVariableRows => [new("--color-border", "rgb(226 232 240) / rgb(51 65 85)"), new("--color-border-light", "rgb(241 245 249) / rgb(71 85 105)"), new("--color-border-focus", "rgb(59 130 246) / rgb(96 165 250)"), new("--radius-none", "0px"), new("--radius-sm", "0.125rem"), new("--radius-md", "0.375rem"), new("--radius-lg", "0.5rem"), new("--radius-xl", "0.75rem"), new("--radius-full", "9999px")];
+
+    private IReadOnlyList<DocTile> CompositionItems => [new(T("Borda + Sombra", "Border + Shadow"), T("Borda combinada com sombra para profundidade visual.", "Border combined with shadow for visual depth."), "layer-group"), new(T("Borda + Cor", "Border + Color"), T("Cor da borda reflete estado semantico do elemento.", "Border color reflects semantic state of element."), "palette"), new(T("Borda + Espacamento", "Border + Spacing"), T("Espacamento interno cria hierarquia entre bordas.", "Internal spacing creates hierarchy between borders."), "arrows-left-right"), new(T("Borda + Raio", "Border + Radius"), T("Raio suaviza cantos para UX amigavel.", "Radius softens corners for friendly UX."), "circle")];
+
+    private IReadOnlyList<DocTile> ThemeItems => [new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"), new("data-brand", T("Borda primary acompanha marca ativa.", "Border primary follows active brand."), "swatchbook")];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [new(T("Raio predefinido", "Predefined radius"), T("Tokens fixos de raio. Sem customizacao dinamica.", "Fixed radius tokens. No dynamic customization.")), new(T("Hover states", "Hover states"), T("Estados hover requerem classes Tailwind adicionais.", "Hover states require additional Tailwind classes.")), new(T("Espessura limitada", "Limited width"), T("Apenas border (1px) e border-2 (2px) disponiveis.", "Only border (1px) and border-2 (2px) available."))];
+
+    private IReadOnlyList<DocTile> UsageGuideItems => [new(T("Use tokens", "Use tokens"), T("Nunca use bordas hardcoded. Sempre use tokens semanticos.", "Never use hardcoded borders. Always use semantic tokens."), "check"), new(T("Consistencia", "Consistency"), T("Mesma borda para mesmo tipo de elemento no projeto.", "Same border for same element type across the project."), "check-double"), new(T("Dark mode", "Dark mode"), T("Tokens se adaptam automaticamente ao tema.", "Tokens adapt automatically to the theme."), "moon")];
+
+
+    private IReadOnlyList<NameValueRow> VariantRows =>
+    [
+        new("border", T("Borda padrão de 1px.", "Default 1px border.")),
+        new("border-2", T("Borda enfatizada de 2px.", "Emphasized 2px border.")),
+        new("border-light", T("Borda sutil.", "Subtle border.")),
+        new("border-focus", T("Borda de foco.", "Focus border.")),
+        new("rounded-none..rounded-full", T("6 niveis de raio.", "6 radius levels."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("--color-border", "color", "rgb(226 232 240)", T("Cor de borda padrão.", "Default border color.")),
+        new("--color-border-light", "color", "rgb(241 245 249)", T("Cor de borda sutil.", "Subtle border color.")),
+        new("--color-border-focus", "color", "rgb(59 130 246)", T("Cor de borda de foco.", "Focus border color.")),
+        new("rounded-none", "0px", T("Sem raio", "No radius"), T("Borda quadrada.", "Square border.")),
+        new("rounded-sm", "0.125rem", T("Raio pequeno", "Small radius"), T("Inputs e badges.", "Inputs and badges.")),
+        new("rounded-md", "0.375rem", T("Raio médio", "Medium radius"), T("botões e cards.", "Buttons and cards.")),
+        new("rounded-lg", "0.5rem", T("Raio grande", "Large radius"), T("Cards e containers.", "Cards and containers.")),
+        new("rounded-full", "9999px", T("Raio total", "Full radius"), T("Avatares circulares.", "Circular avatars."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

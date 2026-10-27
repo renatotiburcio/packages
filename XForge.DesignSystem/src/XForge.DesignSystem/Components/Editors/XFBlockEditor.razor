@@ -1,0 +1,11 @@
+@namespace XForge.Components.Editors
+@inherits XForgeComponentBase
+
+<div class="xf-blockeditor" contenteditable="true" data-blocks="@Blocks.Count">
+  @foreach (var b in Blocks) { <div class="xf-block" data-type="@b.Type" data-id="@b.Id">@((MarkupString)b.Html)</div> }
+  @if (ShowSlashMenu) { <div class="xf-slash-menu">@foreach (var cmd in SlashCommands) { <span @onclick="() => OnSlashCommand.InvokeAsync(cmd)">/@cmd</span> }</div> }
+</div>
+
+@code {
+  public record Block(string Id, string Type, string Html, IReadOnlyDictionary<string, object>? Data = null);
+}

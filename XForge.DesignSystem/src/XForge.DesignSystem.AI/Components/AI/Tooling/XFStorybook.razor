@@ -1,0 +1,170 @@
+@inherits XForgeComponentBase
+@implements IDisposable
+
+<div class="@RootClass"
+     role="region"
+     aria-label="@AriaLabel"
+     @attributes="AdditionalAttributes">
+
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between border-b border-border-light px-4 py-2.5">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-text-primary">@Title</span>
+                <span class="rounded-full bg-surface-100 px-2 py-0.5 text-xs text-text-secondary dark:bg-slate-800">
+                    @FilteredComponents.Count componentes
+                </span>
+            </div>
+            <div class="flex items-center gap-2">
+                @if (ShowSearch)
+                {
+                    <input type="search"
+                           placeholder="Buscar componente..."
+                           class="w-48 rounded border border-border-light bg-bg-surface px-2 py-1 text-xs text-text-primary placeholder:text-text-muted"
+                           value="@_searchTerm"
+                           @oninput="OnSearchChanged"
+                           aria-label="Buscar componentes" />
+                }
+                @if (ShowCategoryFilter)
+                {
+                    <select class="rounded border border-border-light bg-bg-surface px-2 py-1 text-xs text-text-secondary"
+                            @onchange="OnCategoryChanged"
+                            aria-label="Filtrar por categoria">
+                        <option value="">Todas</option>
+                        @foreach (var cat in _categories)
+                        {
+                            <option value="@cat">@cat</option>
+                        }
+                    </select>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="grid grid-cols-1 gap-0 lg:grid-cols-4">
+        @* ── Component List ── *@
+        <div class="border-r border-border-light lg:col-span-1">
+            <div class="max-h-96 overflow-auto lg:max-h-[600px]">
+                @foreach (var group in GroupedComponents)
+                {
+                    <div class="border-b border-border-light/50">
+                        <button class="flex w-full items-center justify-between px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted hover:bg-surface-50 dark:hover:bg-slate-800/50"
+                                @onclick="() => ToggleGroup(group.Key)">
+                            <span>@group.Key</span>
+                            <span class="text-text-muted">@group.Value.Count</span>
+                        </button>
+                        @foreach (var comp in group.Value)
+                        {
+                            <button class="flex w-full items-center gap-2 px-4 py-1.5 text-left text-xs transition-colors @(_selectedComponent?.Name == comp.Name ? "bg-primary/10 text-primary font-medium" : "text-text-secondary hover:bg-surface-50 dark:hover:bg-slate-800/50")"
+                                    @onclick="() => SelectComponent(comp)">
+                                <span class="flex-1">@comp.Name</span>
+                                @if (comp.Status != XFStorybookComponentStatus.Stable)
+                                {
+                                    <span class="rounded px-1 py-0.5 text-xs @GetStatusColor(comp.Status)">@GetStatusLabel(comp.Status)</span>
+                                }
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        @* ── Detail Panel ── *@
+        <div class="lg:col-span-3">
+            @if (_selectedComponent is not null)
+            {
+                <div class="p-4">
+                    <div class="mb-4 flex items-center gap-3">
+                        <h2 class="text-lg font-bold text-text-primary">@_selectedComponent.Name</h2>
+                        <span class="rounded px-2 py-0.5 text-xs @GetStatusColor(_selectedComponent.Status)">@GetStatusLabel(_selectedComponent.Status)</span>
+                        <span class="text-xs text-text-muted">@_selectedComponent.ParameterCount parametros | @_selectedComponent.TestCount testes</span>
+                    </div>
+
+                    <p class="mb-4 text-sm text-text-secondary">@_selectedComponent.Description</p>
+
+                    <div class="mb-4 flex gap-2">
+                        @if (!string.IsNullOrEmpty(_selectedComponent.DocsRoute))
+                        {
+                            <a href="@_selectedComponent.DocsRoute"
+                               class="rounded border border-border-light px-3 py-1 text-xs text-text-secondary hover:bg-surface-100 hover:text-text-primary">
+                                Docs
+                            </a>
+                        }
+                    </div>
+
+                    @if (_controls.Any())
+                    {
+                        <div class="mb-4 rounded-lg border border-border-light p-3">
+                            <h3 class="mb-2 text-xs font-semibold text-text-secondary">Controles</h3>
+                            <div class="grid gap-2 sm:grid-cols-2">
+                                @foreach (var control in _controls)
+                                {
+                                    <div class="flex items-center gap-2">
+                                        <label class="w-28 text-xs text-text-muted">@control.ParameterName</label>
+                                        @if (control.IsEnum && control.EnumValues?.Any() == true)
+                                        {
+                                            <select class="flex-1 rounded border border-border-light bg-bg-surface px-2 py-1 text-xs text-text-secondary"
+                                                    @onchange="(e) => HandleControlChanged(control.ParameterName, e.Value?.ToString())">
+                                                @foreach (var val in control.EnumValues)
+                                                {
+                                                    <option value="@val" selected="@(val == control.DefaultValue)">@val</option>
+                                                }
+                                            </select>
+                                        }
+                                        else if (control.Type == "bool")
+                                        {
+                                            <input type="checkbox"
+                                                   checked="@(control.DefaultValue == "true")"
+                                                   @onchange="(e) => HandleControlChanged(control.ParameterName, e.Value?.ToString())" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text"
+                                                   value="@control.DefaultValue"
+                                                   class="flex-1 rounded border border-border-light bg-bg-surface px-2 py-1 text-xs text-text-primary font-mono"
+                                                   @onchange="(e) => HandleControlChanged(control.ParameterName, e.Value?.ToString())" />
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (ShowPreview && !string.IsNullOrEmpty(_previewCode))
+                    {
+                        <div class="rounded-lg border border-border-light">
+                            <div class="flex items-center justify-between border-b border-border-light px-3 py-2">
+                                <span class="text-xs font-semibold text-text-secondary">Preview</span>
+                                <div class="flex gap-2">
+                                    <button class="rounded px-2 py-0.5 text-xs @(_previewTab == "render" ? "bg-primary/10 text-primary" : "text-text-muted hover:text-text-secondary")"
+                                            @onclick='() => _previewTab = "render"'>Render</button>
+                                    <button class="rounded px-2 py-0.5 text-xs @(_previewTab == "code" ? "bg-primary/10 text-primary" : "text-text-muted hover:text-text-secondary")"
+                                            @onclick='() => _previewTab = "code"'>Code</button>
+                                </div>
+                            </div>
+                            @if (_previewTab == "render")
+                            {
+                                <div class="p-4">
+                                    <p class="text-sm text-text-muted">Render preview requires runtime component resolution.</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <pre class="max-h-64 overflow-auto p-3 text-xs"><code class="text-text-primary">@_previewCode</code></pre>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="flex h-full items-center justify-center py-16 text-text-muted">
+                    <div class="text-center">
+                        <svg class="mx-auto mb-2 h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+                        <span class="text-sm">Selecione um componente na lista</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

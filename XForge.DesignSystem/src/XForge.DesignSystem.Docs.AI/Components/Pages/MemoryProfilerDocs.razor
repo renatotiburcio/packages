@@ -1,0 +1,477 @@
+@page "/ai/memory-profiler"
+@using XForge.DesignSystem.Components.AI.Performance
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="@L.Text("Memory Profiler", "Memory Profiler")"
+                 Status="@L.Text("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiMemoryProfiler" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("Perfil de memoria WASM", "WASM memory profile")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Perfilador de memoria WASM com gauge circular, zonas de alocacao, stats de GC e historico de uso.",
+                                   "WASM memory profiler with circular gauge, allocation zones, GC stats and usage history.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Exibe uso de memoria via gauge SVG com cores de severidade, breakdown por zonas (Managed, Components, Cache, etc), contagem de GC collections e grafico historico de uso de memoria.",
+                                   "Displays memory usage via SVG gauge with severity colors, zone breakdown (Managed, Components, Cache, etc), GC collection count and historical memory usage chart.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@L.Text("Parcial", "Partial")" /></XFTableCell><XFTableCell>@L.Text("GC.GetTotalMemory disponivel apenas no WASM.", "GC.GetTotalMemory available only on WASM.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona com dados completos de GC e memoria.", "Works with full GC and memory data.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@L.Text("Parcial", "Partial")" /></XFTableCell><XFTableCell>@L.Text("Renderiza sem dados de runtime.", "Renders without runtime data.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Basico", "1. Basic"), L.Text("Profiler completo com gauge, zonas e GC.", "Full profiler with gauge, zones and GC."), ExBasic(), Code1)
+            @Example(L.Text("2. Sem Gauge", "3. Without Gauge"), L.Text("Apenas zonas e GC stats.", "Zones and GC stats only."), ExNoGauge(), Code2)
+            @Example(L.Text("3. Sem Historico", "3. Without History"), L.Text("Sem grafico de historico de uso.", "Without usage history chart."), ExNoHistory(), Code3)
+            @Example(L.Text("4. Compacto", "4. Compact"), L.Text("Apenas gauge sem zonas ou GC.", "Gauge only without zones or GC."), ExCompact(), Code4)
+            @Example(L.Text("5. Alto Uso", "5. High Usage"), L.Text("Uso de memoria elevado (80%).", "High memory usage (80%)."), ExHighUsage(), Code5)
+            @Example(L.Text("6. Sem Cabecalho", "6. No Header"), L.Text("Sem barra de cabecalho ou rodape.", "Without header or footer bars."), ExNoHeader(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Tipos", "Types"), @<div>@NameValueTable(TypeRows, L.Text("Tipo", "Type"), L.Text("Descricao", "Description"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFAiMemoryProfiler
+        Title="Memory Profiler"
+        ShowHeader="true"
+        ShowGauge="true"
+        ShowZones="true"
+        ShowGCStats="true"
+        ShowHistory="true"
+        MaxUsageMB="50" />;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("Gauge circular", "Circular gauge"), L.Text("SVG gauge com cores de severidade para uso de memoria.", "SVG gauge with severity colors for memory usage."), "circle-half-stroke"),
+        new(L.Text("Zonas de memoria", "Memory zones"), L.Text("Breakdown por Managed, Components, Cache e mais.", "Breakdown by Managed, Components, Cache and more."), "layer-group"),
+        new(L.Text("GC Collections", "GC Collections"), L.Text("Contagem de Gen 0, Gen 1 e Gen 2 collections.", "Count of Gen 0, Gen 1 and Gen 2 collections."), "rotate")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiMemoryProfiler"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Performance"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Performance"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-valuenow, aria-valuemin, aria-valuemax.", "role=region, aria-label, aria-valuenow, aria-valuemin, aria-valuemax.")),
+        new("Theme support", L.Text("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Gauge circular", "Circular gauge"), L.Text("Visualizacao SVG de uso de memoria com percentual.", "SVG visualization of memory usage with percentage."), "circle-half-stroke"),
+        new(L.Text("Zonas de alocacao", "Allocation zones"), L.Text("Breakdown por tipo: Managed, Components, Cache, etc.", "Breakdown by type: Managed, Components, Cache, etc."), "layer-group"),
+        new(L.Text("Historico de uso", "Usage history"), L.Text("Grafico de barras com historico de uso de memoria.", "Bar chart with memory usage history."), "chart-bar")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Debug de memoria", "Memory debugging"), L.Text("Identificar vazamentos e uso excessivo de memoria.", "Identify leaks and excessive memory usage."), "bug"),
+        new(L.Text("Monitoramento WASM", "WASM monitoring"), L.Text("Rastrear uso de memoria em Blazor WebAssembly.", "Track memory usage in Blazor WebAssembly."), "eye"),
+        new(L.Text("Otimizacao", "Optimization"), L.Text("Encontrar zonas de maior alocacao para otimizar.", "Find highest allocation zones to optimize."), "gauge")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Sem visibilidade sobre uso de memoria WASM.", "No visibility into WASM memory usage."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Gauge, zonas, GC stats e historico em tempo real.", "Gauge, zones, GC stats and history in real time."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=region com aria-valuenow e aria-label.", "role=region with aria-valuenow and aria-label."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Debug de WASM", "WASM debugging"), L.Text("Monitorar uso de memoria durante desenvolvimento.", "Monitor memory usage during development."), "bug"),
+        new(L.Text("Deteccao de leaks", "Leak detection"), L.Text("Identificar alocacoes crescentes ao longo do tempo.", "Identify growing allocations over time."), "magnifying-glass"),
+        new(L.Text("Otimizacao de bundles", "Bundle optimization"), L.Text("Correlacionar tamanho de bundle com uso de memoria.", "Correlate bundle size with memory usage."), "box-open")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Metricas de CPU", "CPU metrics"), L.Text("Use XFAiPerformanceMonitor para tempo de render.", "Use XFAiPerformanceMonitor for render time."), "gauge"),
+        new(L.Text("Analise de bundle", "Bundle analysis"), L.Text("Use XFAiBundleAnalyzer para tamanho de pacotes.", "Use XFAiBundleAnalyzer for package sizes."), "box-open")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Header", L.Text("Titulo, badge de uso MB e contagem de GC.", "Title, usage MB badge and GC count."), "heading"),
+        new("Gauge", L.Text("Gauge SVG circular com percentual e uso/max MB.", "SVG circular gauge with percentage and usage/max MB."), "circle-half-stroke"),
+        new("Zones", L.Text("Barras de alocacao por zona com labels e bytes.", "Allocation bars by zone with labels and bytes."), "layer-group"),
+        new("GC Stats", L.Text("Grid de 3 colunas: Gen 0, Gen 1, Gen 2.", "3-column grid: Gen 0, Gen 1, Gen 2."), "rotate"),
+        new("History", L.Text("Grafico de barras com historico de uso de memoria.", "Bar chart with memory usage history."), "chart-bar"),
+        new("Footer", L.Text("Bytes gerenciados e total alocados.", "Managed and total allocated bytes."), "rectangle-list")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt"),
+        new(L.Text("Cor = severidade", "Color = severity"), L.Text("Green < 60%, Yellow < 80%, Red >= 80%.", "Green < 60%, Yellow < 80%, Red >= 80%."), "palette"),
+        new(L.Text("Gauge SVG", "SVG gauge"), L.Text("Visualizacao circular com stroke-dashoffset.", "Circular visualization with stroke-dashoffset."), "circle-half-stroke")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFAiMemoryProfiler
+        Title="App Memory"
+        ShowHeader="true"
+        ShowGauge="true"
+        ShowZones="true"
+        ShowGCStats="true"
+        ShowHistory="true"
+        MaxUsageMB="50" />;
+
+    private RenderFragment ExNoGauge() => @<XFAiMemoryProfiler
+        Title="Sem Gauge"
+        ShowHeader="true"
+        ShowGauge="false"
+        ShowZones="true"
+        ShowGCStats="true"
+        ShowHistory="true"
+        MaxUsageMB="50" />;
+
+    private RenderFragment ExNoHistory() => @<XFAiMemoryProfiler
+        Title="Sem Historico"
+        ShowHeader="true"
+        ShowGauge="true"
+        ShowZones="true"
+        ShowGCStats="true"
+        ShowHistory="false"
+        MaxUsageMB="50" />;
+
+    private RenderFragment ExCompact() => @<XFAiMemoryProfiler
+        Title="Compacto"
+        ShowHeader="true"
+        ShowGauge="true"
+        ShowZones="false"
+        ShowGCStats="false"
+        ShowHistory="false"
+        ShowFooter="false"
+        MaxUsageMB="50" />;
+
+    private RenderFragment ExHighUsage() => @<XFAiMemoryProfiler
+        Title="Alto Uso"
+        ShowHeader="true"
+        ShowGauge="true"
+        ShowZones="true"
+        ShowGCStats="true"
+        ShowHistory="true"
+        MaxUsageMB="25" />;
+
+    private RenderFragment ExNoHeader() => @<XFAiMemoryProfiler
+        Title="Sem Cabecalho"
+        ShowHeader="false"
+        ShowFooter="false"
+        ShowGauge="true"
+        ShowZones="true"
+        ShowGCStats="true"
+        ShowHistory="false"
+        MaxUsageMB="50" />;
+
+    private const string Code1 = @"<XFAiMemoryProfiler
+    Title=""App Memory""
+    ShowHeader=""true""
+    ShowGauge=""true""
+    ShowZones=""true""
+    ShowGCStats=""true""
+    ShowHistory=""true""
+    MaxUsageMB=""50"" />";
+    private const string Code2 = @"<XFAiMemoryProfiler
+    Title=""Sem Gauge""
+    ShowHeader=""true""
+    ShowGauge=""false""
+    ShowZones=""true""
+    ShowGCStats=""true""
+    ShowHistory=""true""
+    MaxUsageMB=""50"" />";
+    private const string Code3 = @"<XFAiMemoryProfiler
+    Title=""Sem Historico""
+    ShowHeader=""true""
+    ShowGauge=""true""
+    ShowZones=""true""
+    ShowGCStats=""true""
+    ShowHistory=""false""
+    MaxUsageMB=""50"" />";
+    private const string Code4 = @"<XFAiMemoryProfiler
+    Title=""Compacto""
+    ShowHeader=""true""
+    ShowGauge=""true""
+    ShowZones=""false""
+    ShowGCStats=""false""
+    ShowHistory=""false""
+    ShowFooter=""false""
+    MaxUsageMB=""50"" />";
+    private const string Code5 = @"<XFAiMemoryProfiler
+    Title=""Alto Uso""
+    ShowHeader=""true""
+    ShowGauge=""true""
+    ShowZones=""true""
+    ShowGCStats=""true""
+    ShowHistory=""true""
+    MaxUsageMB=""25"" />";
+    private const string Code6 = @"<XFAiMemoryProfiler
+    Title=""Sem Cabecalho""
+    ShowHeader=""false""
+    ShowFooter=""false""
+    ShowGauge=""true""
+    ShowZones=""true""
+    ShowGCStats=""true""
+    ShowHistory=""false""
+    MaxUsageMB=""50"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Title", "string", "\"Memory Profiler\"", L.Text("Titulo do profiler.", "Profiler title.")),
+        new("AriaLabel", "string", "\"Perfilador de memoria WASM\"", L.Text("Label ARIA para acessibilidade.", "ARIA label for accessibility.")),
+        new("ShowHeader", "bool", "true", L.Text("Exibe barra de cabecalho com titulo e badge de uso.", "Displays header bar with title and usage badge.")),
+        new("ShowFooter", "bool", "true", L.Text("Exibe barra de rodape com bytes gerenciados e total.", "Displays footer bar with managed and total bytes.")),
+        new("ShowGauge", "bool", "true", L.Text("Exibe gauge circular SVG de uso de memoria.", "Displays SVG circular memory usage gauge.")),
+        new("ShowZones", "bool", "true", L.Text("Exibe breakdown por zonas de alocacao.", "Displays allocation zone breakdown.")),
+        new("ShowGCStats", "bool", "true", L.Text("Exibe contagem de GC collections (Gen 0/1/2).", "Displays GC collection count (Gen 0/1/2).")),
+        new("ShowHistory", "bool", "true", L.Text("Exibe grafico de historico de uso de memoria.", "Displays memory usage history chart.")),
+        new("MaxUsageMB", "double", "50", L.Text("Orcamento maximo de memoria em MB.", "Maximum memory budget in MB.")),
+        new("Snapshot", "XFAiMemorySnapshot?", "null", L.Text("Dados de snapshot de memoria para exibir.", "Memory snapshot data to display."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnSnapshotCaptured", L.Text("Disparado quando um snapshot e capturado. Retorna XFAiMemorySnapshot.", "Fired when a snapshot is captured. Returns XFAiMemorySnapshot."))
+    ];
+
+    private IReadOnlyList<NameValueRow> TypeRows => [
+        new("XFAiMemorySnapshot", L.Text("Record com TotalManagedBytes, TotalAllocatedBytes, Gen0/1/2Collections, Allocations, CapturedAt.", "Record with TotalManagedBytes, TotalAllocatedBytes, Gen0/1/2Collections, Allocations, CapturedAt.")),
+        new("XFAiMemoryAllocation", L.Text("Record com Zone, AllocatedBytes, MaxBytes, UsagePercent, Label.", "Record with Zone, AllocatedBytes, MaxBytes, UsagePercent, Label.")),
+        new("XFAiMemoryZone", L.Text("Enum: Managed, Unmanaged, Interop, Components, Services, Cache, Other.", "Enum: Managed, Unmanaged, Interop, Components, Services, Cache, Other."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Container principal usa role=region para leitores de tela.", "Main container uses role=region for screen readers."), "universal-access"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Label descritivo do perfilador de memoria.", "Descriptive label for memory profiler."), "tag"),
+        new(L.Text("aria-valuenow", "aria-valuenow"), L.Text("Percentual de uso de memoria como valor acessivel.", "Memory usage percentage as accessible value."), "percent"),
+        new(L.Text("Cores semanticas", "Semantic colors"), L.Text("Green/Yellow/Red comunicam severidade de uso.", "Green/Yellow/Red communicate usage severity."), "palette")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega entre secoes do profiler.", "Navigates between profiler sections.")),
+        new("Enter/Space", L.Text("Nao possui acoes interativas.", "No interactive actions."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Gauge responsivo", "Responsive gauge"), L.Text("Gauge se ajusta a 128x128px em todas as telas.", "Gauge adjusts to 128x128px on all screens."), "maximize"),
+        new(L.Text("Zonas responsivas", "Responsive zones"), L.Text("Grid de zonas e GC stats se adapta a largura.", "Zones and GC stats grid adapts to width."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Gauge SVG leve", "Light SVG gauge"), L.Text("Dois circles SVG puros, sem lib externa.", "Two pure SVG circles, no external lib."), "feather"),
+        new(L.Text("Historico limitado", "Limited history"), L.Text("Maximo 30 amostras no grafico.", "Maximum 30 samples in chart."), "database")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Debug WASM", "WASM debugging"), L.Text("Monitorar memoria durante desenvolvimento local.", "Monitor memory during local development."), "bug"),
+        new(L.Text("Deteccao de leak", "Leak detection"), L.Text("Identificar memorias crescentes em producao.", "Identify growing memory in production."), "magnifying-glass"),
+        new(L.Text("Otimizacao de UI", "UI optimization"), L.Text("Correlacionar complexidade de UI com uso de memoria.", "Correlate UI complexity with memory usage."), "gauge")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("Profiler + XFCard", "Profiler + XFCard"), L.Text("Envolver em XFCard para contexto de pagina.", "Wrap in XFCard for page context."), "square"),
+        new(L.Text("Profiler + Monitor", "Profiler + Monitor"), L.Text("Combinar com XFAiPerformanceMonitor para analise completa.", "Combine with XFAiPerformanceMonitor for full analysis."), "gauge"),
+        new(L.Text("Profiler + Bundle", "Profiler + Bundle"), L.Text("Combinar com XFAiBundleAnalyzer para correlacao.", "Combine with XFAiBundleAnalyzer for correlation."), "box-open")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("MaxUsageMB realista", "Realistic MaxUsageMB"), L.Text("Configure conforme orcamento real do app.", "Configure according to real app budget."), "gauge"),
+        new(L.Text("CaptureSnapshotAsync", "CaptureSnapshotAsync"), L.Text("Capture snapshots periodicamente para historico.", "Capture snapshots periodically for history."), "camera"),
+        new(L.Text("ShowHistory=true", "ShowHistory=true"), L.Text("Historico ajuda a identificar tendencias de memoria.", "History helps identify memory trends."), "chart-bar"),
+        new(L.Text("Zonas para debug", "Zones for debugging"), L.Text("ShowZones=true quando precisar identificar alocacoes.", "ShowZones=true when you need to identify allocations."), "layer-group")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("MaxUsageMB muito alto", "MaxUsageMB too high"), L.Text("Orcamento irreal esconde problemas de memoria.", "Unrealistic budget hides memory problems."), "xmark"),
+        new(L.Text("Sem snapshots", "No snapshots"), L.Text("Profiler sem dados de snapshot e apenas visual.", "Profiler without snapshot data is visual only."), "ban"),
+        new(L.Text("ShowGauge=false sempre", "ShowGauge=false always"), L.Text("Esconder gauge remove indicador visual principal.", "Hiding gauge removes main visual indicator."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", L.Text("overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-sm.", "overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-sm.")),
+        new("gauge", L.Text("svg viewBox 120x120 com stroke-dashoffset animado.", "svg viewBox 120x120 with animated stroke-dashoffset.")),
+        new("zone-bar", L.Text("h-3 rounded-full com cor por zona de alocacao.", "h-3 rounded-full with color per allocation zone.")),
+        new("gc-card", L.Text("flex flex-col items-center gap-1 rounded-lg border p-2.", "flex flex-col items-center gap-1 rounded-lg border p-2."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", L.Text("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Render, props, gauge, zones, GC, history, snapshot, load.", "Render, props, gauge, zones, GC, history, snapshot, load.")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-valuenow, cores semanticas.", "role=region, aria-label, aria-valuenow, semantic colors."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(L.Text("Apenas WASM", "WASM only"), L.Text("Dados completos de GC disponiveis apenas no WASM.", "Full GC data available only on WASM.")),
+        new(L.Text("Snapshot em memoria", "In-memory snapshots"), L.Text("Dados nao persistem entre sessoes.", "Data does not persist between sessions.")),
+        new(L.Text("MaxUsageMB fixo", "Fixed MaxUsageMB"), L.Text("Orcamento e estatico apos renderizacao.", "Budget is static after render."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiPerformanceMonitor", L.Text("Monitor de performance em tempo real.", "Real-time performance monitor."), "gauge"),
+        new("XFAiBundleAnalyzer", L.Text("Analise de tamanho de bundle.", "Bundle size analysis."), "box-open"),
+        new("XFAiVirtualScroller", L.Text("Virtualizacao de listas para performance.", "List virtualization for performance."), "bars")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Como capturar snapshot?", "How to capture snapshot?"), L.Text("Chame CaptureSnapshotAsync ou passe Snapshot como parametro.", "Call CaptureSnapshotAsync or pass Snapshot as parameter.")),
+        new(L.Text("Qual o MaxUsageMB ideal?", "What is the ideal MaxUsageMB?"), L.Text("Depende do app. Blazor WASM tipicamente 25-100MB.", "Depends on app. Blazor WASM typically 25-100MB.")),
+        new(L.Text("Gauge funciona sem dados?", "Gauge without data?"), L.Text("Sim, exibe 0% e 0/50 MB por padrao.", "Yes, shows 0% and 0/50 MB by default.")),
+        new(L.Text("Zonas de memoria sao precisas?", "Are memory zones accurate?"), L.Text("Sim, usa GC.GetTotalMemory e GC.GetTotalAllocatedBytes.", "Yes, uses GC.GetTotalMemory and GC.GetTotalAllocatedBytes."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", L.Text("Componente criado com gauge, zonas, GC e historico.", "Component created with gauge, zones, GC and history.")),
+        new("2026-06-12", L.Text("Documentacao completa AppShellDocs com 26 secoes.", "Complete AppShellDocs documentation with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

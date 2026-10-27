@@ -1,0 +1,462 @@
+@page "/ai/financial-conciliator"
+@using XForge.DesignSystem.Components.AI.Financial
+@using XForge.DesignSystem.Services.AI
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="XFAiFinancialConciliator"
+                 Status="@L.Text("Estavel", "Stable")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiFinancialConciliator" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Conciliacao", "Reconciliation")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Multi-provider", "Multi-provider")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Conciliador financeiro por IA para lancamentos, extratos, divergencias e sugestoes de pareamento.",
+                               "AI financial reconciler for entries, statements, discrepancies and matching suggestions.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente de conciliacao bancaria com IA que detecta duplicatas, fraudes, divergencias entre lancamentos e extratos, e gera resumo de fluxo de caixa com nivel de confianca.",
+                               "AI-powered bank reconciliation component that detects duplicates, fraud, discrepancies between entries and statements, and generates cash flow summary with confidence level.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== METADATA ===== -->
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        <!-- ===== BLAZOR COMPAT ===== -->
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Conciliacao completa com IA via provider.", "Full reconciliation with AI via provider.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com provider compativel.", "Works with compatible provider.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Limitado", "Limited")" /></XFTableCell><XFTableCell>@T("IA indisponivel. Exibe estado vazio.", "AI unavailable. Shows empty state.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+            </XFStack>
+        </div>)
+
+        <!-- ===== CONTENT SECTIONS ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Conciliador basico", "1. Basic Reconciler"), T("Conciliador com titulo, placeholder e header.", "Reconciler with title, placeholder and header."), ExBasic(), Code1)
+            @Example(T("2. Sem header", "2. Without Header"), T("Conciliador compacto sem barra de cabecalho.", "Compact reconciler without header bar."), ExNoHeader(), Code2)
+            @Example(T("3. Com resultado customizado", "3. Custom Result"), T("Resultado de conciliacao customizado via ResultPreview.", "Custom reconciliation result via ResultPreview."), ExCustomResult(), Code3)
+            @Example(T("4. Conteudo vazio customizado", "4. Custom Empty Content"), T("Estado vazio customizado via EmptyContent.", "Custom empty state via EmptyContent."), ExEmpty(), Code4)
+            @Example(T("5. Conciliador enterprise", "5. Enterprise Reconciler"), T("Conciliador com titulo corporativo e placeholder detalhado.", "Reconciler with corporate title and detailed placeholder."), ExEnterprise(), Code5)
+        </XFStack>
+
+        <!-- ===== API + EVENTS ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <!-- ===== ACCESSIBILITY + PERFORMANCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <!-- ===== ENTERPRISE + COMPOSITION ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <!-- ===== TOKENS + THEMING ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+<XForgeDocsPageStandard ComponentName="FinancialConciliatorDocs" />
+
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiFinancialConciliator Title="@T("Conciliacao bancaria", "Bank reconciliation")"
+                                  Placeholder="@T("Descreva os lancamentos pendentes ou cole o extrato...", "Describe pending entries or paste the statement...")"
+                                  ShowHeader="true" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Conciliacao IA", "AI Reconciliation"), T("Deteccao automatica de divergencias entre lancamentos e extratos.", "Automatic detection of discrepancies between entries and statements."), "money-check-dollar"),
+        new(T("Deteccao de fraude", "Fraud Detection"), T("Indicadores de transacoes suspeitas com nivel de severidade.", "Suspicious transaction indicators with severity level."), "shield-halved"),
+        new(T("Fluxo de caixa", "Cash Flow"), T("Resumo de entradas, saidas e percentual de pareamento.", "Summary of inflows, outflows and matching percentage."), "chart-line-up")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiFinancialConciliator"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Financial"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Financial"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", "role=region, aria-label, aria-busy, aria-live=polite"),
+        new("Theme support", T("Light e dark via tokens CSS.", "Light and dark via CSS tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Conciliacao IA", "AI Reconciliation"), T("Pareamento inteligente entre lancamentos contabeis e extratos bancarios.", "Smart matching between accounting entries and bank statements."), "money-check-dollar"),
+        new(T("Deteccao de fraude", "Fraud Detection"), T("Identificacao de padroes anomalous com classificacao de severidade.", "Anomalous pattern identification with severity classification."), "shield-halved"),
+        new(T("Resumo financeiro", "Financial Summary"), T("Dashboard de entradas, saidas, fluxo liquido e percentual de pareamento.", "Dashboard of inflows, outflows, net cashflow and matching percentage."), "chart-line-up")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Automatizar conciliacao", "Automate reconciliation"), T("Substituir revisao manual por analise IA de transacoes.", "Replace manual review with AI transaction analysis."), "robot"),
+        new(T("Detectar fraudes", "Detect fraud"), T("Identificar transacoes incomuns, duplicatas e padroes suspeitos.", "Identify unusual transactions, duplicates and suspicious patterns."), "shield-halved"),
+        new(T("Gerar insights", "Generate insights"), T("Resumos automaticos com nivel de confianca para decisao humana.", "Automatic summaries with confidence level for human decision."), "lightbulb")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Conciliacao manual consome horas e e propensa a erros.", "Manual reconciliation consumes hours and is error-prone."), "xmark"),
+        new(T("Depois", "After"), T("IA detecta divergencias automaticamente com 90%+ de confianca.", "AI detects discrepancies automatically with 90%+ confidence."), "check"),
+        new(T("Eficiencia", "Efficiency"), T("Reducao de tempo de conciliacao em ate 80%.", "Reduces reconciliation time by up to 80%."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Conciliacao bancaria", "Bank reconciliation"), T("Pareamento de extratos com lancamentos do ERP.", "Statement matching with ERP entries."), "money-check-dollar"),
+        new(T("Auditoria de transacoes", "Transaction audit"), T("Revisao de transacoes com indicadores de fraude.", "Transaction review with fraud indicators."), "magnifying-glass-chart")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Formularios simples", "Simple forms"), T("Use XFTextInput para entrada de dados simples.", "Use XFTextInput for simple data input."), "pen"),
+        new(T("Notificacoes", "Notifications"), T("Use XFToast ou XFAlert para alertas pontuais.", "Use XFToast or XFAlert for one-time alerts."), "bell")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Header", "Header"), T("Barra superior com titulo e icone de sparkles.", "Top bar with title and sparkles icon."), "bars"),
+        new(T("Input", "Input"), T("Textarea com placeholder e botao de conciliacao.", "Textarea with placeholder and reconciliation button."), "pen"),
+        new(T("Resultado", "Result"), T("Area de resultado com resumo, matches e indicadores.", "Result area with summary, matches and indicators."), "chart-bar"),
+        new(T("Erro", "Error"), T("Banner de erro com mensagem e botao dispensar.", "Error banner with message and dismiss button."), "triangle-exclamation"),
+        new(T("Loading", "Loading"), T("Skeleton de carregamento durante processamento IA.", "Loading skeleton during AI processing."), "spinner"),
+        new(T("Vazio", "Empty"), T("Estado vazio com icone e texto explicativo.", "Empty state with icon and explanatory text."), "inbox")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Transparencia", "Transparency"), T("Nivel de confianca visivel em toda conciliacao.", "Confidence level visible in every reconciliation."), "eye"),
+        new(T("Feedback visual", "Visual feedback"), T("Skeleton durante IA, banner de erro, estado vazio.", "Skeleton during AI, error banner, empty state."), "circle-check"),
+        new(T("Extensibilidade", "Extensibility"), T("Templates para resultado, header e vazio.", "Templates for result, header and empty."), "puzzle")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiFinancialConciliator Title="@T("Conciliacao bancaria", "Bank reconciliation")"
+                                  Placeholder="@T("Descreva os lancamentos pendentes ou cole o extrato...", "Describe pending entries or paste the statement...")"
+                                  ShowHeader="true" />
+    </XFStack>;
+
+    private RenderFragment ExNoHeader() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiFinancialConciliator Title="@T("Conciliacao", "Reconciliation")"
+                                  Placeholder="@T("Cole o extrato bancario...", "Paste bank statement...")"
+                                  ShowHeader="false" />
+    </XFStack>;
+
+    private RenderFragment ExCustomResult() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiFinancialConciliator Title="@T("Conciliacao customizada", "Custom reconciliation")"
+                                  Placeholder="@T("Envie lancamentos para analise...", "Send entries for analysis...")"
+                                  ShowHeader="true"
+                                  ResultPreview="CustomResultPreview" />
+    </XFStack>;
+
+    private RenderFragment ExEmpty() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiFinancialConciliator Title="@T("Conciliador", "Reconciler")"
+                                  Placeholder="@T("Descreva os lancamentos...", "Describe entries...")"
+                                  ShowHeader="true"
+                                  EmptyContent="@CustomEmptyContent" />
+    </XFStack>;
+
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiFinancialConciliator Title="@T("Conciliacao Bancaria ERP", "ERP Bank Reconciliation")"
+                                  Placeholder="@T("Cole o extrato do banco ou descreva os lancamentos pendentes para conciliacao inteligente com deteccao de duplicatas e fraudes.", "Paste the bank statement or describe pending entries for smart reconciliation with duplicate and fraud detection.")"
+                                  ShowHeader="true" />
+    </XFStack>;
+
+    private RenderFragment CustomResultPreview(XFAiReconciliationResult result) => @<div class="space-y-3">
+        <div class="rounded-lg bg-primary/5 px-3 py-2.5 ring-1 ring-primary/10">
+            <div class="flex items-start gap-2">
+                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("sparkles", 16))</span>
+                <p class="text-sm leading-5 text-text-primary">@result.AiSummary</p>
+            </div>
+        </div>
+        @if (result.Matches is { Count: > 0 })
+        {
+            <div>
+                <div class="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">@T("Pareamentos", "Matches")</div>
+                <div class="space-y-1">
+                    @foreach (var m in result.Matches)
+                    {
+                        <div class="flex items-center justify-between rounded-md bg-emerald-50 px-3 py-2 text-xs ring-1 ring-emerald-200">
+                            <div class="font-medium text-emerald-800">@m.TransactionDescription</div>
+                            <span class="text-emerald-600 text-[10px]">@((m.MatchScore * 100).ToString("F0"))%</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>;
+
+    private RenderFragment CustomEmptyContent => @<div class="flex flex-col items-center gap-3 py-8">
+        <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+            @((MarkupString)XFSvgIcons.MarkupWithSize("money-check-dollar", 32))
+        </div>
+        <div class="text-center">
+            <div class="text-sm font-semibold text-text-primary">@T("Conciliador Financeiro", "Financial Reconciler")</div>
+            <div class="mt-1 text-xs text-text-secondary max-w-xs">@T("Cole o extrato bancario ou descreva os lancamentos para iniciar a conciliacao inteligente.", "Paste the bank statement or describe entries to start smart reconciliation.")</div>
+        </div>
+    </div>;
+
+    private const string Code1 = @"<XFAiFinancialConciliator Title=""Conciliacao bancaria""
+                      Placeholder=""Descreva os lancamentos pendentes ou cole o extrato...""
+                      ShowHeader=""true"" />";
+
+    private const string Code2 = @"<XFAiFinancialConciliator Title=""Conciliacao""
+                      Placeholder=""Cole o extrato bancario...""
+                      ShowHeader=""false"" />";
+
+    private const string Code3 = @"<XFAiFinancialConciliator Title=""Conciliacao customizada""
+                      Placeholder=""Envie lancamentos para analise...""
+                      ShowHeader=""true""
+                      ResultPreview=""@CustomResultPreview"" />";
+
+    private const string Code4 = @"<XFAiFinancialConciliator Title=""Conciliador""
+                      Placeholder=""Descreva os lancamentos...""
+                      ShowHeader=""true""
+                      EmptyContent=""@CustomEmptyContent"" />";
+
+    private const string Code5 = @"<XFAiFinancialConciliator Title=""Conciliacao Bancaria ERP""
+                      Placeholder=""Cole o extrato do banco ou descreva os lancamentos pendentes para conciliacao inteligente com deteccao de duplicatas e fraudes.""
+                      ShowHeader=""true"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Provider", "IAiProvider?", "null", T("Provider IA para conciliacao automatica.", "AI provider for automatic reconciliation.")),
+        new("Title", "string", T("'Conciliador Financeiro'", "'Financial Reconciler'"), T("Titulo exibido no header.", "Title displayed in header.")),
+        new("Placeholder", "string", T("'Descreva lancamentos...'", "'Describe entries...'"), T("Texto do placeholder do textarea.", "Textarea placeholder text.")),
+        new("ShowHeader", "bool", "true", T("Exibe barra de cabecalho.", "Shows header bar.")),
+        new("Loading", "bool", "false", T("Forca estado de carregamento externo.", "Forces external loading state.")),
+        new("SystemPrompt", "string?", "null", T("Prompt de sistema customizado para IA.", "Custom system prompt for AI.")),
+        new("OnReconciled", "EventCallback<XFAiReconciliationResult>", "-", T("Dispara apos conciliacao. Recebe resultado da conciliacao.", "Fires after reconciliation. Receives reconciliation result.")),
+        new("OnError", "EventCallback<string>", "-", T("Dispara em erro. Recebe mensagem de erro.", "Fires on error. Receives error message.")),
+        new("ResultPreview", "RenderFragment<XFAiReconciliationResult>?", "null", T("Template customizado do resultado.", "Custom result template.")),
+        new("HeaderContent", "RenderFragment?", "null", T("Conteudo customizado do cabecalho.", "Custom header content.")),
+        new("EmptyContent", "RenderFragment?", "null", T("Conteudo do estado vazio.", "Empty state content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnReconciled", T("Dispara quando conciliacao e concluida. Recebe XFAiReconciliationResult.", "Fires when reconciliation is completed. Receives XFAiReconciliationResult.")),
+        new("OnError", T("Dispara em erro de IA ou parsing. Recebe string com mensagem.", "Fires on AI or parsing error. Receives string with message."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("AnalyzeAsync()", T("Inicia conciliacao com o provider IA. Chamado automaticamente ao enviar.", "Starts reconciliation with AI provider. Called automatically on submit.")),
+        new("Clear()", T("Limpa resultado, erro e query. Reseta componente.", "Clears result, error and query. Resets component."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=region", "role=region"), T("Container principal com aria-label descritivo.", "Main container with descriptive aria-label."), "universal-access"),
+        new(T("aria-busy", "aria-busy"), T("Indica estado de conciliacao em andamento.", "Indicates reconciliation in progress state."), "spinner"),
+        new(T("aria-live=polite", "aria-live=polite"), T("Resultado anunciado a leitores de tela.", "Result announced to screen readers."), "volume-high"),
+        new(T("aria-label", "aria-label"), T("Labels em textarea e botoes de acao.", "Labels on textarea and action buttons."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Enter", T("Inicia conciliacao.", "Starts reconciliation.")),
+        new("Shift+Enter", T("Insere nova linha na query.", "Inserts newline in query.")),
+        new("Escape", T("Limpa query e erro.", "Clears query and error."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Container flex", "Flex container"), T("Largura total com overflow controlado.", "Full width with controlled overflow."), "maximize"),
+        new(T("Responsivo", "Responsive"), T("Se adapta a qualquer largura de container.", "Adapts to any container width."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Streaming IA", "AI Streaming"), T("Respostas recebidas sob demanda via provider.", "Responses received on demand via provider."), "bolt"),
+        new(T("Cancelamento", "Cancellation"), T("CancellationTokenSource para cancelar requisicoes pendentes.", "CancellationTokenSource to cancel pending requests."), "stop")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Conciliacao bancaria", "Bank reconciliation"), T("Pareamento automatico entre extratos e lancamentos contabeis.", "Automatic matching between statements and accounting entries."), "money-check-dollar"),
+        new(T("Auditoria fiscal", "Tax audit"), T("Deteccao de divergencias em notas fiscais e pagamentos.", "Detection of discrepancies in invoices and payments."), "file-invoice"),
+        new(T("Controle financeiro", "Financial control"), T("Monitoramento de fluxo de caixa com indicadores de fraude.", "Cash flow monitoring with fraud indicators."), "chart-line-up")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Provider + Conciliator", "Provider + Reconciler"), T("Conecte com Ollama, OpenAI ou Gemini para IA real.", "Connect with Ollama, OpenAI or Gemini for real AI."), "plug"),
+        new(T("Conciliator + ResultPreview", "Reconciler + ResultPreview"), T("Customize a exibicao do resultado de conciliacao.", "Customize the reconciliation result display."), "puzzle"),
+        new(T("Conciliator + EmptyContent", "Reconciler + EmptyContent"), T("Defina estado vazio personalizado.", "Define custom empty state."), "inbox")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Provider obrigatorio", "Provider required"), T("Sem provider, o componente apenas documenta a API.", "Without provider, the component only documents the API."), "plug"),
+        new(T("SystemPrompt customizado", "Custom SystemPrompt"), T("Defina o formato JSON esperado para resultados consistentes.", "Define expected JSON format for consistent results."), "terminal"),
+        new(T("Tratamento de erros", "Error handling"), T("Sempre trate OnError para exibir feedback ao usuario.", "Always handle OnError to display feedback to user."), "shield-check"),
+        new(T("Loading externo", "External loading"), T("Use Loading para sincronizar estado externo de carregamento.", "Use Loading to sync external loading state."), "spinner")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem provider", "No provider"), T("Componente nao executa conciliacao sem Provider configurado.", "Component does not reconcile without Provider configured."), "xmark"),
+        new(T("Erro silencioso", "Silent error"), T("Sempre trate e exiba erros via OnError.", "Always handle and display errors via OnError."), "triangle-exclamation"),
+        new(T("Sem limites", "No limits"), T("Defina MaxTokens no provider para evitar custos excessivos.", "Set MaxTokens on provider to avoid excessive costs."), "ban")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("xf-ai-financial-conciliator", T("Container principal do conciliador.", "Main reconciler container.")),
+        new("bg-primary/5", T("Fundo do box de resumo IA.", "AI summary box background.")),
+        new("ring-primary/10", T("Borda do box de resumo.", "Summary box border ring.")),
+        new("shadow", T("Sombras sutis para profundidade.", "Subtle shadows for depth."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, conciliacao, erro, clear.", "Render, props, reconciliation, error, clear.")),
+        new("Accessibility", T("role=region, aria-busy, aria-live, aria-label.", "role=region, aria-busy, aria-live, aria-label."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Sem provider", T("Sem Provider, componente nao executa conciliacao.", "Without Provider, component does not reconcile.")),
+        new("SSR", T("Conciliacao indisponivel em Static SSR.", "Reconciliation unavailable in Static SSR.")),
+        new("JSON parsing", T("Respostas da IA devem ser JSON valido para parsing.", "AI responses must be valid JSON for parsing."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiAccountingAssistant", T("Assistente contabil para lancamentos e DRE.", "Accounting assistant for entries and DRE."), "calculator"),
+        new("XFAiFormAssistant", T("Assistente de preenchimento de formularios.", "Form filling assistant."), "pen"),
+        new("XFAiChat", T("Chat conversacional com IA.", "Conversational AI chat."), "comments")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Precisa de Provider?", "Needs Provider?"), T("Sim. Sem provider, o componente apenas exibe a interface.", "Yes. Without provider, the component only shows the interface.")),
+        new(T("Suporta multi-turn?", "Supports multi-turn?"), T("Nao. Cada conciliacao e independente.", "No. Each reconciliation is independent.")),
+        new(T("Formato de resultado?", "Result format?"), T("JSON com matches, unmatchedTransactions, duplicates, fraudIndicators e cashflowSummary.", "JSON with matches, unmatchedTransactions, duplicates, fraudIndicators and cashflowSummary.")),
+        new(T("Como customizar resultado?", "How to customize result?"), T("Use ResultPreview para template customizado com XFAiReconciliationResult.", "Use ResultPreview for custom template with XFAiReconciliationResult."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", T("Documentacao completa no padrao AppShellDocs com 5 exemplos.", "Full documentation in AppShellDocs pattern with 5 examples.")),
+        new("2026-06-01", T("Componente criado com conciliacao IA, deteccao de fraude e fluxo de caixa.", "Component created with AI reconciliation, fraud detection and cash flow."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

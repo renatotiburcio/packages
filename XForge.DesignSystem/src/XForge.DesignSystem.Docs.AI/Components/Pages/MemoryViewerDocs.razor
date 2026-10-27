@@ -1,0 +1,394 @@
+@page "/ai/memory-viewer"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiMemoryViewer" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("5 tipos, relevancia, filtros", "5 types, relevance, filters")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Visualizador de memorias de IA com tipos, relevancia, filtros e estatisticas.",
+                               "AI memory viewer with types, relevance, filters and statistics.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Painel enterprise para visualizar memorias de IA com 5 tipos (Session, LongTerm, Semantic, Preferences, Factual), score de relevancia, filtros por tipo, estatisticas e tags.",
+                               "Enterprise panel to visualize AI memories with 5 types (Session, LongTerm, Semantic, Preferences, Factual), relevance score, type filters, statistics and tags.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Todos os tipos", "1. All types"), T("Visualizador com memorias de todos os 5 tipos.", "Viewer with memories of all 5 types."), ExAllTypes(), Code1)
+            @Example(T("2. Sem estatisticas", "2. Without statistics"), T("Painel sem barra de estatisticas.", "Panel without statistics bar."), ExNoStats(), Code2)
+            @Example(T("3. Max entries", "3. Max entries"), T("Limitado a 2 entradas no maximo.", "Limited to 2 entries maximum."), ExMaxEntries(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+        <XForgeDocsPageStandard ComponentName="MemoryViewerDocs" />
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("AI Commercial", "AI Commercial");
+    private string PageTitleText => T("XFAiMemoryViewer", "XFAiMemoryViewer");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFAiMemoryViewer Memories="SampleMemories"
+                                            Title="@T("Memoria do assistente", "Assistant memory")"
+                                            ShowHeader="true"
+                                            ShowStats="true" />;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("5 tipos", "5 types"), T("Session, LongTerm, Semantic, Preferences e Factual.", "Session, LongTerm, Semantic, Preferences and Factual."), "layer-group"),
+        new(T("Filtros por tipo", "Type filters"), T("Filtros clicaveis para filtrar por tipo de memoria.", "Clickable filters to filter by memory type."), "filter"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiMemoryViewer"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Utility"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Utility"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=list, role=listitem, aria-label, tabindex=0.", "role=list, role=listitem, aria-label, tabindex=0.")),
+        new("Theme support", T("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("5 tipos de memoria", "5 memory types"), T("Session, LongTerm, Semantic, Preferences e Factual.", "Session, LongTerm, Semantic, Preferences and Factual."), "layer-group"),
+        new(T("Filtros por tipo", "Type filters"), T("Chips clicaveis para filtrar entradas por tipo.", "Clickable chips to filter entries by type."), "filter"),
+        new(T("Estatisticas", "Statistics"), T("Relevancia media, total de acessos e contagem.", "Average relevance, total accesses and count."), "chart-simple")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Auditoria IA", "AI audit"), T("Visualizar memorias do assistente para auditoria.", "View assistant memories for auditing."), "shield-halved"),
+        new(T("Debugging", "Debugging"), T("Investigar por que a IA respondeu de certa forma.", "Investigate why the AI responded a certain way."), "bug"),
+        new(T("Transparencia", "Transparency"), T("Mostrar ao usuario o que a IA lembra.", "Show the user what the AI remembers."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Memorias de IA opacas e inexaminaveis.", "Opaque and unexaminable AI memories."), "xmark"),
+        new(T("Depois", "After"), T("Visualizador com tipos, relevancia, filtros e estatisticas.", "Viewer with types, relevance, filters and statistics."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=list com navegacao por teclado e aria-label.", "role=list with keyboard navigation and aria-label."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Admin de IA", "AI admin"), T("Gerenciar e auditar memorias de assistentes.", "Manage and audit assistant memories."), "gear"),
+        new(T("Debug de contexto", "Context debug"), T("Investigar comportamento de IA baseado em memorias.", "Investigate AI behavior based on memories."), "bug")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Exibicao ao usuario final", "End user display"), T("Memorias detalhadas podem ser confusas para usuarios finais.", "Detailed memories may confuse end users."), "user"),
+        new(T("Listas genericas", "Generic lists"), T("Use XFTable para dados nao hierarquicos.", "Use XFTable for non-hierarchical data."), "table-cells")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Header", T("Barra com titulo e badge de contagem.", "Bar with title and count badge."), "heading"),
+        new("Filters", T("Chips de filtro por tipo de memoria.", "Memory type filter chips."), "filter"),
+        new("Stats", T("Barra de estatisticas com relevancia media e acessos.", "Statistics bar with average relevance and accesses."), "chart-simple"),
+        new("Entry", T("Linha com icone, tipo, conteudo e relevancia.", "Row with icon, type, content and relevance."), "list-check"),
+        new("Relevance", T("Barra de relevancia 0-100%.", "Relevance bar 0-100%."), "percent"),
+        new("Tags", T("Badges de tags para categorizacao.", "Tag badges for categorization."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Cores por tipo", "Colors by type"), T("Cada tipo tem cor e icone unicos.", "Each type has unique color and icon."), "palette"),
+        new(T("Filtragem interativa", "Interactive filtering"), T("Filtros clicaveis refinam a visualizacao.", "Clickable filters refine the view."), "filter"),
+        new(T("Acessivel", "Accessible"), T("role=list com navegacao por teclado.", "role=list with keyboard navigation."), "universal-access")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExAllTypes() => @<XFAiMemoryViewer Memories="SampleMemories"
+                                           Title="@T("Todos os tipos", "All types")"
+                                           ShowHeader="true"
+                                           ShowStats="true" />;
+
+    private RenderFragment ExNoStats() => @<XFAiMemoryViewer Memories="SampleMemories"
+                                          Title="@T("Sem estatisticas", "Without statistics")"
+                                          ShowHeader="true"
+                                          ShowStats="false" />;
+
+    private RenderFragment ExMaxEntries() => @<XFAiMemoryViewer Memories="SampleMemories"
+                                             Title="@T("Max 2 entradas", "Max 2 entries")"
+                                             ShowHeader="true"
+                                             MaxEntries="2" />;
+
+    private const string Code1 = @"<XFAiMemoryViewer Memories=""@Memories""
+                     Title=""Todos os tipos""
+                     ShowHeader=""true""
+                     ShowStats=""true"" />";
+    private const string Code2 = @"<XFAiMemoryViewer Memories=""@Memories""
+                     Title=""Sem estatisticas""
+                     ShowHeader=""true""
+                     ShowStats=""false"" />";
+    private const string Code3 = @"<XFAiMemoryViewer Memories=""@Memories""
+                     Title=""Max 2 entradas""
+                     ShowHeader=""true""
+                     MaxEntries=""2"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Memories", "IReadOnlyList<XFAiMemoryEntry>", "[]", T("Entradas de memoria para exibir.", "Memory entries to display.")),
+        new("Title", "string", "\"Memoria IA\"", T("Titulo do painel.", "Panel title.")),
+        new("ShowHeader", "bool", "true", T("Exibe barra de cabecalho.", "Shows header bar.")),
+        new("ShowStats", "bool", "true", T("Exibe barra de estatisticas.", "Shows statistics bar.")),
+        new("ShowRelevance", "bool", "true", T("Exibe barras de relevancia.", "Shows relevance bars.")),
+        new("EmptyText", "string", "\"Nenhuma memoria registrada.\"", T("Texto do estado vazio.", "Empty state text.")),
+        new("MaxEntries", "int", "50", T("Maximo de entradas exibidas.", "Maximum entries displayed.")),
+        new("MemoryTemplate", "RenderFragment<XFAiMemoryEntry>?", "null", T("Template customizado por entrada.", "Custom template per entry.")),
+        new("EmptyContent", "RenderFragment?", "null", T("Conteudo customizado do estado vazio.", "Custom empty state content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnMemoryClick", T("Disparado quando uma entrada de memoria e clicada.", "Fired when a memory entry is clicked."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=list", "role=list"), T("Lista usa role=list para leitores de tela.", "List uses role=list for screen readers."), "universal-access"),
+        new(T("role=listitem", "role=listitem"), T("Cada entrada usa role=listitem.", "Each entry uses role=listitem."), "list"),
+        new(T("aria-label", "aria-label"), T("Label descritivo da entrada de memoria.", "Descriptive memory entry label."), "tag"),
+        new(T("tabindex=0", "tabindex=0"), T("Entradas navegaveis por teclado.", "Entries navigable by keyboard."), "keyboard")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre entradas de memoria.", "Navigates between memory entries.")),
+        new("Enter", T("Ativa clique na entrada.", "Activates entry click.")),
+        new("Space", T("Expande detalhes da entrada.", "Expands entry details."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("Painel ocupa 100% do container.", "Panel occupies 100% of container."), "maximize"),
+        new(T("Filtros flex", "Flex filters"), T("Chips de filtro quebram linha em telas estreitas.", "Filter chips wrap on narrow screens."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("MaxEntries", "MaxEntries"), T("Limita quantidade de entradas renderizadas.", "Limits number of rendered entries."), "minimize"),
+        new(T("Render leve", "Light render"), T("Entradas leves sem layout shift.", "Light entries without layout shift."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Auditoria de IA", "AI audit"), T("Visualizar memorias de assistentes para compliance.", "View assistant memories for compliance."), "shield-halved"),
+        new(T("Debug de chatbot", "Chatbot debug"), T("Investigar respostas baseadas em memorias de sessao.", "Investigate responses based on session memories."), "bug"),
+        new(T("Admin de preferencias", "Preferences admin"), T("Gerenciar preferencias do usuario armazenadas.", "Manage stored user preferences."), "gear")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Viewer + Card", "Viewer + Card"), T("Painel dentro de XFCard para contexto.", "Panel inside XFCard for context."), "square"),
+        new(T("Viewer + Tabs", "Viewer + Tabs"), T("Abas para filtrar por tipo de memoria.", "Tabs to filter by memory type."), "layer-group"),
+        new(T("Viewer + Modal", "Viewer + Modal"), T("Detalhes de entrada em modal.", "Entry details in modal."), "window-restore")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("ShowStats quando util", "ShowStats when useful"), T("Estatisticas ajudam a entender o volume.", "Statistics help understand volume."), "chart-simple"),
+        new(T("MaxEntries adequado", "Adequate MaxEntries"), T("Limite a 20-50 entradas para nao sobrecarregar.", "Limit to 20-50 entries to avoid overload."), "minimize"),
+        new(T("Tags descritivas", "Descriptive tags"), T("Tags ajudam a categorizar e buscar memorias.", "Tags help categorize and search memories."), "tag"),
+        new(T("ShowRelevance", "ShowRelevance"), T("Barras de relevancia comunicam prioridade visualmente.", "Relevance bars communicate priority visually."), "percent")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Muitas entradas", "Too many entries"), T("Evite mais de 50 entradas visiveis.", "Avoid more than 50 visible entries."), "ban"),
+        new(T("Sem filtros", "No filters"), T("Entradas sem filtros sao dificeis de navegar.", "Entries without filters are hard to navigate."), "xmark"),
+        new(T("Dados sensiveis", "Sensitive data"), T("Memorias podem conter dados sensiveis. Use com cuidado.", "Memories may contain sensitive data. Use with caution."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", T("overflow-hidden rounded-lg border border-border-light bg-bg-surface.", "Overflow-hidden rounded-lg border border-border-light bg-bg-surface.")),
+        new("header", T("flex items-center justify-between gap-3 border-b border-border-light.", "Flex items-center justify-between gap-3 border-b border-border-light.")),
+        new("stats", T("border-b border-border-light bg-surface-50/50 px-4 py-2.", "Border-b border-border-light bg-surface-50/50 px-4 py-2.")),
+        new("relevance", T("h-1 w-16 overflow-hidden rounded-full bg-surface-200.", "H-1 w-16 overflow-hidden rounded-full bg-surface-200."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Type colors", T("Session=blue, LongTerm=purple, Semantic=emerald, Preferences=amber, Factual=slate.", "Session=blue, LongTerm=purple, Semantic=emerald, Preferences=amber, Factual=slate."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, tipos, filtros, relevancia, max.", "Render, props, types, filters, relevance, max tests.")),
+        new("Accessibility", T("role=list, role=listitem, aria-label, tabindex.", "role=list, role=listitem, aria-label, tabindex."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("MaxEntries", T("Entradas alem do limite sao ocultadas silenciosamente.", "Entries beyond limit are silently hidden.")),
+        new("Filtros internos", T("Filtros sao gerenciados internamente. Nao ha parametro de filtro externo.", "Filters are managed internally. No external filter parameter."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiChatPanel", T("Painel de chat AI com contexto de memoria.", "AI chat panel with memory context."), "comments"),
+        new("XFAiValidationSummary", T("Resumo de validacao com IA.", "Validation summary with AI."), "list-check"),
+        new("XFTable", T("Tabela generica sem filtros.", "Generic table without filters."), "table-cells")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("MemoryViewer vs Table?", "MemoryViewer vs Table?"), T("Viewer = memorias IA com tipos e filtros. Table = dados genericos.", "Viewer = AI memories with types and filters. Table = generic data.")),
+        new(T("Como filtrar por tipo?", "How to filter by type?"), T("Clique nos chips de filtro no cabecalho do painel.", "Click the filter chips in the panel header.")),
+        new(T("O que sao as 5 tags?", "What are the 5 tags?"), T("Session, LongTerm, Semantic, Preferences, Factual.", "Session, LongTerm, Semantic, Preferences, Factual."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina seed criada com preview e API inicial.", "Seed page created with preview and initial API.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === MOCK DATA ===
+    private static readonly IReadOnlyList<XFAiMemoryEntry> SampleMemories = [
+        new() { Content = "Prefere resumo executivo antes dos detalhes.", Type = XFAiMemoryType.Preferences, Relevance = 0.92, Context = "cliente", Tags = ["atendimento"], AccessCount = 15, CreatedAt = DateTime.UtcNow.AddDays(-7) },
+        new() { Content = "Operacao fiscal com alto volume de NF-e.", Type = XFAiMemoryType.LongTerm, Relevance = 0.86, Context = "tenant", Tags = ["fiscal", "nfe"], AccessCount = 8, CreatedAt = DateTime.UtcNow.AddDays(-30) },
+        new() { Content = "Usuario perguntou sobre prazo de importacao.", Type = XFAiMemoryType.Session, Relevance = 0.78, Context = "sessao", Tags = ["importacao"], AccessCount = 2, CreatedAt = DateTime.UtcNow.AddHours(-1) },
+        new() { Content = "Conceito de CFOP 5405 para substituicao tributaria.", Type = XFAiMemoryType.Semantic, Relevance = 0.84, Context = "conhecimento", Tags = ["fiscal", "cfop"], AccessCount = 12, CreatedAt = DateTime.UtcNow.AddDays(-14) },
+        new() { Content = "CFOP 5102 = saida normal. CFOP 5405 = saida com ST.", Type = XFAiMemoryType.Factual, Relevance = 0.95, Context = "base", Tags = ["fiscal", "cfop", "st"], AccessCount = 20, CreatedAt = DateTime.UtcNow.AddDays(-60) }
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

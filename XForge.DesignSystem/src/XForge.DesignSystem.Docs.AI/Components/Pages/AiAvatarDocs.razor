@@ -1,0 +1,384 @@
+@page "/ai/avatar"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiAvatar" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("4 tamanhos, 5 status, 3 shapes", "4 sizes, 5 statuses, 3 shapes")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Avatar visual de agentes e assistentes inteligentes.",
+                               "Visual avatar for AI agents and intelligent assistants.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Identidade visual com iniciais, icon, status de presenca, 4 tamanhos, 3 shapes e suporte a interacao acessivel.",
+                               "Visual identity with initials, icon, presence status, 4 sizes, 3 shapes and accessible interaction support.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Tamanhos e status", "1. Sizes and Status"), L.Text("Avatar com diferentes tamanhos e status de presenca.", "Avatar with different sizes and presence status."), ExSizes(), Code1)
+            @Example(L.Text("2. Icon e cores", "2. Icon and Colors"), L.Text("Avatar com icon customizado e cores de fundo.", "Avatar with custom icon and background colors."), ExIconColors(), Code2)
+            @Example(L.Text("3. Interativo com nome", "3. Interactive with Name"), L.Text("Avatar clicavel com nome e status online.", "Clickable avatar with name and online status."), ExInteractive(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => L.Text("AI Commercial", "AI Commercial");
+    private string PageTitleText => L.Text("XFAiAvatar", "XFAiAvatar");
+    private string PageStatusText => L.Text("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" FullWidth="false" Wrap="XFWrap.Wrap">
+        <XFAiAvatar Name="Ana" Size="XFExtendedSize.Sm" Status="XFAiAvatarStatus.Online" />
+        <XFAiAvatar Name="Carlos" Size="XFExtendedSize.Md" Status="XFAiAvatarStatus.Busy" />
+        <XFAiAvatar Name="Diana" Size="XFExtendedSize.Lg" Status="XFAiAvatarStatus.Away" />
+        <XFAiAvatar Name="Eduardo" Size="XFExtendedSize.Xl" Status="XFAiAvatarStatus.Offline" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("5 status de presenca", "5 presence statuses"), L.Text("Online, Busy, Away, Offline, Hidden.", "Online, Busy, Away, Offline, Hidden."), "signal"),
+        new(L.Text("4 tamanhos", "4 sizes"), L.Text("Sm (32px), Md (40px), Lg (56px), Xl (80px).", "Sm (32px), Md (40px), Lg (56px), Xl (80px)."), "maximize"),
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiAvatar"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Avatars"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Avatars"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=img, aria-label, tabindex, keyboard navigation.", "role=img, aria-label, tabindex, keyboard navigation.")),
+        new("Theme support", L.Text("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Avatar visual", "Visual avatar"), L.Text("Identidade visual de agentes AI com circle, iniciais ou icon.", "AI agent visual identity with circle, initials or icon."), "user"),
+        new(L.Text("Status de presenca", "Presence status"), L.Text("Indicador visual de disponibilidade do agente.", "Visual indicator of agent availability."), "signal"),
+        new(L.Text("Acessivel", "Accessible"), L.Text("role=img, aria-label, keyboard navigation.", "role=img, aria-label, keyboard navigation."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Identidade de agente", "Agent identity"), L.Text("Representar visualmente um assistente AI.", "Visually represent an AI assistant."), "robot"),
+        new(L.Text("Status em tempo real", "Real-time status"), L.Text("Mostrar se o agente esta online, ocupado ou ausente.", "Show if agent is online, busy or away."), "signal"),
+        new(L.Text("Interacao direta", "Direct interaction"), L.Text("Avatar clicavel para iniciar conversa com agente.", "Clickable avatar to start conversation with agent."), "comments")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Agentes sem identidade visual padronizada.", "Agents without standardized visual identity."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Avatar consistente com status e cores semanticas.", "Consistent avatar with status and semantic colors."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=img, aria-label, tabindex, Enter/Space.", "role=img, aria-label, tabindex, Enter/Space."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Chat AI", "AI chat"), L.Text("Avatar do assistente no header do chat.", "Assistant avatar in chat header."), "comments"),
+        new(L.Text("Lista de agentes", "Agent list"), L.Text("Avatar com status em lista de agentes disponiveis.", "Avatar with status in available agents list."), "list"),
+        new(L.Text("Sidebar AI", "AI sidebar"), L.Text("Avatar interativo na barra lateral de agentes.", "Interactive avatar in agent sidebar."), "sidebar")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Fotos de usuario", "User photos"), L.Text("Use XFAvatar para fotos de usuario real.", "Use XFAvatar for real user photos."), "camera"),
+        new(L.Text("Icones genericos", "Generic icons"), L.Text("Use XFSvgIcons para icones genericos.", "Use XFSvgIcons for generic icons."), "icon")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Circle", L.Text("Container circular com cor de fundo.", "Circular container with background color."), "circle"),
+        new("Content", L.Text("Iniciais, icon ou ChildContent customizado.", "Initials, icon or custom ChildContent."), "font"),
+        new("Status", L.Text("Indicador de presenca (ponto colorido).", "Presence indicator (colored dot)."), "signal"),
+        new("Name", L.Text("Nome do agente ao lado do avatar.", "Agent name next to avatar."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Identidade visual", "Visual identity"), L.Text("Avatar cria conexao visual com o agente.", "Avatar creates visual connection with agent."), "eye"),
+        new(L.Text("Status claro", "Clear status"), L.Text("Ponto colorido indica disponibilidade.", "Colored dot indicates availability."), "signal"),
+        new(L.Text("Tamanho responsivo", "Responsive size"), L.Text("Sm para mobile, Md para desktop, Lg para destaque.", "Sm for mobile, Md for desktop, Lg for highlight."), "maximize")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExSizes() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" FullWidth="false" Wrap="XFWrap.Wrap">
+        <XFAiAvatar Name="Sm" Size="XFExtendedSize.Sm" Status="XFAiAvatarStatus.Online" ShowName="true" />
+        <XFAiAvatar Name="Md" Size="XFExtendedSize.Md" Status="XFAiAvatarStatus.Busy" ShowName="true" />
+        <XFAiAvatar Name="Lg" Size="XFExtendedSize.Lg" Status="XFAiAvatarStatus.Away" ShowName="true" />
+        <XFAiAvatar Name="Xl" Size="XFExtendedSize.Xl" Status="XFAiAvatarStatus.Offline" ShowName="true" />
+    </XFStack>;
+
+    private RenderFragment ExIconColors() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" FullWidth="false" Wrap="XFWrap.Wrap">
+        <XFAiAvatar IconName="robot" AvatarColor="bg-violet-500" TextColor="text-white" Status="XFAiAvatarStatus.Online" />
+        <XFAiAvatar IconName="headset" AvatarColor="bg-blue-500" TextColor="text-white" Status="XFAiAvatarStatus.Busy" />
+        <XFAiAvatar IconName="chart-line" AvatarColor="bg-emerald-500" TextColor="text-white" Status="XFAiAvatarStatus.Away" />
+        <XFAiAvatar IconName="shield-halved" AvatarColor="bg-amber-500" TextColor="text-white" Status="XFAiAvatarStatus.Online" />
+    </XFStack>;
+
+    private RenderFragment ExInteractive() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" FullWidth="false" Wrap="XFWrap.Wrap">
+        <XFAiAvatar Name="Assistente AI" Size="XFExtendedSize.Lg" Status="XFAiAvatarStatus.Online" ShowName="true" Interactive="true" />
+        <XFAiAvatar Name="Analista" Size="XFExtendedSize.Lg" Status="XFAiAvatarStatus.Online" ShowName="true" Interactive="true" Shape="XFShape.Rounded" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFAiAvatar Name=""Sm"" Size=""XFExtendedSize.Sm"" Status=""XFAiAvatarStatus.Online"" ShowName=""true"" />
+<XFAiAvatar Name=""Md"" Size=""XFExtendedSize.Md"" Status=""XFAiAvatarStatus.Busy"" ShowName=""true"" />
+<XFAiAvatar Name=""Lg"" Size=""XFExtendedSize.Lg"" Status=""XFAiAvatarStatus.Away"" ShowName=""true"" />
+<XFAiAvatar Name=""Xl"" Size=""XFExtendedSize.Xl"" Status=""XFAiAvatarStatus.Offline"" ShowName=""true"" />";
+    private const string Code2 = @"<XFAiAvatar IconName=""robot"" AvatarColor=""bg-violet-500"" TextColor=""text-white"" Status=""XFAiAvatarStatus.Online"" />
+<XFAiAvatar IconName=""headset"" AvatarColor=""bg-blue-500"" TextColor=""text-white"" Status=""XFAiAvatarStatus.Busy"" />
+<XFAiAvatar IconName=""chart-line"" AvatarColor=""bg-emerald-500"" TextColor=""text-white"" Status=""XFAiAvatarStatus.Away"" />";
+    private const string Code3 = @"<XFAiAvatar Name=""Assistente AI"" Size=""XFExtendedSize.Lg""
+         Status=""XFAiAvatarStatus.Online"" ShowName=""true"" Interactive=""true"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Name", "string?", "null", L.Text("Nome de exibicao do agente.", "Agent display name.")),
+        new("Size", "XFExtendedSize", "Md", L.Text("Tamanho: Sm, Md, Lg, Xl.", "Size: Sm, Md, Lg, Xl.")),
+        new("Status", "XFAiAvatarStatus", "Hidden", L.Text("Status de presenca: Online, Busy, Away, Offline, Hidden.", "Presence status: Online, Busy, Away, Offline, Hidden.")),
+        new("Shape", "XFShape", "Circle", L.Text("Forma: Circle, Rounded, Square.", "Shape: Circle, Rounded, Square.")),
+        new("AvatarColor", "string?", "null", L.Text("Cor de fundo (classe Tailwind, ex: bg-violet-500).", "Background color (Tailwind class, e.g. bg-violet-500).")),
+        new("TextColor", "string?", "null", L.Text("Cor do texto (classe Tailwind, ex: text-white).", "Text color (Tailwind class, e.g. text-white).")),
+        new("IconName", "string?", "null", L.Text("Nome do icon do catalogo (mostra em vez de iniciais).", "Icon catalog name (shown instead of initials).")),
+        new("ShowName", "bool", "false", L.Text("Exibe nome do agente ao lado do avatar.", "Shows agent name next to avatar.")),
+        new("Interactive", "bool", "false", L.Text("Avatar clicavel (habilita click e teclado).", "Clickable avatar (enables click and keyboard).")),
+        new("AriaLabel", "string", "\"Agente IA\"", L.Text("Label ARIA para leitores de tela.", "ARIA label for screen readers.")),
+        new("StatusLabel", "string?", "null", L.Text("Label do status para leitores de tela.", "Status label for screen readers."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnClick", L.Text("Disparado quando o avatar e clicado (se Interactive=true).", "Fired when avatar is clicked (if Interactive=true)."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=img", "role=img"), L.Text("Avatar usa role=img para leitores de tela.", "Avatar uses role=img for screen readers."), "universal-access"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Label descritivo do agente.", "Descriptive agent label."), "tag"),
+        new(L.Text("tabindex", "tabindex"), L.Text("Focavel com Tab quando Interactive=true.", "Focusable with Tab when Interactive=true."), "keyboard"),
+        new(L.Text("Status acessivel", "Accessible status"), L.Text("StatusLabel descreve o estado para leitores de tela.", "StatusLabel describes state for screen readers."), "signal")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega para o avatar quando Interactive=true.", "Navigates to avatar when Interactive=true.")),
+        new("Enter / Space", L.Text("Ativa o clique no avatar.", "Activates avatar click."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Tamanhos fluidos", "Fluid sizes"), L.Text("Sm para mobile, Md para desktop, Lg para destaque.", "Sm for mobile, Md for desktop, Lg for highlight."), "maximize"),
+        new(L.Text("Truncamento", "Truncation"), L.Text("Nome truncado com truncate para nao quebrar layout.", "Name truncated to avoid layout break."), "text-width")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("SVG-based", "SVG-based"), L.Text("Renderizado com C# e Tailwind, compativel com WASM.", "Rendered with C# and Tailwind, WASM compatible."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Chat AI", "AI chat"), L.Text("Avatar do assistente no header do chat.", "Assistant avatar in chat header."), "comments"),
+        new(L.Text("Multi-agente", "Multi-agent"), L.Text("Lista de agentes com status de disponibilidade.", "Agent list with availability status."), "users"),
+        new(L.Text("Dashboard AI", "AI dashboard"), L.Text("Avatar interativo em cards de agentes.", "Interactive avatar in agent cards."), "gauge")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("Avatar + Name", "Avatar + Name"), L.Text("Nome do agente ao lado do avatar.", "Agent name next to avatar."), "tag"),
+        new(L.Text("Avatar + Status", "Avatar + Status"), L.Text("Indicador de presenca visual.", "Visual presence indicator."), "signal"),
+        new(L.Text("Avatar + Personality", "Avatar + Personality"), L.Text("Integrado com XFAiAgentPersonality para contexto completo.", "Integrated with XFAiAgentPersonality for full context."), "robot")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("Status sempre visivel", "Status always visible"), L.Text("Use Status para indicar disponibilidade do agente.", "Use Status to indicate agent availability."), "signal"),
+        new(L.Text("Cores semanticas", "Semantic colors"), L.Text("Use cores para identificar tipo de agente ou dominio.", "Use colors to identify agent type or domain."), "palette"),
+        new(L.Text("Nome truncado", "Truncated name"), L.Text("Use truncate para nomes longos que podem quebrar layout.", "Use truncate for long names that may break layout."), "text-width"),
+        new(L.Text("Interactive apenas quando necessario", "Interactive only when needed"), L.Text("Nao torne avatares nao-clicaveis interativos.", "Do not make non-clickable avatars interactive."), "hand-pointer")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Sem status", "No status"), L.Text("Avatar sem indicador de presenca e ambiguo.", "Avatar without presence indicator is ambiguous."), "xmark"),
+        new(L.Text("Foto real", "Real photo"), L.Text("Use XFAvatar para fotos, XFAiAvatar para identidade AI.", "Use XFAvatar for photos, XFAiAvatar for AI identity."), "camera"),
+        new(L.Text("Muito grande", "Too large"), L.Text("Xl em contexto de lista consome espaco desnecessario.", "Xl in list context consumes unnecessary space."), "ban")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("circle", L.Text("rounded-full, h-10 w-10 (Md), bg-violet-100.", "rounded-full, h-10 w-10 (Md), bg-violet-100.")),
+        new("status-dot", L.Text("h-3 w-3 rounded-full ring-2 ring-bg-surface.", "h-3 w-3 rounded-full ring-2 ring-bg-surface.")),
+        new("name", L.Text("text-sm font-medium text-text-primary truncate.", "text-sm font-medium text-text-primary truncate."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("AvatarColor", L.Text("Cor customizavel via AvatarColor Tailwind class.", "Customizable color via AvatarColor Tailwind class."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Testes de render, props, sizes, status, shape, interactive.", "Render, props, sizes, status, shape, interactive tests.")),
+        new("Accessibility", L.Text("role=img, aria-label, tabindex, Enter/Space.", "role=img, aria-label, tabindex, Enter/Space."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Fotos", L.Text("XFAiAvatar nao suporta fotos. Use XFAvatar.", "XFAiAvatar does not support photos. Use XFAvatar.")),
+        new("Icon catalog", L.Text("IconName depende do catalogo de icones registrado.", "IconName depends on registered icon catalog."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAvatar", L.Text("Avatar para fotos de usuario real.", "Avatar for real user photos."), "user"),
+        new("XFAiAgentPersonality", L.Text("Personalidade e identidade do agente.", "Agent personality and identity."), "robot"),
+        new("XFAiProactiveInsight", L.Text("Insights proativos com avatar do agente.", "Proactive insights with agent avatar."), "lightbulb")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("XFAiAvatar vs XFAvatar?", "XFAiAvatar vs XFAvatar?"), L.Text("XFAiAvatar = identidade AI com status. XFAvatar = foto de usuario.", "XFAiAvatar = AI identity with status. XFAvatar = user photo.")),
+        new(L.Text("Como mudar a cor?", "How to change color?"), L.Text("Use AvatarColor com classe Tailwind (ex: bg-violet-500).", "Use AvatarColor with Tailwind class (e.g. bg-violet-500).")),
+        new(L.Text("Funciona sem JS?", "Works without JS?"), L.Text("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", L.Text("Componente criado com 5 status, 4 tamanhos, 3 shapes.", "Component created with 5 statuses, 4 sizes, 3 shapes.")),
+        new("2026-06-12", L.Text("Documentacao completa no padrao AppShellDocs com 26 secoes.", "Complete docs in AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,0 +1,10 @@
+@namespace XForge.Components.Charts
+@inherits XForgeComponentBase
+
+<div class="xf-candlestick" data-count="@Candles.Count">
+  <svg viewBox="0 0 @Width @Height">@((MarkupString)RenderSvg())</svg>
+</div>
+
+@code {
+  public record Candle(DateTime Time, double Open, double High, double Low, double Close);
+}

@@ -1,0 +1,466 @@
+@page "/forms/field"
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="Field"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFField" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Form Wrapper", "Form Wrapper")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Label + Error", "Label + Error")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Orientation", "Orientation")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Wrapper de campo de formulario com label, helper text, erro, adornos e orientacao vertical/horizontal.", "Form field wrapper with label, helper text, error, adornments and vertical/horizontal orientation.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFField e o wrapper universal para campos de formulario, fornecendo label, helper text, mensagem de erro, adornos de inicio/fim e orientacao configuravel (vertical ou horizontal).", "XFField is the universal wrapper for form fields, providing label, helper text, error message, start/end adornments and configurable orientation (vertical or horizontal).")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts)
+                            {
+                                @Tile(item)
+                            }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                        @Example(T("Preview basico", "Basic Preview"),
+                T("Wrapper com label, helper, erro e orientacao.", "Wrapper with label, helper, error and orientation."),
+                HeroPreview(), BasicCode)
+            @Example(T("Adornos", "Adornments"),
+                T("StartAdornment e EndAdornment para icones.", "StartAdornment and EndAdornment for icons."),
+                AdornPreview(), AdornCode)
+            @Example(T("Cenarios enterprise", "Enterprise Scenarios"),
+                T("Formularios de cadastro e configuracao.", "Registration and settings forms."),
+                EnterprisePreview(), EnterpriseCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFField Label="@T("Nome", "Name")" HelperText="@T("Nome completo", "Full name")">
+            <input type="text" class="w-full border-0 bg-transparent outline-none" placeholder="@T("Digite seu nome", "Enter your name")" />
+        </XFField>
+        <XFField Label="Email" ErrorText="@T("Email invalido", "Invalid email")">
+            <input type="email" class="w-full border-0 bg-transparent outline-none" value="invalido" />
+        </XFField>
+        <XFField Label="@T("Horizontal", "Horizontal")" Orientation="XFFieldOrientation.Horizontal">
+            <input type="text" class="w-full border-0 bg-transparent outline-none" value="valor" />
+        </XFField>
+    </XFStack>;
+
+
+    private IReadOnlyList<DocTile> QuickFacts =>
+    [
+        new(T("Wrapper universal", "Universal wrapper"), T("Envolve qualquer campo com label, erro e helper.", "Wraps any field with label, error and helper."), "tag"),
+        new(T("Orientacao flexivel", "Flexible orientation"), T("Vertical (empilhado) ou horizontal (lado a lado).", "Vertical (stacked) or horizontal (side by side)."), "arrows-up-down"),
+        new(T("Integracao EditForm", "EditForm integration"), T("Exibe mensagens de validacao automaticamente.", "Displays validation messages automatically."), "shield-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows =>
+    [
+        new("Component", "XFField"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.Field"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Forms / Field"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("Label, helper/error com describedby.", "Label, helper/error with describedby."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems =>
+    [
+        new(T("Label e erro", "Label and error"), T("Label associado ao campo, erro automatico do EditForm.", "Label associated to field, automatic error from EditForm."), "tag"),
+        new(T("Helper text", "Helper text"), T("Texto de ajuda abaixo do campo.", "Help text below the field."), "tag"),
+        new(T("Adornos", "Adornments"), T("StartAdornment e EndAdornment para composicao.", "StartAdornment and EndAdornment for composition."), "sparkles")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems =>
+    [
+        new(T("Formulario padrao", "Standard form"), T("Envolver campos com label e mensagem de erro.", "Wrap fields with label and error message."), "file-lines"),
+        new(T("Layout horizontal", "Horizontal layout"), T("Label ao lado do campo em forms compactos.", "Label beside field in compact forms."), "arrows-left-right"),
+        new(T("Composicao", "Composition"), T("Envolver inputs nativos ou customizados.", "Wrap native or custom inputs."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems =>
+    [
+        new(T("Antes", "Before"), T("Label, erro e helper repetidos manualmente em cada campo.", "Label, error and helper manually repeated in each field."), "xmark"),
+        new(T("Depois", "After"), T("Wrapper unico com contrato consistente.", "Single wrapper with consistent contract."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("Acessibilidade e validacao padronizadas.", "Standardized accessibility and validation."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems =>
+    [
+        new("ERP", T("Todos os campos de formulario.", "All form fields."), "briefcase"),
+        new("Settings", T("Campos de configuracao.", "Configuration fields."), "sliders"),
+        new("Dialog", T("Campos em modais.", "Fields in modals."), "window-restore")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems =>
+    [
+        new(T("Componentes XForge", "XForge components"), T("XFTextInput, XFSelect ja incluem label e erro.", "XFTextInput, XFSelect already include label and error."), "triangle-exclamation"),
+        new(T("Layout complexo", "Complex layout"), T("Use XFGrid para layouts multi-coluna complexos.", "Use XFGrid for complex multi-column layouts."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems =>
+    [
+        new("Root", T("Container com orientacao, label, body e adornos.", "Container with orientation, label, body and adornments."), "code"),
+        new("Label", T("Label com indicador Required.", "Label with Required indicator."), "tag"),
+        new("Control shell", T("Wrapper visual com borda e focus ring.", "Visual wrapper with border and focus ring."), "square"),
+        new("Helper/Error", T("Texto de ajuda ou mensagem de erro.", "Help text or error message."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems =>
+    [
+        new(T("Consistencia", "Consistency"), T("Mesmo padrao de label, erro e helper em todos os campos.", "Same label, error and helper pattern in all fields."), "circle-check"),
+        new(T("Acessibilidade", "Accessibility"), T("Label associado, describedby para helper/erro.", "Associated label, describedby for helper/error."), "universal-access"),
+        new(T("Flexibilidade", "Flexibility"), T("Suporta qualquer conteudo como ChildContent.", "Supports any content as ChildContent."), "code")
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo do campo.", "Field content.")),
+        new("StartAdornment", "RenderFragment?", "null", T("Adorno antes do campo.", "Adornment before field.")),
+        new("EndAdornment", "RenderFragment?", "null", T("Adorno depois do campo.", "Adornment after field.")),
+        new("ValueExpression", "Expression<Func<object?>>?", "null", T("Expressao para validacao EditForm.", "EditForm validation expression.")),
+        new("Label", "string?", "null", T("Texto do label.", "Label text.")),
+        new("For", "string?", "null", T("Atributo for do label.", "Label for attribute.")),
+        new("HelperText", "string?", "null", T("Texto de ajuda.", "Help text.")),
+        new("ErrorText", "string?", "null", T("Erro manual (sobrepoe EditForm).", "Manual error (overrides EditForm).")),
+        new("Required", "bool", "false", T("Exibe asterisco no label.", "Shows asterisk on label.")),
+        new("Orientation", "XFFieldOrientation", "Vertical", T("Vertical ou Horizontal.", "Vertical or Horizontal.")),
+        new("Disabled", "bool", "false", T("Desabilitado. Herdado de XForgeComponentBase.", "Disabled. Inherited from XForgeComponentBase."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows =>
+    [
+        new("N/A", T("XFField e um wrapper sem eventos proprios.", "XFField is a wrapper without own events."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems =>
+    [
+        new("Label", T("Associado ao campo via for ou contexto.", "Associated to field via for or context."), "tag"),
+        new("DescribedBy", T("Helper ou erro associado ao campo.", "Helper or error associated to field."), "universal-access"),
+        new("Required", T("Indicador visual no label.", "Visual indicator on label."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows =>
+    [
+        new("Tab", T("Foca o campo interno.", "Focuses inner field.")),
+        new("Shift+Tab", T("Controle anterior.", "Previous control."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems =>
+    [
+        new("Vertical", T("Empilhado em todas as telas.", "Stacked on all screens."), "arrows-up-down"),
+        new("Horizontal", T("Grid responsivo: empilha em mobile.", "Responsive grid: stacks on mobile."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems =>
+    [
+        new(T("Wrapper leve", "Lightweight wrapper"), T("Renderiza apenas label, shell e helper.", "Renders only label, shell and helper."), "bolt"),
+        new(T("Sem JS", "No JS"), T("Componente puramente Razor.", "Purely Razor component."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems =>
+    [
+        new("ERP", T("Campos de cadastro com validacao.", "Registration fields with validation."), "briefcase"),
+        new("Settings", T("Campos de configuracao com helper.", "Settings fields with helper."), "sliders"),
+        new("Dialog", T("Campos em modais de edicao.", "Fields in edit modals."), "window-restore"),
+        new("Financeiro", T("Campos de lancamento com erro.", "Entry fields with error."), "chart-line-up"),
+        new("RH", T("Formulario de funcionario.", "Employee form."), "users"),
+        new("Fiscal", T("Campos de nota fiscal.", "Invoice fields."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems =>
+    [
+        new("EditForm", T("Use ValueExpression para validacao.", "Use ValueExpression for validation."), "file-lines"),
+        new("Custom inputs", T("Envolva inputs HTML nativos.", "Wrap native HTML inputs."), "code"),
+        new("Layout", T("Agrupe fields em XFGrid.", "Group fields in XFGrid."), "grid")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems =>
+    [
+        new("Label", T("Sempre forneça label.", "Always provide label."), "tag"),
+        new("HelperText", T("Use para orientar o usuario.", "Use to guide the user."), "tag"),
+        new("Orientation", T("Horizontal para forms compactos.", "Horizontal for compact forms."), "arrows-left-right")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems =>
+    [
+        new(T("Sem label", "No label"), T("Campos sem label quebram acessibilidade.", "Fields without label break accessibility."), "xmark"),
+        new(T("Duplo wrapper", "Double wrapper"), T("Nao envolva XFTextInput com XFField.", "Do not wrap XFTextInput with XFField."), "eye-slash")
+    ];
+
+
+    private IReadOnlyList<NameValueRow> TokenRows =>
+    [
+        new("typography", T("text-sm para label e helper.", "text-sm for label and helper.")),
+        new("spacing", T("gap-1.5, gap-3.", "gap-1.5, gap-3.")),
+        new("borders", T("border-surface-200 para control shell.", "border-surface-200 for control shell."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems =>
+    [
+        new("data-theme", T("Light e dark via CSS variables.", "Light and dark via CSS variables."), "moon"),
+        new("Contraste", T("AA em ambos temas.", "AA in both themes."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows =>
+    [
+        new("Unit", T("Render, label, helper, erro, orientacao, adornos.", "Render, label, helper, error, orientation, adornments.")),
+        new("Accessibility", T("Label, describedby, required.", "Label, describedby, required."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows =>
+    [
+        new(T("Sem validacao propria", "No own validation"), T("Depende de EditForm ou ErrorText manual.", "Depends on EditForm or manual ErrorText.")),
+        new(T("Sem Variant", "No Variant"), T("Nao possui variantes visuais.", "No visual variants."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems =>
+    [
+        new("XFTextInput", T("Input de texto com wrapper embutido.", "Text input with built-in wrapper."), "font"),
+        new("XFSelect", T("Select com wrapper embutido.", "Select with built-in wrapper."), "list-dropdown"),
+        new("XFEditForm", T("Contexto de validacao.", "Validation context."), "file-lines")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows =>
+    [
+        new(T("Envolver XFTextInput?", "Wrap XFTextInput?"), T("Nao. XFTextInput ja tem label e erro.", "No. XFTextInput already has label and error.")),
+        new(T("Horizontal responsivo?", "Responsive horizontal?"), T("Sim, empilha em mobile automaticamente.", "Yes, stacks on mobile automatically."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows =>
+    [
+        new("2026-05-26", T("Pagina criada no padrao enterprise.", "Page created in enterprise standard."))
+    ];
+
+    private RenderFragment AdornPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFField Label=@T("Email", "Email")">
+            <StartAdornment><span class="text-text-muted">&#64;</span></StartAdornment>
+            <ChildContent><input type="email" class="w-full border-0 bg-transparent outline-none" placeholder="user@example.com" /></ChildContent>
+        </XFField>
+        <XFField Label=@T("Busca", "Search")">
+            <StartAdornment><span class="text-text-muted">Q</span></StartAdornment>
+            <ChildContent><input type="text" class="w-full border-0 bg-transparent outline-none" placeholder=@T("Buscar...", "Search...")" /></ChildContent>
+        </XFField>
+    </XFStack>;
+
+    private RenderFragment EnterprisePreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFGrid Cols="1" Md="2" Gap="3">
+            <XFField Label=@T("Razao social", "Company name")" Required="true">
+                <input type="text" class="w-full border-0 bg-transparent outline-none" />
+            </XFField>
+            <XFField Label="CNPJ" Orientation="XFFieldOrientation.Horizontal">
+                <input type="text" class="w-full border-0 bg-transparent outline-none" />
+            </XFField>
+        </XFGrid>
+    </XFStack>;
+
+
+    private string BasicCode => @T(
+        "<XFField Label=\"Nome\" HelperText=\"Nome completo\">\n    <input type=\"text\" />\n</XFField>",
+        "<XFField Label=\"Name\" HelperText=\"Full name\">\n    <input type=\"text\" />\n</XFField>");
+
+    private string AdornCode => @T(
+        "<XFField Label=\"Email\">\n    <StartAdornment>@@</StartAdornment>\n    <ChildContent><input /></ChildContent>\n</XFField>",
+        "<XFField Label=\"Email\">\n    <StartAdornment>@@</StartAdornment>\n    <ChildContent><input /></ChildContent>\n</XFField>");
+
+    private string EnterpriseCode => @T(
+        "<XFField Label=\"Razao social\" Required=\"true\">\n    <input type=\"text\" />\n</XFField>",
+        "<XFField Label=\"Company name\" Required=\"true\">\n    <input type=\"text\" />\n</XFField>");
+
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header>
+            <div class="px-6 pt-6">
+                <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+            </div>
+        </Header>
+        <ChildContent>
+            <div class="grid">
+                <div class="border-t border-border-light p-6">@preview</div>
+                <div class="border-t border-border-light bg-surface-50 p-6">
+                    <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                </div>
+            </div>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                    <div class="min-w-0">
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                    </div>
+                </div>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">
+        @foreach (var item in items)
+        {
+            @Tile(item)
+        }
+    </XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">
+        @foreach (var item in items)
+        {
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                        <div class="flex items-center gap-4">
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                            <div class="min-w-0">
+                                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                            </div>
+                        </div>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        }
+    </XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@nameHeader</XFTableCell>
+                <XFTableCell Header="true">@valueHeader</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Value</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+                <XFTableCell Header="true">Type</XFTableCell>
+                <XFTableCell Header="true">Default</XFTableCell>
+                <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Type</XFTableCell>
+                    <XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell>
+                    <XFTableCell>@row.Description</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

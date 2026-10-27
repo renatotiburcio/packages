@@ -1,0 +1,44 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes" id="@Id" class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label class="@LabelClass" for="@For">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@BodyClass">
+        @if (StartAdornment is not null || EndAdornment is not null)
+        {
+            <div class="@ControlShellClass">
+                @if (StartAdornment is not null)
+                {
+                    <span class="@AdornmentClass">@StartAdornment</span>
+                }
+                <div class="min-w-0 flex-1">@ChildContent</div>
+                @if (EndAdornment is not null)
+                {
+                    <span class="@AdornmentClass">@EndAdornment</span>
+                }
+            </div>
+        }
+        else
+        {
+            @ChildContent
+        }
+
+        @if (!string.IsNullOrWhiteSpace(CurrentErrorText))
+        {
+            <div id="@ErrorId" class="@ErrorClass" role="alert">@CurrentErrorText</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(HelperText))
+        {
+            <div id="@HelperId" class="@HelperClass">@HelperText</div>
+        }
+    </div>
+</div>

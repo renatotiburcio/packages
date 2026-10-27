@@ -1,0 +1,1205 @@
+@page "/feedback/dialog"
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.Overlays.Dialog
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFDialog" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("5 Tamanhos", "5 Sizes")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Dialog modal acessível para confirmacoes, edicao e Fluxos de decisao.", "Accessible modal dialog for confirmations, editing and decision flows.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("5 tamanhos, 3 placements, 4 tons semânticos, drag, resize, maximize, alert dialog, focus trap, service imperativo e WCAG AAA.",
+                               "5 sizes, 3 placements, 4 semantic tones, drag, resize, maximize, alert dialog, focus trap, imperative service and WCAG AAA.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section(T("Blazor Server e Blazor WebAssembly", "Blazor Server and Blazor WebAssembly"), @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Focus trap, drag, resize e maximize indisponiveis durante prerender.", "Renders base HTML. Focus trap, drag, resize and maximize unavailable during prerender.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-dialog.js — gerencia xfDialog.trap/release para focus trap, drag handle, resize handle e maximize toggle.", "JS file: xf-dialog.js — manages xfDialog.trap/release for focus trap, drag handle, resize handle and maximize toggle.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: OnAfterRenderAsync.", "When loaded: OnAfterRenderAsync.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Prerender seguro: try/catch para InvalidOperationExCEPtion e JSDisconnectedExCEPtion.", "Prerender safe: try/catch for InvalidOperationExCEPtion and JSDisconnectedExCEPtion.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor Server", "Blazor Server Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop via SignalR com latencia. Drag e resize podem ter resposta mais lenta.", "JS interop via SignalR with latency. Drag and resize may have slower response.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor WebAssembly", "Blazor WebAssembly Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop direto sem latencia de rede. Disponivel apos carregamento do WASM.", "Direct JS interop with no network latency. Available after WASM load.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("Dialog simples com Título, Descrição e conteudo.", "Simple dialog with title, description and content."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Confirmacao", "2. Confirmation"),
+                T("padrão de confirmacao com footer e botões de acao.", "Confirmation pattern with footer and action buttons."),
+                ExConfirmation(), CodeConfirmation)
+
+            @Example(T("3. Tamanhos", "3. Sizes"),
+                T("Sm, Md, Lg, Xl e Full — todos com focus trap.", "Sm, Md, Lg, Xl and Full — all with focus trap."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("4. Tons semânticos", "4. Semantic Tones"),
+                T("Default, Primary, Success, Warning e Danger com borda e ring.", "Default, Primary, Success, Warning and Danger with border and ring."),
+                ExTones(), CodeTones)
+
+            @Example(T("5. Placements", "5. Placements"),
+                T("Center, Right e Left — side panels e dialogs centrais.", "Center, Right and Left — side panels and centered dialogs."),
+                ExPlacements(), CodePlacements)
+
+            @Example(T("6. Header e Footer customizados", "6. Custom Header & Footer"),
+                T("RenderFragment Header e Footer para layouts ricos.", "Header and Footer RenderFragments for rich layouts."),
+                ExCustomHeaderFooter(), CodeCustomHeaderFooter)
+
+            @Example(T("7. Comportamento de fechamento", "7. Close Béavior"),
+                T("CloseOnEscape, CloseOnOverlayClick e ShowCloseButton.", "CloseOnEscape, CloseOnOverlayClick and ShowCloseButton."),
+                ExCloseBéavior(), CodeCloseBéavior)
+
+            @Example(T("8. Drag, Resize e Maximize", "8. Drag, Resize & Maximize"),
+                T("Dialog arrastavel, redimensionavel e maximizavel.", "Draggable, resizable and maximizable dialog."),
+                ExDragResizeMaximize(), CodeDragResizeMaximize)
+
+            @Example(T("9. Alert Dialog", "9. Alert Dialog"),
+                T("role alertdialog para acoes destrutivas e críticas.", "role alertdialog for destructive and crítical actions."),
+                ExAlertDialog(), CodeAlertDialog)
+
+            @Example(T("10. formulário dentro do dialog", "10. Form Inside Dialog"),
+                T("EditForm com Validação dentro de um dialog.", "EditForm with validation inside a dialog."),
+                ExFormDialog(), CodeFormDialog)
+
+            @Example(T("11. Servico imperativo", "11. Imperative Service"),
+                T("XFDialogService.ShowAsync e ConfirmAsync com await.", "XFDialogService.ShowAsync and ConfirmAsync with await."),
+                ExService(), CodeService)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Dialog", "Dialog");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+
+    private bool heroOpen;
+    private bool basicOpen;
+    private bool confirmOpen;
+    private bool sizeSmOpen;
+    private bool sizeMdOpen;
+    private bool sizeLgOpen;
+    private bool sizeXlOpen;
+    private bool sizeFullOpen;
+    private bool toneDefaultOpen;
+    private bool tonePrimaryOpen;
+    private bool toneSuccessOpen;
+    private bool toneWarningOpen;
+    private bool toneDangerOpen;
+    private bool placementCenterOpen;
+    private bool placementRightOpen;
+    private bool placementLeftOpen;
+    private bool customHeaderOpen;
+    private bool customFooterOpen;
+    private bool closeEscapeOpen;
+    private bool closeOverlayOpen;
+    private bool closeNoButtonOpen;
+    private bool dragOpen;
+    private bool resizeOpen;
+    private bool maximizeOpen;
+    private bool alertOpen;
+    private bool formOpen;
+    private bool serviceResultVisible;
+    private string serviceResultText = "";
+
+    // ─── Hero ───
+    private RenderFragment HeroPreview() => @<div class="flex flex-col gap-3">
+        <XFButton Text="@T("Abrir dialog de exemplo", "Open example dialog")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => heroOpen = true">
+            <StartIcon>@XFSvgIcons.MarkupWithSize("window-maximize", 16)</StartIcon>
+        </XFButton>
+        <XFDialog @bind-Open="heroOpen"
+                  Title="@T("Bem-vindo ao XForge", "Welcome to XForge")"
+                  Description="@T("Este e um dialog de demonstracao do design system.", "This is a design system demo dialog.")"
+                  Size="XFOverlaySize.Md"
+                  Tone="XFSemanticColor.Primary">
+            <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Body1">
+                    @T("O XFDialog e um overlay modal acessível com focus trap, navegação por teclado e suporte a drag, resize e maximize.",
+                       "XFDialog is an accessible modal overlay with focus trap, keyboard navigation and drag, resize, maximize support.")
+                </XFTypography>
+                <div class="flex gap-2">
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="aria-modal" />
+                    <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="focus-trap" />
+                    <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Escape" />
+                </div>
+            </XFStack>
+            </ChildContent>
+            <Footer>
+                <XFButton Text="@T("Fechar", "Close")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => heroOpen = false" />
+            </Footer>
+        </XFDialog>
+    </div>;
+
+    // ─── 1. Basic ───
+    private RenderFragment ExBasic() => @<div class="flex flex-col gap-3">
+        <XFButton Text="@T("Abrir dialog basico", "Open basic dialog")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => basicOpen = true" />
+        <XFDialog @bind-Open="basicOpen"
+                  Title="@T("Título do dialog", "Dialog title")"
+                  Description="@T("Descrição opcional abaixo do Título.", "Optional description below the title.")">
+            <XFTypography Variant="XFTypographyVariant.Body1">
+                @T("Este e o conteudo principal do dialog. Use ChildContent para qualquer markup.", "This is the main dialog content. Use ChildContent for any markup.")
+            </XFTypography>
+        </XFDialog>
+    </div>;
+
+    // ─── 2. Confirmation ───
+    private RenderFragment ExConfirmation() => @<div class="flex flex-col gap-3">
+        <XFButton Text="@T("excluir registro", "Delete record")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Danger" Size="XFExtendedSize.Md" OnClick="() => confirmOpen = true">
+            <StartIcon>@XFSvgIcons.MarkupWithSize("trash", 16)</StartIcon>
+        </XFButton>
+        <XFDialog @bind-Open="confirmOpen"
+                  Title="@T("Confirmar exclusão", "Confirm deletion")"
+                  Description="@T("Esta acao não pode ser desfeita.", "This action cannot be undone.")"
+                  Tone="XFSemanticColor.Danger"
+                  Alert="true"
+                  CloseOnOverlayClick="false">
+            <ChildContent>
+            <XFTypography Variant="XFTypographyVariant.Body1">
+                @T("Tem certeza que deseja excluir o registro #4821? Todos os dados associados serao removidos permanentemente.",
+                   "Are you sure you want to delete record #4821? All associated data will be permanently removed.")
+            </XFTypography>
+            </ChildContent>
+            <Footer>
+                <XFButton Text="@T("Cancelar", "Cancel")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Md" OnClick="() => confirmOpen = false" />
+                <XFButton Text="@T("excluir", "Delete")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Danger" Size="XFExtendedSize.Md" OnClick="() => confirmOpen = false">
+                    <StartIcon>@XFSvgIcons.MarkupWithSize("trash", 16)</StartIcon>
+                </XFButton>
+            </Footer>
+        </XFDialog>
+    </div>;
+
+    // ─── 3. Sizes ───
+    private RenderFragment ExSizes() => @<div class="flex flex-wrap gap-3">
+        <XFButton Text="Sm" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => sizeSmOpen = true" />
+        <XFButton Text="Md" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => sizeMdOpen = true" />
+        <XFButton Text="Lg" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => sizeLgOpen = true" />
+        <XFButton Text="Xl" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => sizeXlOpen = true" />
+        <XFButton Text="Full" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => sizeFullOpen = true" />
+        <XFDialog @bind-Open="sizeSmOpen" Title="Sm (max-w-sm)" Size="XFOverlaySize.Sm">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Tamanho Sm — ideal para confirmacoes rapidas.", "Sm size — ideal for quick confirmations.")</XFTypography>
+        </XFDialog>
+        <XFDialog @bind-Open="sizeMdOpen" Title="Md (max-w-xl)" Size="XFOverlaySize.Md">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Tamanho Md — padrão para a maioria dos dialogs.", "Md size — default for most dialogs.")</XFTypography>
+        </XFDialog>
+        <XFDialog @bind-Open="sizeLgOpen" Title="Lg (max-w-3xl)" Size="XFOverlaySize.Lg">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Tamanho Lg — para formulários e conteudo extenso.", "Lg size — for forms and extensive content.")</XFTypography>
+        </XFDialog>
+        <XFDialog @bind-Open="sizeXlOpen" Title="Xl (max-w-5xl)" Size="XFOverlaySize.Xl">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Tamanho Xl — para dashboards e tabelas largas.", "Xl size — for dashboards and wide tables.")</XFTypography>
+        </XFDialog>
+        <XFDialog @bind-Open="sizeFullOpen" Title="Full (max-w-6xl)" Size="XFOverlaySize.Full" Maximizable="true">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Tamanho Full — quase tela cheia, ideal para editor de dados.", "Full size — near full screen, ideal for data editors.")</XFTypography>
+        </XFDialog>
+    </div>;
+
+    // ─── 4. Tones ───
+    private RenderFragment ExTones() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <div class="flex flex-col gap-2">
+                <div class="h-2 rounded-full bg-surface-300"></div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Weight="XFTypographyWeight.Semibold">Default</XFTypography>
+                <XFButton Text="@T("Abrir", "Open")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm" OnClick="() => toneDefaultOpen = true" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <div class="h-2 rounded-full bg-primary"></div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Weight="XFTypographyWeight.Semibold">Primary</XFTypography>
+                <XFButton Text="@T("Abrir", "Open")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="() => tonePrimaryOpen = true" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <div class="h-2 rounded-full bg-success"></div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Weight="XFTypographyWeight.Semibold">Success</XFTypography>
+                <XFButton Text="@T("Abrir", "Open")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Success" Size="XFExtendedSize.Sm" OnClick="() => toneSuccessOpen = true" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <div class="h-2 rounded-full bg-warning"></div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Weight="XFTypographyWeight.Semibold">Warning</XFTypography>
+                <XFButton Text="@T("Abrir", "Open")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Warning" Size="XFExtendedSize.Sm" OnClick="() => toneWarningOpen = true" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <div class="h-2 rounded-full bg-danger"></div>
+                <XFTypography Variant="XFTypographyVariant.Caption" Weight="XFTypographyWeight.Semibold">Danger</XFTypography>
+                <XFButton Text="@T("Abrir", "Open")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Danger" Size="XFExtendedSize.Sm" OnClick="() => toneDangerOpen = true" />
+            </div>
+        </div>
+        <XFDialog @bind-Open="toneDefaultOpen" Title="Default" Tone="XFSemanticColor.Default">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Tone Default — borda e ring padrão.", "Default tone — default border and ring.")</XFTypography></ChildContent>
+        </XFDialog>
+        <XFDialog @bind-Open="tonePrimaryOpen" Title="Primary" Tone="XFSemanticColor.Primary">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Tone Primary — destaque da marca.", "Primary tone — brand emphasis.")</XFTypography></ChildContent>
+        </XFDialog>
+        <XFDialog @bind-Open="toneSuccessOpen" Title="Success" Tone="XFSemanticColor.Success">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Tone Success — operação concluída com sucesso.", "Success tone — operation completed successfully.")</XFTypography></ChildContent>
+        </XFDialog>
+        <XFDialog @bind-Open="toneWarningOpen" Title="Warning" Tone="XFSemanticColor.Warning">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Tone Warning — atencao, revisar antes de prosseguir.", "Warning tone — caution, review before proceeding.")</XFTypography></ChildContent>
+        </XFDialog>
+        <XFDialog @bind-Open="toneDangerOpen" Title="Danger" Tone="XFSemanticColor.Danger">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Tone Danger — acao crítica ou destrutiva.", "Danger tone — crítical or destructive action.")</XFTypography></ChildContent>
+        </XFDialog>
+    </XFStack>;
+
+    // ─── 5. Placements ───
+    private bool placementTopOpen;
+    private bool placementBottomOpen;
+
+    private RenderFragment ExPlacements() => @<div class="flex flex-wrap gap-3">
+        <XFButton Text="Center" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => placementCenterOpen = true" />
+        <XFButton Text="Right" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => placementRightOpen = true" />
+        <XFButton Text="Left" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => placementLeftOpen = true" />
+        <XFButton Text="Top" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => placementTopOpen = true" />
+        <XFButton Text="Bottom" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => placementBottomOpen = true" />
+        <XFDialog @bind-Open="placementCenterOpen" Title="Center" Placement="XFDialogPlacement.Center" Size="XFOverlaySize.Md">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Placement Center — dialog centralizado na tela.", "Center placement — dialog centered on screen.")</XFTypography></ChildContent>
+        </XFDialog>
+        <XFDialog @bind-Open="placementRightOpen" Title="Right Panel" Placement="XFDialogPlacement.Right" Size="XFOverlaySize.Md">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Placement Right — painel lateral direito, ideal para detalhes e edicao.", "Right placement — right side panel, ideal for details and editing.")</XFTypography></ChildContent>
+        </XFDialog>
+        <XFDialog @bind-Open="placementLeftOpen" Title="Left Panel" Placement="XFDialogPlacement.Left" Size="XFOverlaySize.Md">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Placement Left — painel lateral esquerdo, ideal para navegação contextual.", "Left placement — left side panel, ideal for contextual navigation.")</XFTypography></ChildContent>
+        </XFDialog>
+        <XFDialog @bind-Open="placementTopOpen" Title="Top" Placement="XFDialogPlacement.Top" Size="XFOverlaySize.Md">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Placement Top — dialog no topo da tela, ideal para notificacoes.", "Top placement — dialog at the top of the screen, ideal for notifications.")</XFTypography></ChildContent>
+        </XFDialog>
+        <XFDialog @bind-Open="placementBottomOpen" Title="Bottom" Placement="XFDialogPlacement.Bottom" Size="XFOverlaySize.Md">
+            <ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Placement Bottom — dialog na parte inferior, ideal para sheets.", "Bottom placement — dialog at the bottom, ideal for sheets.")</XFTypography></ChildContent>
+        </XFDialog>
+    </div>;
+
+    // ─── 6. Custom Header & Footer ───
+    private RenderFragment ExCustomHeaderFooter() => @<div class="flex flex-wrap gap-3">
+        <XFButton Text="@T("Header customizado", "Custom header")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => customHeaderOpen = true" />
+        <XFButton Text="@T("Footer customizado", "Custom footer")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => customFooterOpen = true" />
+        <XFDialog @bind-Open="customHeaderOpen" Size="XFOverlaySize.Md">
+            <Header>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("file-invoice", 20))</span>
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Detalhes da NF-e", "NF-e Details")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("NF-e 001.278 — Tech Solutions S.A.", "NF-e 001.278 — Tech Solutions Inc")</XFTypography>
+                    </div>
+                </div>
+            </Header>
+            <ChildContent>
+                <div class="grid gap-3 sm:grid-cols-2">
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Valor", "Amount")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">R$ 47.850,00</XFTypography>
+                    </div>
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Status", "Status")</XFTypography>
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="@T("Autorizada", "Authorized")" />
+                    </div>
+                </div>
+            </ChildContent>
+            <Footer>
+                <XFButton Text="@T("Fechar", "Close")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Md" OnClick="() => customHeaderOpen = false" />
+            </Footer>
+        </XFDialog>
+        <XFDialog @bind-Open="customFooterOpen"
+                  Title="@T("salvar alterações", "Save changes")"
+                  Size="XFOverlaySize.Sm">
+            <ChildContent>
+            <XFTypography Variant="XFTypographyVariant.Body1">
+                @T("Voce tem alterações não salvas. Deseja salva-las antes de sair?",
+                   "You have unsaved changes. Do you want to save them before leaving?")
+            </XFTypography>
+            </ChildContent>
+            <Footer>
+                <XFButton Text="@T("Descartar", "Discard")" Variant="XFButtonVariant.Ghost" Color="XFButtonColor.Danger" Size="XFExtendedSize.Md" OnClick="() => customFooterOpen = false" />
+                <div class="flex-1"></div>
+                <XFButton Text="@T("Cancelar", "Cancel")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Md" OnClick="() => customFooterOpen = false" />
+                <XFButton Text="@T("salvar", "Save")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => customFooterOpen = false">
+                    <StartIcon>@XFSvgIcons.MarkupWithSize("floppy-disk", 16)</StartIcon>
+                </XFButton>
+            </Footer>
+        </XFDialog>
+    </div>;
+
+    // ─── 7. Close Béavior ───
+    private RenderFragment ExCloseBéavior() => @<div class="flex flex-wrap gap-3">
+        <XFButton Text="@T("Escape + Overlay", "Escape + Overlay")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => closeEscapeOpen = true" />
+        <XFButton Text="@T("Sem overlay click", "No overlay click")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => closeOverlayOpen = true" />
+        <XFButton Text="@T("Sem botao fechar", "No close button")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => closeNoButtonOpen = true" />
+        <XFDialog @bind-Open="closeEscapeOpen"
+                  Title="@T("Escape + Overlay", "Escape + Overlay")"
+                  CloseOnEscape="true"
+                  CloseOnOverlayClick="true"
+                  ShowCloseButton="true">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Feche com Escape, clique no overlay ou botao X.", "Close with Escape, overlay click or X button.")</XFTypography>
+        </XFDialog>
+        <XFDialog @bind-Open="closeOverlayOpen"
+                  Title="@T("Overlay click desabilitado", "Overlay click disabled")"
+                  CloseOnEscape="true"
+                  CloseOnOverlayClick="false"
+                  ShowCloseButton="true">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Feche com Escape ou botao X. Clique no overlay não fecha.", "Close with Escape or X button. Overlay click does not close.")</XFTypography>
+        </XFDialog>
+        <XFDialog @bind-Open="closeNoButtonOpen"
+                  Title="@T("Sem botao X", "No X button")"
+                  CloseOnEscape="true"
+                  CloseOnOverlayClick="true"
+                  ShowCloseButton="false">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Feche com Escape ou clique no overlay. Sem botao X.", "Close with Escape or overlay click. No X button.")</XFTypography>
+        </XFDialog>
+    </div>;
+
+    // ─── 8. Drag, Resize & Maximize ───
+    private RenderFragment ExDragResizeMaximize() => @<div class="flex flex-wrap gap-3">
+        <XFButton Text="@T("Draggable", "Draggable")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => dragOpen = true" />
+        <XFButton Text="@T("Resizable", "Resizable")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => resizeOpen = true" />
+        <XFButton Text="@T("Maximizable", "Maximizable")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => maximizeOpen = true" />
+        <XFDialog @bind-Open="dragOpen" Title="@T("Arrastar dialog", "Drag dialog")" Draggable="true" Size="XFOverlaySize.Sm">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Arraste este dialog pelo cabecalho. O handle de arraste tem aria-label acessível.", "Drag this dialog by the header. The drag handle has an accessible aria-label.")</XFTypography>
+        </XFDialog>
+        <XFDialog @bind-Open="resizeOpen" Title="@T("Redimensionar dialog", "Resize dialog")" Resizable="true" Size="XFOverlaySize.Md" MinWidth="300px" MinHeight="200px">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Redimensione este dialog pelo handle no canto inferior direito.", "Resize this dialog by the handle in the bottom right corner.")</XFTypography>
+        </XFDialog>
+        <XFDialog @bind-Open="maximizeOpen" Title="@T("Maximizar dialog", "Maximize dialog")" Maximizable="true" Size="XFOverlaySize.Md">
+            <XFTypography Variant="XFTypographyVariant.Body1">@T("Clique no botao de maximizar para expandir. Clique novamente para restaurar.", "Click the maximize button to expand. Click again to restore.")</XFTypography>
+        </XFDialog>
+    </div>;
+
+    // ─── 9. Alert Dialog ───
+    private RenderFragment ExAlertDialog() => @<div class="flex flex-col gap-3">
+        <XFButton Text="@T("Acao destrutiva", "Destructive action")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Danger" Size="XFExtendedSize.Md" OnClick="() => alertOpen = true">
+            <StartIcon>@XFSvgIcons.MarkupWithSize("triangle-exclamation", 16)</StartIcon>
+        </XFButton>
+        <XFDialog @bind-Open="alertOpen"
+                  Title="@T("excluir todos os dados", "Delete all data")"
+                  Description="@T("Acao irreversivel", "Irreversible action")"
+                  Tone="XFSemanticColor.Danger"
+                  Alert="true"
+                  CloseOnOverlayClick="false"
+                  CloseOnEscape="false">
+            <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Body1">
+                    @T("Esta acao vai excluir permanentemente todos os 1.247 registros do estoque. não e possível desfazer.",
+                       "This action will permanently delete all 1,247 inventory records. This cannot be undone.")
+                </XFTypography>
+                <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Sm">
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Danger" Text="@T("1.247 registros", "1,247 records")" />
+                            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Permanente", "Permanent")" />
+                        </XFStack>
+                    </ChildContent>
+                </XFCard>
+            </XFStack>
+            </ChildContent>
+            <Footer>
+                <XFButton Text="@T("Cancelar", "Cancel")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Md" OnClick="() => alertOpen = false" />
+                <XFButton Text="@T("excluir tudo", "Delete all")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Danger" Size="XFExtendedSize.Md" OnClick="() => alertOpen = false">
+                    <StartIcon>@XFSvgIcons.MarkupWithSize("trash", 16)</StartIcon>
+                </XFButton>
+            </Footer>
+        </XFDialog>
+    </div>;
+
+    // ─── 10. Form Dialog ───
+#pragma warning disable CS0414
+    private string formName = "";
+    private string formEmail = "";
+#pragma warning restore CS0414
+    private RenderFragment ExFormDialog() => @<div class="flex flex-col gap-3">
+        <XFButton Text="@T("criar Contato", "Create Contact")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => formOpen = true">
+            <StartIcon>@XFSvgIcons.MarkupWithSize("user-plus", 16)</StartIcon>
+        </XFButton>
+        <XFDialog @bind-Open="formOpen"
+                  Title="@T("Novo Contato", "New Contact")"
+                  Description="@T("Preencha os dados do Contato.", "Fill in the Contact details.")"
+                  Size="XFOverlaySize.Sm"
+                  CloseOnOverlayClick="false">
+            <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <div>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Nome", "Name")</XFTypography>
+                    <input type="text" class="mt-1 block w-full rounded-lg border border-border-light bg-bg-surface px-3 py-2 text-sm text-text-primary outline-none ring-1 ring-transparent transition-all focus:ring-2 focus:ring-primary/30" placéolder="@T("Nome completo", "Full name")" @bind="formName" />
+                </div>
+                <div>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Email", "Email")</XFTypography>
+                    <input type="email" class="mt-1 block w-full rounded-lg border border-border-light bg-bg-surface px-3 py-2 text-sm text-text-primary outline-none ring-1 ring-transparent transition-all focus:ring-2 focus:ring-primary/30" placéolder="email@empresa.com" @bind="formEmail" />
+                </div>
+            </XFStack>
+            </ChildContent>
+            <Footer>
+                <XFButton Text="@T("Cancelar", "Cancel")" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Md" OnClick="() => formOpen = false" />
+                <XFButton Text="@T("salvar", "Save")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="() => formOpen = false">
+                    <StartIcon>@XFSvgIcons.MarkupWithSize("floppy-disk", 16)</StartIcon>
+                </XFButton>
+            </Footer>
+        </XFDialog>
+    </div>;
+
+    // ─── 11. Service ───
+    [Inject] private XFDialogService DialogService { get; set; } = default!;
+
+    private async Task OpenServiceConfirmAsync()
+    {
+        var result = await DialogService.ConfirmAsync(
+            title: T("Confirmar envio", "Confirm submission"),
+            description: T("Enviar lote fiscal para SEFAZ?", "Submit fiscal batch to SEFAZ?"),
+            confirmText: T("Enviar", "Submit"),
+            cancelText: T("Cancelar", "Cancel"),
+            tone: XFSemanticColor.Primary);
+
+        serviceResultVisible = true;
+        serviceResultText = result.Cancelled
+            ? T("Envio Cancelado pelo usuario.", "Submission cancelled by user.")
+            : T("Lote Enviado com sucesso!", "Batch submitted successfully!");
+    }
+
+    private async Task OpenServiceDangerAsync()
+    {
+        var result = await DialogService.ConfirmAsync(
+            title: T("Bloquear Fornecedor", "Block supplier"),
+            description: T("O Fornecedor sera Bloqueado em todos os modulos.", "The supplier will be blocked in all modules."),
+            confirmText: T("Bloquear", "Block"),
+            cancelText: T("Cancelar", "Cancel"),
+            tone: XFSemanticColor.Danger);
+
+        serviceResultVisible = true;
+        serviceResultText = result.Cancelled
+            ? T("Bloqueio Cancelado.", "Block cancelled.")
+            : T("Fornecedor Bloqueado!", "Supplier blocked!");
+    }
+
+    private RenderFragment ExService() => @<div class="flex flex-col gap-3">
+        <div class="flex flex-wrap gap-3">
+            <XFButton Text="@T("ConfirmAsync (Primary)", "ConfirmAsync (Primary)")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md" OnClick="OpenServiceConfirmAsync" />
+            <XFButton Text="@T("ConfirmAsync (Danger)", "ConfirmAsync (Danger)")" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Danger" Size="XFExtendedSize.Md" OnClick="OpenServiceDangerAsync" />
+        </div>
+        @if (serviceResultVisible)
+        {
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Sm">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" AlignItems="XFAlignItems.Center">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Info" Text="@T("Resultado", "Result")" />
+                        <XFTypography Variant="XFTypographyVariant.Body2">@serviceResultText</XFTypography>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        }
+    </div>;
+
+    // ─── Helpers ───
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string naméeader, string valuéeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@naméeader</XFTableCell><XFTableCell Header="true">@valuéeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow>
+            <XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell>
+            <XFTableCell Header="true">Type</XFTableCell>
+            <XFTableCell Header="true">Default</XFTableCell>
+            <XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell>
+        </XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) {
+            <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow>
+        }</XFTableBody>
+    </XFTable>;
+
+    // ─── Data ───
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Focus trap", "Focus trap"), T("Foco preso dentro do dialog com tabindex=-1 e JS interop.", "Focus trapped inside dialog with tabindex=-1 and JS interop."), "lock"),
+        new(T("5 placements", "5 placements"), T("Center, Right, Left, Top e Bottom para dialogs e side panels.", "Center, Right, Left, Top and Bottom for dialogs and side panels."), "arrows-left-right"),
+        new(T("Alert dialog", "Alert dialog"), T("role alertdialog para acoes críticas com Escape e overlay desabilitados.", "role alertdialog for crítical actions with Escape and overlay disabled."), "triangle-exclamation"),
+        new(T("Service imperativo", "Imperative service"), T("ShowAsync e ConfirmAsync com await via DI.", "ShowAsync and ConfirmAsync with await via DI."), "terminal")
+    ];
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFDialog"),
+        new("Namespace", "XForge.DesignSystem.Components.Overlays.Dialog"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Overlays / Dialog"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role dialog/alertdialog, aria-modal, aria-labelledby, aria-describedby, focus trap, touch target 44px AAA.", "role dialog/alertdialog, aria-modal, aria-labelledby, aria-describedby, focus trap, 44px AAA touch target.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Modal overlay", "Modal overlay"), T("Bloqueia interacao com o conteudo ate ser Fechado.", "Blocks interaction with content until closed."), "window-maximize"),
+        new(T("Templates", "Templates"), T("Header, ChildContent e Footer como RenderFragments.", "Header, ChildContent and Footer as RenderFragments."), "layer-group"),
+        new(T("Drag, Resize, Maximize", "Drag, Resize, Maximize"), T("Arrastar, redimensionar e maximizar com controles acessiveis.", "Drag, resize and maximize with accessible controls."), "up-right-and-down-left-from-center")
+    ];
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Confirmacoes", "Confirmations"), T("exclusão, aprovacao, alteração de estado crítico.", "Deletion, approval, crítical state change."), "circle-check"),
+        new(T("formulários", "Forms"), T("Edicao de dados em contexto modal.", "Data editing in modal context."), "clipboard-list"),
+        new(T("Detalhes", "Details"), T("visualização de detalhes sem sair da Página.", "View details without leaving the page."), "eye")
+    ];
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Acao que exige confirmacao", "Action requiring confirmation"), T("exclusão, Pagamento, envio para aprovacao.", "Deletion, payment, submission for approval."), "hand-pointer"),
+        new(T("Edicao contextual", "Contextual editing"), T("Editar registro inline sem perder contexto da lista.", "Edit record inline without losing list context."), "pencil")
+    ];
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Conteudo informativo simples", "Simple informational content"), T("Nao use dialog para mensagens. Use Alert ou Toast.", "Do not use dialog for messages. Use Alert or Toast."), "xmark"),
+        new(T("Fluxo longo", "Long flow"), T("Nao use dialog para processos com muitas etapas. Use rota dedicada.", "Do not use dialog for multi-step processes. Use dedicated route."), "triangle-exclamation")
+    ];
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Sem overlay modal padrao. Cada time criava do zero.", "No default modal overlay. Each team built from scratch."), "xmark"),
+        new(T("Depois", "After"), T("XFDialog com focus trap, tone, size e service padrao.", "XFDialog with focus trap, tone, size and default service."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("WCAG AAA com role dialog, aria-modal, focus trap e 44px targets.", "WCAG AAA with role dialog, aria-modal, focus trap and 44px targets."), "universal-access")
+    ];
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Overlay", "Overlay"), T("Fundo semi-transparente com backdrop-blur.", "Semi-transparent background with backdrop-blur."), "layer-group"),
+        new(T("Painel", "Panel"), T("Container principal com borda, sombra e ring.", "Main container with border, shadow and ring."), "square"),
+        new(T("Cabecalho", "Header"), T("Titulo, descricao, botao fechar e handle de arraste.", "Title, description, close button and drag handle."), "heading"),
+        new("Body", T("Conteudo principal com scroll configuravel.", "Main content with configurable scroll."), "file-lines"),
+        new(T("Rodape", "Footer"), T("Botoes de acao e links secundarios.", "Action buttons and secondary links."), "bars")
+    ];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Foco total", "Full focus"), T("Dialog bloqueia interacao com o conteudo atras.", "Dialog blocks interaction with background content."), "lock"),
+        new(T("Confirmacao antes de agir", "Confirm before acting"), T("Acoes destrutivas exigem confirmacao explicita.", "Destructive actions require explicit confirmation."), "circle-check"),
+        new(T("Service imperativo", "Imperative service"), T("XFDialogService para dialogs programaticos com await.", "XFDialogService for programmatic dialogs with await."), "terminal")
+    ];
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Open", "bool", "false", T("Controla visibilidade do dialog.", "Controls dialog visibility.")),
+        new("OpenChanged", "EventCallback<bool>", "default", T("Two-way binding da visibilidade.", "Two-way visibility binding.")),
+        new("OnClose", "EventCallback", "default", T("Evento disparado ao fechar o dialog.", "Event fired when dialog closes.")),
+        new("Title", "string?", "null", T("Título exibido no cabecalho.", "Title displayed in header.")),
+        new("Description", "string?", "null", T("Descrição exibida abaixo do Título.", "Description displayed below title.")),
+        new("Header", "RenderFragment?", "null", T("Template customizado do cabecalho.", "Custom header template.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo principal do dialog.", "Main dialog content.")),
+        new("Footer", "RenderFragment?", "null", T("Rodape com acoes.", "Footer with actions.")),
+        new("Size", "XFOverlaySize", "Md", T("Sm, Md, Lg, Xl, Full.", "Sm, Md, Lg, Xl, Full.")),
+        new("Tone", "XFSemanticColor", "Default", T("Default, Primary, Success, Warning, Danger.", "Default, Primary, Success, Warning, Danger.")),
+        new("Placement", "XFDialogPlacement", "Center", T("Center, Right, Left, Top, Bottom.", "Center, Right, Left, Top, Bottom.")),
+        new("Alert", "bool", "false", T("Renderiza como alertdialog (acao crítica).", "Renders as alertdialog (crítical action).")),
+        new("CloseOnEscape", "bool", "true", T("Fecha ao pressionar Escape.", "Closes on Escape key press.")),
+        new("CloseOnOverlayClick", "bool", "true", T("Fecha ao clicar no overlay.", "Closes on overlay click.")),
+        new("ShowCloseButton", "bool", "true", T("Mostra botao X no cabecalho.", "Shows X button in header.")),
+        new("CloseLabel", "string", "\"Fechar\"", T("Label acessível do botao fechar.", "Accessible close button label.")),
+        new("Draggable", "bool", "false", T("Permite arrastar o dialog pelo cabecalho.", "Allows dragging dialog by header.")),
+        new("Resizable", "bool", "false", T("Permite redimensionar o dialog.", "Allows resizing dialog.")),
+        new("Maximizable", "bool", "false", T("Mostra botao de maximizar/restaurar.", "Shows maximize/restore button.")),
+        new("Maximized", "bool", "false", T("Controla estado maximizado.", "Controls maximized state.")),
+        new("MaximizedChanged", "EventCallback<bool>", "default", T("Two-way binding do estado maximizado.", "Two-way maximized state binding.")),
+        new("DragHandleLabel", "string", "\"Mover dialogo\"", T("Label acessivel do handle de arraste.", "Accessible drag handle label.")),
+        new("ResizeHandleLabel", "string", "\"Redimensionar dialogo\"", T("Label acessivel do handle de redimensionamento.", "Accessible resize handle label.")),
+        new("MaximizeLabel", "string", "\"Maximizar\"", T("Label acessivel do botao maximizar.", "Accessible maximize button label.")),
+        new("RestoreLabel", "string", "\"Restaurar\"", T("Label acessivel do botao restaurar.", "Accessible restore button label.")),
+        new("ScrollMode", "XFDialogScrollMode", "Body", T("Body, Panel ou None — controle de scroll.", "Body, Panel or None — scroll control.")),
+        new("MinWidth", "string?", "null", T("Largura minima customizada.", "Custom minimum width.")),
+        new("MaxWidth", "string?", "null", T("Largura maxima customizada.", "Custom maximum width.")),
+        new("MinHeight", "string?", "null", T("Altura minima customizada.", "Custom minimum height.")),
+        new("MaxHeight", "string?", "null", T("Altura maxima customizada.", "Custom maximum height.")),
+        new("BodyMaxHeight", "string?", "null", T("Altura maxima do corpo do dialog.", "Maximum dialog body height."))
+    ];
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OpenChanged", T("Alterar visibilidade do dialog.", "Change dialog visibility.")),
+        new("OnClose", T("Dialog foi Fechado pelo usuario.", "Dialog was closed by user.")),
+        new("MaximizedChanged", T("Estado maximizado Alterado.", "Maximized state changed."))
+    ];
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("WAI-ARIA", T("role dialog ou alertdialog, aria-modal=true.", "role dialog or alertdialog, aria-modal=true."), "universal-access"),
+        new(T("Focus trap", "Focus trap"), T("Foco preso com tabindex=-1 e JS interop. Foco move para o dialog ao abrir.", "Focus trapped with tabindex=-1 and JS interop. Focus moves to dialog on open."), "lock"),
+        new(T("Labelledby / Describedby", "Labelledby / Describedby"), T("aria-labelledby e aria-describedby conectados ao Título e Descrição.", "aria-labelledby and aria-describedby connected to title and description."), "tag"),
+        new(T("Touch target 44px", "44px touch target"), T("botões de fechar, maximizar e resize com area minima de 44px.", "Close, maximize and resize buttons with 44px minimum area."), "hand-pointer")
+    ];
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Escape", T("Fecha o dialog (quando CloseOnEscape=true).", "Closes dialog (when CloseOnEscape=true).")),
+        new("Tab", T("Move foco entre elementos interativos dentro do dialog.", "Moves focus between interactive elements inside dialog.")),
+        new("Shift+Tab", T("Move foco para o elemento interativo anterior.", "Moves focus to previous interactive element.")),
+        new("Enter / Space", T("Ativa botões focados no dialog.", "Activates focused buttons in dialog."))
+    ];
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura responsiva", "Responsive width"), T("w-full com max-w por tamanho. Funciona em mobile.", "w-full with max-w per size. Works on mobile."), "mobile-screen"),
+        new(T("Side panels", "Side panels"), T("Placement Right/Left com h-full em telas grandes.", "Right/Left placement with h-full on large screens."), "arrows-left-right")
+    ];
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Render condicional", "Conditional render"), T("Dialog so renderiza quando Open=true. Reduz DOM.", "Dialog only renders when Open=true. Reduces DOM."), "bolt"),
+        new(T("Focus trap leve", "Light focus trap"), T("JS interop apenas no OnAfterRenderAsync. Sem overhead no render.", "JS interop only on OnAfterRenderAsync. No render overhead."), "feather"),
+        new(T("MaxWidth constraints", "MaxWidth constraints"), T("Tailwind max-w classes sem layout shift.", "Tailwind max-w classes without layout shift."), "maximize")
+    ];
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Confirmacao fiscal", "Fiscal confirmation"), T("Confirmar envio de lote para SEFAZ com alert dialog.", "Confirm batch submission to SEFAZ with alert dialog."), "file-invoice"),
+        new(T("Edicao de registro", "Record editing"), T("Editar dados de contato com dialog e formulario.", "Edit contact data with dialog and form."), "pencil"),
+        new(T("Visualizacao de detalhes", "Detail viewing"), T("Ver detalhes da NF-e sem sair da lista.", "View NF-e details without leaving the list."), "eye")
+    ];
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Dialog + Form", "Dialog + Form"), T("XFDialog com EditForm para edicao modal.", "XFDialog with EditForm for modal editing."), "clipboard-list"),
+        new(T("Dialog + Table", "Dialog + Table"), T("Tabela dentro de dialog para selecao.", "Table inside dialog for selection."), "table"),
+        new(T("Dialog + Stepper", "Dialog + Stepper"), T("Fluxo multi-etapa dentro de dialog.", "Multi-step flow inside dialog."), "list-ol")
+    ];
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Title claro", "Clear title"), T("Titulo descritivo da acao. Max 60 caracteres.", "Descriptive action title. Max 60 characters."), "heading"),
+        new(T("Tone semantico", "Semantic tone"), T("Danger para exclusao, Success para confirmacao, Warning para revisao.", "Danger for deletion, Success for confirmation, Warning for review."), "palette"),
+        new(T("Footer com acoes", "Footer with actions"), T("Cancelar a esquerda, acao principal a direita.", "Cancel on left, primary action on right."), "bars"),
+        new(T("CloseOnOverlayClick=false", "CloseOnOverlayClick=false"), T("Para acoes destrutivas, desabilite overlay click.", "For destructive actions, disable overlay click."), "lock")
+    ];
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Dialog para conteudo longo", "Dialog for long content"), T("Nao use dialog para termos de uso ou politicas. Use pagina dedicada.", "Do not use dialog for terms or policies. Use dedicated page."), "xmark"),
+        new(T("Muitos dialogs aninhados", "Too many nested dialogs"), T("Evite mais de 2 niveis de dialog. Use rota ou stepper.", "Avoid more than 2 dialog levels. Use route or stepper."), "ban"),
+        new(T("Sem titulo", "No title"), T("Dialog sem titulo e inacessivel para leitores de tela.", "Dialog without title is inaccessible to screen readers."), "triangle-exclamation")
+    ];
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("overlay", T("fixed inset-0 z-50 flex bg-surface-950/35 backdrop-blur-sm.", "fixed inset-0 z-50 flex bg-surface-950/35 backdrop-blur-sm.")),
+        new("panel", T("rounded-xl border bg-bg-surface shadow ring-1.", "rounded-xl border bg-bg-surface shadow ring-1.")),
+        new("header", T("flex items-start justify-between gap-4 border-b px-5 py-4.", "flex items-start justify-between gap-4 border-b px-5 py-4.")),
+        new("body", T("min-h-0 px-5 py-4 text-sm leading-6 text-text-secondary.", "min-h-0 px-5 py-4 text-sm leading-6 text-text-secondary.")),
+        new("footer", T("flex items-center justify-end gap-2 border-t px-5 py-4.", "flex items-center justify-end gap-2 border-t px-5 py-4."))
+    ];
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Tone border/ring", T("Primary, Success, Warning e Danger com color-mix.", "Primary, Success, Warning and Danger with color-mix."), "swatchbook")
+    ];
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, variants, tones, placements, close behavior.", "Render, props, variants, tones, placements, close behavior.")),
+        new("Accessibility", T("role dialog/alertdialog, aria-modal, aria-labelledby, aria-describedby, focus trap.", "role dialog/alertdialog, aria-modal, aria-labelledby, aria-describedby, focus trap.")),
+        new("Interaction", T("Escape, overlay click, close button, drag, resize, maximize.", "Escape, overlay click, close button, drag, resize, maximize.")),
+        new("Service", T("ShowAsync, ConfirmAsync, XFDialogController, XFDialogResult.", "ShowAsync, ConfirmAsync, XFDialogController, XFDialogResult."))
+    ];
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Prerender", T("Focus trap e JS interop indisponiveis durante prerender.", "Focus trap and JS interop unavailable during prerender.")),
+        new("Aninhamento", T("Maximo 2 niveis de dialog para boa UX.", "Maximum 2 dialog levels for good UX.")),
+        new("ScrollMode", T("Panel mode pode conflitar com conteudo muito longo.", "Panel mode may conflict with very long content."))
+    ];
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFDrawer", T("Painel lateral ou inferior para edicao contextual.", "Side or bottom panel for contextual editing."), "columns-3"),
+        new("XFAlert", T("Feedback inline sem bloquear interacao.", "Inline feedback without blocking interaction."), "circle-info"),
+        new("XFToast", T("Notificacao temporaria auto-dismiss.", "Temporary auto-dismiss notification."), "bell")
+    ];
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Dialog ou Drawer?", "Dialog or Drawer?"), T("Dialog para acoes que exigem foco Total. Drawer para edicao lateral mantendo contexto.", "Dialog for actions requiring full focus. Drawer for side editing keeping context.")),
+        new(T("Como usar o service?", "How to use the service?"), T("Injete XFDialogService e use ShowAsync/ConfirmAsync. Registre XFDialogProvider no layout.", "Inject XFDialogService and use ShowAsync/ConfirmAsync. Register XFDialogProvider in layout.")),
+        new(T("Diferenca entre Dialog e Alert Dialog?", "Difference between Dialog and Alert Dialog?"), T("Alert=true renderiza role alertdialog e geralmente desabilita Escape/overlay.", "Alert=true renders role alertdialog and typically disables Escape/overlay.")),
+        new(T("Posso ter dialogs aninhados?", "Can I have nested dialogs?"), T("Sim, mas limite a 2 niveis para boa UX. Cada dialog tem seu proprio focus trap.", "Yes, but limit to 2 levels for good UX. Each dialog has its own focus trap."))
+    ];
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-01", T("5 tamanhos, 3 placements, 4 tons, drag, resize, maximize, alert dialog, service, 11 exemplos, focus trap, WCAG AAA.", "5 sizes, 3 placements, 4 tones, drag, resize, maximize, alert dialog, service, 11 examples, focus trap, WCAG AAA.")),
+        new("2026-06-12", T("26 secoes enterprise: anatomia, design tokens, testes, performance, responsividade, cenarios, anti-padroes.", "26 enterprise sections: anatomy, design tokens, testing, performance, responsiveness, scenarios, anti-patterns."))
+    ];
+
+    // ─── Code Strings ───
+    private string CodeBasic => T(
+        "\x3C!-- @bind-Open controla visibilidade --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"basicOpen\"\n" +
+        "          Title=\"Título do dialog\"\n" +
+        "          Description=\"Descrição opcional.\"\x3E\n" +
+        "    \x3CXFTypography Variant=\"XFTypographyVariant.Body1\"\x3E\n" +
+        "        Conteudo principal do dialog.\n" +
+        "    \x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3C!-- @bind-Open controls visibility --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"basicOpen\"\n" +
+        "          Title=\"Dialog title\"\n" +
+        "          Description=\"Optional description.\"\x3E\n" +
+        "    \x3CXFTypography Variant=\"XFTypographyVariant.Body1\"\x3E\n" +
+        "        Main dialog content.\n" +
+        "    \x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeConfirmation => T(
+        "\x3CXFDialog @bind-Open=\"confirmOpen\"\n" +
+        "          Title=\"Confirmar exclusao\"\n" +
+        "          Description=\"Esta acao nao pode ser desfeita.\"\n" +
+        "          Tone=\"XFSemanticColor.Danger\"\n" +
+        "          Alert=\"true\"\n" +
+        "          CloseOnOverlayClick=\"false\"\x3E\n" +
+        "    \x3CXFTypography\x3ETem certeza?\x3C/XFTypography\x3E\n" +
+        "    \x3CFooter\x3E\n" +
+        "        \x3CXFButton Text=\"Cancelar\" Variant=\"XFButtonVariant.Outline\"\n" +
+        "                  Color=\"XFButtonColor.Neutral\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => confirmOpen = false\" /\x3E\n" +
+        "        \x3CXFButton Text=\"Excluir\" Variant=\"XFButtonVariant.Solid\"\n" +
+        "                  Color=\"XFButtonColor.Danger\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => confirmOpen = false\"\x3E\n" +
+        "            \x3CStartIcon\x3E\x3C/XFButton\x3E\n" +
+        "    \x3C/Footer\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3CXFDialog @bind-Open=\"confirmOpen\"\n" +
+        "          Title=\"Confirm deletion\"\n" +
+        "          Description=\"This action cannot be undone.\"\n" +
+        "          Tone=\"XFSemanticColor.Danger\"\n" +
+        "          Alert=\"true\"\n" +
+        "          CloseOnOverlayClick=\"false\"\x3E\n" +
+        "    \x3CXFTypography\x3EAre you sure?\x3C/XFTypography\x3E\n" +
+        "    \x3CFooter\x3E\n" +
+        "        \x3CXFButton Text=\"Cancel\" Variant=\"XFButtonVariant.Outline\"\n" +
+        "                  Color=\"XFButtonColor.Neutral\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => confirmOpen = false\" /\x3E\n" +
+        "        \x3CXFButton Text=\"Delete\" Variant=\"XFButtonVariant.Solid\"\n" +
+        "                  Color=\"XFButtonColor.Danger\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => confirmOpen = false\"\x3E\n" +
+        "            \x3CStartIcon\x3E\x3C/XFButton\x3E\n" +
+        "    \x3C/Footer\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeSizes => T(
+        "\x3CXFDialog @bind-Open=\"sizeSmOpen\" Title=\"Sm\" Size=\"XFOverlaySize.Sm\"\x3E\n" +
+        "    \x3CXFTypography\x3EConfirmacao rapida.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"sizeMdOpen\" Title=\"Md\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3EConteudo padrao.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"sizeLgOpen\" Title=\"Lg\" Size=\"XFOverlaySize.Lg\"\x3E\n" +
+        "    \x3CXFTypography\x3EFormularios e conteudo extenso.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"sizeXlOpen\" Title=\"Xl\" Size=\"XFOverlaySize.Xl\"\x3E\n" +
+        "    \x3CXFTypography\x3EDashboards e tabelas.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"sizeFullOpen\" Title=\"Full\" Size=\"XFOverlaySize.Full\"\n" +
+        "          Maximizable=\"true\"\x3E\n" +
+        "    \x3CXFTypography\x3EQuase tela cheia.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3CXFDialog @bind-Open=\"sizeSmOpen\" Title=\"Sm\" Size=\"XFOverlaySize.Sm\"\x3E\n" +
+        "    \x3CXFTypography\x3EQuick confirmation.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"sizeMdOpen\" Title=\"Md\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3EDefault content.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"sizeLgOpen\" Title=\"Lg\" Size=\"XFOverlaySize.Lg\"\x3E\n" +
+        "    \x3CXFTypography\x3EForms and extensive content.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"sizeXlOpen\" Title=\"Xl\" Size=\"XFOverlaySize.Xl\"\x3E\n" +
+        "    \x3CXFTypography\x3EDashboards and tables.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"sizeFullOpen\" Title=\"Full\" Size=\"XFOverlaySize.Full\"\n" +
+        "          Maximizable=\"true\"\x3E\n" +
+        "    \x3CXFTypography\x3ENear full screen.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeTones => T(
+        "\x3CXFDialog @bind-Open=\"toneDefaultOpen\" Title=\"Default\"\n" +
+        "          Tone=\"XFSemanticColor.Default\"\x3E\n" +
+        "    \x3CXFTypography\x3ETone Default.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"tonePrimaryOpen\" Title=\"Primary\"\n" +
+        "          Tone=\"XFSemanticColor.Primary\"\x3E\n" +
+        "    \x3CXFTypography\x3ETone Primary.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"toneSuccessOpen\" Title=\"Success\"\n" +
+        "          Tone=\"XFSemanticColor.Success\"\x3E\n" +
+        "    \x3CXFTypography\x3ETone Success.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"toneWarningOpen\" Title=\"Warning\"\n" +
+        "          Tone=\"XFSemanticColor.Warning\"\x3E\n" +
+        "    \x3CXFTypography\x3ETone Warning.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"toneDangerOpen\" Title=\"Danger\"\n" +
+        "          Tone=\"XFSemanticColor.Danger\"\x3E\n" +
+        "    \x3CXFTypography\x3ETone Danger.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3CXFDialog @bind-Open=\"toneDefaultOpen\" Title=\"Default\"\n" +
+        "          Tone=\"XFSemanticColor.Default\"\x3E\n" +
+        "    \x3CXFTypography\x3EDefault tone.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"tonePrimaryOpen\" Title=\"Primary\"\n" +
+        "          Tone=\"XFSemanticColor.Primary\"\x3E\n" +
+        "    \x3CXFTypography\x3EPrimary tone.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"toneSuccessOpen\" Title=\"Success\"\n" +
+        "          Tone=\"XFSemanticColor.Success\"\x3E\n" +
+        "    \x3CXFTypography\x3ESuccess tone.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"toneWarningOpen\" Title=\"Warning\"\n" +
+        "          Tone=\"XFSemanticColor.Warning\"\x3E\n" +
+        "    \x3CXFTypography\x3EWarning tone.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"toneDangerOpen\" Title=\"Danger\"\n" +
+        "          Tone=\"XFSemanticColor.Danger\"\x3E\n" +
+        "    \x3CXFTypography\x3EDanger tone.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodePlacements => T(
+        "\x3CXFDialog @bind-Open=\"placementCenterOpen\" Title=\"Center\"\n" +
+        "          Placement=\"XFDialogPlacement.Center\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3EDialog centralizado.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"placementRightOpen\" Title=\"Right Panel\"\n" +
+        "          Placement=\"XFDialogPlacement.Right\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3EPainel lateral direito.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"placementLeftOpen\" Title=\"Left Panel\"\n" +
+        "          Placement=\"XFDialogPlacement.Left\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3EPainel lateral esquerdo.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3CXFDialog @bind-Open=\"placementCenterOpen\" Title=\"Center\"\n" +
+        "          Placement=\"XFDialogPlacement.Center\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3ECentered dialog.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"placementRightOpen\" Title=\"Right Panel\"\n" +
+        "          Placement=\"XFDialogPlacement.Right\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3ERight side panel.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3CXFDialog @bind-Open=\"placementLeftOpen\" Title=\"Left Panel\"\n" +
+        "          Placement=\"XFDialogPlacement.Left\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3ELeft side panel.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeCustomHeaderFooter => T(
+        "\x3CXFDialog @bind-Open=\"open\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CHeader\x3E\n" +
+        "        \x3Cdiv class=\"flex items-center gap-3\"\x3E\n" +
+        "            \x3Cspan class=\"icon\"\x3E\x3C/span\x3E\n" +
+        "            \x3Cdiv\x3E\n" +
+        "                \x3Ch4\x3ETitulo custom\x3C/h4\x3E\n" +
+        "                \x3Cp\x3ESubtitulo\x3C/p\x3E\n" +
+        "            \x3C/div\x3E\n" +
+        "        \x3C/div\x3E\n" +
+        "    \x3C/Header\x3E\n" +
+        "    \x3CChildContent\x3EConteudo\x3C/ChildContent\x3E\n" +
+        "    \x3CFooter\x3E\n" +
+        "        \x3CXFButton Text=\"Fechar\" Variant=\"XFButtonVariant.Outline\"\n" +
+        "                  Color=\"XFButtonColor.Neutral\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => open = false\" /\x3E\n" +
+        "    \x3C/Footer\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3CXFDialog @bind-Open=\"open\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CHeader\x3E\n" +
+        "        \x3Cdiv class=\"flex items-center gap-3\"\x3E\n" +
+        "            \x3Cspan class=\"icon\"\x3E\x3C/span\x3E\n" +
+        "            \x3Cdiv\x3E\n" +
+        "                \x3Ch4\x3ECustom title\x3C/h4\x3E\n" +
+        "                \x3Cp\x3ESubtitle\x3C/p\x3E\n" +
+        "            \x3C/div\x3E\n" +
+        "        \x3C/div\x3E\n" +
+        "    \x3C/Header\x3E\n" +
+        "    \x3CChildContent\x3EContent\x3C/ChildContent\x3E\n" +
+        "    \x3CFooter\x3E\n" +
+        "        \x3CXFButton Text=\"Close\" Variant=\"XFButtonVariant.Outline\"\n" +
+        "                  Color=\"XFButtonColor.Neutral\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => open = false\" /\x3E\n" +
+        "    \x3C/Footer\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeCloseBéavior => T(
+        "\x3C!-- Escape + Overlay + X button (padrao) --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"open\"\n" +
+        "          CloseOnEscape=\"true\"\n" +
+        "          CloseOnOverlayClick=\"true\"\n" +
+        "          ShowCloseButton=\"true\"\x3E\n" +
+        "    \x3CXFTypography\x3EConteudo.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3C!-- Sem overlay click --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"open\"\n" +
+        "          CloseOnOverlayClick=\"false\"\x3E\n" +
+        "    \x3CXFTypography\x3EConteudo.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3C!-- Sem botao X --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"open\"\n" +
+        "          ShowCloseButton=\"false\"\x3E\n" +
+        "    \x3CXFTypography\x3EConteudo.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3C!-- Escape + Overlay + X button (default) --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"open\"\n" +
+        "          CloseOnEscape=\"true\"\n" +
+        "          CloseOnOverlayClick=\"true\"\n" +
+        "          ShowCloseButton=\"true\"\x3E\n" +
+        "    \x3CXFTypography\x3EContent.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3C!-- No overlay click --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"open\"\n" +
+        "          CloseOnOverlayClick=\"false\"\x3E\n" +
+        "    \x3CXFTypography\x3EContent.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3C!-- No X button --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"open\"\n" +
+        "          ShowCloseButton=\"false\"\x3E\n" +
+        "    \x3CXFTypography\x3EContent.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeDragResizeMaximize => T(
+        "\x3C!-- Draggable --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"dragOpen\" Title=\"Arrastar\"\n" +
+        "          Draggable=\"true\" Size=\"XFOverlaySize.Sm\"\x3E\n" +
+        "    \x3CXFTypography\x3EArraste pelo cabecalho.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3C!-- Resizable --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"resizeOpen\" Title=\"Redimensionar\"\n" +
+        "          Resizable=\"true\" Size=\"XFOverlaySize.Md\"\n" +
+        "          MinWidth=\"300px\" MinHeight=\"200px\"\x3E\n" +
+        "    \x3CXFTypography\x3ERedimensione pelo handle.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3C!-- Maximizable --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"maximizeOpen\" Title=\"Maximizar\"\n" +
+        "          Maximizable=\"true\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3EClique para maximizar.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3C!-- Draggable --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"dragOpen\" Title=\"Drag\"\n" +
+        "          Draggable=\"true\" Size=\"XFOverlaySize.Sm\"\x3E\n" +
+        "    \x3CXFTypography\x3EDrag by header.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3C!-- Resizable --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"resizeOpen\" Title=\"Resize\"\n" +
+        "          Resizable=\"true\" Size=\"XFOverlaySize.Md\"\n" +
+        "          MinWidth=\"300px\" MinHeight=\"200px\"\x3E\n" +
+        "    \x3CXFTypography\x3EResize by handle.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E\n\n" +
+        "\x3C!-- Maximizable --\x3E\n" +
+        "\x3CXFDialog @bind-Open=\"maximizeOpen\" Title=\"Maximize\"\n" +
+        "          Maximizable=\"true\" Size=\"XFOverlaySize.Md\"\x3E\n" +
+        "    \x3CXFTypography\x3EClick to maximize.\x3C/XFTypography\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeAlertDialog => T(
+        "\x3CXFDialog @bind-Open=\"alertOpen\"\n" +
+        "          Title=\"Excluir todos os dados\"\n" +
+        "          Description=\"Acao irreversivel\"\n" +
+        "          Tone=\"XFSemanticColor.Danger\"\n" +
+        "          Alert=\"true\"\n" +
+        "          CloseOnOverlayClick=\"false\"\n" +
+        "          CloseOnEscape=\"false\"\x3E\n" +
+        "    \x3CXFTypography\x3E\n" +
+        "        Esta acao excluir permanentemente 1.247 registros.\n" +
+        "    \x3C/XFTypography\x3E\n" +
+        "    \x3CFooter\x3E\n" +
+        "        \x3CXFButton Text=\"Cancelar\" Variant=\"XFButtonVariant.Outline\"\n" +
+        "                  Color=\"XFButtonColor.Neutral\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => alertOpen = false\" /\x3E\n" +
+        "        \x3CXFButton Text=\"Excluir tudo\"\n" +
+        "                  Variant=\"XFButtonVariant.Solid\"\n" +
+        "                  Color=\"XFButtonColor.Danger\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => alertOpen = false\"\x3E\n" +
+        "            \x3CStartIcon\x3E\x3C/XFButton\x3E\n" +
+        "    \x3C/Footer\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3CXFDialog @bind-Open=\"alertOpen\"\n" +
+        "          Title=\"Delete all data\"\n" +
+        "          Description=\"Irreversible action\"\n" +
+        "          Tone=\"XFSemanticColor.Danger\"\n" +
+        "          Alert=\"true\"\n" +
+        "          CloseOnOverlayClick=\"false\"\n" +
+        "          CloseOnEscape=\"false\"\x3E\n" +
+        "    \x3CXFTypography\x3E\n" +
+        "        This action will permanently delete 1,247 records.\n" +
+        "    \x3C/XFTypography\x3E\n" +
+        "    \x3CFooter\x3E\n" +
+        "        \x3CXFButton Text=\"Cancel\" Variant=\"XFButtonVariant.Outline\"\n" +
+        "                  Color=\"XFButtonColor.Neutral\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => alertOpen = false\" /\x3E\n" +
+        "        \x3CXFButton Text=\"Delete all\"\n" +
+        "                  Variant=\"XFButtonVariant.Solid\"\n" +
+        "                  Color=\"XFButtonColor.Danger\" Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => alertOpen = false\"\x3E\n" +
+        "            \x3CStartIcon\x3E\x3C/XFButton\x3E\n" +
+        "    \x3C/Footer\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeFormDialog => T(
+        "\x3CXFDialog @bind-Open=\"formOpen\"\n" +
+        "          Title=\"Novo Contato\"\n" +
+        "          Description=\"Preencha os dados.\"\n" +
+        "          Size=\"XFOverlaySize.Sm\"\n" +
+        "          CloseOnOverlayClick=\"false\"\x3E\n" +
+        "    \x3CXFStack Orientation=\"XFOrientation.Vertical\" Gap=\"4\"\x3E\n" +
+        "        \x3Cdiv\x3E\n" +
+        "            \x3CXFTypography Variant=\"XFTypographyVariant.Caption\"\x3ENome\x3C/XFTypography\x3E\n" +
+        "            \x3Cinput type=\"text\" @bind=\"formName\"\n" +
+        "              class=\"mt-1 block w-full rounded-lg border\n" +
+        "              border-border-light bg-bg-surface px-3 py-2\n" +
+        "              text-sm\" /\x3E\n" +
+        "        \x3C/div\x3E\n" +
+        "        \x3Cdiv\x3E\n" +
+        "            \x3CXFTypography Variant=\"XFTypographyVariant.Caption\"\x3EEmail\x3C/XFTypography\x3E\n" +
+        "            \x3Cinput type=\"email\" @bind=\"formEmail\"\n" +
+        "              class=\"mt-1 block w-full rounded-lg border\n" +
+        "              border-border-light bg-bg-surface px-3 py-2\n" +
+        "              text-sm\" /\x3E\n" +
+        "        \x3C/div\x3E\n" +
+        "    \x3C/XFStack\x3E\n" +
+        "    \x3CFooter\x3E\n" +
+        "        \x3CXFButton Text=\"Cancelar\"\n" +
+        "                  Variant=\"XFButtonVariant.Outline\"\n" +
+        "                  Color=\"XFButtonColor.Neutral\"\n" +
+        "                  Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => formOpen = false\" /\x3E\n" +
+        "        \x3CXFButton Text=\"Salvar\"\n" +
+        "                  Variant=\"XFButtonVariant.Solid\"\n" +
+        "                  Color=\"XFButtonColor.Primary\"\n" +
+        "                  Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => formOpen = false\"\x3E\n" +
+        "            \x3CStartIcon\x3E\x3C/XFButton\x3E\n" +
+        "    \x3C/Footer\x3E\n" +
+        "\x3C/XFDialog\x3E",
+        "\x3CXFDialog @bind-Open=\"formOpen\"\n" +
+        "          Title=\"New Contact\"\n" +
+        "          Description=\"Fill in the details.\"\n" +
+        "          Size=\"XFOverlaySize.Sm\"\n" +
+        "          CloseOnOverlayClick=\"false\"\x3E\n" +
+        "    \x3CXFStack Orientation=\"XFOrientation.Vertical\" Gap=\"4\"\x3E\n" +
+        "        \x3Cdiv\x3E\n" +
+        "            \x3CXFTypography Variant=\"XFTypographyVariant.Caption\"\x3EName\x3C/XFTypography\x3E\n" +
+        "            \x3Cinput type=\"text\" @bind=\"formName\"\n" +
+        "              class=\"mt-1 block w-full rounded-lg border\n" +
+        "              border-border-light bg-bg-surface px-3 py-2\n" +
+        "              text-sm\" /\x3E\n" +
+        "        \x3C/div\x3E\n" +
+        "        \x3Cdiv\x3E\n" +
+        "            \x3CXFTypography Variant=\"XFTypographyVariant.Caption\"\x3EEmail\x3C/XFTypography\x3E\n" +
+        "            \x3Cinput type=\"email\" @bind=\"formEmail\"\n" +
+        "              class=\"mt-1 block w-full rounded-lg border\n" +
+        "              border-border-light bg-bg-surface px-3 py-2\n" +
+        "              text-sm\" /\x3E\n" +
+        "        \x3C/div\x3E\n" +
+        "    \x3C/XFStack\x3E\n" +
+        "    \x3CFooter\x3E\n" +
+        "        \x3CXFButton Text=\"Cancel\"\n" +
+        "                  Variant=\"XFButtonVariant.Outline\"\n" +
+        "                  Color=\"XFButtonColor.Neutral\"\n" +
+        "                  Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => formOpen = false\" /\x3E\n" +
+        "        \x3CXFButton Text=\"Save\"\n" +
+        "                  Variant=\"XFButtonVariant.Solid\"\n" +
+        "                  Color=\"XFButtonColor.Primary\"\n" +
+        "                  Size=\"XFExtendedSize.Md\"\n" +
+        "                  OnClick=\"() => formOpen = false\"\x3E\n" +
+        "            \x3CStartIcon\x3E\x3C/XFButton\x3E\n" +
+        "    \x3C/Footer\x3E\n" +
+        "\x3C/XFDialog\x3E");
+
+    private string CodeService => T(
+        "\x3C!-- Registrar no layout: --\x3E\n" +
+        "\x3CXFDialogProvider /\x3E\n\n" +
+        "\x3C!-- Injetar e usar: --\x3E\n" +
+        "[Inject] private XFDialogService DialogService { get; set; } = default!;\n\n" +
+        "// Confirmacao simples\n" +
+        "var result = await DialogService.ConfirmAsync(\n" +
+        "    title: \"Confirmar envio\",\n" +
+        "    description: \"Enviar lote fiscal para SEFAZ?\",\n" +
+        "    confirmText: \"Enviar\",\n" +
+        "    cancelText: \"Cancelar\",\n" +
+        "    tone: XFSemanticColor.Primary);\n\n" +
+        "if (!result.Cancelled)\n" +
+        "{\n" +
+        "    // executar acao\n" +
+        "}",
+        "\x3C!-- Register in layout: --\x3E\n" +
+        "\x3CXFDialogProvider /\x3E\n\n" +
+        "\x3C!-- Inject and use: --\x3E\n" +
+        "[Inject] private XFDialogService DialogService { get; set; } = default!;\n\n" +
+        "// Simple confirmation\n" +
+        "var result = await DialogService.ConfirmAsync(\n" +
+        "    title: \"Confirm submission\",\n" +
+        "    description: \"Submit fiscal batch to SEFAZ?\",\n" +
+        "    confirmText: \"Submit\",\n" +
+        "    cancelText: \"Cancel\",\n" +
+        "    tone: XFSemanticColor.Primary);\n\n" +
+        "if (!result.Cancelled)\n" +
+        "{\n" +
+        "    // execute action\n" +
+        "}");
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

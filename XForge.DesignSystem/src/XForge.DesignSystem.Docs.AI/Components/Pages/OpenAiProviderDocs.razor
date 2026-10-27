@@ -1,0 +1,416 @@
+@page "/ai/providers/openai"
+@using XForge.DesignSystem.Services.AI
+@using XForge.DesignSystem.Components.AI.Common
+@using XForge.DesignSystem.Components.AI.Chat
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="OpenAI" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Streaming","Streaming")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Embeddings","Embeddings")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Tool Calling","Tool Calling")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Integracao com a API da OpenAI para chat completions, streaming, embeddings e function calling.",
+                               "Integration with the OpenAI API for chat completions, streaming, embeddings, and function calling.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Suporta GPT-4o, GPT-4-turbo, GPT-3.5-turbo e modelos compativeis via api.openai.com.",
+                               "Supports GPT-4o, GPT-4-turbo, GPT-3.5-turbo, and compatible models via api.openai.com.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza UI mas sem chamadas de provider.", "Renders UI but no provider calls.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Dependencias", "Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Requer IAiProvider injetado via DI. Renderizado com C# e Tailwind CSS. Sem JavaScript interop.", "Requires IAiProvider injected via DI. Rendered with C# and Tailwind CSS. No JavaScript interop.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Configuracao DI", "1. DI Setup"), T("Registro do OpenAiProvider no container de injecao de dependencias.", "Registering OpenAiProvider in the dependency injection container."), ExDiSetup(), Code1)
+            @Example(T("2. Chat com XFAiChat", "2. Chat with XFAiChat"), T("Uso do XFAiChat com OpenAI provider.", "Using XFAiChat with OpenAI provider."), ExChat(), Code2)
+            @Example(T("3. Streaming", "3. Streaming"), T("Exemplo de streaming com OpenAI.", "Streaming example with OpenAI."), ExStream(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section("Parameters", @<div>@NameValueTable(ParameterRows, T("Parametro", "Parameter"), T("Descricao", "Description"))</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section(T("Erros comuns", "Common Errors"), @<div>@TileGrid(ErrorItems, 2)</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+        <XForgeDocsPageStandard ComponentName="OpenAiProviderDocs" />
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("AI Commercial", "AI Commercial");
+    private string PageTitleText => T("OpenAI Provider", "OpenAI Provider");
+    private string PageStatusText => T("Estavel", "Stable");
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">OpenAI Provider</h3>
+            </div>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                GPT-4o
+            </span>
+        </div>
+        <div class="p-4 space-y-4">
+            <div>
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">@T("Modelo", "Model")</label>
+                <div class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100">gpt-4o</div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Streaming</span>
+                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Embeddings</span>
+                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">Tool Calling</span>
+            </div>
+        </div>
+    </div>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Chat Completions", "Chat Completions"), T("GPT-4o, GPT-4-turbo, GPT-3.5-turbo e modelos compativeis.", "GPT-4o, GPT-4-turbo, GPT-3.5-turbo, and compatible models."), "comments"),
+        new(T("Streaming", "Streaming"), T("Chunks em tempo real via SSE com IAsyncEnumerable.", "Real-time chunks via SSE with IAsyncEnumerable."), "bolt"),
+        new(T("Embeddings", "Embeddings"), T("Vetores de embedding para busca semantica.", "Embedding vectors for semantic search."), "arrows-left-right")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "OpenAiProvider"),
+        new("Namespace", "XForge.DesignSystem.Services.AI"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Providers"),
+        new("Interface", "IAiProvider"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("Requer IAiProvider injetado via DI.", "Requires IAiProvider injected via DI.")),
+        new("Theme support", T("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Provider OpenAI", "OpenAI Provider"), T("Integracao com a API da OpenAI.", "Integration with the OpenAI API."), "plug"),
+        new(T("Chat + Streaming", "Chat + Streaming"), T("CompleteAsync e StreamAsync para chat.", "CompleteAsync and StreamAsync for chat."), "comments"),
+        new(T("Embeddings", "Embeddings"), T("EmbedAsync para vetores de embedding.", "EmbedAsync for embedding vectors."), "arrows-left-right")
+    ];
+
+    // === PURPOSE ===
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Chat", "Chat"), T("Assistentes virtuais e chatbots.", "Virtual assistants and chatbots."), "comments"),
+        new(T("Embeddings", "Embeddings"), T("Busca semantica em documentos.", "Semantic search in documents."), "magnifying-glass"),
+        new(T("Function Calling", "Function Calling"), T("Execucao de ferramentas via AI.", "Tool execution via AI."), "wrench")
+    ];
+
+    // === PROBLEM SOLVED ===
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Integracao manual com API OpenAI.", "Manual integration with OpenAI API."), "xmark"),
+        new(T("Depois", "After"), T("Provider abstrato com DI e tratamento de erros.", "Abstract provider with DI and error handling."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("Requisitos de acessibilidade padrao para provider.", "Standard accessibility requirements for provider."), "universal-access")
+    ];
+
+    // === WHEN TO USE ===
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Assistente virtual", "Virtual assistant"), T("Chatbot com GPT-4o.", "Chatbot with GPT-4o."), "comments"),
+        new(T("Busca semantica", "Semantic search"), T("Embeddings para RAG.", "Embeddings for RAG."), "magnifying-glass")
+    ];
+
+    // === WHEN NOT TO USE ===
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Ollama local", "Local Ollama"), T("Use OllamaProvider para modelos locais.", "Use OllamaProvider for local models."), "ban"),
+        new(T("Azure OpenAI", "Azure OpenAI"), T("Use AzureOpenAiProvider para Azure.", "Use AzureOpenAiProvider for Azure."), "triangle-exclamation")
+    ];
+
+    // === ANATOMY ===
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("IAiProvider", T("Interface para todos os provedores AI.", "Interface for all AI providers."), "plug"),
+        new("AiChatRequest", T("Request de chat com mensagens e parametros.", "Chat request with messages and parameters."), "paper-plane"),
+        new("AiChatResponse", T("Resposta completa do modelo.", "Complete model response."), "comment-dots"),
+        new("AiStreamChunk", T("Chunk incremental de streaming.", "Incremental streaming chunk."), "bars"),
+        new("AiEmbeddingRequest", T("Request de embedding com textos.", "Embedding request with texts."), "arrows-left-right"),
+        new("AiEmbeddingResponse", T("Vetores de embedding retornados.", "Returned embedding vectors."), "vector-square")
+    ];
+
+    // === DESIGN PRINCIPLES ===
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("DI-first", "DI-first"), T("Provider injetado via DI, nao instanciado.", "Provider injected via DI, not instantiated."), "plug"),
+        new(T("Interface-driven", "Interface-driven"), T("IAiProvider permite trocar provedores.", "IAiProvider allows swapping providers."), "arrows-rotate"),
+        new(T("Streaming nativo", "Native streaming"), T("IAsyncEnumerable para chunks em tempo real.", "IAsyncEnumerable for real-time chunks."), "bolt")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExDiSetup() => @<div class="rounded-lg border border-border-light bg-surface-50 p-5">
+        <XFCode Text="@Code1" Language="csharp" Title="@L.Text("Program.cs","Program.cs")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+    </div>;
+
+    private RenderFragment ExChat() => @<div class="rounded-lg border border-border-light bg-surface-50 p-5">
+        <XFCode Text="@Code2" Language="razor" Title="@L.Text("Chat.razor","Chat.razor")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+    </div>;
+
+    private RenderFragment ExStream() => @<div class="rounded-lg border border-border-light bg-surface-50 p-5">
+        <XFCode Text="@Code3" Language="csharp" Title="@L.Text("StreamingService.cs","StreamingService.cs")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+    </div>;
+
+    private const string Code1 = "// Program.cs\nusing XForge.DesignSystem.Services.AI;\n\nvar builder = WebAssemblyHostBuilder.CreateDefault(args);\n\nbuilder.Services.AddHttpClient<IAiProvider, OpenAiProvider>((sp, client) =>\n{\n    var apiKey = builder.Configuration[\"OpenAI:ApiKey\"]\n        ?? Environment.GetEnvironmentVariable(\"OPENAI_API_KEY\")!;\n    return new OpenAiProvider(client, apiKey);\n});";
+
+    private const string Code2 = "@page \"/chat\"\n@using XForge.DesignSystem.Services.AI\n@using XForge.DesignSystem.Components.AI.Chat\n@inject IAiProvider Provider\n\n<XFAiChat Provider=\"Provider\"\n           Title=\"Assistente OpenAI\"\n           SystemPrompt=\"Voce e um assistente util e objetivo.\"\n           Placeholder=\"Digite sua mensagem...\" />";
+
+    private const string Code3 = "public async IAsyncEnumerable<string> StreamChatAsync(\n    string prompt,\n    [EnumeratorCancellation] CancellationToken ct = default)\n{\n    var request = new AiChatRequest\n    {\n        Messages = new[] { new AiMessage { Role = AiRole.User, Content = prompt } },\n        Temperature = 0.7,\n        MaxTokens = 2048\n    };\n\n    await foreach (var chunk in Provider.StreamAsync(request, ct))\n    {\n        if (chunk.Delta is { Length: > 0 }) yield return chunk.Delta;\n    }\n}";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("CompleteAsync", "Task<AiChatResponse>", "-", T("Envia requisicao de chat e retorna resposta completa.", "Sends chat request and returns complete response.")),
+        new("StreamAsync", "IAsyncEnumerable<AiStreamChunk>", "-", T("Envia requisicao de chat e retorna chunks em tempo real via SSE.", "Sends chat request and returns real-time chunks via SSE.")),
+        new("EmbedAsync", "Task<AiEmbeddingResponse>", "-", T("Gera vetores de embedding para os textos fornecidos.", "Generates embedding vectors for provided texts.")),
+        new("ListModelsAsync", "Task<IReadOnlyList<string>>", "-", T("Retorna lista de modelos disponiveis na conta.", "Returns list of available models in the account.")),
+        new("CheckHealthAsync", "Task<AiHealthStatus>", "-", T("Verifica saude do provedor (ping no endpoint /models).", "Checks provider health (pings /models endpoint)."))
+    ];
+
+    // === PARAMETERS ===
+    private IReadOnlyList<NameValueRow> ParameterRows => [
+        new("apiKey", T("OpenAI API key (sk-...). Necessaria para autenticacao.", "OpenAI API key (sk-...). Required for authentication.")),
+        new("baseUrl", T("URL base da API. Altere para proxies ou endpoints compativeis. Default: https://api.openai.com/v1", "Base API URL. Change for proxies or compatible endpoints. Default: https://api.openai.com/v1"))
+    ];
+
+    // === EVENTS ===
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnStreamChunk", T("Disparado a cada chunk de streaming recebido.", "Fired for each streaming chunk received.")),
+        new("OnError", T("Disparado quando ocorre erro na chamada API.", "Fired when an API call error occurs.")),
+        new("OnHealthChanged", T("Disparado quando o status de saude muda.", "Fired when health status changes."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Provider abstrato", "Abstract provider"), T("Nao renderiza UI diretamente. Compativel com qualquer componente.", "Does not render UI directly. Compatible with any component."), "universal-access"),
+        new(T("DI injection", "DI injection"), T("Provider injetado via DI para desacoplamento.", "Provider injected via DI for decoupling."), "plug"),
+        new(T("Erros tratados", "Errors handled"), T("Erros tratados com retry e backoff automatico.", "Errors handled with automatic retry and backoff."), "shield"),
+        new(T("Health check", "Health check"), T("CheckHealthAsync para verificacao de saude.", "CheckHealthAsync for health verification."), "heart-pulse")
+    ];
+
+    // === KEYBOARD SUPPORT ===
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre botoes e inputs no chat.", "Navigates between buttons and inputs in chat.")),
+        new("Enter", T("Envia mensagem no chat.", "Sends message in chat.")),
+        new("Escape", T("Cancela streaming em andamento.", "Cancels ongoing streaming."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("API agnostica", "API agnostic"), T("Provider funciona em qualquer viewport.", "Provider works on any viewport."), "maximize"),
+        new(T("Chunks leves", "Light chunks"), T("Streaming com chunks minimos para latencia baixa.", "Streaming with minimal chunks for low latency."), "feather")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Streaming SSE", "Streaming SSE"), T("Chunks em tempo real sem polling.", "Real-time chunks without polling."), "bolt"),
+        new(T("Retry automatico", "Automatic retry"), T("Backoff exponencial (3 tentativas).", "Exponential backoff (3 attempts)."), "arrows-rotate"),
+        new(T("HttpClient pooling", "HttpClient pooling"), T("Reutiliza HttpClient via DI.", "Reuses HttpClient via DI."), "layer-group")
+    ];
+
+    // === ENTERPRISE SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("ERP AI", "ERP AI"), T("Assistente de notas fiscais com GPT-4o.", "Invoice assistant with GPT-4o."), "file-invoice"),
+        new(T("RAG", "RAG"), T("Embeddings para busca semantica em documentos.", "Embeddings for semantic document search."), "magnifying-glass"),
+        new(T("Chatbot atendimento", "Customer service chatbot"), T("Chatbot para suporte ao cliente.", "Customer support chatbot."), "headset")
+    ];
+
+    // === COMPOSITION PATTERNS ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Provider + XFAiChat", "Provider + XFAiChat"), T("Provider alimenta o componente de chat.", "Provider feeds the chat component."), "comments"),
+        new(T("Provider + PromptBox", "Provider + PromptBox"), T("Provider para gerar respostas via PromptBox.", "Provider to generate responses via PromptBox."), "pen-to-square"),
+        new(T("Provider + Workflow", "Provider + Workflow"), T("Provider para executar workflows AI.", "Provider to execute AI workflows."), "diagram-project")
+    ];
+
+    // === UX BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("DI injection", "DI injection"), T("Registre via DI, nao instancie direto.", "Register via DI, do not instantiate directly."), "plug"),
+        new(T("Streaming para UX", "Streaming for UX"), T("Use StreamAsync para feedback imediato.", "Use StreamAsync for immediate feedback."), "bolt"),
+        new(T("Modelo adequado", "Right model"), T("GPT-4o para complexidade, GPT-3.5-turbo para custo.", "GPT-4o for complexity, GPT-3.5-turbo for cost."), "check"),
+        new(T("Health check", "Health check"), T("Verifique saude antes de operacoes criticas.", "Check health before critical operations."), "heart-pulse")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Hardcoded API key", "Hardcoded API key"), T("Nao defina API key no codigo fonte.", "Do not set API key in source code."), "xmark"),
+        new(T("Sem retry", "Without retry"), T("Nao chame API sem tratamento de erros.", "Do not call API without error handling."), "ban"),
+        new(T("Polling", "Polling"), T("Use Streaming ao inves de polling.", "Use Streaming instead of polling."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("container", T("rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm.", "Rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm.")),
+        new("badge", T("inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs.", "Inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs.")),
+        new("select", T("w-full rounded-lg border bg-white dark:bg-gray-800 px-3 py-2 text-sm.", "W-full rounded-lg border bg-white dark:bg-gray-800 px-3 py-2 text-sm."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Status colors", T("Verde=conectado, Cinza=desconectado.", "Green=connected, Gray=disconnected."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, DI, streaming, embeddings, erros.", "Render, DI, streaming, embeddings, errors tests.")),
+        new("Integration", T("Testes de chamada API com mock.", "API call tests with mock."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("API key", T("Requer API key valida da OpenAI.", "Requires valid OpenAI API key.")),
+        new("Rate limits", T("Sujeito a rate limits da OpenAI (429).", "Subject to OpenAI rate limits (429).")),
+        new("Custo", T("Tokens cobrados por uso.", "Tokens charged per use."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("OllamaProvider", T("Provider para modelos locais.", "Provider for local models."), "plug"),
+        new("AzureOpenAiProvider", T("Provider para Azure OpenAI.", "Provider for Azure OpenAI."), "cloud"),
+        new("XFAiChat", T("Componente de chat AI.", "AI chat component."), "comments"),
+        new("XFAiPromptBox", T("Box de prompt AI.", "AI prompt box."), "pen-to-square")
+    ];
+
+    // === COMMON ERRORS ===
+    private IReadOnlyList<DocTile> ErrorItems => [
+        new("401 Unauthorized", T("API key invalida ou expirada. Verifique OPENAI_API_KEY.", "Invalid or expired API key. Check OPENAI_API_KEY."), "xmark"),
+        new("429 Rate Limited", T("Limite de requisicoes excedido. Retry automatico com backoff.", "Request limit exceeded. Automatic retry with backoff."), "clock"),
+        new("Model Not Found", T("Modelo nao existe. Use ListModelsAsync().", "Model does not exist. Use ListModelsAsync()."), "magnifying-glass"),
+        new("Timeout", T("Ajuste HttpClient timeout para modelos lentos.", "Adjust HttpClient timeout for slow models."), "hourglass-half")
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("v1.0.0", T("Provider inicial com CompleteAsync, StreamAsync, EmbedAsync, ListModelsAsync.", "Initial provider with CompleteAsync, StreamAsync, EmbedAsync, ListModelsAsync.")),
+        new("v1.1.0", T("Retry com backoff exponencial, health checks, IAsyncDisposable.", "Retry with exponential backoff, health checks, IAsyncDisposable.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="csharp" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Metodo", "Method")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell><XFCode Text="@row.Type" /></XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

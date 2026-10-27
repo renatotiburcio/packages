@@ -1,0 +1,28 @@
+﻿@using XForge.DesignSystem.Core.Primitives
+@inherits XForgeComponentBase
+
+<nav id="@Id" class="@RootClass" style="@Style" aria-label="@AriaLabel" @attributes="AdditionalAttributes">
+    @if (Collapsible)
+    {
+        <button type="button"
+                class="mb-1 inline-flex h-9 w-9 items-center justify-center rounded-md text-text-secondary outline-none transition-all duration-150 hover:bg-surface-100 focus-visible:ring-2 focus-visible:ring-border-focus"
+                aria-label="@EffectiveToggleLabel"
+                aria-expanded="@(Expanded ? "true" : "false")"
+                @onclick="ToggleExpandedAsync">
+            <span class="inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">@XFSvgIcons.MarkupWithSize("bars", 14)</span>
+        </button>
+    }
+
+    <div role="@(Orientation == XFOrientation.Vertical && Variant != XFMenuVariant.Dropdown ? "tree" : "menubar")"
+         aria-orientation="@(Orientation == XFOrientation.Vertical ? "vertical" : "horizontal")"
+         @onkeydown="HandleKeyDownAsync">
+        @if (Items.Count == 0)
+        {
+            <div class="@EmptyClass">@EmptyText</div>
+        }
+        else
+        {
+            @RenderItems(Items, 1)
+        }
+    </div>
+</nav>

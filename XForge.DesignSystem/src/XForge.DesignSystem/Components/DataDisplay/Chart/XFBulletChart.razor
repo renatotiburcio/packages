@@ -1,0 +1,22 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="img"
+     aria-label="@(AriaLabel ?? "Bullet chart")">
+
+    <svg class="h-full w-full"
+         viewBox="0 0 @(Orientation == BulletOrientation.Horizontal ? 300 : 120) @(Orientation == BulletOrientation.Horizontal ? 80 : 300)"
+         aria-hidden="true">
+        @if (Orientation == BulletOrientation.Horizontal)
+        {
+            @RenderHorizontal()
+        }
+        else
+        {
+            @RenderVertical()
+        }
+    </svg>
+</div>

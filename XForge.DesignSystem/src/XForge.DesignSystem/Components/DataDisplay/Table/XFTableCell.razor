@@ -1,0 +1,15 @@
+@if (Visible)
+{
+    @if (Header)
+    {
+        <th class="@CellClass" scope="@Scope" colspan="@ColSpanValue" rowspan="@RowSpanValue" @attributes="AdditionalAttributes">
+            @ChildContent
+        </th>
+    }
+    else
+    {
+        <td class="@CellClass" colspan="@ColSpanValue" rowspan="@RowSpanValue" @attributes="AdditionalAttributes">
+            @ChildContent
+        </td>
+    }
+}

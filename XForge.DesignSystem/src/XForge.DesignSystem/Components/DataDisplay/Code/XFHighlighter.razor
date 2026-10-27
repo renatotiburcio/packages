@@ -1,0 +1,18 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <span id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes">
+        @foreach (var fragment in Fragments)
+        {
+            if (fragment.IsMatch)
+            {
+                <mark class="@MarkClass">@fragment.Text</mark>
+            }
+            else
+            {
+                @fragment.Text
+            }
+        }
+    </span>
+}

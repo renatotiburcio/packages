@@ -1,0 +1,88 @@
+@typeparam T
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="img"
+     aria-label="@(AriaLabel ?? "Area chart")">
+
+    <svg class="h-full w-full" viewBox="0 0 @SvgWidth @SvgHeight" aria-hidden="true">
+        @if (Data is { Count: > 1 })
+        {
+            var yMin = MinY ?? Data.Min(p => YSelector(p));
+            var yMax = MaxY ?? Data.Max(p => YSelector(p));
+            var xMin = Data.Min(p => XSelector(p));
+            var xMax = Data.Max(p => XSelector(p));
+            var xRange = xMax - xMin;
+            var yRange = yMax - yMin;
+            if (xRange == 0) xRange = 1;
+            if (yRange == 0) yRange = 1;
+
+            var paddingLeft = 40.0;
+            var paddingRight = 10.0;
+            var paddingTop = 10.0;
+            var paddingBottom = 20.0;
+            var chartW = SvgWidth - paddingLeft - paddingRight;
+            var chartH = SvgHeight - paddingTop - paddingBottom;
+
+            @* ── Grid Lines *@
+            @if (ShowGrid)
+            {
+                @for (var i = 0; i <= GridLines; i++)
+                {
+                    var yPos = paddingTop + chartH * i / GridLines;
+                    var yVal = yMax - (yRange * i / GridLines);
+                    <line x1="@paddingLeft" y1="@yPos" x2="@(paddingLeft + chartW)" y2="@yPos"
+                          stroke-width="0.5" class="stroke-surface-200" />
+                    <svg:text x="@(paddingLeft - 5)" y="@yPos" text-anchor="end" dominant-baseline="middle"
+                           class="fill-text-secondary text-[10px]">@FormatValue(yVal)</svg:text>
+                }
+            }
+
+            @* ── Area Fill *@
+            {
+                var areaPoints = new List<string>();
+                foreach (var pt in Data)
+                {
+                    var px = paddingLeft + (XSelector(pt) - xMin) / xRange * chartW;
+                    var py = paddingTop + (1 - (YSelector(pt) - yMin) / yRange) * chartH;
+                    areaPoints.Add($"{px:0.###},{py:0.###}");
+                }
+                var baseline = paddingTop + chartH;
+                var firstX = paddingLeft + (XSelector(Data[0]) - xMin) / xRange * chartW;
+                var lastX = paddingLeft + (XSelector(Data[^1]) - xMin) / xRange * chartW;
+                <polygon points="@($"{firstX:0.###},{baseline} {string.Join(" ", areaPoints)} {lastX:0.###},{baseline}")"
+                         fill="@(FillColor ?? "fill-primary/20")" />
+            }
+
+            @* ── Line Stroke *@
+            {
+                var linePath = string.Join(" ",
+                    Data.Select(pt =>
+                    {
+                        var px = paddingLeft + (XSelector(pt) - xMin) / xRange * chartW;
+                        var py = paddingTop + (1 - (YSelector(pt) - yMin) / yRange) * chartH;
+                        return $"M{px:0.###},{py:0.###}";
+                    }));
+                <path d="@linePath" fill="none"
+                      stroke="@(StrokeColor ?? "stroke-primary")"
+                      stroke-width="@(StrokeWidth > 0 ? StrokeWidth : 2)" />
+            }
+
+            @* ── Dots *@
+            @if (ShowDots)
+            {
+                @foreach (var pt in Data)
+                {
+                    var px = paddingLeft + (XSelector(pt) - xMin) / xRange * chartW;
+                    var py = paddingTop + (1 - (YSelector(pt) - yMin) / yRange) * chartH;
+                    <circle cx="@px" cy="@py" r="3"
+                            fill="@(StrokeColor ?? "fill-primary")"
+                            stroke="white" stroke-width="1" />
+                }
+            }
+        }
+    </svg>
+</div>

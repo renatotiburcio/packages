@@ -1,0 +1,675 @@
+@page "/layout/splitter"
+@using XForge.DesignSystem.Components.Layout.Splitter
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        @* ==================== HEADER ==================== *@
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSplitter" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Painéis redimensionáveis", "Resizable panels")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("JS Interop", "JS Interop")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Master-detail", "Master-detail")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Divisores redimensionáveis para painéis, editores, dashboards e workspaces.",
+                               "Resizable dividers for panels, editors, dashboards and workspaces.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFSplitter divide a área em dois painéis com divisor arrastável. Suporta orientação horizontal e vertical, tamanho min/max/step, colapso, estado controlado via PrimarySizeChanged e Change, além de interop JS para posicionamento e teclado.",
+                               "XFSplitter divides the area into two panels with a draggable divider. It supports horizontal and vertical orientation, min/max/step size, collapse, controlled state via PrimarySizeChanged and Change, plus JS interop for positioning and keyboard.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts) { @Tile(item) }</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @* ==================== 1. METADATA ==================== *@
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @* ==================== 2. BLAZOR SERVER / WASM ==================== *@
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Divisor arrastável indisponível durante prerender.", "Renders base HTML. Draggable divider unavailable during prerender.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-splitter.js — gerencia xfSplitter.register/release, drag do divisor, teclado (arrow keys/Home/End) e posicionamento.", "JS file: xf-splitter.js — manages xfSplitter.register/release, divider drag, keyboard (arrow keys/Home/End) and positioning.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: OnAfterRenderAsync (firstRender).", "When loaded: OnAfterRenderAsync (firstRender).")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Prerender seguro: try/catch para InvalidOperationException e JSDisconnectedException.", "Prerender safe: try/catch for InvalidOperationException and JSDisconnectedException.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações Blazor Server", "Blazor Server Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop via SignalR com latência. Drag do divisor pode ter resposta mais lenta.", "JS interop via SignalR with latency. Divider drag may have slower response.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações Blazor WebAssembly", "Blazor WebAssembly Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop direto sem latência de rede. Disponível após carregamento do WASM.", "Direct JS interop with no network latency. Available after WASM load.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Exemplos de uso", "Usage Examples")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFCode Text="@InteractiveServerExample" Language="razor" Title="InteractiveServer" Variant="XFCodeVariant.Block" Copyable="true" />
+                    <XFCode Text="@InteractiveWasmExample" Language="razor" Title="InteractiveWebAssembly" Variant="XFCodeVariant.Block" Copyable="true" />
+                    <XFCode Text="@InteractiveAutoExample" Language="razor" Title="InteractiveAuto" Variant="XFCodeVariant.Block" Copyable="true" />
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        @* ==================== 3. OVERVIEW ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 4. VARIANTS & STATES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 5. VISUAL HIERARCHY & DESIGN ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        @* ==================== 6-14. EXAMPLES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Splitter horizontal básico", "1. Basic horizontal splitter"),
+                T("Dois painéis lado a lado com divisor arrastável.", "Two panels side by side with draggable divider."),
+                BasicPreview(), BasicCode)
+
+            @Example(T("2. Splitter vertical", "2. Vertical splitter"),
+                T("Painéis empilhados verticalmente com divisor horizontal.", "Vertically stacked panels with horizontal divider."),
+                VerticalPreview(), VerticalCode)
+
+            @Example(T("3. Splitter com PrimarySize controlado", "3. Controlled PrimarySize"),
+                T("PrimarySize=30 com o painel primário menor.", "PrimarySize=30 with a smaller primary panel."),
+                PrimarySizePreview(), PrimarySizeCode)
+
+            @Example(T("4. Splitter com Min/Max configurado", "4. Configurable Min/Max"),
+                T("Limites de 20% a 60% para evitar painéis extremos.", "20% to 60% limits to prevent extreme panels."),
+                MinMaxPreview(), MinMaxCode)
+
+            @Example(T("5. Splitter Collapsed (secundário)", "5. Collapsed secondary"),
+                T("Painel secundário colapsado, primário ocupa tudo.", "Secondary panel collapsed, primary fills all."),
+                CollapsedPreview(), CollapsedCode)
+
+            @Example(T("6. Splitter CollapsePrimary", "6. CollapsePrimary"),
+                T("Painel primário colapsado via CollapsePrimary=true.", "Primary panel collapsed via CollapsePrimary=true."),
+                CollapsePrimaryPreview(), CollapsePrimaryCode)
+
+            @Example(T("7. Splitter com Step customizado", "7. Custom Step"),
+                T("Step=5 para movimento mais rápido por teclado.", "Step=5 for faster keyboard movement."),
+                StepPreview(), StepCode)
+
+            @Example(T("8. Splitter master-detail enterprise", "8. Enterprise master-detail"),
+                T("Lista de pedidos à esquerda, detalhe à direita.", "Order list on left, detail on right."),
+                MasterDetailPreview(), MasterDetailCode)
+
+            @Example(T("9. Splitter com evento Change", "9. Splitter with Change event"),
+                T("Change com XFSplitterChangedEventArgs para ações.", "Change with XFSplitterChangedEventArgs for actions."),
+                ChangeEventPreview(), ChangeEventCode)
+        </XFStack>
+
+        @* ==================== 16. API ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Métodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Método", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 17. ACCESSIBILITY & KEYBOARD ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegação enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 18. RESPONSIVENESS & PERFORMANCE ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 19. ENTERPRISE SCENARIOS & PATTERNS ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Exemplos de integração", "Integration Examples"), @<div>@TileGrid(IntegrationItems, 2)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        @* ==================== 20. TOKENS, THEMING, SECURITY, TESTING ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+        </XFStack>
+
+        @* ==================== EXTRA: LIMITATIONS, MIGRATION, RELATED, FAQ, CHANGELOG ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migração", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Splitter", "Splitter");
+    private string PageStatusText => T("Documentação completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    // ==================== BLAZOR SECTION EXAMPLES ====================
+    private string InteractiveServerExample => @"@page ""/erp/financeiro/pedidos""
+@rendermode InteractiveServer
+<XFSplitter>
+    <PrimaryContent><div class=""p-4"">Lista</div></PrimaryContent>
+    <SecondaryContent><div class=""p-4"">Detalhe</div></SecondaryContent>
+</XFSplitter>";
+
+    private string InteractiveWasmExample => @"@page ""/erp/financeiro/pedidos""
+@rendermode InteractiveWebAssembly
+<XFSplitter>
+    <PrimaryContent><div class=""p-4"">Lista</div></PrimaryContent>
+    <SecondaryContent><div class=""p-4"">Detalhe</div></SecondaryContent>
+</XFSplitter>";
+
+    private string InteractiveAutoExample => @"@page ""/erp/financeiro/pedidos""
+@rendermode InteractiveAuto
+<XFSplitter>
+    <PrimaryContent><div class=""p-4"">Lista</div></PrimaryContent>
+    <SecondaryContent><div class=""p-4"">Detalhe</div></SecondaryContent>
+</XFSplitter>";
+
+    // ==================== HERO PREVIEW ====================
+    private RenderFragment HeroPreview() => @<div class="h-56 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter PrimarySize="40">
+            <PrimaryContent><div class="h-full bg-surface-50 p-4"><XFTypography Weight="XFTypographyWeight.Bold">@T("Lista", "List")</XFTypography><div class="mt-2 text-sm text-text-secondary">@T("Pedidos do dia", "Today orders")</div></div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4"><XFTypography Weight="XFTypographyWeight.Bold">@T("Detalhe", "Detail")</XFTypography><div class="mt-2 text-sm text-text-secondary">@T("Selecione um pedido", "Select an order")</div></div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    // ==================== EXAMPLE PREVIEWS ====================
+    private RenderFragment BasicPreview() => @<div class="h-48 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter>
+            <PrimaryContent><div class="h-full bg-surface-50 p-4 text-sm">@T("Painel primário", "Primary panel")</div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4 text-sm">@T("Painel secundário", "Secondary panel")</div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    private RenderFragment VerticalPreview() => @<div class="h-56 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter Orientation="XFOrientation.Vertical" PrimarySize="40">
+            <PrimaryContent><div class="h-full bg-surface-50 p-4 text-sm">@T("Painel superior", "Top panel")</div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4 text-sm">@T("Painel inferior", "Bottom panel")</div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    private RenderFragment PrimarySizePreview() => @<div class="h-48 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter PrimarySize="30">
+            <PrimaryContent><div class="h-full bg-surface-50 p-4 text-sm">@T("30%", "30%")</div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4 text-sm">@T("70%", "70%")</div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    private RenderFragment MinMaxPreview() => @<div class="h-48 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter PrimarySize="40" Min="20" Max="60">
+            <PrimaryContent><div class="h-full bg-surface-50 p-4 text-sm">@T("Mín 20% • Máx 60%", "Min 20% • Max 60%")</div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4 text-sm">@T("Painel ajustável", "Adjustable panel")</div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    private RenderFragment CollapsedPreview() => @<div class="h-48 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter Collapsed="true">
+            <PrimaryContent><div class="h-full bg-surface-50 p-4 text-sm">@T("Único painel visível", "Only visible panel")</div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4 text-sm">@T("Colapsado", "Collapsed")</div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    private RenderFragment CollapsePrimaryPreview() => @<div class="h-48 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter Collapsed="true" CollapsePrimary="true">
+            <PrimaryContent><div class="h-full bg-surface-50 p-4 text-sm">@T("Colapsado", "Collapsed")</div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4 text-sm">@T("Único painel visível", "Only visible panel")</div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    private RenderFragment StepPreview() => @<div class="h-48 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter PrimarySize="50" Step="5">
+            <PrimaryContent><div class="h-full bg-surface-50 p-4 text-sm">@T("Step=5", "Step=5")</div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4 text-sm">@T("Movimento rápido por teclado", "Fast keyboard movement")</div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    private RenderFragment MasterDetailPreview() => @<div class="h-56 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter PrimarySize="35" Min="25" Max="50">
+            <PrimaryContent><div class="h-full bg-surface-50 p-3 text-sm space-y-1"><div class="rounded bg-primary/10 px-2 py-1.5 text-primary font-semibold text-xs">@T("Pedido #1042", "Order #1042")</div><div class="px-2 py-1.5 text-text-secondary text-xs">@T("Pedido #1041", "Order #1041")</div><div class="px-2 py-1.5 text-text-secondary text-xs">@T("Pedido #1040", "Order #1040")</div></div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4"><XFTypography Weight="XFTypographyWeight.Bold" Variant="XFTypographyVariant.Body1">@T("Pedido #1042", "Order #1042")</XFTypography><div class="mt-2 text-xs text-text-secondary space-y-1"><div>@T("Cliente: João Silva", "Customer: John Doe")</div><div>@T("Valor: R$ 1.247,00", "Amount: $ 1,247.00")</div><div>@T("Status: Em aprovação", "Status: Pending approval")</div></div></div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    private RenderFragment ChangeEventPreview() => @<div class="h-48 overflow-hidden rounded-lg border border-border-light">
+        <XFSplitter PrimarySize="50">
+            <PrimaryContent><div class="h-full bg-surface-50 p-4 text-sm">@T("Arraste o divisor", "Drag the divider")</div></PrimaryContent>
+            <SecondaryContent><div class="h-full bg-bg-surface p-4 text-sm">@T("O evento Change dispara", "The Change event fires")</div></SecondaryContent>
+        </XFSplitter>
+    </div>;
+
+    // ==================== CODE STRINGS ====================
+    private string BasicCode => T("""
+<XFSplitter>
+    <PrimaryContent>
+        <div class="p-4">Painel primário</div>
+    </PrimaryContent>
+    <SecondaryContent>
+        <div class="p-4">Painel secundário</div>
+    </SecondaryContent>
+</XFSplitter>
+""", """
+<XFSplitter>
+    <PrimaryContent>
+        <div class="p-4">Primary panel</div>
+    </PrimaryContent>
+    <SecondaryContent>
+        <div class="p-4">Secondary panel</div>
+    </SecondaryContent>
+</XFSplitter>
+""");
+
+    private string VerticalCode => T("""
+<XFSplitter Orientation="XFOrientation.Vertical" PrimarySize="40">
+    <PrimaryContent>
+        <div class="p-4">Painel superior</div>
+    </PrimaryContent>
+    <SecondaryContent>
+        <div class="p-4">Painel inferior</div>
+    </SecondaryContent>
+</XFSplitter>
+""", """
+<XFSplitter Orientation="XFOrientation.Vertical" PrimarySize="40">
+    <PrimaryContent>
+        <div class="p-4">Top panel</div>
+    </PrimaryContent>
+    <SecondaryContent>
+        <div class="p-4">Bottom panel</div>
+    </SecondaryContent>
+</XFSplitter>
+""");
+
+    private string PrimarySizeCode => T("""
+<XFSplitter PrimarySize="30">
+    <PrimaryContent><div class="p-4">30%</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">70%</div></SecondaryContent>
+</XFSplitter>
+""", """
+<XFSplitter PrimarySize="30">
+    <PrimaryContent><div class="p-4">30%</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">70%</div></SecondaryContent>
+</XFSplitter>
+""");
+
+    private string MinMaxCode => T("""
+<XFSplitter PrimarySize="40" Min="20" Max="60">
+    <PrimaryContent><div class="p-4">Painel com limites</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Painel ajustável</div></SecondaryContent>
+</XFSplitter>
+""", """
+<XFSplitter PrimarySize="40" Min="20" Max="60">
+    <PrimaryContent><div class="p-4">Panel with limits</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Adjustable panel</div></SecondaryContent>
+</XFSplitter>
+""");
+
+    private string CollapsedCode => T("""
+<XFSplitter Collapsed="true">
+    <PrimaryContent><div class="p-4">Visível</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Colapsado</div></SecondaryContent>
+</XFSplitter>
+""", """
+<XFSplitter Collapsed="true">
+    <PrimaryContent><div class="p-4">Visible</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Collapsed</div></SecondaryContent>
+</XFSplitter>
+""");
+
+    private string CollapsePrimaryCode => T("""
+<XFSplitter Collapsed="true" CollapsePrimary="true">
+    <PrimaryContent><div class="p-4">Colapsado</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Visível</div></SecondaryContent>
+</XFSplitter>
+""", """
+<XFSplitter Collapsed="true" CollapsePrimary="true">
+    <PrimaryContent><div class="p-4">Collapsed</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Visible</div></SecondaryContent>
+</XFSplitter>
+""");
+
+    private string StepCode => T("""
+<XFSplitter PrimarySize="50" Step="5">
+    <PrimaryContent><div class="p-4">Step=5</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Movimento rápido</div></SecondaryContent>
+</XFSplitter>
+""", """
+<XFSplitter PrimarySize="50" Step="5">
+    <PrimaryContent><div class="p-4">Step=5</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Fast movement</div></SecondaryContent>
+</XFSplitter>
+""");
+
+    private string MasterDetailCode => T("""
+<XFSplitter PrimarySize="35" Min="25" Max="50">
+    <PrimaryContent>
+        <div class="space-y-1 p-3">
+            <div class="rounded bg-primary/10 px-2 py-1.5 text-primary font-semibold text-xs">Pedido #1042</div>
+            <div class="px-2 py-1.5 text-text-secondary text-xs">Pedido #1041</div>
+            <div class="px-2 py-1.5 text-text-secondary text-xs">Pedido #1040</div>
+        </div>
+    </PrimaryContent>
+    <SecondaryContent>
+        <div class="p-4">
+            <XFTypography Weight="Bold" Variant="Body1">Pedido #1042</XFTypography>
+            <div class="mt-2 text-xs text-text-secondary">
+                <div>Cliente: João Silva</div>
+                <div>Valor: R$ 1.247,00</div>
+                <div>Status: Em aprovação</div>
+            </div>
+        </div>
+    </SecondaryContent>
+</XFSplitter>
+""", """
+<XFSplitter PrimarySize="35" Min="25" Max="50">
+    <PrimaryContent>
+        <div class="space-y-1 p-3">
+            <div class="rounded bg-primary/10 px-2 py-1.5 text-primary font-semibold text-xs">Order #1042</div>
+            <div class="px-2 py-1.5 text-text-secondary text-xs">Order #1041</div>
+            <div class="px-2 py-1.5 text-text-secondary text-xs">Order #1040</div>
+        </div>
+    </PrimaryContent>
+    <SecondaryContent>
+        <div class="p-4">
+            <XFTypography Weight="Bold" Variant="Body1">Order #1042</XFTypography>
+            <div class="mt-2 text-xs text-text-secondary">
+                <div>Customer: John Doe</div>
+                <div>Amount: $ 1,247.00</div>
+                <div>Status: Pending approval</div>
+            </div>
+        </div>
+    </SecondaryContent>
+</XFSplitter>
+""");
+
+    private string ChangeEventCode => T("""
+<XFSplitter @bind-PrimarySize="size"
+            Change="@(args => HandleChange(args))">
+    <PrimaryContent><div class="p-4">Primário</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Secundário</div></SecondaryContent>
+</XFSplitter>
+
+@code {
+    private double size = 50;
+    private void HandleChange(XFSplitterChangedEventArgs args)
+    {
+        Console.WriteLine($"Primary: {args.PrimarySize}%, Secondary: {args.SecondarySize}%");
+    }
+}
+""", """
+<XFSplitter @bind-PrimarySize="size"
+            Change="@(args => HandleChange(args))">
+    <PrimaryContent><div class="p-4">Primary</div></PrimaryContent>
+    <SecondaryContent><div class="p-4">Secondary</div></SecondaryContent>
+</XFSplitter>
+
+@code {
+    private double size = 50;
+    private void HandleChange(XFSplitterChangedEventArgs args)
+    {
+        Console.WriteLine($"Primary: {args.PrimarySize}%, Secondary: {args.SecondarySize}%");
+    }
+}
+""");
+
+    // ==================== HELPERS ====================
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== DATA ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Dois painéis", "Two panels"), T("PrimaryContent e SecondaryContent com divisor arrastável.", "PrimaryContent and SecondaryContent with draggable divider."), "code"),
+        new(T("Duas orientações", "Two orientations"), T("Horizontal ou Vertical para diferentes layouts.", "Horizontal or Vertical for different layouts."), "arrows-up-down"),
+        new(T("Controlado", "Controlled"), T("PrimarySize e PrimarySizeChanged para estado controlado.", "PrimarySize and PrimarySizeChanged for controlled state."), "sliders")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFSplitter"),
+        new("Namespace", "XForge.DesignSystem.Components.Layout.Splitter"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Layout / Splitter"),
+        new("Status", T("Estável", "Stable"))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Divisor arrastável", "Draggable divider"), T("Arraste para redimensionar painéis.", "Drag to resize panels."), "code"),
+        new(T("Min/Max/Step", "Min/Max/Step"), T("Limites configuráveis para o divisor.", "Configurable limits for the divider."), "sliders"),
+        new(T("JS Interop", "JS Interop"), T("Posicionamento e teclado via JS.", "Positioning and keyboard via JS."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Master-detail", "Master-detail"), T("Lista à esquerda, detalhe à direita.", "List on left, detail on right."), "square"),
+        new(T("Editor", "Editor"), T("Código à esquerda, preview à direita.", "Code on left, preview on right."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Painéis fixos sem redimensionamento.", "Fixed panels without resizing."), "xmark"),
+        new(T("Depois", "After"), T("Painéis redimensionáveis com limites e teclado.", "Resizable panels with limits and keyboard."), "check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Master-detail", "Master-detail"), T("Lista + detalhe em ERP.", "List + detail in ERP."), "briefcase"),
+        new(T("Editor de código", "Code editor"), T("Árvore + editor + preview.", "Tree + editor + preview."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Mais de dois painéis", "More than two panels"), T("Use XFMultiSplitter para múltiplos painéis.", "Use XFMultiSplitter for multiple panels."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("div com grid layout e divisor.", "div with grid layout and divider."), "code"),
+        new("PrimaryContent", T("Painel primário (esquerda ou topo).", "Primary panel (left or top)."), "square"),
+        new("Divider", T("Handle arrastável com aria-label e role separator.", "Draggable handle with aria-label and role separator."), "code"),
+        new("SecondaryContent", T("Painel secundário (direita ou fundo).", "Secondary panel (right or bottom)."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Divisor sutil", "Subtle divider"), T("Linha fina que destaca ao hover.", "Thin line that highlights on hover."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Limites claros", "Clear limits"), T("Min e Max evitam painéis invisíveis.", "Min and Max prevent invisible panels."), "circle-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Horizontal", T("Painéis lado a lado.", "Panels side by side.")),
+        new("Vertical", T("Painéis empilhados.", "Panels stacked."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Divisor arrastável entre Min e Max.", "Draggable divider between Min and Max.")),
+        new("Collapsed (padrão)", T("Painel secundário colapsado, primário ocupa tudo.", "Secondary panel collapsed, primary fills all.")),
+        new("CollapsePrimary", T("Painel primário colapsado, secundário ocupa tudo.", "Primary panel collapsed, secondary fills all.")),
+        new("Disabled", T("Divisor desabilitado, sem interação.", "Divider disabled, no interaction."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("PrimaryContent", "RenderFragment?", "null", T("Painel primário.", "Primary panel.")),
+        new("SecondaryContent", "RenderFragment?", "null", T("Painel secundário.", "Secondary panel.")),
+        new("Orientation", "XFOrientation", "Horizontal", T("Horizontal ou Vertical.", "Horizontal or Vertical.")),
+        new("PrimarySize", "double", "50", T("Tamanho inicial do painel primário (%).", "Initial primary panel size (%).")),
+        new("PrimarySizeChanged", "EventCallback<double>", "", T("Two-way binding para PrimarySize.", "Two-way binding for PrimarySize.")),
+        new("Change", "EventCallback<XFSplitterChangedEventArgs>", "", T("Disparado ao redimensionar com dados completos.", "Fired on resize with complete data.")),
+        new("Min", "double", "15", T("Tamanho mínimo do painel primário (%).", "Minimum primary panel size (%).")),
+        new("Max", "double", "85", T("Tamanho máximo do painel primário (%).", "Maximum primary panel size (%).")),
+        new("Step", "double", "1", T("Incremento do teclado (%).", "Keyboard increment (%).")),
+        new("Collapsed", "bool", "false", T("Painel secundário colapsado.", "Secondary panel collapsed.")),
+        new("CollapsePrimary", "bool", "false", T("Colapsa painel primário em vez do secundário.", "Collapses primary instead of secondary.")),
+        new("AriaLabel", "string?", "\"Redimensionar painéis\"", T("Nome acessível do divisor.", "Accessible name for divider."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("PrimarySizeChanged", T("Disparado ao arrastar o divisor; two-way binding.", "Fired when dragging divider; two-way binding.")),
+        new("Change", T("Disparado com XFSplitterChangedEventArgs (PrimarySize, SecondarySize, Orientation).", "Fired with XFSplitterChangedEventArgs (PrimarySize, SecondarySize, Orientation)."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("SetSizeFromJsAsync(double, bool)", T("JSInvokable chamado pelo script de posicionamento.", "JSInvokable called by positioning script.")),
+        new("DisposeAsync", T("Libera registro JS e DotNetObjectReference.", "Releases JS registration and DotNetObjectReference."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Aria-label", "Aria-label"), T("Divisor tem nome acessível configurável.", "Divider has configurable accessible name."), "universal-access"),
+        new(T("Role separator", "Role separator"), T("Divisor renderiza role=\"separator\".", "Divider renders role=\"separator\"."), "code"),
+        new(T("Aria-valuemin/max/now", "Aria-valuemin/max/now"), T("Valores ARIA para leitores de tela.", "ARIA values for screen readers."), "universal-access"),
+        new(T("Teclado completo", "Full keyboard"), T("Arrow keys, PageUp/Down, Home/End e duplo clique para reset.", "Arrow keys, PageUp/Down, Home/End and double-click to reset."), "keyboard")
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [
+        new(T("Arrow keys", "Arrow keys"), T("Setas movem o divisor pelo Step.", "Arrows move the divider by Step."), "keyboard"),
+        new(T("PageUp/Down", "PageUp/Down"), T("Move em 10x o Step.", "Moves by 10x Step."), "arrows-up-down"),
+        new(T("Home/End", "Home/End"), T("Move para Min ou Max instantaneamente.", "Instantly moves to Min or Max."), "arrows-up-down"),
+        new(T("Duplo clique", "Double click"), T("Reset para PrimarySize inicial.", "Resets to initial PrimarySize."), "arrow-rotate-left")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("ArrowLeft/Up", T("Reduz painel primário pelo Step.", "Reduces primary panel by Step.")),
+        new("ArrowRight/Down", T("Aumenta painel primário pelo Step.", "Increases primary panel by Step.")),
+        new("PageUp", T("Aumenta em 10x o Step.", "Increases by 10x Step.")),
+        new("PageDown", T("Reduz em 10x o Step.", "Reduces by 10x Step.")),
+        new("Home", T("Move para Min.", "Moves to Min.")),
+        new("End", T("Move para Max.", "Moves to Max.")),
+        new("Enter/Space", T("N/A — não ativa, foco fica no divisor.", "N/A — does not activate, focus stays on divider."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Percentual", "Percentage"), T("Tamanhos são em % do container.", "Sizes are in % of container."), "arrows-up-down"),
+        new(T("Overflow", "Overflow"), T("Painéis têm overflow-auto para conteúdo longo.", "Panels have overflow-auto for long content."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Render condicional", "Conditional render"), T("Painéis existem no DOM sempre (hidden vs visible).", "Panels always exist in DOM (hidden vs visible)."), "bolt"),
+        new(T("JS interop mínimo", "Minimal JS interop"), T("Interop restrito a drag, release e teclado.", "Interop restricted to drag, release and keyboard."), "code"),
+        new(T("Grid CSS", "CSS Grid"), T("grid-template-columns/rows para layout nativo.", "grid-template-columns/rows for native layout."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new("ERP", T("Master-detail: pedidos + detalhe.", "Master-detail: orders + detail."), "briefcase"),
+        new(T("Editor", "Editor"), T("Árvore + editor de código + preview.", "Tree + code editor + preview."), "code"),
+        new(T("Dashboard", "Dashboard"), T("Painel de métricas + gráfico.", "Metrics panel + chart."), "chart-line-up"),
+        new(T("Configurações", "Settings"), T("Lista de configurações + formulário.", "Settings list + form."), "gear")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("XFCard", T("Painéis como cards dentro do splitter.", "Panels as cards inside splitter."), "square"),
+        new("XFStack", T("Conteúdo interno dos painéis.", "Internal panel content."), "layer-group"),
+        new("XFTypography", T("Títulos e textos nos painéis.", "Titles and texts in panels."), "text")
+    ];
+
+    private IReadOnlyList<DocTile> IntegrationItems => [
+        new("XFAppShell", T("Splitter aninhado no Content slot do shell.", "Splitter nested in the Content slot of the shell."), "layer-group"),
+        new("XFGrid", T("Grid dentro dos painéis do splitter.", "Grid inside splitter panels."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Limites razoáveis", "Reasonable limits"), T("Min=15 e Max=85 evitam painéis inúteis.", "Min=15 and Max=85 prevent useless panels."), "circle-check"),
+        new(T("Persistir posição", "Persist position"), T("Use PrimarySizeChanged + localStorage para salvar.", "Use PrimarySizeChanged + localStorage to save."), "floppy-disk"),
+        new(T("Disabled quando necessário", "Disabled when needed"), T("Desabilite o divisor durante operações críticas.", "Disable the divider during critical operations."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem limites", "No limits"), T("Sem Min/Max, usuário pode quebrar layout.", "Without Min/Max, user can break layout."), "xmark"),
+        new(T("Colapso sem indicador", "Collapse without indicator"), T("Sempre indique visualmente quando um painel está colapsado.", "Always visually indicate when a panel is collapsed."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("bg-surface-50, bg-bg-surface, border-border-light, bg-surface-200 (grip).", "bg-surface-50, bg-bg-surface, border-border-light, bg-surface-200 (grip).")),
+        new("spacing", T("w-4 (separator), h-4 (vertical separator), h-16/w-2 (grip).", "w-4 (separator), h-4 (vertical separator), h-16/w-2 (grip).")),
+        new("sizing", T("grid-template-columns/rows via fr units.", "grid-template-columns/rows via fr units."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Cores seguem tema ativo via Tailwind.", "Colors follow active theme via Tailwind."), "moon")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [
+        new(T("Sem XSS", "No XSS"), T("Slots são render fragments seguros.", "Slots are safe render fragments."), "shield-check"),
+        new(T("JS interop seguro", "Safe JS interop"), T("try/catch para InvalidOperationException e JSDisconnectedException.", "try/catch for InvalidOperationException and JSDisconnectedException."), "code")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de renderização com PrimarySize, Min, Max, Step.", "Rendering tests with PrimarySize, Min, Max, Step.")),
+        new("Keyboard", T("Testes de teclado: Arrow keys, Home/End, PageUp/Down.", "Keyboard tests: Arrow keys, Home/End, PageUp/Down.")),
+        new("Collapsed", T("Testes de Collapsed e CollapsePrimary.", "Tests for Collapsed and CollapsePrimary.")),
+        new("Accessibility", T("Testes de aria-label, role e aria-valuemin/max/now.", "Tests for aria-label, role and aria-valuemin/max/now.")),
+        new("JS Interop", T("Testes de register/release via JSRuntime mock.", "Register/release tests via JSRuntime mock."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("Dois painéis", "Two panels"), T("Apenas dois painéis; use XFMultiSplitter para mais.", "Only two panels; use XFMultiSplitter for more.")),
+        new(T("Dependência JS", "JS dependency"), T("Drag e teclado dependem de xf-splitter.js.", "Drag and keyboard depend on xf-splitter.js."))
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("Layout fixo", "Fixed layout"), T("Troque divs fixas por XFSplitter com PrimaryContent/SecondaryContent.", "Replace fixed divs with XFSplitter using PrimaryContent/SecondaryContent."), "arrow-rotate-left"),
+        new(T("jQuery UI Splitter", "jQuery UI Splitter"), T("Migre splitters manuais para XFSplitter com Step e Min/Max.", "Migrate manual splitters to XFSplitter with Step and Min/Max."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFGrid", T("Para grids sem redimensionamento.", "For grids without resizing."), "code"),
+        new("XFMultiSplitter", T("Para múltiplos painéis redimensionáveis.", "For multiple resizable panels."), "code"),
+        new("XFStack", T("Layout vertical/horizontal fixo.", "Fixed vertical/horizontal layout."), "layer-group")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Posso salvar posição?", "Can I save position?"), T("Sim, use PrimarySizeChanged para persistir em localStorage.", "Yes, use PrimarySizeChanged to persist in localStorage.")),
+        new(T("Funciona sem JS?", "Does it work without JS?"), T("Renderiza os painéis estáticos. Divisor arrastável fica desabilitado.", "Renders static panels. Draggable divider is disabled.")),
+        new(T("Step vs Min/Max?", "Step vs Min/Max?"), T("Step controla incremento do teclado; Min/Max controlam limites.", "Step controls keyboard increment; Min/Max control limits.")),
+        new(T("Collapsed vs size=0?", "Collapsed vs size=0?"), T("Collapsed usa 0fr para ocultar o painel via CSS Grid.", "Collapsed uses 0fr to hide the panel via CSS Grid.")),
+        new(T("Diferença Change vs PrimarySizeChanged?", "Difference Change vs PrimarySizeChanged?"), T("PrimarySizeChanged é double bind; Change envia args completos (PrimarySize, SecondarySize, Orientation).", "PrimarySizeChanged is double bind; Change sends complete args (PrimarySize, SecondarySize, Orientation)."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Página refeita com acentuação pt-BR correta, UTF-8, 9 exemplos com componentes reais e API completa.", "Page rebuilt with correct pt-BR accentuation, UTF-8, 9 real component examples and full API.")),
+        new("2026-05-26", T("Página criada no padrão enterprise.", "Page created in enterprise standard."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

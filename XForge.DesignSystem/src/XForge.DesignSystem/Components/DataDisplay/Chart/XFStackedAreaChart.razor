@@ -1,0 +1,106 @@
+@using XForge.DesignSystem.Components.DataDisplay.Chart
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="img"
+     aria-label="@(AriaLabel ?? "Stacked area chart")">
+
+    <svg class="h-full w-full" viewBox="0 0 @(SvgWidth) @(SvgHeight)" aria-hidden="true">
+        @* ── Grid Lines *@
+        @if (ShowGrid)
+        {
+            @for (var i = 0; i <= GridLines; i++)
+            {
+                var y = MarginTop + ChartHeight - (ChartHeight * i / GridLines);
+                var val = MinY + (YRange * i / GridLines);
+                <line x1="@MarginLeft" y1="@y" x2="@(MarginLeft + ChartWidth)" y2="@y"
+                      stroke-width="0.5" class="stroke-surface-200" />
+                @((MarkupString)$"<text x=\"{MarginLeft - 5}\" y=\"{y}\" text-anchor=\"end\" dominant-baseline=\"middle\" class=\"fill-text-muted text-[9px]\">{FormatValue(val)}</text>")
+            }
+        }
+
+        @* ── Stacked Area Paths *@
+        @if (Data is { Count: > 1 } && Series is { Count: > 0 })
+        {
+            var pointsPerSeries = Data.Count;
+            var stepX = ChartWidth / (pointsPerSeries - 1);
+
+            @* Build cumulative Y values *@
+            var cumulativeValues = new List<List<double>>();
+            for (var i = 0; i < pointsPerSeries; i++)
+            {
+                var cumulative = new List<double>();
+                var runningTotal = 0.0;
+                for (var s = 0; s < Series.Count; s++)
+                {
+                    runningTotal += GetSeriesValue(s, i);
+                    cumulative.Add(runningTotal);
+                }
+                cumulativeValues.Add(cumulative);
+            }
+
+            @* Draw stacked areas from bottom to top *@
+            @for (var s = Series.Count - 1; s >= 0; s--)
+            {
+                var series = Series[s];
+                var topPoints = new List<string>();
+                var bottomPoints = new List<string>();
+
+                for (var i = 0; i < pointsPerSeries; i++)
+                {
+                    var x = MarginLeft + stepX * i;
+                    var topY = MarginTop + ChartHeight - (ChartHeight * cumulativeValues[i][s] / EffectiveYMax);
+                    var bottomY = s > 0
+                        ? MarginTop + ChartHeight - (ChartHeight * cumulativeValues[i][s - 1] / EffectiveYMax)
+                        : MarginTop + ChartHeight;
+                    topPoints.Add($"{x:0.###},{topY:0.###}");
+                    bottomPoints.Add($"{x:0.###},{bottomY:0.###}");
+                }
+
+                var reversedBottom = bottomPoints.AsEnumerable().Reverse().ToList();
+                var pathData = $"M {string.Join(" L ", topPoints)} L {string.Join(" L ", reversedBottom)} Z";
+                <path d="@pathData" fill="@GetSeriesColor(s)" fill-opacity="0.6" stroke="none" />
+            }
+
+            @* ── Lines on top *@
+            @for (var s = 0; s < Series.Count; s++)
+            {
+                var points = new List<string>();
+                for (var i = 0; i < pointsPerSeries; i++)
+                {
+                    var x = MarginLeft + stepX * i;
+                    var y = MarginTop + ChartHeight - (ChartHeight * cumulativeValues[i][s] / EffectiveYMax);
+                    points.Add($"{x:0.###},{y:0.###}");
+                }
+                <polyline points="@string.Join(" ", points)" fill="none"
+                          stroke="@GetSeriesColor(s)" stroke-width="2" stroke-linejoin="round" />
+            }
+
+            @* ── X Labels *@
+            @for (var i = 0; i < pointsPerSeries; i++)
+            {
+                var x = MarginLeft + stepX * i;
+                var y = MarginTop + ChartHeight + 14;
+                @((MarkupString)$"<text x=\"{x}\" y=\"{y}\" text-anchor=\"middle\" class=\"fill-text-muted text-[9px]\">{GetLabel(i)}</text>")
+            }
+        }
+    </svg>
+
+    @* ── Legend *@
+    @if (ShowLegend)
+    {
+        <div class="mt-2 flex flex-wrap justify-center gap-3">
+            @for (var s = 0; s < Series.Count; s++)
+            {
+                var idx = s;
+                <div class="flex items-center gap-1.5 text-xs text-text-secondary">
+                    <span class="inline-block h-2.5 w-2.5 rounded-full" style="background-color: @GetSeriesColor(idx)"></span>
+                    @Series[idx].Name
+                </div>
+            }
+        </div>
+    }
+</div>

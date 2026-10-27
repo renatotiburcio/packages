@@ -1,0 +1,64 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label id="@LabelId" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@GroupContainerClass"
+         role="group"
+         aria-labelledby="@(!string.IsNullOrWhiteSpace(Label) ? LabelId : null)"
+         aria-label="@AriaLabel"
+         aria-required="@Required.ToString().ToLowerInvariant()"
+         aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+         aria-readonly="@ReadOnly.ToString().ToLowerInvariant()"
+         aria-describedby="@DescribedBy">
+        @for (var groupIndex = 0; groupIndex < SlotGroups.Count; groupIndex++)
+        {
+            var group = SlotGroups[groupIndex];
+
+            <div class="@SlotGroupClass">
+                @for (var offset = 0; offset < group.Length; offset++)
+                {
+                    var slotIndex = group.StartIndex + offset;
+
+                    <input id="@GetSlotId(slotIndex)"
+                           class="@SlotClass"
+                           type="text"
+                           inputmode="@InputMode"
+                           pattern="@Pattern"
+                           maxlength="@Digits"
+                           autocomplete="@AutoComplete"
+                           disabled="@Disabled"
+                           readonly="@ReadOnly"
+                           required="@Required"
+                           aria-label="@GetSlotAriaLabel(slotIndex)"
+                           aria-required="@Required.ToString().ToLowerInvariant()"
+                           aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                           aria-readonly="@ReadOnly.ToString().ToLowerInvariant()"
+                           aria-describedby="@DescribedBy"
+                           value="@GetSlotValue(slotIndex)"
+                           @oninput="args => HandleSlotInputAsync(slotIndex, args)"
+                           @onkeydown="args => HandleSlotKeyDownAsync(slotIndex, args)" />
+                }
+            </div>
+
+            @if (groupIndex < SlotGroups.Count - 1)
+            {
+                <span class="@SeparatorClass" aria-hidden="true">@Separator</span>
+            }
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="text-xs leading-5 text-text-secondary">@HelperText</div>
+    }
+</div>

@@ -1,0 +1,73 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    <div class="@HeaderClass">
+        @if (!string.IsNullOrWhiteSpace(Label))
+        {
+            <label for="@Id" class="@LabelClass">
+                @Label
+                @if (Required)
+                {
+                    <span class="text-danger" aria-hidden="true">*</span>
+                }
+            </label>
+        }
+
+        @if (ShowValue)
+        {
+            <span class="@ValueClass">@DisplayValue</span>
+        }
+    </div>
+
+    <div class="flex items-center gap-3">
+        <div class="@TrackWrapClass">
+            <input @ref="InputRef"
+                   @attributes="AdditionalAttributes"
+                   id="@Id"
+                   name="@Name"
+                   class="@InputClass"
+                   type="range"
+                   min="@MinString"
+                   max="@MaxString"
+                   step="@StepString"
+                   value="@ValueString"
+                    disabled="@Disabled"
+                    readonly="@ReadOnly"
+                    required="@Required"
+                    aria-label="@AriaLabel"
+                    aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                    aria-invalid="@AriaInvalid"
+                   aria-required="@Required.ToString().ToLowerInvariant()"
+                   aria-readonly="@ReadOnly.ToString().ToLowerInvariant()"
+                   aria-orientation="@(IsVertical ? "vertical" : "horizontal")"
+                   aria-valuemin="@MinString"
+                   aria-valuemax="@MaxString"
+                   aria-valuenow="@ValueString"
+                   aria-valuetext="@DisplayValue"
+                   aria-describedby="@DescribedBy"
+                   @oninput="HandleInputAsync"
+                   @onchange="HandleChangeAsync" />
+        </div>
+
+        @if (ShowBounds)
+        {
+            <div class="@BoundsClass" aria-hidden="true">
+                <span>@DisplayMin</span>
+                <span>@DisplayMax</span>
+            </div>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+</div>

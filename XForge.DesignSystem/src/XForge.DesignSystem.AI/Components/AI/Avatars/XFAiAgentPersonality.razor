@@ -1,0 +1,83 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+@using XForge.DesignSystem.Components.AI.Avatars
+@using XForge.DesignSystem.Core.Primitives
+
+<div class="@RootClass" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+     role="region" aria-label="@AriaLabel" aria-busy="@AriaBusyValue">
+
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between gap-3 border-b border-border-light px-4 py-3">
+            <div class="flex items-center gap-3">
+                @if (Personality is not null)
+                {
+                    <XFAiAvatar Name="@Personality.Name" IconName="@Personality.IconName"
+                                AvatarColor="@Personality.AvatarColor" TextColor="@Personality.AvatarTextColor"
+                                Size="XFExtendedSize.Md" Status="XFAiAvatarStatus.Online" />
+                    <div>
+                        <div class="text-sm font-semibold text-text-primary">@Personality.Name</div>
+                        <div class="text-xs text-text-secondary">@Personality.Description</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-sm font-semibold text-text-primary">@Title</div>
+                }
+            </div>
+            @if (HeaderContent is not null)
+            {
+                @HeaderContent
+            }
+        </div>
+    }
+
+    @* Personality details *@
+    @if (Personality is not null && ShowDetails)
+    {
+        <div class="flex flex-wrap gap-2 border-b border-border-light px-4 py-3">
+            <span class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-0.5 text-xs font-medium text-violet-700 dark:bg-violet-900/20 dark:text-violet-300">
+                @GetToneLabel(Personality.Tone)
+            </span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+                @GetExpertiseLabel(Personality.Expertise)
+            </span>
+            @if (Personality.AllowToolCalling)
+            {
+                <span class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                    Tools
+                </span>
+            }
+        </div>
+    }
+
+    @* Greeting *@
+    @if (Personality is not null && !string.IsNullOrWhiteSpace(Personality.Greeting) && ShowGreeting)
+    {
+        <div class="px-4 py-3 text-sm text-text-secondary border-b border-border-light">
+            @Personality.Greeting
+        </div>
+    }
+
+    @* Suggested prompts *@
+    @if (Personality?.SuggestedPrompts is { Count: > 0 } && ShowSuggestedPrompts)
+    {
+        <div class="flex flex-wrap gap-2 px-4 py-3 border-b border-border-light">
+            @foreach (var prompt in Personality.SuggestedPrompts)
+            {
+                <button type="button"
+                        class="rounded-lg border border-border-light bg-bg-surface px-3 py-1.5 text-xs text-text-primary transition-colors hover:bg-surface-100 focus-visible:ring-2 focus-visible:ring-border-focus"
+                        @onclick="() => HandleSuggestedPromptAsync(prompt)">
+                    @prompt
+                </button>
+            }
+        </div>
+    }
+
+    @* Custom content *@
+    @if (ChildContent is not null)
+    {
+        <div class="px-4 py-3">
+            @ChildContent
+        </div>
+    }
+</div>

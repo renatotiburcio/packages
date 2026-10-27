@@ -1,0 +1,108 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="meter"
+     aria-label="@(AriaLabel ?? "Medidor linear")"
+     aria-valuemin="@Min"
+     aria-valuemax="@Max"
+     aria-valuenow="@AriaValueNow"
+     aria-valuetext="@AriaValueText">
+
+    <svg class="h-full w-full"
+         viewBox="0 0 100 100"
+         preserveAspectRatio="none"
+         aria-hidden="true">
+
+        @* ── Range Bands ─────────────────────────────────────────── *@
+        @if (Ranges is { Count: > 0 })
+        {
+            @foreach (var range in Ranges)
+            {
+                var r = ComputeRangeRect(range);
+                <rect x="@r.X" y="@r.Y" width="@r.W" height="@r.H" rx="0"
+                      class="@RangeFillClass(range.Color)"
+                      style="@RangeFillStyle(range.Color)" />
+            }
+        }
+
+        @* ── Track Bar ───────────────────────────────────────────── *@
+        <rect x="@TrackX" y="@TrackY" width="@TrackW" height="@TrackH" rx="@TrackRx"
+              class="@TrackFill"
+              style="@TrackFillStyle" />
+
+        @* ── Value Bar ───────────────────────────────────────────── *@
+        @if (Percent > 0)
+        {
+            <rect x="@ValueX" y="@ValueY" width="@ValueW" height="@ValueH" rx="@ValueRx"
+                  class="transition-all duration-300 ease-out @ValueFill"
+                  style="@ValueFillStyle" />
+        }
+    </svg>
+
+    @* ── Value Text ────────────────────────────────────────────── *@
+    @if (ShowValue || ValueTemplate is not null)
+    {
+        <div class="@ValueTextPosition pointer-events-none">
+            @if (ValueTemplate is not null)
+            {
+                @ValueTemplate(new XFGaugeValueContext
+                {
+                    Value = ClampedValue,
+                    Percent = Percent,
+                    FormattedValue = ValueText
+                })
+            }
+            else
+            {
+                <span class="font-semibold text-text-primary @ValueTextSizeClass">
+                    @ValueText
+                </span>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private const double P = BarPadding;
+
+    // Track geometry
+    private double TrackX => P;
+    private double TrackY => P;
+    private double TrackW => IsVertical ? Thickness : 100 - P * 2;
+    private double TrackH => IsVertical ? 100 - P * 2 : Thickness;
+    private double TrackRx => Rounded ? (IsVertical ? Thickness / 2 : Thickness / 2) : 0;
+
+    // Value geometry
+    private double ValueX => IsVertical ? P : (Reversed ? 100 - P - ValueBarLength : P);
+    private double ValueY => IsVertical ? (Reversed ? P : 100 - P - ValueBarLength) : P;
+    private double ValueW => IsVertical ? Thickness : ValueBarLength;
+    private double ValueH => IsVertical ? ValueBarLength : Thickness;
+    private double ValueRx => Rounded ? (IsVertical ? Thickness / 2 : Thickness / 2) : 0;
+    private double ValueBarLength => (100 - P * 2) * Percent / 100;
+
+    // Range geometry
+    private (double X, double Y, double W, double H) ComputeRangeRect(XFGaugeRange range)
+    {
+        var fromPct = Math.Clamp((range.From - Min) / Range, 0, 1);
+        var toPct = Math.Clamp((range.To - Min) / Range, 0, 1);
+        var barLen = 100 - P * 2;
+
+        if (IsVertical)
+        {
+            var fromY = Reversed ? P + barLen * (1 - toPct) : P + barLen * (1 - fromPct);
+            var toY = Reversed ? P + barLen * (1 - fromPct) : P + barLen * (1 - toPct);
+            var h = Math.Abs(toY - fromY);
+            return (P - 1, Math.Min(fromY, toY), Thickness + 2, h);
+        }
+        else
+        {
+            var fromX = Reversed ? P + barLen * (1 - toPct) : P + barLen * fromPct;
+            var toX = Reversed ? P + barLen * (1 - fromPct) : P + barLen * toPct;
+            var w = Math.Abs(toX - fromX);
+            return (Math.Min(fromX, toX), P - 1, w, Thickness + 2);
+        }
+    }
+}

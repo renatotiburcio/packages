@@ -1,0 +1,253 @@
+@using XForge.DesignSystem.Components.Forms.Checkbox
+
+@inherits XForgeComponentBase
+@using XForge.DesignSystem.Components.Icon
+@using XForge.DesignSystem.Core.Primitives
+
+@{
+    var labelBefore = LabelPosition == XFCheckboxLabelPosition.Start;
+}
+
+<label for="@Id" class="@RootClass">
+    @if (labelBefore)
+    {
+        @RenderLabelContent
+    }
+
+    <span class="xf-checkbox-group relative inline-flex shrink-0 items-center justify-center @SizeWrapClass">
+        <input @attributes="AdditionalAttributes"
+               id="@Id"
+               name="@Name"
+               class="peer sr-only"
+               type="checkbox"
+               checked="@IsCheckedBool"
+               disabled="@Disabled"
+               aria-label="@AriaLabel"
+               aria-describedby="@DescribedBy"
+               aria-invalid="@AriaInvalid"
+               aria-required="@Required"
+               aria-readonly="@ReadOnly"
+               aria-checked="@AriaChecked"
+               @onchange="OnChangeAsync"
+               @onkeydown="OnKeyDownAsync" />
+
+        <span class="@BoxClass" aria-hidden="true">
+            <span class="flex items-center justify-center w-full h-full transition-all duration-200 ease-out @(IsChecked || IsMixed ? "opacity-100 scale-100" : "opacity-0 scale-50")">
+                @if (IsMixed)
+                {
+                    <span class="dash-enter rounded-full bg-current opacity-90 @MixedMarkInnerClass" style="color: var(--color-primary-contrast);"></span>
+                }
+                else if (ShowCheckedIcon)
+                {
+                    <svg class="check-enter @CheckIconSvgClass" viewBox="0 0 24 24" fill="none" style="color: var(--color-primary-contrast);" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="4 12 10 18 20 6" style="stroke: currentColor;"></polyline>
+                    </svg>
+                }
+            </span>
+        </span>
+    </span>
+
+    @if (!labelBefore)
+    {
+        @RenderLabelContent
+    }
+</label>
+
+@if (HasValidationError)
+{
+    <div id="@(Id)-error" class="@ErrorClass" role="alert" aria-live="assertive">
+        @FirstValidationMessage
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(StateDescription))
+{
+    <div id="@(Id)-state-description" class="sr-only" aria-live="polite">
+        @StateDescription
+    </div>
+}
+
+@code {
+    private bool? _innerValue;
+    private bool _showIcon;
+
+    private bool IsChecked => _innerValue == true;
+    private bool IsMixed => ThreeState && _innerValue is null;
+    private bool IsCheckedBool => _innerValue == true;
+    private bool ShowCheckedIcon => IsChecked && !IsMixed;
+    private string AriaChecked => IsMixed ? "mixed" : IsChecked ? "true" : "false";
+    private string AriaInvalid => HasValidationError ? "true" : "false";
+    private string? StateDescription => IsMixed ? MixedStateText : IsChecked ? CheckedStateText : UncheckedStateText;
+    private bool _valueChanged;
+
+    private string? FirstValidationMessage => HasValidationError
+        ? CascadedEditContext?.GetValidationMessages(GetFieldIdentifier()).FirstOrDefault()
+        : null;
+
+    private bool HasValidationError =>
+        CascadedEditContext is not null
+        && ValueExpression is not null
+        && GetFieldIdentifier().FieldName != null
+        && CascadedEditContext.GetValidationMessages(GetFieldIdentifier()).Any();
+
+    private FieldIdentifier GetFieldIdentifier() =>
+        ValueExpression != null ? FieldIdentifier.Create(ValueExpression) : default;
+
+    private string? DescribedBy
+    {
+        get
+        {
+            var parts = new System.Collections.Generic.List<string>();
+            if (HasValidationError) parts.Add($"{Id}-error");
+            else if (!string.IsNullOrWhiteSpace(Description)) parts.Add($"{Id}-description");
+            if (!string.IsNullOrWhiteSpace(StateDescription)) parts.Add($"{Id}-state-description");
+            return parts.Count > 0 ? string.Join(" ", parts) : null;
+        }
+    }
+
+    private RenderFragment RenderLabelContent => __builder =>
+    {
+        <span class="@TextWrapClass">
+            @if (!string.IsNullOrWhiteSpace(Label) || ChildContent is not null)
+            {
+                <span class="@LabelClass">
+                    @if (ChildContent is not null)
+                    {
+                        @ChildContent
+                    }
+                    else
+                    {
+                        @Label
+                    }
+                    @if (Required)
+                    {
+                        <span class="ml-0.5 text-danger" aria-hidden="true">&ast;</span>
+                    }
+                </span>
+            }
+            @if (!string.IsNullOrWhiteSpace(Description) && !HasValidationError)
+            {
+                <span class="text-xs leading-5 text-text-secondary" id="@(Id)-description">@Description</span>
+            }
+        </span>
+    };
+
+    private async Task OnChangeAsync(ChangeEventArgs args)
+    {
+        if (Disabled || ReadOnly) return;
+
+        _valueChanged = true;
+
+        if (!ThreeState)
+        {
+            _innerValue = args.Value is bool b ? b : !IsChecked;
+        }
+        else
+        {
+            _innerValue = _innerValue switch
+            {
+                false => null,
+                null => true,
+                _ => false
+            };
+        }
+
+        _showIcon = IsChecked && !IsMixed;
+
+        if (ValueChanged.HasDelegate)
+            await ValueChanged.InvokeAsync(_innerValue);
+
+        if (Change.HasDelegate)
+            await Change.InvokeAsync(_innerValue);
+
+        if (CascadedEditContext is not null && ValueExpression is not null)
+        {
+            CascadedEditContext.NotifyFieldChanged(GetFieldIdentifier());
+        }
+    }
+
+    private async Task OnKeyDownAsync(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter" || args.Key == " ")
+        {
+            await OnChangeAsync(new ChangeEventArgs());
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!_valueChanged)
+        {
+            _innerValue = Value;
+            if (!ThreeState && _innerValue is null)
+                _innerValue = false;
+            _showIcon = IsChecked && !IsMixed;
+        }
+        _valueChanged = false;
+    }
+
+    private string RootClass =>
+        $"xf-checkbox group flex gap-3 items-start {(FullWidth ? "w-full" : "inline-flex")} {(Disabled ? "cursor-not-allowed opacity-60" : ReadOnly ? "cursor-default" : "cursor-pointer")} {Class}".Trim();
+
+    private string ControlWrapClass => $"relative inline-flex shrink-0 items-center justify-center cursor-pointer {SizeWrapClass}";
+
+    private string BoxClass =>
+        $"xf-checkbox-box relative flex shrink-0 items-center justify-center border-2 overflow-hidden transition-all duration-200 ease-out " +
+        $"{SizeBoxClass} " +
+        $"{(IsChecked || IsMixed ? CheckedBoxClass : UncheckedBoxClass)} " +
+        $"{(HasValidationError ? "border-danger ring-2 ring-danger/20" : "")}".Trim();
+
+    private string MixedMarkInnerClass => Size switch
+    {
+        XFSize.Sm => "h-0.5 w-2",
+        XFSize.Lg => "h-0.5 w-3.5",
+        _ => "h-0.5 w-2.5"
+    };
+
+    private string CheckIconSvgClass => Size switch
+    {
+        XFSize.Sm => "h-2.5 w-2.5",
+        XFSize.Lg => "h-4 w-4",
+        _ => "h-3 w-3"
+    };
+
+    private string SizeWrapClass => Size switch
+    {
+        XFSize.Sm => "h-5",
+        XFSize.Lg => "h-6",
+        _ => "h-[1.375rem]"
+    };
+
+    private string SizeBoxClass => Size switch
+    {
+        XFSize.Sm => "h-4 w-4 rounded",
+        XFSize.Lg => "h-6 w-6 rounded-lg",
+        _ => "h-5 w-5 rounded-md"
+    };
+
+    private string UncheckedBoxClass => Tone switch
+    {
+        XFSemanticColor.Secondary => "border-surface-300 bg-bg-surface hover:border-secondary/50 peer-focus-visible:border-secondary peer-focus-visible:ring-2 peer-focus-visible:ring-secondary/20",
+        XFSemanticColor.Success => "border-surface-300 bg-bg-surface hover:border-success/50 peer-focus-visible:border-success peer-focus-visible:ring-2 peer-focus-visible:ring-success/20",
+        XFSemanticColor.Warning => "border-surface-300 bg-bg-surface hover:border-warning/50 peer-focus-visible:border-warning peer-focus-visible:ring-2 peer-focus-visible:ring-warning/20",
+        XFSemanticColor.Danger => "border-surface-300 bg-bg-surface hover:border-danger/50 peer-focus-visible:border-danger peer-focus-visible:ring-2 peer-focus-visible:ring-danger/20",
+        _ => "border-surface-300 bg-bg-surface hover:border-primary/50 peer-focus-visible:border-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary/20"
+    };
+
+    private string CheckedBoxClass => Tone switch
+    {
+        XFSemanticColor.Secondary => "border-secondary bg-secondary",
+        XFSemanticColor.Success => "border-success bg-success",
+        XFSemanticColor.Warning => "border-warning bg-warning",
+        XFSemanticColor.Danger => "border-danger bg-danger",
+        _ => "border-primary bg-primary"
+    };
+
+    private string TextWrapClass => "grid min-w-0 gap-0.5";
+
+    private string LabelClass => $"inline-flex items-center gap-1.5 font-medium leading-5 text-text-primary {LabelFontSizeClass}";
+
+    private string LabelFontSizeClass => Size switch { XFSize.Lg => "text-base", _ => "text-sm" };
+
+    private string ErrorClass => "ml-8 text-xs font-medium leading-5 text-danger";
+}

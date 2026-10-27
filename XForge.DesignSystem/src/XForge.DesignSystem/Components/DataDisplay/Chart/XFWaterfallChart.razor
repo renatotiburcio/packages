@@ -1,0 +1,116 @@
+@typeparam T
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="img"
+     aria-label="@(AriaLabel ?? "Waterfall chart")">
+
+    <svg class="h-full w-full" viewBox="0 0 @SvgWidth @SvgHeight" aria-hidden="true">
+        @if (Data is { Count: > 0 })
+        {
+            var paddingLeft = 50.0;
+            var paddingRight = 10.0;
+            var paddingTop = 10.0;
+            var paddingBottom = 30.0;
+            var chartW = SvgWidth - paddingLeft - paddingRight;
+            var chartH = SvgHeight - paddingTop - paddingBottom;
+
+            var cumulative = 0.0;
+            var entries = new List<WaterfallEntry>();
+            foreach (var pt in Data)
+            {
+                var val = ValueSelector(pt);
+                var isPos = IsPositiveSelector(pt);
+                entries.Add(new WaterfallEntry
+                {
+                    Label = LabelSelector(pt),
+                    Value = val,
+                    IsPositive = isPos,
+                    Start = cumulative
+                });
+                cumulative += isPos ? val : -val;
+            }
+
+            var allValues = entries.SelectMany(e => new[] { e.Start, e.Start + (e.IsPositive ? e.Value : -e.Value) }).ToList();
+            if (ShowTotal) allValues.Add(cumulative);
+            var yMin = Math.Min(0, allValues.Min());
+            var yMax = Math.Max(0, allValues.Max());
+            var yRange = yMax - yMin; if (yRange == 0) yRange = 1;
+
+            var barWidth = chartW / (entries.Count + (ShowTotal ? 1 : 0)) * 0.6;
+            var barGap = chartW / (entries.Count + (ShowTotal ? 1 : 0)) * 0.4;
+
+            @* ── Zero Line *@
+            {
+                var zeroY = paddingTop + (1 - (0 - yMin) / yRange) * chartH;
+                <line x1="@paddingLeft" y1="@zeroY" x2="@(paddingLeft + chartW)" y2="@zeroY"
+                      stroke-width="1" class="stroke-surface-300" />
+            }
+
+            @* ── Bars *@
+            @for (var i = 0; i < entries.Count; i++)
+            {
+                var e = entries[i];
+                var x = paddingLeft + i * (barWidth + barGap) + barGap / 2;
+                var barStart = e.Start;
+                var barEnd = e.IsPositive ? e.Start + e.Value : e.Start - e.Value;
+                var topVal = Math.Max(barStart, barEnd);
+                var botVal = Math.Min(barStart, barEnd);
+                var topY = paddingTop + (1 - (topVal - yMin) / yRange) * chartH;
+                var botY = paddingTop + (1 - (botVal - yMin) / yRange) * chartH;
+                var barH = botY - topY;
+                var color = e.IsPositive ? PositiveColor : NegativeColor;
+
+                <rect x="@x" y="@topY" width="@barWidth" height="@barH"
+                      fill="@color" rx="2" />
+
+                @if (ShowValues)
+                {
+                    var valText = e.IsPositive ? $"+{e.Value:0.##}" : $"-{e.Value:0.##}";
+                    var textY = e.IsPositive ? topY - 4 : botY + 12;
+                    <svg:text x="@(x + barWidth / 2)" y="@textY" text-anchor="middle"
+                          class="fill-text-secondary text-[9px]">@valText</svg:text>
+                }
+
+                <svg:text x="@(x + barWidth / 2)" y="@(SvgHeight - 8)" text-anchor="middle"
+                      class="fill-text-secondary text-[9px]">@e.Label</svg:text>
+
+                @* ── Connector Line *@
+                @if (i < entries.Count - 1)
+                {
+                    var connY = paddingTop + (1 - ((e.IsPositive ? e.Start + e.Value : e.Start - e.Value) - yMin) / yRange) * chartH;
+                    var nextX = paddingLeft + (i + 1) * (barWidth + barGap) + barGap / 2;
+                    <line x1="@(x + barWidth)" y1="@connY" x2="@nextX" y2="@connY"
+                          stroke-width="0.8" stroke-dasharray="3,2" class="stroke-surface-300" />
+                }
+            }
+
+            @* ── Total Bar *@
+            @if (ShowTotal)
+            {
+                var i = entries.Count;
+                var x = paddingLeft + i * (barWidth + barGap) + barGap / 2;
+                var topVal = Math.Max(0, cumulative);
+                var botVal = Math.Min(0, cumulative);
+                var topY = paddingTop + (1 - (topVal - yMin) / yRange) * chartH;
+                var botY = paddingTop + (1 - (botVal - yMin) / yRange) * chartH;
+
+                <rect x="@x" y="@topY" width="@barWidth" height="@(botY - topY)"
+                      fill="var(--color-primary, #3b82f6)" rx="2" />
+
+                <svg:text x="@(x + barWidth / 2)" y="@(SvgHeight - 8)" text-anchor="middle"
+                      class="fill-text-secondary text-[9px] font-semibold">Total</svg:text>
+
+                @if (ShowValues)
+                {
+                    var textY = cumulative >= 0 ? topY - 4 : botY + 12;
+                    <svg:text x="@(x + barWidth / 2)" y="@textY" text-anchor="middle"
+                          class="fill-text-primary text-[9px] font-semibold">@($"{cumulative:0.##}")</svg:text>
+                }
+            }
+        }
+    </svg>
+</div>

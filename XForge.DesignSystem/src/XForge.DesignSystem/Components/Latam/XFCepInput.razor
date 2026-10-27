@@ -1,0 +1,12 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<div class="xf-cep-input">
+  <input type="text" value="@Formatted" @oninput="OnInput" placeholder="00000-000" maxlength="9" />
+  <button @onclick="Lookup" disabled="@(string.IsNullOrEmpty(_raw) || _raw.Length != 8)">Buscar</button>
+  @if (Result != null) { <div class="xf-cep-result">@Result.Logradouro, @Result.Bairro - @Result.Localidade/@Result.Uf</div> }
+</div>
+
+@code {
+  public record CepResult(string Logradouro, string Bairro, string Localidade, string Uf, string Cep);
+}

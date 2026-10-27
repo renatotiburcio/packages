@@ -1,0 +1,103 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="img"
+     aria-label="@(AriaLabel ?? "Box plot chart")">
+
+    <svg class="h-full w-full" viewBox="0 0 @SvgWidth @SvgHeight" aria-hidden="true">
+        @if (Data is { Count: > 0 })
+        {
+            var paddingLeft = 50.0;
+            var paddingRight = 10.0;
+            var paddingTop = 15.0;
+            var paddingBottom = 30.0;
+            var chartW = SvgWidth - paddingLeft - paddingRight;
+            var chartH = SvgHeight - paddingTop - paddingBottom;
+
+            var allVals = Data.SelectMany(d =>
+            {
+                var vals = new List<double> { d.Min, d.Q1, d.Median, d.Q3, d.Max };
+                if (ShowOutliers && d.Outliers is { Count: > 0 })
+                    vals.AddRange(d.Outliers);
+                return vals;
+            }).ToList();
+            var yMin = allVals.Min();
+            var yMax = allVals.Max();
+            var yRange = yMax - yMin; if (yRange == 0) yRange = 1;
+
+            var boxWidth = chartW / Data.Count * 0.5;
+            var gap = chartW / Data.Count * 0.5;
+
+            @* ── Grid Lines *@
+            @for (var i = 0; i <= 4; i++)
+            {
+                var yPos = paddingTop + chartH * i / 4;
+                var yVal = yMax - (yRange * i / 4);
+                <line x1="@paddingLeft" y1="@yPos" x2="@(paddingLeft + chartW)" y2="@yPos"
+                      stroke-width="0.5" class="stroke-surface-200" />
+                <svg:text x="@(paddingLeft - 5)" y="@yPos" text-anchor="end" dominant-baseline="middle"
+                       class="fill-text-secondary text-[10px]">@($"{yVal:0.##}")</svg:text>
+            }
+
+            @* ── Box Plots *@
+            @for (var i = 0; i < Data.Count; i++)
+            {
+                var d = Data[i];
+                var cx = paddingLeft + i * (boxWidth + gap) + gap / 2 + boxWidth / 2;
+
+                var minY = paddingTop + (1 - (d.Min - yMin) / yRange) * chartH;
+                var q1Y = paddingTop + (1 - (d.Q1 - yMin) / yRange) * chartH;
+                var medY = paddingTop + (1 - (d.Median - yMin) / yRange) * chartH;
+                var q3Y = paddingTop + (1 - (d.Q3 - yMin) / yRange) * chartH;
+                var maxY = paddingTop + (1 - (d.Max - yMin) / yRange) * chartH;
+
+                @* ── Whisker Lines *@
+                <line x1="@cx" y1="@minY" x2="@cx" y2="@q1Y"
+                      stroke="var(--color-text-secondary, #64748b)" stroke-width="1" />
+                <line x1="@cx" y1="@q3Y" x2="@cx" y2="@maxY"
+                      stroke="var(--color-text-secondary, #64748b)" stroke-width="1" />
+
+                @* ── Whisker Caps *@
+                <line x1="@(cx - boxWidth / 4)" y1="@minY" x2="@(cx + boxWidth / 4)" y2="@minY"
+                      stroke="var(--color-text-secondary, #64748b)" stroke-width="1.5" />
+                <line x1="@(cx - boxWidth / 4)" y1="@maxY" x2="@(cx + boxWidth / 4)" y2="@maxY"
+                      stroke="var(--color-text-secondary, #64748b)" stroke-width="1.5" />
+
+                @* ── Box (IQR) *@
+                <rect x="@(cx - boxWidth / 2)" y="@q3Y" width="@boxWidth" height="@(q1Y - q3Y)"
+                      fill="var(--color-primary, #3b82f6)" fill-opacity="0.3"
+                      stroke="var(--color-primary, #3b82f6)" stroke-width="1.5" rx="2" />
+
+                @* ── Median Line *@
+                <line x1="@(cx - boxWidth / 2)" y1="@medY" x2="@(cx + boxWidth / 2)" y2="@medY"
+                      stroke="var(--color-primary, #3b82f6)" stroke-width="2" />
+
+                @* ── Mean Marker *@
+                @if (ShowMean)
+                {
+                    var meanY = paddingTop + (1 - (d.Mean - yMin) / yRange) * chartH;
+                    <line x1="@(cx - boxWidth / 3)" y1="@meanY" x2="@(cx + boxWidth / 3)" y2="@meanY"
+                          stroke="var(--color-error, #ef4444)" stroke-width="1.5" stroke-dasharray="3,2" />
+                }
+
+                @* ── Outliers *@
+                @if (ShowOutliers && d.Outliers is { Count: > 0 })
+                {
+                    @foreach (var o in d.Outliers)
+                    {
+                        var oY = paddingTop + (1 - (o - yMin) / yRange) * chartH;
+                        <circle cx="@cx" cy="@oY" r="3"
+                                fill="none" stroke="var(--color-warning, #f59e0b)" stroke-width="1.5" />
+                    }
+                }
+
+                @* ── Label *@
+                <svg:text x="@cx" y="@(SvgHeight - 8)" text-anchor="middle"
+                       class="fill-text-secondary text-[9px]">@d.Label</svg:text>
+            }
+        }
+    </svg>
+</div>

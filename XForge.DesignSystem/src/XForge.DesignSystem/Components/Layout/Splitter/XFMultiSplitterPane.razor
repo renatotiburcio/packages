@@ -1,0 +1,27 @@
+@implements IDisposable
+
+@code {
+    [CascadingParameter] private XFMultiSplitter? Owner { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public double Size { get; set; } = 1;
+    [Parameter] public double Min { get; set; } = 5;
+    [Parameter] public double Max { get; set; } = 90;
+    [Parameter] public bool Collapsed { get; set; }
+    [Parameter] public string? Label { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Owner?.Register(this);
+    }
+
+    protected override void OnParametersSet()
+    {
+        Owner?.Register(this);
+    }
+
+    public void Dispose()
+    {
+        Owner?.Unregister(this);
+    }
+}

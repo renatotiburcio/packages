@@ -1,0 +1,215 @@
+﻿@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="region"
+     aria-label="@Title"
+     aria-busy="@((IsProcessing ? "true" : "false"))">
+
+    @* -- Header -------------------------------------------------------- *@
+    @if (ShowHeader)
+    {
+        <header class="@HeaderClass">
+            @if (HeaderContent is not null)
+            {
+                @HeaderContent
+            }
+            else
+            {
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex h-5 w-5 items-center justify-center text-text-muted" aria-hidden="true">
+                        @XFSvgIcons.Markup("file-lines")
+                    </span>
+                    <h3 class="@HeaderTitleClass">@Title</h3>
+                </div>
+            }
+        </header>
+    }
+
+    @* -- Loading State ------------------------------------------------- *@
+    @if (IsProcessing || Loading)
+    {
+        <div class="@LoadingContainerClass" role="status" aria-label="Processando documento...">
+            <span class="sr-only">Processando documento...</span>
+
+            @* -- Info bar skeleton *@
+            <div class="@SkeletonInfoBarClass">
+                <div class="h-5 w-32 rounded bg-surface-200"></div>
+                <div class="h-5 w-16 rounded bg-surface-200"></div>
+                <div class="h-5 w-20 rounded bg-surface-200"></div>
+            </div>
+
+            @* -- Summary skeleton *@
+            @if (ShowSummary)
+            {
+                <div class="@SkeletonSummaryClass">
+                    <div class="h-4 w-24 rounded bg-surface-200"></div>
+                    <div class="mt-3 space-y-2">
+                        <div class="h-3 w-full rounded bg-surface-200"></div>
+                        <div class="h-3 w-5/6 rounded bg-surface-200"></div>
+                        <div class="h-3 w-4/6 rounded bg-surface-200"></div>
+                    </div>
+                </div>
+            }
+
+            @* -- Chunks skeleton *@
+            @if (ShowChunks)
+            {
+                <div class="mt-3 space-y-2">
+                    @for (var i = 0; i < Math.Min(3, MaxChunks); i++)
+                    {
+                        <div class="@SkeletonChunkClass">
+                            <div class="h-3 w-full rounded bg-surface-200"></div>
+                            <div class="mt-1.5 h-3 w-3/4 rounded bg-surface-200"></div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+    else if (_result is null)
+    {
+        @* -- Empty State ------------------------------------------------ *@
+        @if (EmptyContent is not null)
+        {
+            <div class="@EmptyClass">
+                @EmptyContent
+            </div>
+        }
+        else
+        {
+            <div class="@EmptyClass">
+                <span class="@EmptyIconClass" aria-hidden="true">
+                    @XFSvgIcons.Markup("file-arrow-up")
+                </span>
+                <p class="@EmptyTextClass">@EmptyText</p>
+            </div>
+        }
+    }
+    else
+    {
+        @* -- Document Info Bar ------------------------------------------ *@
+        <div class="@InfoBarClass" aria-label="Informacoes do documento">
+            @if (DocumentPreview is not null)
+            {
+                @DocumentPreview(_result)
+            }
+            else
+            {
+                <div class="flex items-center gap-2 min-w-0">
+                    <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center text-text-muted" aria-hidden="true">
+                        @XFSvgIcons.Markup(DocumentTypeIcon)
+                    </span>
+                    <span class="truncate text-sm font-medium text-text-primary">@_result.DocumentName</span>
+                </div>
+                <span class="@DocumentTypeBadgeClass">
+                    @DocumentTypeLabel
+                </span>
+                <span class="@InfoMetricClass">
+                    @_result.TotalCharacters.ToString("N0") caracteres
+                </span>
+                <span class="@InfoMetricClass">
+                    @_result.TotalChunks chunks
+                </span>
+                @if (_result.ProcessingDuration.TotalMilliseconds > 0)
+                {
+                    <span class="@InfoMetricClass">
+                        @FormatDuration(_result.ProcessingDuration)
+                    </span>
+                }
+            }
+        </div>
+
+        @* -- AI Summary ------------------------------------------------ *@
+        @if (ShowSummary && !string.IsNullOrWhiteSpace(_result.AiSummary))
+        {
+            <div class="@SummaryContainerClass" aria-label="Resumo IA" aria-live="polite">
+                <button type="button"
+                        class="@SummaryToggleClass"
+                        aria-expanded="@(_isSummaryExpanded ? "true" : "false")"
+                        aria-controls="@($"{Id}-summary-content")"
+                        @onclick="ToggleSummary">
+                    <span class="inline-flex h-4 w-4 items-center justify-center text-purple-500" aria-hidden="true">
+                        @XFSvgIcons.Markup("sparkles")
+                    </span>
+                    <span class="text-sm font-semibold text-text-primary">Resumo IA</span>
+                    <span class="ml-auto inline-flex h-4 w-4 items-center justify-center text-text-muted transition-transform duration-200 @(_isSummaryExpanded ? "rotate-180" : "")" aria-hidden="true">
+                        @XFSvgIcons.Markup("chevron-down")
+                    </span>
+                </button>
+                @if (_isSummaryExpanded)
+                {
+                    <div id="@($"{Id}-summary-content")" class="@SummaryContentClass">
+                        <p class="text-sm leading-6 text-text-secondary whitespace-pre-line">@_result.AiSummary</p>
+                    </div>
+                }
+            </div>
+        }
+
+        @* -- Chunks List ------------------------------------------------ *@
+        @if (ShowChunks && _result.Chunks.Count > 0)
+        {
+            <div class="@ChunksContainerClass" aria-label="Chunks do documento" aria-live="polite">
+                <div class="@ChunksHeaderClass">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">Chunks</span>
+                    <span class="text-xs text-text-muted">@VisibleChunks.Count de @_result.TotalChunks</span>
+                </div>
+                <ul class="divide-y divide-border-light" role="list">
+                    @foreach (var chunk in VisibleChunks)
+                    {
+                        <li role="listitem" class="@ChunkItemClass">
+                            @if (ChunkTemplate is not null)
+                            {
+                                @ChunkTemplate(chunk)
+                            }
+                            else
+                            {
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="@ChunkIndexBadgeClass">#@chunk.Index</span>
+                                            <span class="text-[10px] text-text-muted tabular-nums">
+                                                @chunk.StartChar–@chunk.EndChar
+                                            </span>
+                                        </div>
+                                        <p class="mt-1 text-sm leading-5 text-text-secondary line-clamp-3">@chunk.Content</p>
+                                    </div>
+                                    @if (chunk.RelevanceScore.HasValue)
+                                    {
+                                        <div class="shrink-0 text-right">
+                                            <div class="@RelevanceBarTrackClass"
+                                                 role="progressbar"
+                                                 aria-valuenow="@((int)(chunk.RelevanceScore.Value * 100))"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100"
+                                                 aria-label="Relevancia">
+                                                <div class="@RelevanceBarFillClass"
+                                                     style="width: @(Math.Clamp(chunk.RelevanceScore.Value, 0, 1) * 100)%"></div>
+                                            </div>
+                                            <span class="text-[10px] font-medium text-text-muted tabular-nums">
+                                                @((chunk.RelevanceScore.Value * 100).ToString("F0"))%
+                                            </span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @* -- Error Banner ----------------------------------------------- *@
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <div class="@ErrorBannerClass" role="alert">
+                <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                    @XFSvgIcons.Markup("circle-exclamation")
+                </span>
+                <span>@_errorMessage</span>
+            </div>
+        }
+    }
+</div>

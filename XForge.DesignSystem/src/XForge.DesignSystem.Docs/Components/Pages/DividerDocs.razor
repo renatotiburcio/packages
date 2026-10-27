@@ -1,0 +1,562 @@
+@page "/display/divider"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFDivider" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Acessivel", "Accessible")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Tailwind-first", "Tailwind-first")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Separador visual para organizar superficies densas com semantica e acessibilidade.",
+                               "Visual separator to organize dense surfaces with semantics and accessibility.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFDivider e um separador horizontal ou vertical com suporte a labels, tons semanticos, espessuras variaveis e orientacao acessivel.",
+                               "XFDivider is a horizontal or vertical separator with label support, semantic tones, variable thickness and accessible orientation.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("Separador horizontal simples entre duas secoes de conteudo.", "Simple horizontal separator between two content sections."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Orientacoes", "2. Orientations"),
+                T("Horizontal e Vertical - uso em layouts de formulario e toolbar.", "Horizontal and Vertical - usage in form layouts and toolbar."),
+                ExOrientations(), CodeOrientations)
+
+            @Example(T("3. Labels", "3. Labels"),
+                T("Divisor com texto centralizado, alinhado a esquerda e com ChildContent customizado.", "Divider with centered text, left-aligned and custom ChildContent."),
+                ExLabels(), CodeLabels)
+
+            @Example(T("4. Tons", "4. Tones"),
+                T("Todos os tons semanticos: Neutral, Primary, Success, Warning e Danger.", "All semantic tones: Neutral, Primary, Success, Warning and Danger."),
+                ExTones(), CodeTones)
+
+            @Example(T("5. Espessuras e estilos", "5. Thickness and styles"),
+                T("Thin, Md, Lg e tracejado para diferentes hierarquias visuais.", "Thin, Md, Lg and dashed for different visual hierarchies."),
+                ExThickness(), CodeThickness)
+
+            @Example(T("6. Espacamentos", "6. Spacing"),
+                T("None, Sm, Md, Lg e Xl para controle fino de margem.", "None, Sm, Md, Lg and Xl for fine margin control."),
+                ExSpacing(), CodeSpacing)
+
+            @Example(T("7. Cenario enterprise", "7. Enterprise scenario"),
+                T("Formulario de cadastro de cliente ERP com divisores semanticos.", "ERP customer registration form with semantic dividers."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Divider", "Divider");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.Body1">@T("Secao superior", "Top section")</XFTypography>
+        <XFDivider />
+        <XFTypography Variant="XFTypographyVariant.Body1">@T("Secao inferior", "Bottom section")</XFTypography>
+    </XFStack>;
+
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.Body2">@T("Conteudo da primeira secao.", "First section content.")</XFTypography>
+        <XFDivider />
+        <XFTypography Variant="XFTypographyVariant.Body2">@T("Conteudo da segunda secao.", "Second section content.")</XFTypography>
+    </XFStack>;
+
+    private RenderFragment ExOrientations() => @<div class="grid gap-6 md:grid-cols-2">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Horizontal", "Horizontal")</XFTypography></Header>
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2">@T("Dados pessoais", "Personal data")</XFTypography>
+                    <XFDivider />
+                    <XFTypography Variant="XFTypographyVariant.Body2">@T("Endereco", "Address")</XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Vertical", "Vertical")</XFTypography></Header>
+            <ChildContent>
+                <div class="flex items-center gap-1 h-8">
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="@T("Editar", "Edit")" />
+                    <XFDivider Orientation="XFOrientation.Vertical" />
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Danger" Text="@T("Excluir", "Delete")" />
+                    <XFDivider Orientation="XFOrientation.Vertical" />
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Info" Text="@T("Duplicar", "Duplicate")" />
+                </div>
+            </ChildContent>
+        </XFCard>
+    </div>;
+
+    private RenderFragment ExLabels() => @<XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Class="mb-1">@T("Label centralizado (padrao)", "Centered label (default)")</XFTypography>
+            <XFDivider Label="@T("OU", "OR")" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Class="mb-1">@T("Label alinhado a esquerda", "Left-aligned label")</XFTypography>
+            <XFDivider Label="@T("Secao 2", "Section 2")" Align="XFDividerAlign.Start" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Class="mb-1">@T("Label alinhado a direita", "Right-aligned label")</XFTypography>
+            <XFDivider Label="@T("Fim", "End")" Align="XFDividerAlign.End" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Class="mb-1">@T("ChildContent customizado", "Custom ChildContent")</XFTypography>
+            <XFDivider>
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Secao avancada", "Advanced section")" />
+            </XFDivider>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExTones() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        @foreach (var tone in new[] { XFSemanticColor.Neutral, XFSemanticColor.Primary, XFSemanticColor.Success, XFSemanticColor.Warning, XFSemanticColor.Danger })
+        {
+            <div>
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Neutral" Text="@tone.ToString()" />
+                <XFDivider Tone="@tone" Class="mt-1" />
+            </div>
+        }
+    </XFStack>;
+
+    private RenderFragment ExThickness() => @<XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+        @foreach (var thickness in Enum.GetValues<XFDividerThickness>())
+        {
+            <div>
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Neutral" Text="@thickness.ToString()" />
+                <XFDivider Thickness="@thickness" Class="mt-1" />
+            </div>
+        }
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Tracejado", "Dashed")" />
+            <XFDivider Dashed="true" Class="mt-1" />
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Text="@T("Tracejado + Danger", "Dashed + Danger")" />
+            <XFDivider Dashed="true" Tone="XFSemanticColor.Danger" Class="mt-1" />
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExSpacing() => @<XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+        @foreach (var spacing in Enum.GetValues<XFDividerSpacing>())
+        {
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Espacamento", "Spacing"): @spacing</XFTypography>
+            <XFDivider Spacing="@spacing" />
+        }
+    </XFStack>;
+
+    private RenderFragment ExEnterprise() => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" AreaRestricted="false">
+        <Header>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("user-plus", 16))</span>
+                <div>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Cadastro de Cliente", "Customer Registration")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Formulario ERP com divisores semanticos", "ERP form with semantic dividers")</XFTypography>
+                </div>
+            </div>
+        </Header>
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Nome", "Name")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body2">Silva Comercio LTDA</XFTypography>
+                    </div>
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">CNPJ</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body2">12.345.678/0001-90</XFTypography>
+                    </div>
+                </div>
+                <XFDivider Label="@T("Endereco", "Address")" Align="XFDividerAlign.Start" />
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Logradouro", "Street")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body2">Rua das Flores, 123</XFTypography>
+                    </div>
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Cidade", "City")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body2">Sao Paulo - SP</XFTypography>
+                    </div>
+                </div>
+                <XFDivider Label="@T("Contato", "Contact")" Align="XFDividerAlign.Start" Tone="XFSemanticColor.Primary" />
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">E-mail</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body2">contato@silvacomercio.com.br</XFTypography>
+                    </div>
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Telefone", "Phone")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body2">(11) 3456-7890</XFTypography>
+                    </div>
+                </div>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Acessibilidade WAI-ARIA", "WAI-ARIA accessibility"), T("role=separator com aria-orientation para leitores de tela.", "role=separator with aria-orientation for screen readers."), "universal-access"),
+        new(T("5 tons semanticos", "5 semantic tones"), T("Neutral, Primary, Success, Warning e Danger para hierarquia visual.", "Neutral, Primary, Success, Warning and Danger for visual hierarchy."), "palette"),
+        new(T("Label integrado", "Built-in label"), T("Texto ou ChildContent com alinhamento Start/Center/End.", "Text or ChildContent with Start/Center/End alignment."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFDivider"),
+        new("Namespace", "XForge.DesignSystem.Components.DataDisplay.Divider"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Data Display / Divider"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=separator, aria-orientation", "role=separator, aria-orientation")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Separador semantico", "Semantic separator"), T("Divide visualmente secoes de conteudo com role=separator.", "Visually divides content sections with role=separator."), "grip-lines"),
+        new(T("Duas orientacoes", "Two orientations"), T("Horizontal para blocos e Vertical para inline.", "Horizontal for blocks and Vertical for inline."), "arrows-up-down"),
+        new(T("Label integrado", "Built-in label"), T("Texto ou ChildContent no centro, inicio ou fim da linha.", "Text or ChildContent at center, start or end of line."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Organizacao visual", "Visual organization"), T("Separa secoes de formulario, listas e paineis.", "Separates form sections, lists and panels."), "object-group"),
+        new(T("Hierarquia", "Hierarchy"), T("Comunica relacao entre grupos de conteudo.", "Communicates relationship between content groups."), "layer-group"),
+        new(T("Respiracao", "Breathing room"), T("Adiciona espaco vertical ou horizontal entre elementos.", "Adds vertical or horizontal space between elements."), "arrows-left-right")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Secoes coladas sem separacao visual clara.", "Sections stuck together without clear visual separation."), "xmark"),
+        new(T("Depois", "After"), T("Separadores semanticos com tons e labels que comunicam contexto.", "Semantic separators with tones and labels that communicate context."), "check"),
+        new(T("Acessivel", "Accessible"), T("role=separator e aria-orientation para tecnologia assistiva.", "role=separator and aria-orientation for assistive technology."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Formularios", "Forms"), T("Separar secoes: dados pessoais, endereco, financeiro.", "Separate sections: personal data, address, financial."), "file-lines"),
+        new(T("Listas", "Lists"), T("Dividir grupos de itens em listas longas.", "Divide item groups in long lists."), "list"),
+        new(T("Sidebars", "Sidebars"), T("Separar grupos de navegacao.", "Separate navigation groups."), "bars-staggered"),
+        new(T("Toolbar", "Toolbar"), T("Dividir grupos de acoes com divisor vertical.", "Divide action groups with vertical divider."), "grip-lines-vertical")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Conteudo interativo", "Interactive content"), T("Nao coloque botoes ou links dentro do label do divisor.", "Do not put buttons or links inside the divider label."), "ban"),
+        new(T("Decoracao excessiva", "Excessive decoration"), T("Nao use multiplos divisores adjacentes sem conteudo entre eles.", "Do not use multiple adjacent dividers without content between them."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Linha", "Line"), T("Elemento visual que separa conteudo. Pode ser solida ou tracejada.", "Visual element that separates content. Can be solid or dashed."), "grip-lines"),
+        new(T("Label", "Label"), T("Texto opcional centralizado na linha. Suporta alinhamento Start/Center/End.", "Optional text centered on line. Supports Start/Center/End alignment."), "tag"),
+        new(T("Container", "Container"), T("div com role=separator e aria-orientation.", "div with role=separator and aria-orientation."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Separação semântica", "Semantic separation"), T("Cor e label comunicam o significado da divisão entre seções.", "Color and label communicate the meaning of the division between sections."), "object-group"),
+        new(T("Hierarquia visual", "Visual hierarchy"), T("Espessura e estilo regulam a importância da separação.", "Thickness and style regulate the importance of the separation."), "layer-group"),
+        new(T("Acessibilidade por padrao", "Accessibility by default"), T("role=separator e aria-orientation para tecnologia assistiva.", "role=separator and aria-orientation for assistive technology."), "universal-access")
+    ];
+
+    private string CodeBasic => "<XFStack Orientation=\"XFOrientation.Vertical\" Gap=\"3\" FullWidth=\"true\">\n    <XFTypography Variant=\"XFTypographyVariant.H6\" Weight=\"XFTypographyWeight.Semibold\">Secao 1</XFTypography>\n    <XFDivider />\n    <XFTypography Variant=\"XFTypographyVariant.H6\" Weight=\"XFTypographyWeight.Semibold\">Secao 2</XFTypography>\n</XFStack>";
+    private string CodeOrientations => "<XFDivider />\n\n<XFDivider Orientation=\"XFOrientation.Vertical\" />";
+    private string CodeLabels => "<XFDivider Label=\"OR\" />\n<XFDivider Label=\"Section 2\" Align=\"XFDividerAlign.Start\" />\n<XFDivider Label=\"End\" Align=\"XFDividerAlign.End\" />\n<XFDivider>\n    <XFBadge Text=\"Custom\" />\n</XFDivider>";
+    private string CodeTones => "<XFDivider Tone=\"XFSemanticColor.Neutral\" />\n<XFDivider Tone=\"XFSemanticColor.Primary\" />\n<XFDivider Tone=\"XFSemanticColor.Success\" />\n<XFDivider Tone=\"XFSemanticColor.Warning\" />\n<XFDivider Tone=\"XFSemanticColor.Danger\" />";
+    private string CodeThickness => "<XFDivider Thickness=\"XFDividerThickness.Thin\" />\n<XFDivider Thickness=\"XFDividerThickness.Md\" />\n<XFDivider Thickness=\"XFDividerThickness.Lg\" />\n<XFDivider Dashed=\"true\" />";
+    private string CodeSpacing => "<XFDivider Spacing=\"XFDividerSpacing.None\" />\n<XFDivider Spacing=\"XFDividerSpacing.Sm\" />\n<XFDivider Spacing=\"XFDividerSpacing.Md\" />\n<XFDivider Spacing=\"XFDividerSpacing.Lg\" />";
+    private string CodeEnterprise => "<XFDivider Label=\"Endereco\" Align=\"XFDividerAlign.Start\" />\n<XFDivider Label=\"Contato\" Align=\"XFDividerAlign.Start\" Tone=\"XFSemanticColor.Primary\" />";
+
+    private RenderFragment ExTonesWithLabels() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div>
+            <XFDivider Label="@T("Pessoal", "Personal")" Align="XFDividerAlign.Start" Tone="XFSemanticColor.Primary" />
+            <div class="grid grid-cols-2 gap-3 px-1">
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Nome: Silva LTDA", "Name: Silva LTDA")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("CPF: 123.456.789-00", "ID: 123.456.789-00")</XFTypography>
+            </div>
+        </div>
+        <div>
+            <XFDivider Label="@T("Financeiro", "Financial")" Align="XFDividerAlign.Start" Tone="XFSemanticColor.Success" />
+            <div class="grid grid-cols-2 gap-3 px-1">
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Saldo: R$ 12.500,00", "Balance: $12,500.00")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Status: Ativo", "Status: Active")</XFTypography>
+            </div>
+        </div>
+        <div>
+            <XFDivider Label="@T("Alertas", "Alerts")" Align="XFDividerAlign.Start" Tone="XFSemanticColor.Danger" />
+            <div class="px-1">
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Fatura vencida ha 5 dias", "Invoice overdue by 5 days")</XFTypography>
+            </div>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExDenseSidebar() => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" AreaRestricted="false">
+        <Header>
+            <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Navegacao ERP", "ERP Navigation")</XFTypography>
+        </Header>
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Weight="XFTypographyWeight.Semibold">@T("PRINCIPAL", "MAIN")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Dashboard", "Dashboard")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Notificacoes", "Notifications")</XFTypography>
+                <XFDivider Spacing="XFDividerSpacing.Sm" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Weight="XFTypographyWeight.Semibold">@T("FINANCEIRO", "FINANCIAL")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Contas a receber", "Accounts receivable")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Contas a pagar", "Accounts payable")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Conciliacao bancaria", "Bank reconciliation")</XFTypography>
+                <XFDivider Spacing="XFDividerSpacing.Sm" Tone="XFSemanticColor.Primary" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Weight="XFTypographyWeight.Semibold">@T("ESTOQUE", "INVENTORY")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Produtos", "Products")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Movimentacoes", "Movements")</XFTypography>
+                <XFDivider Spacing="XFDividerSpacing.Sm" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted" Weight="XFTypographyWeight.Semibold">@T("CONFIGURACOES", "SETTINGS")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Empresa", "Company")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2">@T("Usuarios", "Users")</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private string CodeTonesWithLabels => "<XFDivider Label=\"Pessoal\" Align=\"XFDividerAlign.Start\" Tone=\"XFSemanticColor.Primary\" />\n<XFDivider Label=\"Financeiro\" Align=\"XFDividerAlign.Start\" Tone=\"XFSemanticColor.Success\" />\n<XFDivider Label=\"Alertas\" Align=\"XFDividerAlign.Start\" Tone=\"XFSemanticColor.Danger\" />";
+
+    private string CodeDenseSidebar => "<XFStack Orientation=\"XFOrientation.Vertical\" Gap=\"2\" FullWidth=\"true\">\n    <XFTypography Weight=\"Semibold\">PRINCIPAL</XFTypography>\n    <XFTypography>Dashboard</XFTypography>\n    <XFDivider Spacing=\"XFDividerSpacing.Sm\" />\n    <XFTypography Weight=\"Semibold\">FINANCEIRO</XFTypography>\n    <XFTypography>Contas a receber</XFTypography>\n    <XFTypography>Contas a pagar</XFTypography>\n</XFStack>";
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Horizontal", T("Separador de blocos de conteudo (padrao).", "Block content separator (default).")),
+        new("Vertical", T("Separador inline para toolbars e grupos de acoes.", "Inline separator for toolbars and action groups."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Visible", T("Separador visivel (padrao).", "Visible separator (default).")),
+        new("Hidden", T("Visible=false oculta o separador do DOM.", "Visible=false hides the separator from DOM.")),
+        new("Dashed", T("Linha tracejada para hierarquia visual diferente.", "Dashed line for different visual hierarchy."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Orientation", "XFOrientation", "Horizontal", T("Orientacao: Horizontal ou Vertical.", "Orientation: Horizontal or Vertical.")),
+        new("Align", "XFDividerAlign", "Center", T("Alinhamento do label: Start, Center ou End.", "Label alignment: Start, Center or End.")),
+        new("Tone", "XFSemanticColor", "Neutral", T("Tom semantico da linha.", "Semantic tone of the line.")),
+        new("Spacing", "XFDividerSpacing", "Md", T("Espacamento: None, Sm, Md, Lg, Xl.", "Spacing: None, Sm, Md, Lg, Xl.")),
+        new("Thickness", "XFDividerThickness", "Thin", T("Espessura: Thin, Md, Lg.", "Thickness: Thin, Md, Lg.")),
+        new("Dashed", "bool", "false", T("Linha tracejada.", "Dashed line.")),
+        new("Visible", "bool", "true", T("Controla visibilidade.", "Controls visibility.")),
+        new("Label", "string?", "null", T("Texto do label.", "Label text.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo customizado do label.", "Custom label content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("(none)", T("XFDivider nao expoe eventos. Componente puramente visual.", "XFDivider does not expose events. Purely visual component."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=separator", "role=separator"), T("Elemento div raiz usa role=separator para semantica WAI-ARIA.", "Root div element uses role=separator for WAI-ARIA semantics."), "universal-access"),
+        new(T("aria-orientation", "aria-orientation"), T("Comunica orientacao ao leitor de tela: horizontal ou vertical.", "Communicates orientation to screen reader: horizontal or vertical."), "arrows-up-down"),
+        new(T("Conteudo decorativo", "Decorative content"), T("Labels e linhas sao decorativos.", "Labels and lines are decorative."), "eye-slash")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Pula o separador (nao interativo).", "Skips the separator (not interactive)."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("Horizontal ocupa 100% do container pai.", "Horizontal occupies 100% of parent container."), "arrows-left-right"),
+        new(T("Vertical adaptavel", "Adaptive vertical"), T("Vertical usa self-stretch para altura do container.", "Vertical uses self-stretch for container height."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS interop", "Zero JS interop"), T("Renderizacao pura em Razor/C#.", "Pure Razor/C# rendering."), "zap"),
+        new(T("CSS-only", "CSS-only"), T("Estilos via Tailwind, sem calculos em runtime.", "Styles via Tailwind, no runtime calculations."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Formulario ERP", "ERP form"), T("Divisao semantica de secoes: dados pessoais, endereco, financeiro.", "Semantic section division: personal data, address, financial."), "file-lines"),
+        new(T("Sidebar de navegacao", "Navigation sidebar"), T("Grupos de menu separados por divisores com espacamento reduzido.", "Menu groups separated by reduced-spacing dividers."), "bars-staggered"),
+        new(T("Painel de configuracoes", "Settings panel"), T("Secoes de configuracao com labels e tons semanticos.", "Settings sections with labels and semantic tones."), "gear")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Divider + Label", "Divider + Label"), T("Texto centralizado ou alinhado para marcar transicao de secao.", "Centered or aligned text to mark section transitions."), "tag"),
+        new(T("Divider + Tone", "Divider + Tone"), T("Cor semantica para comunicar categoria do conteudo.", "Semantic color to communicate content category."), "palette"),
+        new(T("Divider + Badge", "Divider + Badge"), T("ChildContent com XFBadge para label enriquecido.", "ChildContent with XFBadge for enriched label."), "badge")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Tons semanticos", "Semantic tones"), T("Use Success para financeiro, Primary para dados pessoais, Danger para alertas.", "Use Success for financial, Primary for personal data, Danger for alerts."), "palette"),
+        new(T("Espacamento consistente", "Consistent spacing"), T("Use o mesmo Spacing em todo o formulario para previsibilidade.", "Use the same Spacing throughout the form for predictability."), "ruler"),
+        new(T("Labels em transicoes", "Labels at transitions"), T("Use labels em divisoes de alto nivel. Divisores sem label para separacao sutil.", "Use labels at high-level divisions. Label-less dividers for subtle separation."), "tag"),
+        new(T("Evite divisores consecutivos", "Avoid consecutive dividers"), T("Nunca coloque dois divisores adjacentes sem conteudo entre eles.", "Never place two adjacent dividers without content between them."), "ban")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("divider-line", T("h-px, h-0.5, h-1 para espessura horizontal; w-px, w-0.5, w-1 para vertical.", "h-px, h-0.5, h-1 for horizontal thickness; w-px, w-0.5, w-1 for vertical.")),
+        new("divider-tone", T("bg-border (Neutral), bg-[var(--color-primary)], bg-[var(--color-success)], etc.", "bg-border (Neutral), bg-[var(--color-primary)], bg-[var(--color-success)], etc.")),
+        new("divider-spacing", T("my-0 a my-8 (horizontal), mx-0 a mx-8 (vertical).", "my-0 to my-8 (horizontal), mx-0 to mx-8 (vertical).")),
+        new("divider-label", T("text-xs font-semibold uppercase tracking-wide text-text-muted.", "text-xs font-semibold uppercase tracking-wide text-text-muted."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Tone Primary acompanha marca ativa.", "Primary tone follows active brand."), "swatchbook")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, orientations, tones, thickness, spacing, dashed, visible, label, ChildContent.", "Render, props, orientations, tones, thickness, spacing, dashed, visible, label, ChildContent.")),
+        new("Accessibility", T("role=separator, aria-orientation, conteudo decorativo.", "role=separator, aria-orientation, decorative content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Label horizontal", T("Label so funciona com Orientation=Horizontal.", "Label only works with Orientation=Horizontal.")),
+        new("Dashed + Label", T("Dashed com Label usa border ao inves de background.", "Dashed with Label uses border instead of background."))
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Divisor como espacador", "Divider as spacer"), T("Use margin/padding para espaco, nao divisores adjacentes.", "Use margin/padding for space, not adjacent dividers."), "ban"),
+        new(T("Conteudo interativo", "Interactive content"), T("Divisor e decorativo. Nao coloque acoes dentro do label.", "Divider is decorative. Do not put actions inside the label."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFStack", T("Container flexbox para alinhamento e espacamento.", "Flexbox container for alignment and spacing."), "layer-group"),
+        new("XFGrid", T("Grid responsivo para layouts complexos.", "Responsive grid for complex layouts."), "table-cells"),
+        new("XFTypography", T("Componente de texto semantico.", "Semantic text component."), "font")
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("v1.0", T("Componente inicial.", "Initial component.")),
+        new("v1.1", T("Migrado para XFOrientation e XFSemanticColor (D-071).", "Migrated to XFOrientation and XFSemanticColor (D-071).")),
+        new("v1.2", T("Pagina docs expandida para 26 secoes enterprise com cenarios, composicao, UX, tokens, temas, testes e limitacoes.", "Docs page expanded to 26 enterprise sections with scenarios, composition, UX, tokens, themes, testing and limitations."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

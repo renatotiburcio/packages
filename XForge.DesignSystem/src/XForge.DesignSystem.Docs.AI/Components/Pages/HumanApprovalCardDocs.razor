@@ -1,0 +1,410 @@
+@page "/ai/human-approval"
+@page "/ai/human-approval-card"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiHumanApprovalCard" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Aprovar / Rejeitar / Editar", "Approve / Reject / Edit")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Score de risco", "Risk score")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Cartao de aprovacao humana para acoes AI com risco, impacto e payload proposto.",
+                               "Human approval card for AI actions with risk, impact and proposed payload.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente enterprise para workflow de aprovacao humana. Exibe score de risco, analise de impacto, entidades afetadas e permite aprovar, rejeitar ou editar antes de aplicar.",
+                               "Enterprise component for human approval workflow. Displays risk score, impact analysis, affected entities and allows approve, reject or edit before applying.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Botoes requerem interatividade.", "Renders as static HTML. Buttons require interactivity.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Aprovacao basica", "1. Basic Approval"), T("Cartao com aprovacao, rejeicao e edicao.", "Card with approve, reject and edit."), ExBasic(), Code1)
+            @Example(T("2. Alto risco", "2. High Risk"), T("Cartao com score de risco alto e analise de impacto.", "Card with high risk score and impact analysis."), ExHighRisk(), Code2)
+            @Example(T("3. Sem edicao", "3. Without Edit"), T("Cartao apenas com aprovar e rejeitar.", "Card with approve and reject only."), ExNoEdit(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Tipo de decisao", "Decision Type"), @<div>@NameValueTable(DecisionRows, T("Valor", "Value"), T("Descricao", "Description"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string PageTitleText => T("XFHumanApprovalCard", "XFHumanApprovalCard");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiHumanApprovalCard Request="SampleRequest" />
+    </XFStack>;
+
+    private static readonly XFAiApprovalRequest SampleRequest = new()
+    {
+        Title = "Liberar pagamento",
+        Description = "A IA recomenda liberar pagamento retido por divergencia fiscal baixa.",
+        RequestedBy = "AI",
+        RiskScore = 0.42,
+        Category = "Financeiro",
+        ImpactAnalysis = "Impacto limitado ao pedido atual.",
+        ProposedPayload = "{ \"status\": \"approved\" }"
+    };
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("3 decisoes", "3 decisions"), T("Aprovar, rejeitar ou editar antes de aplicar.", "Approve, reject or edit before applying."), "scale-balanced"),
+        new(T("Score de risco", "Risk score"), T("Barra visual com cores por faixa de risco.", "Visual bar with colors by risk range."), "gauge-high"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiHumanApprovalCard"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Audit"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Audit"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=region, aria-label, aria-busy, role=progressbar, aria-valuenow.", "role=region, aria-label, aria-busy, role=progressbar, aria-valuenow.")),
+        new("Theme support", T("Light e dark via Tailwind CSS.", "Light and dark via Tailwind CSS."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Aprovacao humana", "Human approval"), T("Workflow completo de aprovar, rejeitar ou editar.", "Complete approve, reject or edit workflow."), "user-shield"),
+        new(T("Score de risco visual", "Visual risk score"), T("Barra colorida por faixa: verde, amarelo, laranja, vermelho.", "Colored bar by range: green, yellow, orange, red."), "gauge-high"),
+        new(T("Payload editavel", "Editable payload"), T("Edite o payload proposto antes de aprovar.", "Edit the proposed payload before approving."), "pencil")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Pagamentos", "Payments"), T("Aprovar liberacao de pagamentos retidos.", "Approve release of retained payments."), "money-bill"),
+        new(T("Exclusao de dados", "Data deletion"), T("Aprovar exclusao sensivel de registros.", "Approve sensitive record deletion."), "trash"),
+        new(T("Acoes automaticas", "Automatic actions"), T("Revisar acoes que a IA recomenda executar.", "Review actions that the AI recommends executing."), "robot")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Acoes AI executadas sem revisao humana.", "AI actions executed without human review."), "xmark"),
+        new(T("Depois", "After"), T("Workflow de aprovacao com risco, impacto e payload.", "Approval workflow with risk, impact and payload."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=region, aria-busy, role=progressbar, aria-label.", "role=region, aria-busy, role=progressbar, aria-label."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Acoes de alto risco", "High-risk actions"), T("Pagamentos, exclusoes, alteracoes de configuracao.", "Payments, deletions, configuration changes."), "triangle-exclamation"),
+        new(T("Compliance", "Compliance"), T("Acoes que requerem trilha de auditoria.", "Actions requiring audit trail."), "clipboard-check")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Acoes triviais", "Trivial actions"), T("Nao use para acoes de baixo risco e alto volume.", "Do not use for low-risk, high-volume actions."), "ban"),
+        new(T("Aprovacao em massa", "Bulk approval"), T("Use XFDataGrid com selecao para acoes em massa.", "Use XFDataGrid with selection for bulk actions."), "table-cells")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Risk bar", "Risk bar"), T("Barra colorida no topo indicando nivel de risco.", "Colored bar at top indicating risk level."), "minus"),
+        new(T("Header", "Header"), T("Titulo, solicitante, data e categoria.", "Title, requester, date and category."), "heading"),
+        new(T("Descricao", "Description"), T("Texto descritivo da acao proposta.", "Descriptive text of the proposed action."), "align-left"),
+        new(T("Risk score", "Risk score"), T("Barra de progresso com valor numerico.", "Progress bar with numeric value."), "gauge-high"),
+        new(T("Impact analysis", "Impact analysis"), T("Card amarelo com analise de impacto da IA.", "Yellow card with AI impact analysis."), "triangle-exclamation"),
+        new(T("Actions", "Actions"), T("Botoes Aprovar, Rejeitar e Editar.", "Approve, Reject and Edit buttons."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Transparencia", "Transparency"), T("Mostra exatamente o que a IA quer fazer.", "Shows exactly what the AI wants to do."), "eye"),
+        new(T("Controle humano", "Human control"), T("Humano sempre tem a ultima decisao.", "Human always has the final decision."), "user-shield"),
+        new(T("Rastro de auditoria", "Audit trail"), T("Cada decisao e registrada com timestamp.", "Every decision is logged with timestamp."), "clipboard-list")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiHumanApprovalCard Request="SampleRequest" />
+    </XFStack>;
+
+    private RenderFragment ExHighRisk() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiHumanApprovalCard Request="HighRiskRequest" />
+    </XFStack>;
+
+    private RenderFragment ExNoEdit() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiHumanApprovalCard Request="SampleRequest" ShowEditOption="false" />
+    </XFStack>;
+
+    private static readonly XFAiApprovalRequest HighRiskRequest = new()
+    {
+        Title = "Excluir registros fiscais",
+        Description = "A IA recomenda excluir 1.247 registros fiscais obsoletos do banco de dados.",
+        RequestedBy = "AI",
+        RiskScore = 0.87,
+        Category = "Fiscal",
+        ImpactAnalysis = "Impacto alto: dados serao removidos permanentemente. Backup recomendado.",
+        ProposedPayload = "{ \"action\": \"delete\", \"table\": \"fiscal_records\", \"count\": 1247 }",
+        AffectedEntities = new[] { "fiscal_records", "audit_log", "backup_queue" }
+    };
+
+    private const string Code1 = @"<XFAiHumanApprovalCard Request=""@ApprovedRequest""
+                       OnApproved=""@HandleApproved""
+                       OnRejected=""@HandleRejected""
+                       OnEdited=""@HandleEdited"" />";
+    private const string Code2 = @"<XFAiHumanApprovalCard Request=""@HighRiskRequest""
+                       ApproveLabel=""Confirmar exclusao""
+                       RejectLabel=""Cancelar"" />";
+    private const string Code3 = @"<XFAiHumanApprovalCard Request=""@SimpleRequest""
+                       ShowEditOption=""false""
+                       OnApproved=""@HandleApproved""
+                       OnRejected=""@HandleRejected"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Request", "XFAiApprovalRequest", "new()", T("Dados da solicitacao de aprovacao.", "Approval request data.")),
+        new("ApproveLabel", "string", "Aprovar", T("Label do botao de aprovar.", "Approve button label.")),
+        new("RejectLabel", "string", "Rejeitar", T("Label do botao de rejeitar.", "Reject button label.")),
+        new("ShowEditOption", "bool", "true", T("Exibe o botao de editar antes de aplicar.", "Displays the edit before apply button.")),
+        new("Loading", "bool", "false", T("Estado externo de carregamento.", "External loading state."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnApproved", T("EventCallback<XFAiApprovalRequest> — disparado quando a acao e aprovada.", "EventCallback<XFAiApprovalRequest> — fired when action is approved.")),
+        new("OnRejected", T("EventCallback<XFAiApprovalRequest> — disparado quando a acao e rejeitada.", "EventCallback<XFAiApprovalRequest> — fired when action is rejected.")),
+        new("OnEdited", T("EventCallback<XFAiApprovalEditResult> — disparado quando aprovado com edicoes no payload.", "EventCallback<XFAiApprovalEditResult> — fired when approved with payload edits."))
+    ];
+
+    private IReadOnlyList<NameValueRow> DecisionRows => [
+        new("Pending", T("Estado inicial. Botoes Aprovar, Rejeitar e Editar visiveis.", "Initial state. Approve, Reject and Edit buttons visible.")),
+        new("Approved", T("Acao aprovada. Banner verde exibido. Botoes ocultos.", "Action approved. Green banner displayed. Buttons hidden.")),
+        new("Rejected", T("Acao rejeitada. Banner vermelho exibido. Botoes ocultos.", "Action rejected. Red banner displayed. Buttons hidden.")),
+        new("Edited", T("Aprovado com edicoes. Textarea de payload visivel. Banner azul.", "Approved with edits. Payload textarea visible. Blue banner."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=region", "role=region"), T("Cartao usa role=region com aria-label dinamico.", "Card uses role=region with dynamic aria-label."), "universal-access"),
+        new(T("aria-busy", "aria-busy"), T("Indica estado de processamento para leitores de tela.", "Indicates processing state for screen readers."), "spinner"),
+        new(T("role=progressbar", "role=progressbar"), T("Score de risco usa progressbar com aria-valuenow.", "Risk score uses progressbar with aria-valuenow."), "chart-simple"),
+        new(T("Botoes com aria-label", "Buttons with aria-label"), T("Cada botao tem aria-label descritivo.", "Each button has a descriptive aria-label."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre botoes Aprovar, Rejeitar e Editar.", "Navigates between Approve, Reject and Edit buttons.")),
+        new("Enter", T("Aciona o botao focado.", "Triggers the focused button.")),
+        new("Escape", T("Cancela edicao de payload.", "Cancels payload edit."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("Cartao ocupa 100% do container.", "Card occupies 100% of container."), "maximize"),
+        new(T("Botoes empilhados", "Stacked buttons"), T("Botoes se empilham em telas estreitas.", "Buttons stack on narrow screens."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop para renderizacao.", "No JavaScript interop for rendering."), "bolt"),
+        new(T("Render leve", "Light render"), T("Article nativo sem wrappers excessivos.", "Native article without excessive wrappers."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Pagamento retido", "Retained payment"), T("Aprovar liberacao de pagamento com divergencia fiscal.", "Approve payment release with fiscal discrepancy."), "money-bill"),
+        new(T("Exclusao de dados", "Data deletion"), T("Aprovar exclusao de registros obsoletos.", "Approve deletion of obsolete records."), "trash"),
+        new(T("Configuracao de IA", "AI configuration"), T("Aprovar alteracao de parametros de modelo AI.", "Approve AI model parameter changes."), "gear")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("ApprovalCard + XFCard", "ApprovalCard + XFCard"), T("Cartao dentro de um XFCard para contexto.", "Card inside an XFCard for context."), "square"),
+        new(T("ApprovalCard + XFStack", "ApprovalCard + XFStack"), T("Stack de cartoes para fila de aprovacoes.", "Stack of cards for approval queue."), "bars"),
+        new(T("ApprovalCard + XFGrid", "ApprovalCard + XFGrid"), T("Grid de cartoes para dashboard de aprovacoes.", "Grid of cards for approval dashboard."), "table-cells")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Descricao clara", "Clear description"), T("O Request.Description deve explicar a acao em linguagem simples.", "Request.Description should explain the action in simple language."), "align-left"),
+        new(T("RiskScore realista", "Realistic RiskScore"), T("Use scores reais baseados na criticidade da acao.", "Use real scores based on action criticality."), "gauge-high"),
+        new(T("ShowEditOption para payloads", "ShowEditOption for payloads"), T("Quando o payload e editavel, sempre permita edicao.", "When payload is editable, always allow editing."), "pencil"),
+        new(T("AffetedEntities", "AffectedEntities"), T("Liste entidades afetadas para transparencia.", "List affected entities for transparency."), "list")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem descricao", "No description"), T("Request sem Description e confuso para o revisor.", "Request without Description is confusing for reviewer."), "xmark"),
+        new(T("RiskScore sempre zero", "RiskScore always zero"), T("Score zero ignora o proposito do componente.", "Zero score ignores the component purpose."), "ban"),
+        new(T("Ignorar OnRejected", "Ignore OnRejected"), T("Sempre trate rejeicoes para atualizar o estado.", "Always handle rejections to update state."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("xf-ai-human-approval-card", T("Container principal com role=region.", "Main container with role=region.")),
+        new("RiskBarClass", T("Barra de risco colorida por faixa.", "Risk bar colored by range.")),
+        new("ApproveButtonClass", T("Botao verde de aprovacao.", "Green approve button.")),
+        new("RejectButtonClass", T("Botao vermelho outline de rejeicao.", "Red outline reject button.")),
+        new("DecisionBannerClass", T("Banner de decisao: verde/vermelho/azul.", "Decision banner: green/red/blue."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via Tailwind dark: prefix.", "Light/dark tokens via Tailwind dark: prefix."), "moon"),
+        new("Risco adaptativo", T("Cores de risco se adaptam ao tema.", "Risk colors adapt to theme."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, eventos, decisoes, risco, edicao.", "Render, props, events, decisions, risk, edit.")),
+        new("Extended", T("Fluxo completo: pending -> approved/rejected/edited.", "Complete flow: pending -> approved/rejected/edited.")),
+        new("Accessibility", T("role=region, aria-busy, role=progressbar, aria-label botoes.", "role=region, aria-busy, role=progressbar, button aria-label."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("Decisao unica", "Single decision"), T("Cada instancia permite apenas uma decisao por ciclo.", "Each instance allows only one decision per cycle.")),
+        new(T("Loading externo", "External loading"), T("O estado Loading deve ser controlado pelo componente pai.", "Loading state must be controlled by parent component.")),
+        new(T("Persistencia", "Persistence"), T("Decisoes nao sao persistidas automaticamente. Implemente via OnApproved/OnRejected.", "Decisions are not persisted automatically. Implement via OnApproved/OnRejected."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiRiskBadge", T("Badge compacto de risco.", "Compact risk badge."), "tag"),
+        new("XFAiAuditTimeline", T("Linha do tempo de auditoria.", "Audit timeline."), "clock-rotate-left"),
+        new("XFAiCompliancePanel", T("Painel de conformidade.", "Compliance panel."), "clipboard-check")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual a diferenca entre OnApproved e OnEdited?", "What is the difference between OnApproved and OnEdited?"), T("OnApproved recebe XFAiApprovalRequest. OnEdited recebe XFAiApprovalEditResult com payload modificado.", "OnApproved receives XFAiApprovalRequest. OnEdited receives XFAiApprovalEditResult with modified payload.")),
+        new(T("Posso usar sem ShowEditOption?", "Can I use without ShowEditOption?"), T("Sim. Defina ShowEditOption=false para workflow de apenas aprovar/rejeitar.", "Yes. Set ShowEditOption=false for approve/reject-only workflow.")),
+        new(T("Como controlar Loading?", "How to control Loading?"), T("Passe Loading=true para desabilitar botoes durante processamento assincrono.", "Pass Loading=true to disable buttons during async processing."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-01", T("Componente criado com workflow aprovar/rejeitar/editar.", "Component created with approve/reject/edit workflow.")),
+        new("2026-06-12", T("Documentacao refeita no padrao AppShellDocs com 26 secoes.", "Documentation rewritten in AppShellDocs standard with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

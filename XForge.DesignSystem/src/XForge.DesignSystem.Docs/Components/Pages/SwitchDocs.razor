@@ -1,0 +1,443 @@
+@page "/forms/switch"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Forms", "Forms")"
+                 Title="@T("Switch", "Switch")"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSwitch" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("role=switch", "role=switch")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("State text", "State text")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Alternador binario para preferencias, recursos e estados persistentes.",
+                               "Binary toggle for preferences, features and persistent states.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFSwitch e um toggle acessivel com role='switch', texto de estado, 4 tamanhos, 8 tons semanticos e integracao com EditForm.",
+                               "XFSwitch is an accessible toggle with role='switch', state text, 4 sizes, 8 semantic tones and EditForm integration.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                                 <XFSwitch Label="@T("Ativar automacao fiscal", "Enable fiscal automation")"
+                                           Description="@T("Executa validacoes em segundo plano.", "Runs background validations.")"
+                                           @bind-Value="_heroValue"
+                                           ShowStateText="true"
+                                           CheckedText="@T("Ativo", "Active")"
+                                           UncheckedText="@T("Inativo", "Inactive")" />
+                            </XFStack>
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+                <Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("1. Basico", "1. Basic")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("XFSwitch com Label e Value.", "XFSwitch with Label and Value.")</XFTypography></div></Header>
+                <ChildContent>
+                    <div class="grid">
+                        <div class="border-t border-border-light p-6">
+                            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                                 <XFSwitch Label="@T("Notificacoes", "Notifications")" Value="@_basicValue" ValueChanged="@(v => _basicValue = v)" />
+                                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                                    @T("Valor atual: ", "Current value: ") @_basicValue
+                                </XFTypography>
+                            </XFStack>
+                        </div>
+                        <div class="border-t border-border-light bg-surface-50 p-6">
+                            <XFCode Text="@CodeBasic" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                        </div>
+                    </div>
+                </ChildContent>
+            </XFCard>
+
+            <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+                <Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("2. State Text", "2. State Text")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("ShowStateText com CheckedText/UncheckedText.", "ShowStateText with CheckedText/UncheckedText.")</XFTypography></div></Header>
+                <ChildContent>
+                    <div class="grid">
+                        <div class="border-t border-border-light p-6">
+                            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                                 <XFSwitch Label="@T("Modo escuro", "Dark mode")" Value="@_stateTextValue" ValueChanged="@(v => _stateTextValue = v)"
+                                           ShowStateText="true" CheckedText="@T("Ativo", "On")" UncheckedText="@T("Inativo", "Off")" />
+                            </XFStack>
+                        </div>
+                        <div class="border-t border-border-light bg-surface-50 p-6">
+                            <XFCode Text="@CodeStateText" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                        </div>
+                    </div>
+                </ChildContent>
+            </XFCard>
+
+            <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+                <Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("3. Tamanhos", "3. Sizes")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Sm, Md, Lg.", "Sm, Md, Lg.")</XFTypography></div></Header>
+                <ChildContent>
+                    <div class="grid">
+                        <div class="border-t border-border-light p-6">
+                            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                                 <XFSwitch Size="XFSize.Sm" Label="Small" Value="@_sizeSmValue" ValueChanged="@(v => _sizeSmValue = v)" />
+                                 <XFSwitch Size="XFSize.Md" Label="Medium (default)" Value="@_sizeMdValue" ValueChanged="@(v => _sizeMdValue = v)" />
+                                 <XFSwitch Size="XFSize.Lg" Label="Large" Value="@_sizeLgValue" ValueChanged="@(v => _sizeLgValue = v)" />
+                            </XFStack>
+                        </div>
+                        <div class="border-t border-border-light bg-surface-50 p-6">
+                            <XFCode Text="@CodeSizes" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                        </div>
+                    </div>
+                </ChildContent>
+            </XFCard>
+
+            <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+                <Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("4. Tons", "4. Tons")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("8 tons semanticos.", "8 semantic tones.")</XFTypography></div></Header>
+                <ChildContent>
+                    <div class="grid">
+                        <div class="border-t border-border-light p-6">
+                            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                                 <XFSwitch Tone="XFSemanticColor.Primary" Label="Primary" Value="@_tonePrimaryValue" ValueChanged="@(v => _tonePrimaryValue = v)" />
+                                 <XFSwitch Tone="XFSemanticColor.Success" Label="Success" Value="@_toneSuccessValue" ValueChanged="@(v => _toneSuccessValue = v)" />
+                                 <XFSwitch Tone="XFSemanticColor.Warning" Label="Warning" Value="@_toneWarningValue" ValueChanged="@(v => _toneWarningValue = v)" />
+                                 <XFSwitch Tone="XFSemanticColor.Danger" Label="Danger" Value="@_toneDangerValue" ValueChanged="@(v => _toneDangerValue = v)" />
+                            </XFStack>
+                        </div>
+                        <div class="border-t border-border-light bg-surface-50 p-6">
+                            <XFCode Text="@CodeTones" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                        </div>
+                    </div>
+                </ChildContent>
+            </XFCard>
+
+            <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+                <Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("5. Estados", "5. States")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Disabled, ReadOnly, Required.", "Disabled, ReadOnly, Required.")</XFTypography></div></Header>
+                <ChildContent>
+                    <div class="grid">
+                        <div class="border-t border-border-light p-6">
+                            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                                 <XFSwitch Label="@T("Desabilitado", "Disabled")" Value="@_disabledValue" Disabled="true" />
+                                 <XFSwitch Label="@T("Somente leitura", "Read only")" Value="@_readonlyValue" ReadOnly="true" />
+                                 <XFSwitch Label="@T("Obrigatorio", "Required")" Value="@_requiredValue" ValueChanged="@(v => _requiredValue = v)" Required="true" />
+                            </XFStack>
+                        </div>
+                        <div class="border-t border-border-light bg-surface-50 p-6">
+                            <XFCode Text="@CodeStates" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                        </div>
+                    </div>
+                </ChildContent>
+            </XFCard>
+
+            <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+                <Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("6. Enterprise", "6. Enterprise")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Painel de configuracoes com multiplos switches.", "Settings panel with multiple switches.")</XFTypography></div></Header>
+                <ChildContent>
+                    <div class="grid">
+                        <div class="border-t border-border-light p-6">
+                            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                                 <XFSwitch Label="@T("Notificacoes por email", "Email notifications")" Value="@_emailNotifValue" ValueChanged="@(v => _emailNotifValue = v)"
+                                           ShowStateText="true" CheckedText="@T("Sim", "Yes")" UncheckedText="@T("Nao", "No")" />
+                                 <XFSwitch Label="@T("Modo escuro", "Dark mode")" Value="@_darkModeValue" ValueChanged="@(v => _darkModeValue = v)"
+                                           ShowStateText="true" CheckedText="@T("Ativo", "On")" UncheckedText="@T("Inativo", "Off")" />
+                                 <XFSwitch Label="@T("Autenticacao 2FA", "2FA authentication")" Value="@_twoFactorValue" ValueChanged="@(v => _twoFactorValue = v)"
+                                           ShowStateText="true" CheckedText="@T("Ativo", "On")" UncheckedText="@T("Inativo", "Off")" Tone="XFSemanticColor.Success" />
+                            </XFStack>
+                        </div>
+                        <div class="border-t border-border-light bg-surface-50 p-6">
+                            <XFCode Text="@CodeEnterprise" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                        </div>
+                    </div>
+                </ChildContent>
+            </XFCard>
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    // --- State for interactive examples ---
+    private bool _heroValue = true;
+    private bool _basicValue = true;
+    private bool _stateTextValue = true;
+    private bool _sizeSmValue = true;
+    private bool _sizeMdValue = true;
+    private bool _sizeLgValue = true;
+    private bool _tonePrimaryValue = true;
+    private bool _toneSuccessValue = true;
+    private bool _toneWarningValue = true;
+    private bool _toneDangerValue = true;
+    private bool _disabledValue = true;
+    private bool _readonlyValue = true;
+    private bool _requiredValue;
+    private bool _emailNotifValue = true;
+    private bool _darkModeValue;
+    private bool _twoFactorValue = true;
+
+    // --- RenderFragment helpers ---
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== QUICK FACTS ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("role='switch'", "role='switch'"), T("ARIA correto para leitores de tela.", "Correct ARIA for screen readers."), "universal-access"),
+        new(T("State text", "State Text"), T("CheckedText/UncheckedText para feedback visual.", "CheckedText/UncheckedText for visual feedback."), "toggle-on"),
+        new(T("8 tons", "8 tones"), T("Default, Primary, Secondary, Success, Warning, Danger, Info, Neutral.", "Default, Primary, Secondary, Success, Warning, Danger, Info, Neutral."), "palette")
+    ];
+
+    // ==================== METADATA ====================
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFSwitch"), new("Namespace", "XForge.DesignSystem.Components.Forms.Switch"),
+        new("Package", "XForge.DesignSystem"), new("Category", T("Forms / Switch", "Forms / Switch")),
+        new("Base class", "XForgeComponentBase"), new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role='switch', aria-checked, aria-disabled, touch 44px AAA.", "role='switch', aria-checked, aria-disabled, 44px AAA touch.")),
+        new("Theme support", T("Light, dark via tokens.", "Light, dark via tokens."))
+    ];
+
+    // ==================== STATIC DATA ====================
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Toggle binario", "Binary toggle"), T("Alterna entre true/false com feedback visual imediato.", "Toggles between true/false with immediate visual feedback."), "toggle-on"),
+        new(T("State text", "State text"), T("Texto de estado configuravel (Ativo/Inativo).", "Configurable state text (Active/Inactive)."), "font"),
+        new(T("8 tons semanticos", "8 semantic tones"), T("Cores de destaque por contexto.", "Contextual highlight colors."), "palette")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Preferencias", "Preferences"), T("Notificacoes, modo escuro, idioma.", "Notifications, dark mode, language."), "gear"),
+        new(T("Recursos", "Features"), T("Habilitar/desabilitar funcionalidades.", "Enable/disable features."), "power-off"),
+        new(T("Estados persistentes", "Persistent states"), T("Configuracoes salvas no banco.", "Settings saved to database."), "database")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Configuracoes", "Settings"), T("Painel de preferencias do usuario.", "User preferences panel."), "gear"),
+        new(T("Formularios", "Forms"), T("Campos booleanos com label descritivo.", "Boolean fields with descriptive label."), "file-lines"),
+        new(T("ERP", "ERP"), T("Ativar modulos, habilitar integracoes.", "Activate modules, enable integrations."), "building")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Multipla selecao", "Multiple selection"), T("Use XFCheckbox para selecao multipla.", "Use XFCheckbox for multiple selection."), "triangle-exclamation"),
+        new(T("Selecao de opcao", "Option selection"), T("Use XFRadioGroup para escolher entre opcoes.", "Use XFRadioGroup to choose between options."), "triangle-exclamation")
+    ];
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Checkbox para toggle binario, sem feedback visual de estado.", "Checkbox for binary toggle, no visual state feedback."), "xmark"),
+        new(T("Depois", "After"), T("Switch com animacao de toggle, label e estado visual claro.", "Switch with toggle animation, label and clear visual state."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=switch, aria-checked, teclado Space/Enter, 44px touch.", "role=switch, aria-checked, Space/Enter keyboard, 44px touch."), "universal-access")
+    ];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Binario", "Binary"), T("Switch = ligar/desligar. Radio = escolher entre opcoes.", "Switch = on/off. Radio = choose between options."), "power-off"),
+        new(T("Visual claro", "Clear visual"), T("Track color indica estado: Primary=on, Neutral=off.", "Track color indicates state: Primary=on, Neutral=off."), "eye"),
+        new(T("Label associado", "Associated label"), T("Clicar no label alterna o switch.", "Clicking label toggles the switch."), "font"),
+        new(T("Touch-first", "Touch-first"), T("Minimo 44px para toque, focus ring 40%.", "Minimum 44px for touch, 40% focus ring."), "hand-pointer")
+    ];
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Configuracoes ERP", "ERP settings"), T("Ativar modulos, habilitar integracoes.", "Activate modules, enable integrations."), "gear"),
+        new(T("Preferencias", "Preferences"), T("Notificacoes, tema escuro, auto-save.", "Notifications, dark theme, auto-save."), "sliders"),
+        new(T("Formularios", "Forms"), T("Campos booleanos: ativar, habilitar, permitir.", "Boolean fields: activate, enable, allow."), "file-lines")
+    ];
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Switch + Label", "Switch + Label"), T("Label descritivo ao lado do switch.", "Descriptive label next to switch."), "font"),
+        new(T("Switch + Helper", "Switch + Helper"), T("Texto de orientacao abaixo do switch.", "Orientation text below switch."), "circle-info"),
+        new(T("Switch + Badge", "Switch + Badge"), T("Badge mostrando estado atual.", "Badge showing current state."), "tag")
+    ];
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Label claro", "Clear label"), T("Descreva o que acontece ao ativar.", "Describe what happens when activated."), "align-left"),
+        new(T("Estado inicial", "Initial state"), T("Defina o valor padrao no modelo.", "Set the default value in the model."), "circle-check"),
+        new(T("Animacao suave", "Smooth animation"), T("Transicao de 200ms para feedback visual.", "200ms transition for visual feedback."), "bolt"),
+        new(T("Aria-label", "Aria-label"), T("Sempre associe um label visivel ou aria-label.", "Always associate a visible label or aria-label."), "universal-access")
+    ];
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, eventos, keyboard, a11y, variants.", "Render, props, events, keyboard, a11y, variants tests.")),
+        new("Accessibility", T("role=switch, aria-checked, Space/Enter, 44px touch.", "role=switch, aria-checked, Space/Enter, 44px touch."))
+    ];
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Binario", T("Switch so suporta true/false. Para multipla selecao, use Checkbox.", "Switch only supports true/false. For multiple selection, use Checkbox.")),
+        new("JS", T("Nao utiliza JS interop. Funciona em todos os modos.", "No JS interop. Works in all modes."))
+    ];
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Switch vs Checkbox?", "Switch vs Checkbox?"), T("Switch = acao imediata (toggle). Checkbox = selecao para submit.", "Switch = immediate action (toggle). Checkbox = selection for submit.")),
+        new(T("Switch vs Radio?", "Switch vs Radio?"), T("Switch = ligar/desligar. Radio = escolher entre opcoes.", "Switch = on/off. Radio = choose between options."))
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("div com flex items-center gap-3.", "div with flex items-center gap-3."), "code"),
+        new("Track", T("div com rounded-full, bg-surface-200/checked:bg-primary.", "div with rounded-full, bg-surface-200/checked:bg-primary."), "square"),
+        new("Thumb", T("div com rounded-full, bg-white, translate-x.", "div with rounded-full, bg-white, translate-x."), "circle"),
+        new("Label", T("span com text-sm font-medium.", "span with text-sm font-medium."), "font"),
+        new("State", T("span com text-xs text-text-secondary.", "span with text-xs text-text-secondary."), "info")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Default", T("Track + thumb circular (padrao).", "Circular track + thumb (default).")),
+        new("Card", T("Card com borda e padding.", "Card with border and padding."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Habilitado, editavel.", "Enabled, editable.")),
+        new("Disabled", T("opacity-60, cursor-not-allowed.", "opacity-60, cursor-not-allowed.")),
+        new("ReadOnly", T("Visual mas nao editavel.", "Visual but not editable.")),
+        new("Required", T("aria-required.", "aria-required."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "bool", "false", T("Valor binario atual.", "Current binary value.")),
+        new("ValueChanged", "EventCallback<bool>", "default", T("Two-way binding callback.", "Two-way binding callback.")),
+        new("ValueExpression", "Expression<Func<bool>>?", "null", T("Expressao para EditForm.", "Expression for EditForm.")),
+        new("Change", "EventCallback<bool>", "default", T("Disparado ao alternar.", "Fired on toggle.")),
+        new("Label", "string?", "null", T("Texto do label.", "Label text.")),
+        new("Description", "string?", "null", T("Texto descritivo abaixo.", "Descriptive text below.")),
+        new("CheckedText", "string?", "null", T("Texto quando checked (ex: Ativo).", "Text when checked (ex: Active).")),
+        new("UncheckedText", "string?", "null", T("Texto quando unchecked (ex: Inativo).", "Text when unchecked (ex: Inactive).")),
+        new("ShowStateText", "bool", "false", T("Exibe texto de estado.", "Shows state text.")),
+        new("ShowThumbIcon", "bool", "false", T("Exibe icone no thumb.", "Shows icon on thumb.")),
+        new("Size", "XFSize", "Md", T("Tamanho: Sm, Md, Lg.", "Size: Sm, Md, Lg.")),
+        new("Tone", "XFSemanticColor", "Default", T("Tom semantico.", "Semantic tone.")),
+        new("Variant", "XFSwitchVariant", "Default", T("Default ou Card.", "Default or Card.")),
+        new("Disabled", "bool", "false", T("Desabilitado.", "Disabled.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read only.")),
+        new("Required", "bool", "false", T("Obrigatorio.", "Required.")),
+        new("AriaLabel", "string?", "null", T("Nome acessivel.", "Accessible name."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ValueChanged", T("Two-way binding. Disparado ao alternar.", "Two-way binding. Fired on toggle.")),
+        new("Change", T("Disparado ao alternar. bool como payload.", "Fired on toggle. bool as payload."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("role='switch'", T("ARIA role correto.", "Correct ARIA role."), "universal-access"),
+        new("aria-checked", T("Estado checked/unchecked.", "Checked/unchecked state."), "check"),
+        new("aria-disabled", T("Quando Disabled=true.", "When Disabled=true."), "check"),
+        new(T("Touch target 44px", "44px touch target"), T("Area clicavel minima.", "Minimum click area."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Space", T("Alterna o valor.", "Toggles the value.")),
+        new("Enter", T("Alterna o valor.", "Toggles the value.")),
+        new("Tab", T("Move foco.", "Moves focus."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Label + Switch", "Label + Switch"), T("Layout horizontal responsivo.", "Responsive horizontal layout."), "arrows-up-down"),
+        new(T("Card variant", "Card variant"), T("Empilha em telas pequenas.", "Stacks on small screens."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("CSS-only toggle", "CSS-only toggle"), T("Animacao via CSS transition.", "Animation via CSS transition."), "bolt"),
+        new(T("Sem JS interop", "No JS interop"), T("Puramente Blazor.", "Purely Blazor."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem label", "No label"), T("Sempre fornece label ou AriaLabel.", "Always provide label or AriaLabel."), "triangle-exclamation"),
+        new(T("Toggle para multiplos", "Toggle for multiple"), T("Use XFCheckbox para selecao multipla.", "Use XFCheckbox for multiple selection."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("bg-surface-200 (unchecked), bg-primary (checked).", "bg-surface-200 (unchecked), bg-primary (checked).")),
+        new("radius", T("rounded-full para track e thumb.", "rounded-full for track and thumb.")),
+        new("spacing", T("h-5 w-9 (Sm), h-6 w-11 (Md), h-7 w-14 (Lg).", "h-5 w-9 (Sm), h-6 w-11 (Md), h-7 w-14 (Lg).")),
+        new("focus", T("focus-visible ring-2 40% primary.", "focus-visible ring-2 40% primary."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFCheckbox", T("Selecao multipla.", "Multiple selection."), "check-square"),
+        new("XFRadio", T("Selecao unica em grupo.", "Single selection in group."), "dot-circle"),
+        new("XFTextInput", T("Entrada de texto.", "Text input."), "font")
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-04", T("Pagina refeita com @bind-Value sem RenderFragments aninhados.", "Page rebuilt with @bind-Value without nested RenderFragments.")),
+        new("2026-06-03", T("Pagina refeita no padrao enterprise com 6 exemplos renderizados.", "Page rebuilt in enterprise standard with 6 rendered examples."))
+    ];
+
+    // ==================== CODE STRINGS ====================
+    private string CodeBasic => "<XFSwitch Label=\"Notificacoes\" @bind-Value=\"_basicValue\" />";
+    private string CodeStateText => "<XFSwitch ShowStateText=\"true\"\n    CheckedText=\"Ativo\" UncheckedText=\"Inativo\" @bind-Value=\"_stateTextValue\" />";
+    private string CodeSizes => "<XFSwitch Size=\"XFSize.Sm\" Label=\"Small\" @bind-Value=\"_sizeSmValue\" />\n<XFSwitch Size=\"XFSize.Md\" Label=\"Medium\" @bind-Value=\"_sizeMdValue\" />\n<XFSwitch Size=\"XFSize.Lg\" Label=\"Large\" @bind-Value=\"_sizeLgValue\" />";
+    private string CodeTones => "<XFSwitch Tone=\"XFSemanticColor.Primary\" Label=\"Primary\" @bind-Value=\"_tonePrimaryValue\" />\n<XFSwitch Tone=\"XFSemanticColor.Success\" Label=\"Success\" @bind-Value=\"_toneSuccessValue\" />\n<XFSwitch Tone=\"XFSemanticColor.Warning\" Label=\"Warning\" @bind-Value=\"_toneWarningValue\" />\n<XFSwitch Tone=\"XFSemanticColor.Danger\" Label=\"Danger\" @bind-Value=\"_toneDangerValue\" />";
+    private string CodeStates => "<XFSwitch Disabled=\"true\" @bind-Value=\"_disabledValue\" />\n<XFSwitch ReadOnly=\"true\" @bind-Value=\"_readonlyValue\" />\n<XFSwitch Required=\"true\" @bind-Value=\"_requiredValue\" />";
+    private string CodeEnterprise => "<XFSwitch Label=\"Notificacoes\"\n    ShowStateText=\"true\" CheckedText=\"Sim\" UncheckedText=\"Nao\" @bind-Value=\"_emailNotifValue\" />\n<XFSwitch Label=\"Modo escuro\"\n    ShowStateText=\"true\" CheckedText=\"Ativo\" UncheckedText=\"Inativo\" @bind-Value=\"_darkModeValue\" />\n<XFSwitch Label=\"Autenticacao 2FA\"\n    ShowStateText=\"true\" CheckedText=\"Ativo\" UncheckedText=\"Inativo\" @bind-Value=\"_twoFactorValue\"\n    Tone=\"XFSemanticColor.Success\" />";
+
+    // ==================== RECORDS ====================
+    internal sealed record DocTile(string Title, string Description, string Icon);
+    internal sealed record NameValueRow(string Name, string Value);
+    internal sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

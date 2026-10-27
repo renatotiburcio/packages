@@ -1,0 +1,457 @@
+@page "/ai/accounting-assistant"
+@using XForge.DesignSystem.Components.AI.Accounting
+@using XForge.DesignSystem.Services.AI
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="XFAiAccountingAssistant"
+                 Status="@L.Text("Estavel", "Stable")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiAccountingAssistant" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Contabilidade", "Accounting")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("DRE", "DRE")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Assistente contabil para lancamentos, classificacao, auditoria, DRE e sugestoes de ajuste.",
+                               "Accounting assistant for entries, classification, audit, DRE and adjustment suggestions.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente de assistencia IA contabil com lancamentos sugeridos, classificacao automatica de contas, DRE simplificado, itens de auditoria e nivel de confianca.",
+                               "AI accounting assistant component with suggested entries, automatic account classification, simplified DRE, audit items and confidence level.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== METADATA ===== -->
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        <!-- ===== BLAZOR COMPAT ===== -->
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Assistencia completa com IA via provider.", "Full assistance with AI via provider.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com provider compativel.", "Works with compatible provider.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Limitado", "Limited")" /></XFTableCell><XFTableCell>@T("IA indisponivel. Exibe estado vazio.", "AI unavailable. Shows empty state.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+            </XFStack>
+        </div>)
+
+        <!-- ===== CONTENT SECTIONS ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Assistente basico", "1. Basic Assistant"), T("Assistente com titulo, placeholder e header.", "Assistant with title, placeholder and header."), ExBasic(), Code1)
+            @Example(T("2. Sem header", "2. Without Header"), T("Assistente compacto sem barra de cabecalho.", "Compact assistant without header bar."), ExNoHeader(), Code2)
+            @Example(T("3. Com resultado customizado", "3. Custom Result"), T("Resultado contabil customizado via ResultPreview.", "Custom accounting result via ResultPreview."), ExCustomResult(), Code3)
+            @Example(T("4. Conteudo vazio customizado", "4. Custom Empty Content"), T("Estado vazio customizado via EmptyContent.", "Custom empty state via EmptyContent."), ExEmpty(), Code4)
+            @Example(T("5. Assistente enterprise", "5. Enterprise Assistant"), T("Assistente com titulo corporativo e placeholder detalhado.", "Assistant with corporate title and detailed placeholder."), ExEnterprise(), Code5)
+        </XFStack>
+
+        <!-- ===== API + EVENTS ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <!-- ===== ACCESSIBILITY + PERFORMANCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <!-- ===== ENTERPRISE + COMPOSITION ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <!-- ===== TOKENS + THEMING ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+<XForgeDocsPageStandard ComponentName="AccountingAssistantDocs" />
+
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAccountingAssistant Title="@T("Analise contabil", "Accounting analysis")"
+                                Placeholder="@T("Explique a variacao da DRE no trimestre...", "Explain the DRE variation in the quarter...")"
+                                ShowHeader="true" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Lancamentos IA", "AI Entries"), T("Sugestoes automaticas de lancamentos contabeis com debito e credito.", "Automatic accounting entry suggestions with debit and credit."), "calculator"),
+        new(T("DRE simplificado", "Simplified DRE"), T("Demonstracao do resultado com receita, custos e margens.", "Income statement with revenue, costs and margins."), "chart-line-up"),
+        new(T("Auditoria", "Audit"), T("Deteccao de inconsistencias, duplicatas e violacoes de regras.", "Detection of inconsistencies, duplicates and rule violations."), "magnifying-glass-chart")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiAccountingAssistant"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Accounting"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Accounting"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", "role=region, aria-label, aria-busy, aria-live=polite"),
+        new("Theme support", T("Light e dark via tokens CSS.", "Light and dark via CSS tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Assistente contabil", "Accounting assistant"), T("Lancamentos sugeridos, classificacao automatica e DRE.", "Suggested entries, automatic classification and DRE."), "calculator"),
+        new(T("Auditoria IA", "AI Audit"), T("Deteccao de inconsistencias, duplicatas e violacoes de regras.", "Detection of inconsistencies, duplicates and rule violations."), "magnifying-glass-chart"),
+        new(T("DRE", "DRE"), T("Demonstracao do resultado simplificada com margens.", "Simplified income statement with margins."), "chart-line-up")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Lancamentos sugeridos", "Suggested entries"), T("Sugestoes automaticas com contas de debito e credito.", "Automatic suggestions with debit and credit accounts."), "robot"),
+        new(T("Classificacao", "Classification"), T("Classificacao automatica de transacoes por tipo.", "Automatic transaction classification by type."), "tags"),
+        new(T("Auditoria", "Audit"), T("Deteccao de problemas contabeis com severidade.", "Accounting problem detection with severity."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Classificacao manual de lancamentos e propensa a erros.", "Manual entry classification is error-prone."), "xmark"),
+        new(T("Depois", "After"), T("IA classifica e sugere lancamentos com classificacao contabil.", "AI classifies and suggests entries with accounting classification."), "check"),
+        new(T("Eficiencia", "Efficiency"), T("Reducao de tempo de classificacao em ate 80%.", "Reduces classification time by up to 80%."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Lancamentos contabeis", "Accounting entries"), T("Sugestao de lancamentos com debito e credito.", "Entry suggestion with debit and credit."), "calculator"),
+        new(T("Auditoria contabil", "Accounting audit"), T("Revisao de transacoes com indicadores de problema.", "Transaction review with problem indicators."), "magnifying-glass-chart")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Formularios simples", "Simple forms"), T("Use XFTextInput para entrada de dados simples.", "Use XFTextInput for simple data input."), "pen"),
+        new(T("Notificacoes", "Notifications"), T("Use XFToast ou XFAlert para alertas pontuais.", "Use XFToast or XFAlert for one-time alerts."), "bell")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Header", "Header"), T("Barra superior com titulo e icone de sparkles.", "Top bar with title and sparkles icon."), "bars"),
+        new(T("Input", "Input"), T("Textarea com placeholder e botao de analise.", "Textarea with placeholder and analysis button."), "pen"),
+        new(T("Resultado", "Result"), T("Area de resultado com lancamentos, DRE e auditoria.", "Result area with entries, DRE and audit."), "chart-bar"),
+        new(T("Erro", "Error"), T("Banner de erro com mensagem e botao dispensar.", "Error banner with message and dismiss button."), "triangle-exclamation"),
+        new(T("Loading", "Loading"), T("Skeleton de carregamento durante processamento IA.", "Loading skeleton during AI processing."), "spinner"),
+        new(T("Vazio", "Empty"), T("Estado vazio com icone e texto explicativo.", "Empty state with icon and explanatory text."), "inbox")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Transparencia contabil", "Accounting transparency"), T("DRE simplificado visivel com margens e analise IA.", "Simplified DRE visible with margins and AI analysis."), "eye"),
+        new(T("Feedback visual", "Visual feedback"), T("Skeleton durante IA, banner de erro, estado vazio.", "Skeleton during AI, error banner, empty state."), "circle-check"),
+        new(T("Extensibilidade", "Extensibility"), T("Templates para resultado, header e vazio.", "Templates for result, header and empty."), "puzzle")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAccountingAssistant Title="@T("Analise contabil", "Accounting analysis")"
+                                Placeholder="@T("Explique a variacao da DRE no trimestre...", "Explain the DRE variation in the quarter...")"
+                                ShowHeader="true" />
+    </XFStack>;
+
+    private RenderFragment ExNoHeader() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAccountingAssistant Title="@T("Assistente", "Assistant")"
+                                Placeholder="@T("Pergunte sobre lancamentos...", "Ask about entries...")"
+                                ShowHeader="false" />
+    </XFStack>;
+
+    private RenderFragment ExCustomResult() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAccountingAssistant Title="@T("Assistente customizado", "Custom assistant")"
+                                Placeholder="@T("Envie dados contabeis para analise...", "Send accounting data for analysis...")"
+                                ShowHeader="true"
+                                ResultPreview="CustomResultPreview" />
+    </XFStack>;
+
+    private RenderFragment ExEmpty() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAccountingAssistant Title="@T("Assistente", "Assistant")"
+                                Placeholder="@T("Descreva a situacao contabil...", "Describe the accounting situation...")"
+                                ShowHeader="true"
+                                EmptyContent="@CustomEmptyContent" />
+    </XFStack>;
+
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAccountingAssistant Title="@T("Assistente Contabil ERP", "ERP Accounting Assistant")"
+                                Placeholder="@T("Pergunte sobre lancamentos sugeridos, DRE, classificacao automatica, auditoria contabil ou reprocessamento.", "Ask about suggested entries, DRE, automatic classification, accounting audit or reprocessing.")"
+                                ShowHeader="true" />
+    </XFStack>;
+
+    private RenderFragment CustomResultPreview(XFAiAccountingInsight result) => @<div class="space-y-3">
+        <div class="rounded-lg bg-primary/5 px-3 py-2.5 ring-1 ring-primary/10">
+            <div class="flex items-start gap-2">
+                <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("sparkles", 16))</span>
+                <p class="text-sm leading-5 text-text-primary">@result.AiSummary</p>
+            </div>
+        </div>
+        @if (result.DreSummary is not null)
+        {
+            <div class="rounded-lg bg-surface-50 p-3 ring-1 ring-border-light">
+                <div class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">DRE</div>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div><span class="text-text-muted">@T("Receita:", "Revenue:")</span> <span class="font-semibold text-emerald-600">@result.DreSummary.Revenue.ToString("C0")</span></div>
+                    <div><span class="text-text-muted">@T("Lucro Liquido:", "Net Income:")</span> <span class="font-semibold @(result.DreSummary.NetIncome >= 0 ? "text-emerald-600" : "text-red-600")">@result.DreSummary.NetIncome.ToString("C0")</span></div>
+                </div>
+            </div>
+        }
+    </div>;
+
+    private RenderFragment CustomEmptyContent => @<div class="flex flex-col items-center gap-3 py-8">
+        <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+            @((MarkupString)XFSvgIcons.MarkupWithSize("calculator", 32))
+        </div>
+        <div class="text-center">
+            <div class="text-sm font-semibold text-text-primary">@T("Assistente Contabil", "Accounting Assistant")</div>
+            <div class="mt-1 text-xs text-text-secondary max-w-xs">@T("Pergunte sobre lancamentos, DRE, classificacao ou auditoria contabil.", "Ask about entries, DRE, classification or accounting audit.")</div>
+        </div>
+    </div>;
+
+    private const string Code1 = @"<XFAiAccountingAssistant Title=""Analise contabil""
+                      Placeholder=""Explique a variacao da DRE no trimestre...""
+                      ShowHeader=""true"" />";
+
+    private const string Code2 = @"<XFAiAccountingAssistant Title=""Assistente""
+                      Placeholder=""Pergunte sobre lancamentos...""
+                      ShowHeader=""false"" />";
+
+    private const string Code3 = @"<XFAiAccountingAssistant Title=""Assistente customizado""
+                      Placeholder=""Envie dados contabeis para analise...""
+                      ShowHeader=""true""
+                      ResultPreview=""@CustomResultPreview"" />";
+
+    private const string Code4 = @"<XFAiAccountingAssistant Title=""Assistente""
+                      Placeholder=""Descreva a situacao contabil...""
+                      ShowHeader=""true""
+                      EmptyContent=""@CustomEmptyContent"" />";
+
+    private const string Code5 = @"<XFAiAccountingAssistant Title=""Assistente Contabil ERP""
+                      Placeholder=""Pergunte sobre lancamentos sugeridos, DRE, classificacao automatica, auditoria contabil ou reprocessamento.""
+                      ShowHeader=""true"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Provider", "IAiProvider?", "null", T("Provider IA para analise contabil.", "AI provider for accounting analysis.")),
+        new("Title", "string", T("'Assistente Contabil'", "'Accounting Assistant'"), T("Titulo exibido no header.", "Title displayed in header.")),
+        new("Placeholder", "string", T("'Pergunte sobre lancamentos...'", "'Ask about entries...'"), T("Texto do placeholder do textarea.", "Textarea placeholder text.")),
+        new("ShowHeader", "bool", "true", T("Exibe barra de cabecalho.", "Shows header bar.")),
+        new("Loading", "bool", "false", T("Forca estado de carregamento externo.", "Forces external loading state.")),
+        new("SystemPrompt", "string?", "null", T("Prompt de sistema customizado para IA.", "Custom system prompt for AI.")),
+        new("OnAnalysisComplete", "EventCallback<XFAiAccountingInsight>", "-", T("Dispara apos analise. Recebe resultado contabil.", "Fires after analysis. Receives accounting result.")),
+        new("OnError", "EventCallback<string>", "-", T("Dispara em erro. Recebe mensagem de erro.", "Fires on error. Receives error message.")),
+        new("ResultPreview", "RenderFragment<XFAiAccountingInsight>?", "null", T("Template customizado do resultado.", "Custom result template.")),
+        new("HeaderContent", "RenderFragment?", "null", T("Conteudo customizado do cabecalho.", "Custom header content.")),
+        new("EmptyContent", "RenderFragment?", "null", T("Conteudo do estado vazio.", "Empty state content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnAnalysisComplete", T("Dispara quando analise e concluida. Recebe XFAiAccountingInsight.", "Fires when analysis is completed. Receives XFAiAccountingInsight.")),
+        new("OnError", T("Dispara em erro de IA ou parsing. Recebe string com mensagem.", "Fires on AI or parsing error. Receives string with message."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("AnalyzeAsync()", T("Inicia analise com o provider IA. Chamado automaticamente ao enviar.", "Starts analysis with AI provider. Called automatically on submit.")),
+        new("Clear()", T("Limpa resultado, erro e query. Reseta componente.", "Clears result, error and query. Resets component."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=region", "role=region"), T("Container principal com aria-label descritivo.", "Main container with descriptive aria-label."), "universal-access"),
+        new(T("aria-busy", "aria-busy"), T("Indica estado de analise em andamento.", "Indicates analysis in progress state."), "spinner"),
+        new(T("aria-live=polite", "aria-live=polite"), T("Resultado anunciado a leitores de tela.", "Result announced to screen readers."), "volume-high"),
+        new(T("aria-label", "aria-label"), T("Labels em textarea e botoes de acao.", "Labels on textarea and action buttons."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Enter", T("Inicia analise.", "Starts analysis.")),
+        new("Shift+Enter", T("Insere nova linha na query.", "Inserts newline in query.")),
+        new("Escape", T("Limpa query e erro.", "Clears query and error."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Container flex", "Flex container"), T("Largura total com overflow controlado.", "Full width with controlled overflow."), "maximize"),
+        new(T("Responsivo", "Responsive"), T("Se adapta a qualquer largura de container.", "Adapts to any container width."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Streaming IA", "AI Streaming"), T("Respostas recebidas sob demanda via provider.", "Responses received on demand via provider."), "bolt"),
+        new(T("Cancelamento", "Cancellation"), T("CancellationTokenSource para cancelar requisicoes pendentes.", "CancellationTokenSource to cancel pending requests."), "stop")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Lancamentos contabeis", "Accounting entries"), T("Sugestao automatica de lancamentos com debito e credito.", "Automatic entry suggestion with debit and credit."), "calculator"),
+        new(T("Auditoria contabil", "Accounting audit"), T("Deteccao de inconsistencias e violacoes de regras contabeis.", "Detection of inconsistencies and accounting rule violations."), "magnifying-glass-chart"),
+        new(T("DRE e relatorios", "DRE and reports"), T("Demonstracao do resultado simplificada com analise IA.", "Simplified income statement with AI analysis."), "chart-line-up")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Provider + Assistant", "Provider + Assistant"), T("Conecte com Ollama, OpenAI ou Gemini para IA real.", "Connect with Ollama, OpenAI or Gemini for real AI."), "plug"),
+        new(T("Assistant + ResultPreview", "Assistant + ResultPreview"), T("Customize a exibicao do resultado contabil.", "Customize the accounting result display."), "puzzle"),
+        new(T("Assistant + EmptyContent", "Assistant + EmptyContent"), T("Defina estado vazio personalizado.", "Define custom empty state."), "inbox")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Provider obrigatorio", "Provider required"), T("Sem provider, o componente apenas documenta a API.", "Without provider, the component only documents the API."), "plug"),
+        new(T("SystemPrompt customizado", "Custom SystemPrompt"), T("Defina o formato JSON esperado para resultados consistentes.", "Define expected JSON format for consistent results."), "terminal"),
+        new(T("Tratamento de erros", "Error handling"), T("Sempre trate OnError para exibir feedback ao usuario.", "Always handle OnError to display feedback to user."), "shield-check"),
+        new(T("DRE simplificado", "Simplified DRE"), T("Use o DRE retornado para exibir resumo contabil visual.", "Use the returned DRE to display visual accounting summary."), "chart-line-up")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem provider", "No provider"), T("Componente nao executa analise sem Provider configurado.", "Component does not analyze without Provider configured."), "xmark"),
+        new(T("Erro silencioso", "Silent error"), T("Sempre trate e exiba erros via OnError.", "Always handle and display errors via OnError."), "triangle-exclamation"),
+        new(T("Sem limites", "No limits"), T("Defina MaxTokens no provider para evitar custos excessivos.", "Set MaxTokens on provider to avoid excessive costs."), "ban")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("xf-ai-accounting-assistant", T("Container principal do assistente.", "Main assistant container.")),
+        new("bg-primary/5", T("Fundo do box de resumo IA.", "AI summary box background.")),
+        new("ring-primary/10", T("Borda do box de resumo.", "Summary box border ring.")),
+        new("shadow", T("Sombras sutis para profundidade.", "Subtle shadows for depth."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, analise, erro, clear.", "Render, props, analysis, error, clear.")),
+        new("Accessibility", T("role=region, aria-busy, aria-live, aria-label.", "role=region, aria-busy, aria-live, aria-label."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Sem provider", T("Sem Provider, componente nao executa analise.", "Without Provider, component does not analyze.")),
+        new("SSR", T("Analise indisponivel em Static SSR.", "Analysis unavailable in Static SSR.")),
+        new("JSON parsing", T("Respostas da IA devem ser JSON valido para parsing.", "AI responses must be valid JSON for parsing."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiFinancialConciliator", T("Conciliador financeiro para extratos.", "Financial reconciler for statements."), "money-check-dollar"),
+        new("XFAiFormAssistant", T("Assistente de preenchimento de formularios.", "Form filling assistant."), "pen"),
+        new("XFAiChat", T("Chat conversacional com IA.", "Conversational AI chat."), "comments")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Precisa de Provider?", "Needs Provider?"), T("Sim. Sem provider, o componente apenas exibe a interface.", "Yes. Without provider, the component only shows the interface.")),
+        new(T("Suporta multi-turn?", "Supports multi-turn?"), T("Nao. Cada analise e independente.", "No. Each analysis is independent.")),
+        new(T("Formato de resultado?", "Result format?"), T("JSON com suggestedEntries, classifications, auditItems e dreSummary.", "JSON with suggestedEntries, classifications, auditItems and dreSummary.")),
+        new(T("Gera DRE completo?", "Generates full DRE?"), T("DRE simplificado com receita, custo, lucro e margens.", "Simplified DRE with revenue, cost, profit and margins."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", T("Documentacao completa no padrao AppShellDocs com 5 exemplos.", "Full documentation in AppShellDocs pattern with 5 examples.")),
+        new("2026-06-01", T("Componente criado com lancamentos IA, DRE, auditoria e classificacao.", "Component created with AI entries, DRE, audit and classification."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

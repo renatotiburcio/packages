@@ -1,0 +1,32 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style">
+    <CascadingValue Value="this">
+        <div class="@HeaderShellClass">
+            @if (StartContent is not null)
+            {
+                <div class="shrink-0">@StartContent</div>
+            }
+
+            <div class="@TabListClass"
+                 role="tablist"
+                 aria-label="@AriaLabel"
+                 aria-orientation="@AriaOrientation"
+                 @onkeydown="HandleTabListKeyDownAsync">
+                @Tabs
+            </div>
+
+            @if (EndContent is not null)
+            {
+                <div class="shrink-0">@EndContent</div>
+            }
+        </div>
+
+        <div class="@PanelShellClass">
+            @Panels
+        </div>
+    </CascadingValue>
+</div>

@@ -1,0 +1,52 @@
+﻿@namespace XForge.DesignSystem.Components.Icon
+@inject IXFIconRegistry Registry
+<div class="xf-icon-picker" role="grid" aria-label="Icon picker">
+  <header class="xf-icon-picker__toolbar">
+    <input type="search" class="xf-icon-picker__search" placeholder="Search icons..."
+           @bind="_query" @bind:event="oninput" aria-label="Search icons" />
+    <select @bind="Variant" aria-label="Variant" class="xf-icon-picker__variant">
+      <option value="Regular">Regular</option>
+      <option value="Filled">Filled</option>
+      <option value="Light">Light</option>
+      <option value="Color">Color</option>
+    </select>
+    <select @bind="Size" aria-label="Size" class="xf-icon-picker__size">
+      <option value="Size16">16</option>
+      <option value="Size20">20</option>
+      <option value="Size24">24</option>
+      <option value="Size32">32</option>
+      <option value="Size48">48</option>
+    </select>
+  </header>
+  <div class="xf-icon-picker__grid" role="rowgroup">
+    @foreach (var icon in Icons)
+    {
+      <button type="button" class="@(icon == Value ? "xf-icon-picker__cell--selected" : "xf-icon-picker__cell")"
+              role="gridcell" aria-selected="@(icon == Value)"
+              @onclick="() => Select(icon)" @key="icon.Name">
+        <span class="xf-icon">@((MarkupString)icon.Content)</span>
+        <span class="xf-icon-picker__label">@icon.Name</span>
+      </button>
+    }
+  </div>
+  @if (Icons.Count == 0) { <p class="xf-icon-picker__empty">No icons match "@_query"</p> }
+</div>
+@code {
+    [Parameter] public XFIconInfo? Value { get; set; }
+    [Parameter] public EventCallback<XFIconInfo> ValueChanged { get; set; }
+    [Parameter] public XFIconVariant Variant { get; set; } = XFIconVariant.Regular;
+    [Parameter] public EventCallback<XFIconVariant> VariantChanged { get; set; }
+    [Parameter] public XFIconSize Size { get; set; } = XFIconSize.Size24;
+    [Parameter] public EventCallback<XFIconSize> SizeChanged { get; set; }
+    [Parameter] public int PageSize { get; set; } = 24;
+
+    private string _query = "";
+    private List<XFIconInfo> Icons =>
+        Registry.Search(_query, page: 0, pageSize: PageSize).ToList();
+
+    private async Task Select(XFIconInfo icon)
+    {
+        Value = icon;
+        await ValueChanged.InvokeAsync(icon);
+    }
+}

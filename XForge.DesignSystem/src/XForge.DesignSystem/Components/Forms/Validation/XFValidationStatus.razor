@@ -1,0 +1,9 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes" id="@Id" class="@RootClass" style="@Style" role="status" aria-label="@AriaLabel" aria-live="polite">
+    @if (ShowIcon)
+    {
+        <span class="@IconClass" aria-hidden="true">@XFSvgIcons.Markup(IconName)</span>
+    }
+    <span>@Text</span>
+</div>

@@ -1,0 +1,62 @@
+@typeparam TItem
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes" id="@Id" class="@RootClass">
+    <table class="w-full border-separate border-spacing-0 text-left text-sm">
+        @if (!string.IsNullOrWhiteSpace(EffectiveCaption))
+        {
+            <caption class="sr-only">@EffectiveCaption</caption>
+        }
+        <thead>
+            <tr>
+                <th class="@CornerHeaderClass">@RowHeader</th>
+                @foreach (var column in Columns)
+                {
+                    <th class="@ColumnHeaderClass" scope="col">@column</th>
+                }
+                @if (ShowTotals)
+                {
+                    <th class="@ColumnHeaderClass" scope="col">@TotalHeader</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Rows.Count == 0 || Columns.Count == 0)
+            {
+                <tr>
+                    <td class="px-4 py-8 text-center text-text-secondary" colspan="@EmptyColspan">@EmptyText</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var row in Rows)
+                {
+                    <tr>
+                        <th class="@RowHeaderClass" scope="row">@row</th>
+                        @foreach (var column in Columns)
+                        {
+                            <td class="@CellClass">@FormatValue(GetCellValue(row, column))</td>
+                        }
+                        @if (ShowTotals)
+                        {
+                            <td class="@TotalCellClass">@FormatValue(GetRowTotal(row))</td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+        @if (ShowTotals && Rows.Count > 0 && Columns.Count > 0)
+        {
+            <tfoot>
+                <tr>
+                    <th class="@FooterHeaderClass" scope="row">@TotalHeader</th>
+                    @foreach (var column in Columns)
+                    {
+                        <td class="@FooterCellClass">@FormatValue(GetColumnTotal(column))</td>
+                    }
+                    <td class="@FooterCellClass">@FormatValue(GetGrandTotal())</td>
+                </tr>
+            </tfoot>
+        }
+    </table>
+</div>

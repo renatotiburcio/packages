@@ -1,0 +1,15 @@
+@inherits XForgeComponentBase
+
+@if (ShouldRenderContent)
+{
+    <div @attributes="AdditionalAttributes"
+         @ref="RootReference"
+         id="@Id"
+         class="@RootClass"
+         style="@InlineStyle"
+         data-state="@StateValue"
+         data-trigger="@Trigger"
+         aria-hidden="@AriaHidden">
+        @ChildContent
+    </div>
+}

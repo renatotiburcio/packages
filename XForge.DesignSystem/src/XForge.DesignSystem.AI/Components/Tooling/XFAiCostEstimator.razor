@@ -1,0 +1,12 @@
+@namespace XForge.DesignSystem.AI.Components
+@inherits XForgeComponentBase
+
+<div class="xf-ai-cost-estimator" data-tokens="@EstimatedTokens">
+  <div class="xf-ai-ce-estimate">Estimated cost: $@EstimatedCost.ToString("F4")</div>
+  <div class="xf-ai-ce-breakdown">
+    <div>Input: @InputTokens tokens ($@InputCost.ToString("F4"))</div>
+    <div>Output: @OutputTokens tokens ($@OutputCost.ToString("F4"))</div>
+  </div>
+  <div class="xf-ai-ce-model">Model: @Model</div>
+  <div class="xf-ai-ce-warning">@Warning</div>
+</div>

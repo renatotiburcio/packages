@@ -1,0 +1,39 @@
+@page "/components/xfemailvalidator"
+@using XForge.DesignSystem.Components.Forms.Validation
+@using XForge.DesignSystem.Components.DataDisplay.Card
+@using XForge.DesignSystem.Components.DataDisplay.Badge
+@using XForge.DesignSystem.Components.Layout
+@using XForge.DesignSystem.Components.Typography
+@using XForge.DesignSystem.Components.Shared
+@using XForge.DesignSystem.Docs.Shared.Contracts
+@using XForge.DesignSystem.Docs.Shared.Navigation
+@using XForge.DesignSystem.Docs.Shared.Components
+@using XForge.DesignSystem.Core.Primitives
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText" Title="@PageTitleText" Status="@PageStatusText" Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFEmailValidator" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">@T("Componente EmailValidator", "EmailValidator component")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("Descricao do EmailValidator.", "Description of EmailValidator.")</XFTypography>
+                    </XFStack>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string ProductLabelText => "XFEmailValidator";
+    private string PageTitleText => "EmailValidator";
+    private string PageStatusText => T("Stable", "Stable");
+}

@@ -1,0 +1,2749 @@
+﻿{
+    "description":  "Semantic index for lazy knowledge loading. Used by router to select relevant files without reading full content.",
+    "version":  "2.0.0",
+    "files":  [
+                  {
+                      "domain":  "geral",
+                      "relevance":  "medium",
+                      "path":  "_index.md",
+                      "summary":  "Resumo Nivel 1 â€” Visao Geral do Projeto - Documento com 84 linhas",
+                      "category":  "resumo",
+                      "keywords":  [
+                                       "",
+                                       "blazor",
+                                       "erp",
+                                       "index",
+                                       "nf-eletronica",
+                                       "pdv",
+                                       "vendas",
+                                       "visao-geral"
+                                   ],
+                      "lines":  84
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/aspnet-core-identity-completo.md",
+                      "summary":  "ASP.NET Core Identity - Guia Completo - Guia completo com 491 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "aspnet",
+                                       "completo",
+                                       "core",
+                                       "identity"
+                                   ],
+                      "lines":  491
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/aspnet-core-minimal-apis.md",
+                      "summary":  "ASP.NET Core 10 â€” Minimal APIs - Guia completo com 208 linhas",
+                      "category":  "decisoes",
+                      "keywords":  [
+                                       "adr",
+                                       "apis",
+                                       "aspnet",
+                                       "core",
+                                       "minimal",
+                                       "pis-cofins"
+                                   ],
+                      "lines":  208
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/azure-services-completo.md",
+                      "summary":  "Azure - ServiÃ§os Completos - Guia completo com 283 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "azure",
+                                       "completo",
+                                       "erp",
+                                       "pis-cofins",
+                                       "services"
+                                   ],
+                      "lines":  283
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/clean-architecture.md",
+                      "summary":  "Clean Architecture - Documento com 92 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "architecture",
+                                       "arquitetura",
+                                       "clean",
+                                       "clean-architecture",
+                                       "erp"
+                                   ],
+                      "lines":  92
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/cqrs-ddd-event-sourcing.md",
+                      "summary":  "CQRS, DDD e Event Sourcing - Guia completo com 230 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "cqrs",
+                                       "ddd",
+                                       "erp",
+                                       "event",
+                                       "sourcing"
+                                   ],
+                      "lines":  230
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/deploy-net.md",
+                      "summary":  "Deployment .NET - Guia completo com 141 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "azure",
+                                       "deploy",
+                                       "docker",
+                                       "erp",
+                                       "kubernetes",
+                                       "net",
+                                       "producao",
+                                       "testes"
+                                   ],
+                      "lines":  141
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/design-patterns-erp.md",
+                      "summary":  "Design Patterns ERP - Guia completo com 171 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "cqrs",
+                                       "design",
+                                       "design-patterns",
+                                       "erp",
+                                       "gof",
+                                       "patterns"
+                                   ],
+                      "lines":  171
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/design-patterns-gof.md",
+                      "summary":  "Design Patterns GoF - Guia completo com 118 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "adr",
+                                       "design",
+                                       "design-patterns",
+                                       "erp",
+                                       "gof",
+                                       "patterns"
+                                   ],
+                      "lines":  118
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/docker-kubernetes-devops.md",
+                      "summary":  "Docker, Kubernetes e DevOps - Guia completo com 253 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "azure",
+                                       "devops",
+                                       "docker",
+                                       "kubernetes"
+                                   ],
+                      "lines":  253
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/dotnet-maui-completo.md",
+                      "summary":  ".NET MAUI - Guia Completo - Guia completo com 457 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "blazor",
+                                       "completo",
+                                       "dotnet",
+                                       "maui"
+                                   ],
+                      "lines":  457
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/dotnet10-csharp-best-practices.md",
+                      "summary":  ".NET 10 e C# â€” Melhores PrÃ¡ticas - Guia completo com 266 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "aspnet",
+                                       "best",
+                                       "csharp",
+                                       "dotnet10",
+                                       "ef-core",
+                                       "practices"
+                                   ],
+                      "lines":  266
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/gaps-analysis-backlog-roadmap.md",
+                      "summary":  "Analise Exaustiva de Gaps, Lacunas e Melhorias - Guia completo com 466 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "analysis",
+                                       "arquitetura",
+                                       "backlog",
+                                       "gaps",
+                                       "roadmap"
+                                   ],
+                      "lines":  466
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/grpc-dotnet-completo.md",
+                      "summary":  "gRPC em .NET - Guia Completo - Guia completo com 426 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "completo",
+                                       "dotnet",
+                                       "grpc"
+                                   ],
+                      "lines":  426
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/microservices-messaging-patterns.md",
+                      "summary":  "Microservices e PadrÃµes de Mensageria - Guia completo com 220 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "messaging",
+                                       "microservices",
+                                       "patterns"
+                                   ],
+                      "lines":  220
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/multi-tenancy.md",
+                      "summary":  "Multi-Tenancy - Guia completo com 175 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "ef-core",
+                                       "erp",
+                                       "multi",
+                                       "multi-tenancy",
+                                       "tenancy"
+                                   ],
+                      "lines":  175
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/observabilidade.md",
+                      "summary":  "Observabilidade - Guia completo com 148 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "erp",
+                                       "logging",
+                                       "observabilidade",
+                                       "producao"
+                                   ],
+                      "lines":  148
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/performance-optimization-dotnet.md",
+                      "summary":  "Performance e OtimizaÃ§Ã£o em .NET - Guia completo com 234 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "dotnet",
+                                       "optimization",
+                                       "performance"
+                                   ],
+                      "lines":  234
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/razor-pages-mvc-completo.md",
+                      "summary":  "Razor Pages e ASP.NET Core MVC - Guia Completo - Guia completo com 353 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "aspnet",
+                                       "completo",
+                                       "mvc",
+                                       "pages",
+                                       "pis-cofins",
+                                       "razor"
+                                   ],
+                      "lines":  353
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/redis-completo.md",
+                      "summary":  "Redis - Guia Completo - Guia completo com 379 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "completo",
+                                       "redis"
+                                   ],
+                      "lines":  379
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/signalr-realtime-completo.md",
+                      "summary":  "SignalR - ComunicaÃ§Ã£o em Tempo Real - Guia completo com 374 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "completo",
+                                       "realtime",
+                                       "signalr"
+                                   ],
+                      "lines":  374
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/tailwind-css-completo.md",
+                      "summary":  "Tailwind CSS - Guia Completo - Guia completo com 351 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "completo",
+                                       "css",
+                                       "tailwind"
+                                   ],
+                      "lines":  351
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/tauri-desktop-completo.md",
+                      "summary":  "Tauri - Desktop Apps com Rust + Web - Guia completo com 370 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "completo",
+                                       "desktop",
+                                       "tauri"
+                                   ],
+                      "lines":  370
+                  },
+                  {
+                      "domain":  "arquitetura",
+                      "relevance":  "medium",
+                      "path":  "arquitetura/wpf-winforms-desktop-completo.md",
+                      "summary":  "WPF e WinForms - Desktop .NET - Guia completo com 372 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "completo",
+                                       "desktop",
+                                       "winforms",
+                                       "wpf"
+                                   ],
+                      "lines":  372
+                  },
+                  {
+                      "domain":  "compliance",
+                      "relevance":  "low",
+                      "path":  "compliance/lgpd.md",
+                      "summary":  "LGPD â€” Lei Geral de ProteÃ§Ã£o de Dados Pessoais - Guia completo com 177 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "decimo-terceiro",
+                                       "erp",
+                                       "lgpd"
+                                   ],
+                      "lines":  177
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "high",
+                      "path":  "curated-operational/blazor-tailwind/ux-patterns/ENTERPRISE-FORM-PATTERN.md",
+                      "summary":  "UX Pattern â€” FormulÃ¡rio Enterprise Blazor + Tailwind",
+                      "category":  "obrigacoes",
+                      "keywords":  [
+                                       "blazor",
+                                       "enterprise",
+                                       "erp",
+                                       "form",
+                                       "pattern"
+                                   ],
+                      "lines":  19
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/collectors/README.md",
+                      "summary":  "Collectors",
+                      "category":  "glossario",
+                      "keywords":  "readme",
+                      "lines":  24
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/dotnet/anti-patterns/MEDIATR-MAPSTER-PREVIEW-PACKAGES.md",
+                      "summary":  "Anti-pattern â€” MediatR, Mapster e pacotes preview",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "cqrs",
+                                       "mapster",
+                                       "mediatr",
+                                       "packages",
+                                       "preview"
+                                   ],
+                      "lines":  14
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "high",
+                      "path":  "curated-operational/dotnet/approved-patterns/MINIMAL-API-CLEAN-ENDPOINT.md",
+                      "summary":  "Approved Pattern â€” Minimal API com endpoint limpo",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "api",
+                                       "clean",
+                                       "cqrs",
+                                       "endpoint",
+                                       "minimal",
+                                       "testes"
+                                   ],
+                      "lines":  20
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "high",
+                      "path":  "curated-operational/fiscal/nfe-nfce/divergencias-uf/UF-DIVERGENCE-MATRIX.md",
+                      "summary":  "Matriz de DivergÃªncias por UF â€” NF-e/NFC-e",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "adr",
+                                       "divergence",
+                                       "erp",
+                                       "matrix",
+                                       "nf-eletronica",
+                                       "testes",
+                                       "uf"
+                                   ],
+                      "lines":  18
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "high",
+                      "path":  "curated-operational/fiscal/nfe-nfce/edge-cases/NFE-NFCE-EDGE-CASES.md",
+                      "summary":  "Edge Cases NF-e/NFC-e",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "cases",
+                                       "edge",
+                                       "erp",
+                                       "nfce",
+                                       "nfe",
+                                       "nf-eletronica",
+                                       "playbook"
+                                   ],
+                      "lines":  24
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/fiscal/nfe-nfce/playbooks/nfe-rejeicao-204-duplicidade.md",
+                      "summary":  "Playbook â€” Duplicidade de NF-e - Documento com 64 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "204",
+                                       "duplicidade",
+                                       "nfe",
+                                       "nf-eletronica",
+                                       "playbook",
+                                       "rejeicao"
+                                   ],
+                      "lines":  64
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/fiscal/nfe-nfce/playbooks/nfe-rejeicao-539-duplicidade-chave-diferente.md",
+                      "summary":  "Playbook â€” Duplicidade de NF-e com diferenÃ§a na Chave de Acesso - Documento com 62 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "539",
+                                       "chave",
+                                       "diferente",
+                                       "duplicidade",
+                                       "erp",
+                                       "nfe",
+                                       "nf-eletronica",
+                                       "playbook",
+                                       "rejeicao"
+                                   ],
+                      "lines":  62
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "high",
+                      "path":  "curated-operational/fiscal/nfe-nfce/playbooks/nfe-rejeicao-972-responsavel-tecnico.md",
+                      "summary":  "Playbook â€” ObrigatÃ³ria as informaÃ§Ãµes do responsÃ¡vel tÃ©cnico - Documento com 54 linhas",
+                      "category":  "obrigacoes",
+                      "keywords":  [
+                                       "972",
+                                       "nfe",
+                                       "playbook",
+                                       "rejeicao",
+                                       "responsavel",
+                                       "tecnico"
+                                   ],
+                      "lines":  54
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/fiscal/nfe-nfce/playbooks/nfe-timeout-sefaz-reenvio.md",
+                      "summary":  "Playbook â€” Timeout SEFAZ seguido de reenvio incorreto - Documento com 60 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "nfe",
+                                       "playbook",
+                                       "reenvio",
+                                       "sefaz",
+                                       "timeout"
+                                   ],
+                      "lines":  60
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/fiscal/nfse/rejeicoes/nfse-e0312-codigo-tributacao-nacional-nao-administrado.md",
+                      "summary":  "Playbook â€” CÃ³digo de tributaÃ§Ã£o nacional nÃ£o administrado - Documento com 54 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "administrado",
+                                       "codigo",
+                                       "e0312",
+                                       "nacional",
+                                       "nao",
+                                       "nfse",
+                                       "playbook",
+                                       "tributacao"
+                                   ],
+                      "lines":  54
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/fiscal/nfse/rejeicoes/nfse-e0314-codigo-tributacao-municipal-inexistente.md",
+                      "summary":  "Playbook â€” CÃ³digo de tributaÃ§Ã£o municipal inexistente - Documento com 54 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "codigo",
+                                       "e0314",
+                                       "inexistente",
+                                       "municipal",
+                                       "nfse",
+                                       "playbook",
+                                       "tributacao"
+                                   ],
+                      "lines":  54
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/fiscal/nfse/rejeicoes/nfse-e351-nbs-nao-informado.md",
+                      "summary":  "Playbook â€” CÃ³digo NBS nÃ£o informado - Documento com 52 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "e351",
+                                       "informado",
+                                       "nao",
+                                       "nbs",
+                                       "nfse",
+                                       "playbook"
+                                   ],
+                      "lines":  52
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/fiscal/nfse/rejeicoes/nfse-e400-januaria-mg-validacao-dados.md",
+                      "summary":  "Playbook â€” Erro de validaÃ§Ã£o de dados em JanuÃ¡ria/MG - Documento com 52 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "dados",
+                                       "e400",
+                                       "januaria",
+                                       "mg",
+                                       "nfse",
+                                       "playbook",
+                                       "validacao"
+                                   ],
+                      "lines":  52
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/sped/efd-icms-ipi/sped-efd-icms-ipi-registro-d750-pva-603.md",
+                      "summary":  "Playbook â€” CorreÃ§Ã£o PVA 6.0.3 relacionada ao registro D750 - Documento com 56 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "603",
+                                       "d750",
+                                       "efd",
+                                       "icms",
+                                       "ipi",
+                                       "playbook",
+                                       "pva",
+                                       "registro",
+                                       "sped"
+                                   ],
+                      "lines":  56
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/trabalhista/esocial/validacoes/esocial-afastamento-data-invalida.md",
+                      "summary":  "Playbook â€” Data de inÃ­cio de afastamento invÃ¡lida - Documento com 54 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "afastamento",
+                                       "afastamentos",
+                                       "data",
+                                       "esocial",
+                                       "invalida",
+                                       "playbook"
+                                   ],
+                      "lines":  54
+                  },
+                  {
+                      "domain":  "curated",
+                      "relevance":  "medium",
+                      "path":  "curated-operational/trabalhista/esocial/validacoes/esocial-codcateg-invalido-ret.md",
+                      "summary":  "Playbook â€” CÃ³digo de categoria invÃ¡lido/incompatÃ­vel com RET - Documento com 55 linhas",
+                      "category":  "playbooks",
+                      "keywords":  [
+                                       "codcateg",
+                                       "esocial",
+                                       "invalido",
+                                       "playbook",
+                                       "ret"
+                                   ],
+                      "lines":  55
+                  },
+                  {
+                      "domain":  "decisoes",
+                      "relevance":  "low",
+                      "path":  "decisoes/adr-001-tech-stack.md",
+                      "summary":  "ADR-001: .NET 10 + Blazor como Stack Principal",
+                      "category":  "decisoes",
+                      "keywords":  [
+                                       "001",
+                                       "adr",
+                                       "blazor",
+                                       "erp",
+                                       "stack",
+                                       "tech"
+                                   ],
+                      "lines":  49
+                  },
+                  {
+                      "domain":  "decisoes",
+                      "relevance":  "low",
+                      "path":  "decisoes/adr-002-architecture.md",
+                      "summary":  "ADR-002: Arquitetura Limpa + CQRS com XForge.MediatR",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "002",
+                                       "adr",
+                                       "architecture",
+                                       "arquitetura",
+                                       "cqrs",
+                                       "erp",
+                                       "estoque",
+                                       "vendas"
+                                   ],
+                      "lines":  49
+                  },
+                  {
+                      "domain":  "decisoes",
+                      "relevance":  "low",
+                      "path":  "decisoes/adr-003-database.md",
+                      "summary":  "ADR-003: PostgreSQL 17 + EF Core 10",
+                      "category":  "decisoes",
+                      "keywords":  [
+                                       "003",
+                                       "adr",
+                                       "banco-dados",
+                                       "database",
+                                       "ef-core"
+                                   ],
+                      "lines":  49
+                  },
+                  {
+                      "domain":  "decisoes",
+                      "relevance":  "low",
+                      "path":  "decisoes/adr-004-auth.md",
+                      "summary":  "ADR-004: JWT + Refresh Tokens + AutorizaÃ§Ã£o por PapÃ©is",
+                      "category":  "decisoes",
+                      "keywords":  [
+                                       "004",
+                                       "adr",
+                                       "auth",
+                                       "blazor",
+                                       "erp",
+                                       "pis-cofins"
+                                   ],
+                      "lines":  49
+                  },
+                  {
+                      "domain":  "decisoes",
+                      "relevance":  "low",
+                      "path":  "decisoes/adr-005-frontend.md",
+                      "summary":  "ADR-005: Blazor HÃ­brido (Server + WASM)",
+                      "category":  "decisoes",
+                      "keywords":  [
+                                       "005",
+                                       "adr",
+                                       "blazor",
+                                       "erp",
+                                       "frontend"
+                                   ],
+                      "lines":  49
+                  },
+                  {
+                      "domain":  "decisoes",
+                      "relevance":  "low",
+                      "path":  "decisoes/adr-006-multi-tenancy.md",
+                      "summary":  "ADR-006: Banco Compartilhado com Discriminador + RLS",
+                      "category":  "decisoes",
+                      "keywords":  [
+                                       "006",
+                                       "adr",
+                                       "banco-dados",
+                                       "erp",
+                                       "multi",
+                                       "multi-tenancy",
+                                       "tenancy"
+                                   ],
+                      "lines":  48
+                  },
+                  {
+                      "domain":  "geral",
+                      "relevance":  "medium",
+                      "path":  "dominios/_index.md",
+                      "summary":  "Resumo Nivel 2 â€” Visao Geral por Dominio",
+                      "category":  "resumo",
+                      "keywords":  [
+                                       "",
+                                       "contabilidade",
+                                       "ecf",
+                                       "escrituracao",
+                                       "index",
+                                       "sped",
+                                       "visao-geral"
+                                   ],
+                      "lines":  35
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/avaliacao-estoque.md",
+                      "summary":  "AvaliaÃ§Ã£o de Estoque - Documento com 95 linhas",
+                      "category":  "fluxos",
+                      "keywords":  [
+                                       "avaliacao",
+                                       "erp",
+                                       "estoque",
+                                       "producao",
+                                       "vendas"
+                                   ],
+                      "lines":  95
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/centro-de-custo.md",
+                      "summary":  "Centro de Custo - Documento com 91 linhas",
+                      "category":  "decisoes",
+                      "keywords":  [
+                                       "centro",
+                                       "centro-de-custo",
+                                       "custo",
+                                       "de",
+                                       "erp"
+                                   ],
+                      "lines":  91
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/contabilidade-completa.md",
+                      "summary":  "Contabilidade - Guia Completo - Guia completo com 230 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "completa",
+                                       "conciliacao",
+                                       "contabilidade"
+                                   ],
+                      "lines":  230
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/demonstracoes-contabeis.md",
+                      "summary":  "DemonstraÃ§Ãµes ContÃ¡beis - Guia completo com 130 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "contabeis",
+                                       "demonstracoes"
+                                   ],
+                      "lines":  130
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/ecd.md",
+                      "summary":  "ECD â€” EscrituraÃ§Ã£o ContÃ¡bil Digital - Documento com 96 linhas",
+                      "category":  "obrigacoes",
+                      "keywords":  [
+                                       "ecd",
+                                       "escrituracao",
+                                       "sped"
+                                   ],
+                      "lines":  96
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/ecf.md",
+                      "summary":  "ECF â€” EscrituraÃ§Ã£o ContÃ¡bil Fiscal - Documento com 90 linhas",
+                      "category":  "calculos",
+                      "keywords":  [
+                                       "ecf",
+                                       "escrituracao",
+                                       "lucro-presumido",
+                                       "sped"
+                                   ],
+                      "lines":  90
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/escrituracao-contabil.md",
+                      "summary":  "EscrituraÃ§Ã£o ContÃ¡bil - Guia completo com 134 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "contabil",
+                                       "escrituracao"
+                                   ],
+                      "lines":  134
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/lancamentos-automatizados.md",
+                      "summary":  "LanÃ§amentos Automatizados - Documento com 100 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "automatizados",
+                                       "compras",
+                                       "erp",
+                                       "estoque",
+                                       "folha-pagamento",
+                                       "lancamentos",
+                                       "nf-eletronica",
+                                       "vendas"
+                                   ],
+                      "lines":  100
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/lcpr-livro-caixa-produtor-rural.md",
+                      "summary":  "LCPR - Livro Caixa do Produtor Rural - Guia completo com 196 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "caixa",
+                                       "contabilidade",
+                                       "decimo-terceiro",
+                                       "escrituracao",
+                                       "lcpr",
+                                       "livro",
+                                       "lucro-presumido",
+                                       "produtor",
+                                       "rural"
+                                   ],
+                      "lines":  196
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/normas-contabeis.md",
+                      "summary":  "Normas ContÃ¡beis - Documento com 100 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "contabeis",
+                                       "contabilidade",
+                                       "normas"
+                                   ],
+                      "lines":  100
+                  },
+                  {
+                      "domain":  "contabil",
+                      "relevance":  "high",
+                      "path":  "dominios/contabil/plano-de-contas.md",
+                      "summary":  "Plano de Contas - Guia completo com 103 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "contas",
+                                       "de",
+                                       "erp",
+                                       "escrituracao",
+                                       "plano",
+                                       "plano-de-contas",
+                                       "sped"
+                                   ],
+                      "lines":  103
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "high",
+                      "path":  "dominios/erp/agronegocio.md",
+                      "summary":  "AgronegÃ³cio â€” LCDPR e ITR",
+                      "category":  "obrigacoes",
+                      "keywords":  [
+                                       "agronegocio",
+                                       "erp",
+                                       "imposto-renda",
+                                       "irrf",
+                                       "plano-de-contas",
+                                       "vendas"
+                                   ],
+                      "lines":  47
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "medium",
+                      "path":  "dominios/erp/crm.md",
+                      "summary":  "CRM â€” GestÃ£o de Relacionamento com o Cliente",
+                      "category":  "fluxos",
+                      "keywords":  [
+                                       "crm",
+                                       "erp",
+                                       "fluxos",
+                                       "orcamentos",
+                                       "vendas"
+                                   ],
+                      "lines":  46
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "medium",
+                      "path":  "dominios/erp/estoque-completo.md",
+                      "summary":  "Estoque - Guia Completo - Guia completo com 212 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "completo",
+                                       "estoque"
+                                   ],
+                      "lines":  212
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "high",
+                      "path":  "dominios/erp/estoque.md",
+                      "summary":  "GestÃ£o de Estoque e Custos",
+                      "category":  "calculos",
+                      "keywords":  [
+                                       "adr",
+                                       "compras",
+                                       "erp",
+                                       "estoque",
+                                       "producao",
+                                       "trocas-devolucoes",
+                                       "vendas"
+                                   ],
+                      "lines":  48
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "high",
+                      "path":  "dominios/erp/faturamento.md",
+                      "summary":  "MÃ³dulo de Faturamento / Notas Fiscais EletrÃ´nicas",
+                      "category":  "calculos",
+                      "keywords":  [
+                                       "erp",
+                                       "estoque",
+                                       "faturamento",
+                                       "icms",
+                                       "nf-eletronica",
+                                       "pis-cofins",
+                                       "sped",
+                                       "vendas"
+                                   ],
+                      "lines":  49
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "medium",
+                      "path":  "dominios/erp/fluxo-compras.md",
+                      "summary":  "Fluxo de Compras",
+                      "category":  "fluxos",
+                      "keywords":  [
+                                       "compras",
+                                       "erp",
+                                       "faturamento",
+                                       "fluxo",
+                                       "fluxos"
+                                   ],
+                      "lines":  47
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "medium",
+                      "path":  "dominios/erp/fluxo-vendas.md",
+                      "summary":  "Fluxo de Vendas - Documento com 52 linhas",
+                      "category":  "fluxos",
+                      "keywords":  [
+                                       "crm",
+                                       "erp",
+                                       "faturamento",
+                                       "fluxo",
+                                       "fluxos",
+                                       "orcamentos",
+                                       "vendas"
+                                   ],
+                      "lines":  52
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "medium",
+                      "path":  "dominios/erp/ged.md",
+                      "summary":  "GED â€” GestÃ£o EletrÃ´nica de Documentos - Documento com 52 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "erp",
+                                       "ferias",
+                                       "fgts",
+                                       "ged",
+                                       "inss",
+                                       "lgpd",
+                                       "nf-eletronica",
+                                       "rescisao",
+                                       "sped"
+                                   ],
+                      "lines":  52
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "medium",
+                      "path":  "dominios/erp/orcamentos.md",
+                      "summary":  "MÃ³dulo de OrÃ§amentos",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "crm",
+                                       "erp",
+                                       "estoque",
+                                       "orcamentos",
+                                       "vendas"
+                                   ],
+                      "lines":  49
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "high",
+                      "path":  "dominios/erp/pdv-frente-caixa.md",
+                      "summary":  "PDV / Frente de Caixa",
+                      "category":  "calculos",
+                      "keywords":  [
+                                       "arquitetura",
+                                       "caixa",
+                                       "erp",
+                                       "fluxos",
+                                       "frente",
+                                       "nf-eletronica",
+                                       "pdv",
+                                       "vendas"
+                                   ],
+                      "lines":  48
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "high",
+                      "path":  "dominios/erp/producao.md",
+                      "summary":  "ProduÃ§Ã£o Industrial",
+                      "category":  "calculos",
+                      "keywords":  [
+                                       "erp",
+                                       "estoque",
+                                       "producao"
+                                   ],
+                      "lines":  48
+                  },
+                  {
+                      "domain":  "erp",
+                      "relevance":  "high",
+                      "path":  "dominios/erp/trocas-devolucoes.md",
+                      "summary":  "Trocas e DevoluÃ§Ãµes",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "devolucoes",
+                                       "erp",
+                                       "estoque",
+                                       "nf-eletronica",
+                                       "trocas",
+                                       "trocas-devolucoes",
+                                       "vendas"
+                                   ],
+                      "lines":  48
+                  },
+                  {
+                      "domain":  "financeiro",
+                      "relevance":  "high",
+                      "path":  "dominios/financeiro/cnab-boletos.md",
+                      "summary":  "CNAB, Boletos e IntegraÃ§Ã£o BancÃ¡ria - Documento com 97 linhas",
+                      "category":  "layout",
+                      "keywords":  [
+                                       "adr",
+                                       "boletos",
+                                       "cnab"
+                                   ],
+                      "lines":  97
+                  },
+                  {
+                      "domain":  "financeiro",
+                      "relevance":  "high",
+                      "path":  "dominios/financeiro/conciliacao-bancaria.md",
+                      "summary":  "ConciliaÃ§Ã£o BancÃ¡ria - Documento com 69 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "bancaria",
+                                       "cnab",
+                                       "conciliacao"
+                                   ],
+                      "lines":  69
+                  },
+                  {
+                      "domain":  "financeiro",
+                      "relevance":  "high",
+                      "path":  "dominios/financeiro/contas-a-pagar.md",
+                      "summary":  "Contas a Pagar - Documento com 80 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "a",
+                                       "centro-de-custo",
+                                       "conciliacao",
+                                       "contas",
+                                       "contas-a-pagar",
+                                       "erp",
+                                       "pagar"
+                                   ],
+                      "lines":  80
+                  },
+                  {
+                      "domain":  "financeiro",
+                      "relevance":  "high",
+                      "path":  "dominios/financeiro/contas-a-receber.md",
+                      "summary":  "Contas a Receber - Documento com 94 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "a",
+                                       "conciliacao",
+                                       "contas",
+                                       "contas-a-receber",
+                                       "erp",
+                                       "nf-eletronica",
+                                       "receber",
+                                       "vendas"
+                                   ],
+                      "lines":  94
+                  },
+                  {
+                      "domain":  "financeiro",
+                      "relevance":  "high",
+                      "path":  "dominios/financeiro/financeiro-completo.md",
+                      "summary":  "Financeiro - Guia Completo - Guia completo com 220 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "completo",
+                                       "financeiro",
+                                       "orcamentos",
+                                       "pis-cofins"
+                                   ],
+                      "lines":  220
+                  },
+                  {
+                      "domain":  "financeiro",
+                      "relevance":  "high",
+                      "path":  "dominios/financeiro/fluxo-de-caixa.md",
+                      "summary":  "Fluxo de Caixa - Documento com 80 linhas",
+                      "category":  "fluxos",
+                      "keywords":  [
+                                       "caixa",
+                                       "centro-de-custo",
+                                       "contas-a-pagar",
+                                       "de",
+                                       "fluxo",
+                                       "fluxo-de-caixa",
+                                       "fluxos"
+                                   ],
+                      "lines":  80
+                  },
+                  {
+                      "domain":  "financeiro",
+                      "relevance":  "high",
+                      "path":  "dominios/financeiro/pagamentos-digitais.md",
+                      "summary":  "Pagamentos Digitais - Documento com 68 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "cnab",
+                                       "conciliacao",
+                                       "digitais",
+                                       "erp",
+                                       "pagamentos",
+                                       "pis-cofins"
+                                   ],
+                      "lines":  68
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/cnpj-alfanumerico.md",
+                      "summary":  "CNPJ AlfanumÃ©rico - Guia completo com 199 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "alfanumerico",
+                                       "cnpj"
+                                   ],
+                      "lines":  199
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/cte.md",
+                      "summary":  "CT-e â€” Conhecimento de Transporte EletrÃ´nico - Documento com 83 linhas",
+                      "category":  "regras",
+                      "keywords":  "cte",
+                      "lines":  83
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/danfe-dacte.md",
+                      "summary":  "DANFE e DACTE â€” Documentos Auxiliares da NF-e e CT-e - Guia completo com 115 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "dacte",
+                                       "danfe",
+                                       "nf-eletronica"
+                                   ],
+                      "lines":  115
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/dctfweb-completo.md",
+                      "summary":  "DCTFWeb - DeclaraÃ§Ã£o do CrÃ©dito TributÃ¡rio do PIS/PASEP e da COFINS - Guia completo com 212 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "completo",
+                                       "dctfweb",
+                                       "decimo-terceiro",
+                                       "esocial",
+                                       "pis-cofins"
+                                   ],
+                      "lines":  212
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/efd-contribuicoes.md",
+                      "summary":  "EFD ContribuiÃ§Ãµes â€” EscrituraÃ§Ã£o Fiscal Digital (PIS/COFINS) - Documento com 99 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "contribuicoes",
+                                       "efd",
+                                       "escrituracao",
+                                       "pis-cofins",
+                                       "sped"
+                                   ],
+                      "lines":  99
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/efd-icms-ipi.md",
+                      "summary":  "EFD ICMS/IPI â€” EscrituraÃ§Ã£o Fiscal Digital (SPED Fiscal) - Documento com 82 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "efd",
+                                       "escrituracao",
+                                       "icms",
+                                       "ipi",
+                                       "sped",
+                                       "validacao"
+                                   ],
+                      "lines":  82
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/escrituracao-fiscal-completa.md",
+                      "summary":  "EscrituraÃ§Ã£o Fiscal - Guia Completo - Guia completo com 279 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "completa",
+                                       "ecf",
+                                       "escrituracao",
+                                       "esocial",
+                                       "fiscal",
+                                       "icms",
+                                       "nf-eletronica",
+                                       "pis-cofins",
+                                       "sped"
+                                   ],
+                      "lines":  279
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/integracao-sefaz-pgfn.md",
+                      "summary":  "IntegraÃ§Ãµes com Ã“rgÃ£os Governamentais - Documento com 100 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "integracao",
+                                       "pgfn",
+                                       "sefaz"
+                                   ],
+                      "lines":  100
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/lucro-presumido-regras.md",
+                      "summary":  "Lucro Presumido - Regras Completas - Guia completo com 184 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "lucro",
+                                       "lucro-presumido",
+                                       "pis-cofins",
+                                       "presumido",
+                                       "regras"
+                                   ],
+                      "lines":  184
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/mdfe.md",
+                      "summary":  "MDF-e â€” Manifesto de Documentos Fiscais EletrÃ´nico - Documento com 98 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "erp",
+                                       "mdfe",
+                                       "nf-eletronica"
+                                   ],
+                      "lines":  98
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/nfce.md",
+                      "summary":  "NFC-e â€” Nota Fiscal de Consumidor EletrÃ´nica - Documento com 81 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "ecf",
+                                       "erp",
+                                       "nfce",
+                                       "nf-eletronica",
+                                       "pdv",
+                                       "vendas"
+                                   ],
+                      "lines":  81
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/nfe.md",
+                      "summary":  "NF-e â€” Nota Fiscal EletrÃ´nica - Documento com 66 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "erp",
+                                       "nfe",
+                                       "nf-eletronica"
+                                   ],
+                      "lines":  66
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/nfse.md",
+                      "summary":  "NFS-e â€” Nota Fiscal de ServiÃ§o EletrÃ´nica - Documento com 94 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "adr",
+                                       "nfse"
+                                   ],
+                      "lines":  94
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/reforma-tributaria-completa.md",
+                      "summary":  "Reforma TributÃ¡ria - Guia Completo - Guia completo com 299 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "completa",
+                                       "decimo-terceiro",
+                                       "reforma",
+                                       "tributaria"
+                                   ],
+                      "lines":  299
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/reforma-tributaria-ibs-cbs.md",
+                      "summary":  "Reforma TributÃ¡ria - IBS, CBS e Imposto Seletivo - Guia completo com 106 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "cbs",
+                                       "decimo-terceiro",
+                                       "ibs",
+                                       "icms",
+                                       "pis-cofins",
+                                       "reforma",
+                                       "tributaria"
+                                   ],
+                      "lines":  106
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/reinf-completo.md",
+                      "summary":  "REINF - Regime Especial de TributaÃ§Ã£o - Guia completo com 171 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "completo",
+                                       "decimo-terceiro",
+                                       "reinf"
+                                   ],
+                      "lines":  171
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/sat-cfe.md",
+                      "summary":  "SAT/CF-e â€” Cupom Fiscal EletrÃ´nico (SÃ£o Paulo) - Documento com 88 linhas",
+                      "category":  "layout",
+                      "keywords":  [
+                                       "cfe",
+                                       "ecf",
+                                       "pdv",
+                                       "sat"
+                                   ],
+                      "lines":  88
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/simples-nacional-regras.md",
+                      "summary":  "Simples Nacional - Regras Completas - Guia completo com 167 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "faturamento",
+                                       "nacional",
+                                       "regras",
+                                       "simples",
+                                       "simples-nacional"
+                                   ],
+                      "lines":  167
+                  },
+                  {
+                      "domain":  "fiscal",
+                      "relevance":  "high",
+                      "path":  "dominios/fiscal/sped-overview.md",
+                      "summary":  "SPED â€” Visao Geral - Guia completo com 109 linhas",
+                      "category":  "validacoes",
+                      "keywords":  [
+                                       "escrituracao",
+                                       "fluxos",
+                                       "overview",
+                                       "sped",
+                                       "validacao",
+                                       "visao-geral"
+                                   ],
+                      "lines":  109
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/afastamentos.md",
+                      "summary":  "Afastamentos â€” Tipos, CÃ¡lculos e Regras - Guia completo com 116 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "afastamentos",
+                                       "esocial",
+                                       "inss"
+                                   ],
+                      "lines":  116
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/beneficios.md",
+                      "summary":  "BenefÃ­cios Trabalhistas - Guia completo com 423 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "beneficios",
+                                       "esocial",
+                                       "fgts",
+                                       "folha-pagamento",
+                                       "imposto-renda",
+                                       "inss",
+                                       "irrf"
+                                   ],
+                      "lines":  423
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/calculos-folha-pagamento.md",
+                      "summary":  "CÃ¡lculos de Folha de Pagamento - Guia completo com 225 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "calculos",
+                                       "decimo-terceiro",
+                                       "ferias",
+                                       "folha",
+                                       "folha-pagamento",
+                                       "imposto-renda",
+                                       "inss",
+                                       "irrf",
+                                       "pagamento",
+                                       "rescisao"
+                                   ],
+                      "lines":  225
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/clt.md",
+                      "summary":  "CLT â€” ConsolidaÃ§Ã£o das Leis do Trabalho - Guia completo com 594 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "clt",
+                                       "decimo-terceiro",
+                                       "ferias",
+                                       "fgts",
+                                       "folha-pagamento",
+                                       "rescisao"
+                                   ],
+                      "lines":  594
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/decimo-terceiro-calculos.md",
+                      "summary":  "DÃ©cimo Terceiro SalÃ¡rio - CÃ¡lculos Completos - Guia completo com 133 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "calculos",
+                                       "clt",
+                                       "decimo",
+                                       "decimo-terceiro",
+                                       "terceiro"
+                                   ],
+                      "lines":  133
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/decimo-terceiro.md",
+                      "summary":  "13Âº SalÃ¡rio (GratificaÃ§Ã£o Natalina) â€” CÃ¡lculos e Regras - Guia completo com 115 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "decimo",
+                                       "decimo-terceiro",
+                                       "erp",
+                                       "esocial",
+                                       "rescisao",
+                                       "terceiro"
+                                   ],
+                      "lines":  115
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/departamento-pessoal.md",
+                      "summary":  "Departamento Pessoal -- Guia Completo - Guia completo com 199 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "clt",
+                                       "departamento",
+                                       "erp",
+                                       "esocial",
+                                       "pessoal"
+                                   ],
+                      "lines":  199
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/esocial-empregadores.md",
+                      "summary":  "Eventos do Empregador no eSocial (S-1000 a S-1080) - Documento com 66 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "empregadores",
+                                       "erp",
+                                       "esocial"
+                                   ],
+                      "lines":  66
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/esocial-folha.md",
+                      "summary":  "Eventos de Folha de Pagamento no eSocial (S-1200 a S-1299) - Guia completo com 110 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "decimo-terceiro",
+                                       "erp",
+                                       "esocial",
+                                       "ferias",
+                                       "fluxos",
+                                       "folha",
+                                       "folha-pagamento"
+                                   ],
+                      "lines":  110
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/esocial-geral.md",
+                      "summary":  "eSocial â€” EscrituraÃ§Ã£o Digital das ObrigaÃ§Ãµes Fiscais, PrevidenciÃ¡rias e Trabalhistas - Guia completo com 112 linhas",
+                      "category":  "layout",
+                      "keywords":  [
+                                       "escrituracao",
+                                       "esocial",
+                                       "ged",
+                                       "geral",
+                                       "visao-geral"
+                                   ],
+                      "lines":  112
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/esocial-layout.md",
+                      "summary":  "eSocial â€” Layout e Regras Tecnicas - Guia completo com 147 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "adr",
+                                       "esocial",
+                                       "layout",
+                                       "padroes",
+                                       "validacao"
+                                   ],
+                      "lines":  147
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/esocial-trabalhadores.md",
+                      "summary":  "Eventos Cadastrais e PeriÃ³dicos do Trabalhador no eSocial - Documento com 96 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "afastamentos",
+                                       "erp",
+                                       "esocial",
+                                       "trabalhadores"
+                                   ],
+                      "lines":  96
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/ferias-calculos-completos.md",
+                      "summary":  "FÃ©rias - CÃ¡lculos Completos - Guia completo com 129 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "calculos",
+                                       "clt",
+                                       "completos",
+                                       "decimo-terceiro",
+                                       "ferias"
+                                   ],
+                      "lines":  129
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/ferias.md",
+                      "summary":  "FÃ©rias â€” CÃ¡lculos e Regras (CLT Art. 129-153) - Guia completo com 117 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "clt",
+                                       "erp",
+                                       "esocial",
+                                       "ferias",
+                                       "vendas"
+                                   ],
+                      "lines":  117
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/fgts-regras-calculos.md",
+                      "summary":  "FGTS - Fundo de Garantia do Tempo de ServiÃ§o - Guia completo com 118 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "calculos",
+                                       "clt",
+                                       "decimo-terceiro",
+                                       "fgts",
+                                       "regras",
+                                       "rescisao"
+                                   ],
+                      "lines":  118
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/fgts.md",
+                      "summary":  "FGTS, DIRF, DCTFWeb e EFD-Reinf - Guia completo com 419 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "escrituracao",
+                                       "fgts",
+                                       "folha-pagamento"
+                                   ],
+                      "lines":  419
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/folha-pagamento.md",
+                      "summary":  "Folha de Pagamento â€” CÃ¡lculos e Encargos - Guia completo com 156 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "beneficios",
+                                       "decimo-terceiro",
+                                       "esocial",
+                                       "ferias",
+                                       "fgts",
+                                       "folha",
+                                       "folha-pagamento",
+                                       "imposto-renda",
+                                       "inss",
+                                       "irrf",
+                                       "pagamento"
+                                   ],
+                      "lines":  156
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/historico-salario-minimo.md",
+                      "summary":  "SalÃ¡rio MÃ­nimo - HistÃ³rico Completo 2010-2026 - Documento com 99 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "decimo-terceiro",
+                                       "historico",
+                                       "minimo",
+                                       "salario"
+                                   ],
+                      "lines":  99
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/historico-tabelas-inss.md",
+                      "summary":  "Tabelas INSS - HistÃ³rico 2020-2025 - Guia completo com 117 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "decimo-terceiro",
+                                       "historico",
+                                       "inss",
+                                       "tabelas"
+                                   ],
+                      "lines":  117
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/historico-tabelas-irrf.md",
+                      "summary":  "Tabelas IRRF - HistÃ³rico 2020-2025 - Guia completo com 123 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "decimo-terceiro",
+                                       "historico",
+                                       "imposto-renda",
+                                       "irrf",
+                                       "tabelas"
+                                   ],
+                      "lines":  123
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/holerite.md",
+                      "summary":  "Holerite / Contracheque -- Recibos de Pagamento - Guia completo com 180 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "clt",
+                                       "esocial",
+                                       "fgts",
+                                       "folha-pagamento",
+                                       "holerite",
+                                       "imposto-renda",
+                                       "inss",
+                                       "irrf"
+                                   ],
+                      "lines":  180
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/inss-irrf.md",
+                      "summary":  "INSS e IRRF â€” ContribuiÃ§Ã£o PrevidenciÃ¡ria e Imposto de Renda Retido na Fonte - Guia completo com 165 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "imposto-renda",
+                                       "inss",
+                                       "irrf"
+                                   ],
+                      "lines":  165
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/irpf-calculo-completo-todas-funcoes.md",
+                      "summary":  "IRRF - CÃ¡lculo Completo em Todas as FunÃ§Ãµes - Guia completo com 228 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "calculo",
+                                       "completo",
+                                       "decimo-terceiro",
+                                       "ferias",
+                                       "funcoes",
+                                       "imposto-renda",
+                                       "irpf",
+                                       "irrf",
+                                       "rescisao",
+                                       "todas"
+                                   ],
+                      "lines":  228
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/irpf-isencao-5000-2025.md",
+                      "summary":  "IRRF - IsenÃ§Ã£o atÃ© 5 SalÃ¡rios MÃ­nimos (2025) - Guia completo com 163 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "2025",
+                                       "5000",
+                                       "decimo-terceiro",
+                                       "imposto-renda",
+                                       "irpf",
+                                       "irrf",
+                                       "isencao"
+                                   ],
+                      "lines":  163
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/obrigacoes-acessorias.md",
+                      "summary":  "ObrigaÃ§Ãµes AcessÃ³rias Federais - Guia completo com 189 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "acessorias",
+                                       "ecf",
+                                       "escrituracao",
+                                       "esocial",
+                                       "ged",
+                                       "imposto-renda",
+                                       "irrf",
+                                       "obrigacoes",
+                                       "sped"
+                                   ],
+                      "lines":  189
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/ponto-eletronico.md",
+                      "summary":  "Ponto Eletronico - Regras e Legislacao - Guia completo com 123 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "eletronico",
+                                       "esocial",
+                                       "ponto",
+                                       "ponto-eletronico"
+                                   ],
+                      "lines":  123
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/rescisao-calculos-completos.md",
+                      "summary":  "RescisÃ£o Contratual - CÃ¡lculos Completos - Guia completo com 150 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "calculos",
+                                       "clt",
+                                       "completos",
+                                       "fgts",
+                                       "rescisao"
+                                   ],
+                      "lines":  150
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/salario-minimo-historico.md",
+                      "summary":  "SalÃ¡rio MÃ­nimo - HistÃ³rico e Regras - Documento com 80 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "decimo-terceiro",
+                                       "historico",
+                                       "minimo",
+                                       "salario"
+                                   ],
+                      "lines":  80
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/saude-trabalho.md",
+                      "summary":  "Saude e Seguranca do Trabalho (SST) -- PCMSO, PGR, LTCAT, PPP - Guia completo com 181 linhas",
+                      "category":  "obrigacoes",
+                      "keywords":  [
+                                       "esocial",
+                                       "saude",
+                                       "seguranca",
+                                       "trabalho"
+                                   ],
+                      "lines":  181
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/tabela-inss-2025.md",
+                      "summary":  "Tabela INSS 2025 - ContribuiÃ§Ã£o PrevidenciÃ¡ria - Documento com 91 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "2025",
+                                       "clt",
+                                       "decimo-terceiro",
+                                       "inss",
+                                       "tabela"
+                                   ],
+                      "lines":  91
+                  },
+                  {
+                      "domain":  "trabalhista",
+                      "relevance":  "high",
+                      "path":  "dominios/trabalhista/tabela-irrf-2025.md",
+                      "summary":  "Tabela IRRF 2025 - Imposto de Renda Retido na Fonte - Documento com 99 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "2025",
+                                       "decimo-terceiro",
+                                       "imposto-renda",
+                                       "irrf",
+                                       "tabela"
+                                   ],
+                      "lines":  99
+                  },
+                  {
+                      "domain":  "tributos",
+                      "relevance":  "high",
+                      "path":  "dominios/tributos/cnpj-alfanumerico.md",
+                      "summary":  "CNPJ AlfanumÃ©rico â€” Nova Estrutura a partir de 2026 - Documento com 84 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "alfanumerico",
+                                       "cnpj",
+                                       "validacao"
+                                   ],
+                      "lines":  84
+                  },
+                  {
+                      "domain":  "tributos",
+                      "relevance":  "high",
+                      "path":  "dominios/tributos/icms.md",
+                      "summary":  "ICMS â€” Imposto sobre CirculaÃ§Ã£o de Mercadorias e ServiÃ§os - Documento com 84 linhas",
+                      "category":  "calculos",
+                      "keywords":  "icms",
+                      "lines":  84
+                  },
+                  {
+                      "domain":  "tributos",
+                      "relevance":  "high",
+                      "path":  "dominios/tributos/ipi-iss.md",
+                      "summary":  "IPI e ISS â€” Imposto sobre Produtos Industrializados e Imposto sobre ServiÃ§os - Guia completo com 107 linhas",
+                      "category":  "calculos",
+                      "keywords":  [
+                                       "ipi",
+                                       "iss"
+                                   ],
+                      "lines":  107
+                  },
+                  {
+                      "domain":  "tributos",
+                      "relevance":  "high",
+                      "path":  "dominios/tributos/irpj-csll.md",
+                      "summary":  "IRPJ/CSLL â€” Imposto de Renda e ContribuiÃ§Ã£o Social sobre o Lucro - Guia completo com 101 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "csll",
+                                       "irpj"
+                                   ],
+                      "lines":  101
+                  },
+                  {
+                      "domain":  "tributos",
+                      "relevance":  "high",
+                      "path":  "dominios/tributos/pis-cofins.md",
+                      "summary":  "PIS/COFINS â€” Programas de IntegraÃ§Ã£o Social e Financiamento da Seguridade Social - Documento com 76 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "cofins",
+                                       "pis",
+                                       "pis-cofins"
+                                   ],
+                      "lines":  76
+                  },
+                  {
+                      "domain":  "tributos",
+                      "relevance":  "high",
+                      "path":  "dominios/tributos/reforma-tributaria.md",
+                      "summary":  "Reforma TributÃ¡ria Brasileira â€” EC 132/2023 e LC 214/2025 - Guia completo com 104 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "decimo-terceiro",
+                                       "erp",
+                                       "reforma",
+                                       "tributaria"
+                                   ],
+                      "lines":  104
+                  },
+                  {
+                      "domain":  "tributos",
+                      "relevance":  "high",
+                      "path":  "dominios/tributos/regimes-tributarios.md",
+                      "summary":  "Regimes TributÃ¡rios Brasileiros - Documento com 83 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "faturamento",
+                                       "lucro-presumido",
+                                       "regimes",
+                                       "simples-nacional",
+                                       "tributarios"
+                                   ],
+                      "lines":  83
+                  },
+                  {
+                      "domain":  "fluxos",
+                      "relevance":  "high",
+                      "path":  "fluxos/admissao-funcionario.md",
+                      "summary":  "AdmissÃ£o de FuncionÃ¡rio - Documento com 52 linhas",
+                      "category":  "obrigacoes",
+                      "keywords":  [
+                                       "admissao",
+                                       "beneficios",
+                                       "clt",
+                                       "erp",
+                                       "esocial",
+                                       "fluxos",
+                                       "folha-pagamento",
+                                       "funcionario",
+                                       "pis-cofins"
+                                   ],
+                      "lines":  52
+                  },
+                  {
+                      "domain":  "fluxos",
+                      "relevance":  "high",
+                      "path":  "fluxos/compra-completa.md",
+                      "summary":  "Fluxo de Compra Completa (Procure-to-Pay)",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "centro-de-custo",
+                                       "completa",
+                                       "compra",
+                                       "compras",
+                                       "erp",
+                                       "estoque",
+                                       "fluxos"
+                                   ],
+                      "lines":  48
+                  },
+                  {
+                      "domain":  "fluxos",
+                      "relevance":  "high",
+                      "path":  "fluxos/folha-pagamento.md",
+                      "summary":  "Folha de Pagamento - Documento com 56 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "clt",
+                                       "decimo-terceiro",
+                                       "esocial",
+                                       "ferias",
+                                       "fgts",
+                                       "fluxos",
+                                       "folha",
+                                       "folha-pagamento",
+                                       "imposto-renda",
+                                       "inss",
+                                       "irrf",
+                                       "pagamento",
+                                       "ponto-eletronico",
+                                       "rescisao"
+                                   ],
+                      "lines":  56
+                  },
+                  {
+                      "domain":  "fluxos",
+                      "relevance":  "high",
+                      "path":  "fluxos/pdv-venda.md",
+                      "summary":  "PDV â€” Fluxo de Venda no Frente de Caixa",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "adr",
+                                       "erp",
+                                       "estoque",
+                                       "fluxos",
+                                       "icms",
+                                       "nf-eletronica",
+                                       "pdv",
+                                       "venda",
+                                       "vendas"
+                                   ],
+                      "lines":  47
+                  },
+                  {
+                      "domain":  "fluxos",
+                      "relevance":  "medium",
+                      "path":  "fluxos/producao-ordem.md",
+                      "summary":  "Fluxo de ProduÃ§Ã£o por Ordem (OP) - Documento com 55 linhas",
+                      "category":  "validacoes",
+                      "keywords":  [
+                                       "compras",
+                                       "estoque",
+                                       "fluxos",
+                                       "ordem",
+                                       "producao",
+                                       "validacao"
+                                   ],
+                      "lines":  55
+                  },
+                  {
+                      "domain":  "fluxos",
+                      "relevance":  "high",
+                      "path":  "fluxos/rescisao-funcionario.md",
+                      "summary":  "RescisÃ£o de FuncionÃ¡rio - Documento com 59 linhas",
+                      "category":  "calculos",
+                      "keywords":  [
+                                       "esocial",
+                                       "fgts",
+                                       "fluxos",
+                                       "funcionario",
+                                       "rescisao"
+                                   ],
+                      "lines":  59
+                  },
+                  {
+                      "domain":  "fluxos",
+                      "relevance":  "high",
+                      "path":  "fluxos/venda-completa.md",
+                      "summary":  "Fluxo de Venda Completa - Documento com 51 linhas",
+                      "category":  "tabelas",
+                      "keywords":  [
+                                       "adr",
+                                       "completa",
+                                       "erp",
+                                       "estoque",
+                                       "faturamento",
+                                       "fluxos",
+                                       "icms",
+                                       "nf-eletronica",
+                                       "orcamentos",
+                                       "pis-cofins",
+                                       "producao",
+                                       "venda",
+                                       "vendas"
+                                   ],
+                      "lines":  51
+                  },
+                  {
+                      "domain":  "glossario",
+                      "relevance":  "low",
+                      "path":  "glossario/termos-arquitetura.md",
+                      "summary":  "GlossÃ¡rio de Termos de Arquitetura e TÃ©cnicos - Documento com 89 linhas",
+                      "category":  "glossario",
+                      "keywords":  [
+                                       "arquitetura",
+                                       "aspnet",
+                                       "azure",
+                                       "blazor",
+                                       "cqrs",
+                                       "glossario",
+                                       "sped",
+                                       "termos"
+                                   ],
+                      "lines":  89
+                  },
+                  {
+                      "domain":  "glossario",
+                      "relevance":  "low",
+                      "path":  "glossario/termos-contabeis.md",
+                      "summary":  "GlossÃ¡rio de Termos ContÃ¡beis - Documento com 92 linhas",
+                      "category":  "glossario",
+                      "keywords":  [
+                                       "centro-de-custo",
+                                       "contabeis",
+                                       "contabilidade",
+                                       "erp",
+                                       "escrituracao",
+                                       "glossario",
+                                       "plano-de-contas",
+                                       "termos"
+                                   ],
+                      "lines":  92
+                  },
+                  {
+                      "domain":  "glossario",
+                      "relevance":  "low",
+                      "path":  "glossario/termos-erp.md",
+                      "summary":  "GlossÃ¡rio de Termos de ERP e NegÃ³cio - Documento com 83 linhas",
+                      "category":  "calculos",
+                      "keywords":  [
+                                       "adr",
+                                       "cnab",
+                                       "conciliacao",
+                                       "contas-a-pagar",
+                                       "contas-a-receber",
+                                       "crm",
+                                       "erp",
+                                       "estoque",
+                                       "faturamento",
+                                       "glossario",
+                                       "pdv",
+                                       "producao",
+                                       "termos",
+                                       "trocas-devolucoes"
+                                   ],
+                      "lines":  83
+                  },
+                  {
+                      "domain":  "glossario",
+                      "relevance":  "low",
+                      "path":  "glossario/termos-fiscais.md",
+                      "summary":  "GlossÃ¡rio de Termos Fiscais - Guia completo com 101 linhas",
+                      "category":  "obrigacoes",
+                      "keywords":  [
+                                       "decimo-terceiro",
+                                       "ecf",
+                                       "fiscais",
+                                       "glossario",
+                                       "icms",
+                                       "nf-eletronica",
+                                       "pis-cofins",
+                                       "sped",
+                                       "termos",
+                                       "vendas"
+                                   ],
+                      "lines":  101
+                  },
+                  {
+                      "domain":  "glossario",
+                      "relevance":  "low",
+                      "path":  "glossario/termos-trabalhistas.md",
+                      "summary":  "GlossÃ¡rio de Termos Trabalhistas - Guia completo com 110 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "afastamentos",
+                                       "clt",
+                                       "decimo-terceiro",
+                                       "esocial",
+                                       "ferias",
+                                       "fgts",
+                                       "glossario",
+                                       "imposto-renda",
+                                       "inss",
+                                       "irrf",
+                                       "rescisao",
+                                       "termos",
+                                       "trabalhistas"
+                                   ],
+                      "lines":  110
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/autenticacao-autorizacao.md",
+                      "summary":  "AutenticaÃ§Ã£o e AutorizaÃ§Ã£o - Guia completo com 138 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "autenticacao",
+                                       "autorizacao",
+                                       "blazor",
+                                       "erp",
+                                       "seguranca"
+                                   ],
+                      "lines":  138
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/automapper-completo.md",
+                      "summary":  "AutoMapper - Mapeamento Completo - Guia completo com 301 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "automapper",
+                                       "completo"
+                                   ],
+                      "lines":  301
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/bdd-completo.md",
+                      "summary":  "BDD (Behavior-Driven Development) - Guia Completo - Guia completo com 313 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "bdd",
+                                       "completo",
+                                       "ecf",
+                                       "testes"
+                                   ],
+                      "lines":  313
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/blazor-server-wasm-patterns.md",
+                      "summary":  "Blazor Server e WASM â€” PadrÃµes Enterprise - Guia completo com 275 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "blazor",
+                                       "erp",
+                                       "patterns",
+                                       "server",
+                                       "wasm"
+                                   ],
+                      "lines":  275
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/componentes-blazor.md",
+                      "summary":  "Componentes Blazor para ERP - Documento com 93 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "blazor",
+                                       "componentes",
+                                       "erp"
+                                   ],
+                      "lines":  93
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/ef-core-patterns.md",
+                      "summary":  "EF Core â€” PadrÃµes de Acesso a Dados - Guia completo com 139 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "core",
+                                       "ef",
+                                       "ef-core",
+                                       "erp",
+                                       "patterns"
+                                   ],
+                      "lines":  139
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/fluentvalidation-completo.md",
+                      "summary":  "FluentValidation - ValidaÃ§Ã£o Completa - Guia completo com 290 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "completo",
+                                       "fluentvalidation",
+                                       "validacao"
+                                   ],
+                      "lines":  290
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/hangfire-completo.md",
+                      "summary":  "Hangfire - Jobs em Background - Guia completo com 275 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "completo",
+                                       "hangfire"
+                                   ],
+                      "lines":  275
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/ia-erp.md",
+                      "summary":  "IA para Processos ERP - Guia completo com 163 linhas",
+                      "category":  "fluxos",
+                      "keywords":  [
+                                       "adr",
+                                       "erp",
+                                       "ia"
+                                   ],
+                      "lines":  163
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/logging.md",
+                      "summary":  "Logging Estruturado com Serilog - Guia completo com 173 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "erp",
+                                       "logging"
+                                   ],
+                      "lines":  173
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/mysql-pomelo-efcore-completo.md",
+                      "summary":  "MySQL com Pomelo EF Core - Completo - Guia completo com 279 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "banco-dados",
+                                       "completo",
+                                       "efcore",
+                                       "ef-core",
+                                       "mysql",
+                                       "pomelo"
+                                   ],
+                      "lines":  279
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/owasp-security-deep-dive.md",
+                      "summary":  "OWASP Top 10 e SeguranÃ§a Profunda - Guia completo com 220 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "deep",
+                                       "design-patterns",
+                                       "dive",
+                                       "lgpd",
+                                       "owasp",
+                                       "security",
+                                       "seguranca"
+                                   ],
+                      "lines":  220
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/seguranca-api.md",
+                      "summary":  "SeguranÃ§a de API - Guia completo com 191 linhas",
+                      "category":  "validacoes",
+                      "keywords":  [
+                                       "adr",
+                                       "api",
+                                       "erp",
+                                       "pis-cofins",
+                                       "seguranca",
+                                       "validacao"
+                                   ],
+                      "lines":  191
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/seguranca-dados.md",
+                      "summary":  "Seguranca de Dados â€” Criptografia, Backup e Auditoria - Guia completo com 219 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "dados",
+                                       "lgpd",
+                                       "padroes",
+                                       "seguranca"
+                                   ],
+                      "lines":  219
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/sql-server-postgresql-patterns.md",
+                      "summary":  "SQL Server e PostgreSQL â€” PadrÃµes de Performance - Guia completo com 240 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "banco-dados",
+                                       "patterns",
+                                       "postgresql",
+                                       "server",
+                                       "sql"
+                                   ],
+                      "lines":  240
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/swagger-openapi-net10-completo.md",
+                      "summary":  "Swagger/OpenAPI para .NET 10 - Guia completo com 255 linhas",
+                      "category":  "referencia",
+                      "keywords":  [
+                                       "completo",
+                                       "net10",
+                                       "openapi",
+                                       "pis-cofins",
+                                       "swagger"
+                                   ],
+                      "lines":  255
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/testes.md",
+                      "summary":  "Testes â€” PadrÃµes para ERP .NET - Guia completo com 168 linhas",
+                      "category":  "padroes",
+                      "keywords":  [
+                                       "adr",
+                                       "erp",
+                                       "testes"
+                                   ],
+                      "lines":  168
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/ui-ux.md",
+                      "summary":  "UI/UX para Aplicacoes Web Empresariais - Guia completo com 142 linhas",
+                      "category":  "fluxos",
+                      "keywords":  [
+                                       "adr",
+                                       "fluxos",
+                                       "padroes",
+                                       "ui",
+                                       "ux"
+                                   ],
+                      "lines":  142
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/unit-testing-completo.md",
+                      "summary":  "Testes UnitÃ¡rios - Guia Completo - Guia completo com 390 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "completo",
+                                       "testes",
+                                       "testing",
+                                       "unit"
+                                   ],
+                      "lines":  390
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/validacao.md",
+                      "summary":  "ValidaÃ§Ã£o com FluentValidation - Guia completo com 158 linhas",
+                      "category":  "validacoes",
+                      "keywords":  [
+                                       "adr",
+                                       "blazor",
+                                       "erp",
+                                       "validacao"
+                                   ],
+                      "lines":  158
+                  },
+                  {
+                      "domain":  "padroes",
+                      "relevance":  "medium",
+                      "path":  "padroes/xforge-mediatr-cqrs-completo.md",
+                      "summary":  "XForge.MediatR - CQRS Completo - Guia completo com 318 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "completo",
+                                       "cqrs",
+                                       "mediatr",
+                                       "xforge"
+                                   ],
+                      "lines":  318
+                  },
+                  {
+                      "domain":  "projeto",
+                      "relevance":  "low",
+                      "path":  "projeto/onboarding-prompts.md",
+                      "summary":  "Prompts de Onboarding â€” Prontos para Usar - Guia completo com 307 linhas",
+                      "category":  "regras",
+                      "keywords":  [
+                                       "onboarding",
+                                       "prompts"
+                                   ],
+                      "lines":  307
+                  },
+                  {
+                      "domain":  "projeto",
+                      "relevance":  "low",
+                      "path":  "projeto/stack-tecnologico.md",
+                      "summary":  "Stack TecnolÃ³gico â€” ERP - Documento com 82 linhas",
+                      "category":  "guias",
+                      "keywords":  [
+                                       "blazor",
+                                       "erp",
+                                       "onboarding",
+                                       "stack",
+                                       "tecnologico"
+                                   ],
+                      "lines":  82
+                  },
+                  {
+                      "domain":  "projeto",
+                      "relevance":  "low",
+                      "path":  "projeto/visao-geral.md",
+                      "summary":  "VisÃ£o Geral do Projeto ERP - Documento com 77 linhas",
+                      "category":  "stack",
+                      "keywords":  [
+                                       "erp",
+                                       "geral",
+                                       "visao",
+                                       "visao-geral"
+                                   ],
+                      "lines":  77
+                  },
+                  {
+                      "domain":  "design-system",
+                      "relevance":  "high",
+                      "path":  "domains/design-system/blazor-component-patterns.md",
+                      "summary":  "Blazor Component Patterns — XForge Design System architecture, base classes, CSS patterns, JS interop, validation, AI providers",
+                      "keywords":  [
+                                       "blazor",
+                                       "component",
+                                       "design-system",
+                                       "tailwind",
+                                       "css",
+                                       "js-interop",
+                                       "validation",
+                                       "ai-provider",
+                                       "xforge"
+                                   ],
+                      "category":  "arquitetura",
+                      "lines":  80
+                  },
+                  {
+                      "domain":  "design-system",
+                      "relevance":  "critical",
+                      "path":  "domains/design-system/complete-knowledge-base.md",
+                      "summary":  "Complete absorbed knowledge from info folder — identity, architecture, golden rules, pipelines, anti-patterns",
+                      "keywords":  [
+                                       "design-system",
+                                       "architecture",
+                                       "golden-rules",
+                                       "pipelines",
+                                       "anti-patterns",
+                                       "knowledge-base"
+                                   ],
+                      "category":  "knowledge-base",
+                      "lines":  141
+                  },
+                  {
+                      "domain":  "design-system",
+                      "relevance":  "critical",
+                      "path":  "domains/design-system/ai-architecture.md",
+                      "summary":  "AI component architecture — 29 XFAi components, 4 service interfaces, 11 providers, AI requirements",
+                      "keywords":  [
+                                       "ai",
+                                       "xjai",
+                                       "components",
+                                       "providers",
+                                       "services",
+                                       "architecture",
+                                       "chat",
+                                       "rag"
+                                   ],
+                      "category":  "knowledge-base",
+                      "lines":  75
+                  },
+                  {
+                      "domain":  "design-system",
+                      "relevance":  "high",
+                      "path":  "domains/design-system/documentation-standards.md",
+                      "summary":  "*Docs.razor page standard — 17 required sections, component usage rules, validation patterns",
+                      "keywords":  [
+                                       "docs",
+                                       "documentation",
+                                       "razor",
+                                       "page-standard",
+                                       "examples",
+                                       "accessibility"
+                                   ],
+                      "category":  "standards",
+                      "lines":  99
+                  },
+                  {
+                      "domain":  "design-system",
+                      "relevance":  "high",
+                      "path":  "domains/design-system/tasks-backlog-coverage.md",
+                      "summary":  "Component task list, 132-item backlog summary, coverage baseline, Stryker mutation testing status",
+                      "keywords":  [
+                                       "backlog",
+                                       "coverage",
+                                       "stryker",
+                                       "testing",
+                                       "tasks",
+                                       "baseline",
+                                       "mutation"
+                                   ],
+                      "category":  "quality",
+                      "lines":  71
+                  },
+                  {
+                      "domain":  "design-system",
+                      "relevance":  "high",
+                      "path":  "domains/design-system/docs-quality-tests.md",
+                      "summary":  "XForge.DesignSystem.Docs.QualityTests — 12 test classes, infrastructure, descriptors, API contract snapshots",
+                      "keywords":  [
+                                       "tests",
+                                       "quality",
+                                       "docs",
+                                       "reflection",
+                                       "snapshot",
+                                       "coverage",
+                                       "api-contract"
+                                   ],
+                      "category":  "quality",
+                      "lines":  85
+                  }
+              ],
+    "generated":  "2026-06-13",
+    "totalFiles":  178
+}
+

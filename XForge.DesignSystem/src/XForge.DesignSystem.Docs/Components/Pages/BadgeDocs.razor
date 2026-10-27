@@ -1,0 +1,710 @@
+@page "/components/badge"
+@page "/display/badges"
+@using XForge.DesignSystem.Core.Primitives
+@using Microsoft.AspNetCore.Components.Web
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFBadge" Size="XFBadgeSize.Md" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("5 variantes", "5 variants")" Size="XFBadgeSize.Md" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("7 cores", "7 colors")" Size="XFBadgeSize.Md" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" Size="XFBadgeSize.Md" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Marcadores compactos para status, metadados e filtros.", "Compact markers for status, metadata and filters.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("5 variantes, 7 cores, 4 tamanhos, 3 formas, dot, icones, dismiss e acessibilidade completa sem CSS local.",
+                               "5 variants, 7 colors, 4 sizes, 3 shapes, dot, icons, dismiss and full accessibility without local CSS.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("Badges com configuracao padrao (Soft/Info) e variantes explicitas.", "Badges with default config (Soft/Info) and explicit variants."),
+                ExBasico(), CodeBasico)
+
+            @Example(T("2. Tamanhos", "2. Sizes"),
+                T("Xs, Sm, Md e Lg — todos com tamanho explicito. D-055.", "Xs, Sm, Md and Lg — all with explicit size. D-055."),
+                ExTamanhos(), CodeTamanhos)
+
+            @Example(T("3. Cores", "3. Colors"),
+                T("7 cores semanticas com variante Soft.", "7 semantic colors with Soft variant."),
+                ExCores(), CodeCores)
+
+            @Example(T("4. Formas", "4. Shapes"),
+                T("Rounded, Pill e Circle com AriaLabel.", "Rounded, Pill and Circle with AriaLabel."),
+                ExFormas(), CodeFormas)
+
+            @Example(T("5. Estilos", "5. Variants"),
+                T("Solid, Outline, Soft, Subtle e Ghost.", "Solid, Outline, Soft, Subtle and Ghost."),
+                ExEstilos(), CodeEstilos)
+
+            @Example(T("6. Dot e icones", "6. Dot and icons"),
+                T("Dot semantico, StartIcon, EndIcon e DismissIcon.", "Semantic dot, StartIcon, EndIcon and DismissIcon."),
+                ExDotIcones(), CodeDotIcones)
+
+            @Example(T("7. Dismiss", "7. Dismissible"),
+                T("OnDismiss, AriaLabel, Title format e callback.", "OnDismiss, AriaLabel, Title format and callback."),
+                ExDismiss(), CodeDismiss)
+
+            @Example(T("8. Interativo", "8. Interactive"),
+                T("OnClick com role=button automatico e suporte a teclado.", "OnClick with automatic role=button and keyboard support."),
+                ExInterativo(), CodeInterativo)
+
+            @Example(T("9. Templates", "9. Templates"),
+                T("ChildContent para conteudo customizado dentro do badge.", "ChildContent for custom content inside the badge."),
+                ExTemplates(), CodeTemplates)
+
+            @Example(T("10. Toggles", "10. Feature toggles"),
+                T("Dot, Circle e Variant+Shape em combinacao.", "Dot, Circle and Variant+Shape in combination."),
+                ExToggles(), CodeToggles)
+
+            @Example(T("11. Responsivo", "11. Responsive"),
+                T("Badges em containers restritos com wrapping.", "Badges in constrained containers with wrapping."),
+                ExResponsivo(), CodeResponsivo)
+
+            @Example(T("12. Cenario enterprise", "12. Enterprise scenario"),
+                T("Tabela ERP de contas a pagar com badges de status.", "ERP accounts payable table with status badges."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => "Badge";
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private string dismissed = "none";
+    private string clicked = "none";
+
+    // ─── Hero ───
+    private string InvoiceBadgeText => $"5 {T("contas", "records")}";
+
+    private RenderFragment HeroPreview() => @<div class="flex flex-col gap-4">
+        <div class="overflow-hidden rounded-lg border border-border-light bg-bg-surface">
+            <div class="flex items-center justify-between border-b border-border-light bg-surface-50/80 px-5 py-3">
+                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Contas a Receber — Maio 2026", "Accounts Receivable — May 2026")</XFTypography>
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@InvoiceBadgeText" Size="XFBadgeSize.Md" />
+            </div>
+            <div class="divide-y divide-border-light/40">
+                @foreach (var row in HeroRows) {
+                    <div class="flex items-center justify-between px-5 py-3">
+                        <div class="flex flex-col gap-0.5">
+                            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Medium">@row[0]</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@row[1]</XFTypography>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">R$ @row[2]</XFTypography>
+                            @if (row[3] == "Pago") { <XFBadge Text="@T("Pago", "Paid")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" /> }
+                            else if (row[3] == "Pendente") { <XFBadge Text="@T("Pendente", "Pending")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Md" Dot="true" /> }
+                            else if (row[3] == "Vencido") { <XFBadge Text="@T("Vencido", "Overdue")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Md" /> }
+                            else { <XFBadge Text="@T("Conciliado", "Reconciled")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md" /> }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>;
+
+    private List<string[]> HeroRows => new() {
+        new[] { T("Silva Comercio LTDA", "Silva Commerce Ltd"), "NF 001.234", "12.450,00", "Pago" },
+        new[] { T("Tech Solutions S.A.", "Tech Solutions Inc"), "NF 001.235", "8.320,00", "Pago" },
+        new[] { T("Distribuidora ABC", "ABC Distributors"), "NF 001.236", "3.100,00", "Pendente" },
+        new[] { T("Farmacia Central", "Central Pharmacy"), "NF 001.237", "15.780,00", "Vencido" },
+        new[] { T("Supermercado Bom Preco", "Good Price Market"), "NF 001.238", "22.100,00", "Pendente" }
+    };
+
+    // ─── Event handlers ───
+    private Task OnBadgeClick(MouseEventArgs args) { clicked = T("Clicado", "Clicked"); return Task.CompletedTask; }
+    private Task OnBadgeDismiss(MouseEventArgs args) { dismissed = T("Removido", "Removed"); return Task.CompletedTask; }
+
+    // ─── 1. Basic ───
+    private RenderFragment ExBasico() => @<div class="flex flex-wrap gap-3">
+        <XFBadge Text="@T("Status", "Status")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md" />
+        <XFBadge Text="@T("Ativo", "Active")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" />
+        <XFBadge Text="@T("Critico", "Critical")" Variant="XFBadgeVariant.Outline" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Md" />
+    </div>;
+
+    // ─── 2. Sizes ───
+    private RenderFragment ExTamanhos() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+            <XFBadge Text="XS" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Xs" />
+            <XFBadge Text="SM" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Sm" />
+            <XFBadge Text="MD" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md" />
+            <XFBadge Text="LG" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Lg" />
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <XFBadge Text="@T("Pendente", "Pending")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Xs" />
+            <XFBadge Text="@T("Aprovado", "Approved")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Size="XFBadgeSize.Sm" />
+            <XFBadge Text="@T("Pago", "Paid")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" />
+            <XFBadge Text="@T("Urgente", "Urgent")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Lg" />
+        </div>
+    </div>;
+
+    // ─── 3. Colors ───
+    private RenderFragment ExCores() => @<div class="flex flex-wrap gap-3">
+        <XFBadge Text="Primary" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Secondary" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Secondary" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Success" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Warning" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Danger" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Info" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Neutral" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Neutral" Size="XFBadgeSize.Md" />
+    </div>;
+
+    // ─── 4. Shapes ───
+    private RenderFragment ExFormas() => @<div class="flex flex-wrap items-center gap-3">
+        <XFBadge Text="@T("Rounded", "Rounded")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Rounded" />
+        <XFBadge Text="@T("Pill", "Pill")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Pill" />
+        <XFBadge Text="7" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Circle" AriaLabel="@T("Sete pendencias", "Seven pending items")" />
+    </div>;
+
+    // ─── 5. Variants ───
+    private RenderFragment ExEstilos() => @<div class="flex flex-wrap gap-3">
+        <XFBadge Text="Solid" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Outline" Variant="XFBadgeVariant.Outline" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Soft" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Subtle" Variant="XFBadgeVariant.Subtle" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" />
+        <XFBadge Text="Ghost" Variant="XFBadgeVariant.Ghost" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" />
+    </div>;
+
+    // ─── 6. Dot and Icons ───
+    private RenderFragment ExDotIcones() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-wrap gap-3">
+            <XFBadge Text="@T("Online", "Online")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" Dot="true" />
+            <XFBadge Text="@T("Offline", "Offline")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Neutral" Size="XFBadgeSize.Md" Dot="true" />
+            <XFBadge Text="@T("Erro", "Error")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Md" Dot="true" />
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <XFBadge Text="@T("Seguro", "Secure")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" OnClick="OnBadgeClick">
+                <StartIcon>@((MarkupString)XFSvgIcons.MarkupWithSize("shield-check", 14))</StartIcon>
+            </XFBadge>
+            <XFBadge Text="@T("Filtro", "Filter")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md">
+                <EndIcon>@((MarkupString)XFSvgIcons.MarkupWithSize("filter", 14))</EndIcon>
+            </XFBadge>
+            <XFBadge Text="@T("Excluir", "Delete")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Md" OnDismiss="OnBadgeDismiss">
+                <DismissIcon>@((MarkupString)XFSvgIcons.MarkupWithSize("trash-can", 12))</DismissIcon>
+            </XFBadge>
+        </div>
+    </div>;
+
+    // ─── 7. Dismiss ───
+    private RenderFragment ExDismiss() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                @T("Title padrao (ingles): \"Remove badge\" / \"Remove {texto}\" — AriaLabel customizavel.", "Default title (English): \"Remove badge\" / \"Remove {text}\" — Customizable AriaLabel.")
+            </XFTypography>
+            <div class="flex flex-wrap gap-3">
+                <XFBadge Text="@T("Filtro SP", "Filter SP")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md"
+                         OnDismiss="OnBadgeDismiss" />
+                <XFBadge Text="@T("Filtro RJ", "Filter RJ")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md"
+                         OnDismiss="OnBadgeDismiss" DismissAriaLabel="@T("Remover filtro RJ", "Remove RJ filter")" />
+                <XFBadge Text="@T("Tag ativa", "Active tag")" Variant="XFBadgeVariant.Outline" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Md"
+                         OnDismiss="OnBadgeDismiss" />
+            </div>
+        </div>
+        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+            @T("Ultimo dismiss: ", "Last dismiss: ")@dismissed
+        </XFTypography>
+    </div>;
+
+    // ─── 8. Interactive ───
+    private RenderFragment ExInterativo() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-wrap gap-3">
+            <XFBadge Text="@T("Ver detalhes", "View details")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md"
+                     OnClick="OnBadgeClick" />
+            <XFBadge Text="@T("Mais filtros", "More filters")" Variant="XFBadgeVariant.Outline" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md"
+                     OnClick="OnBadgeClick" />
+            <XFBadge Text="@T("Acoes", "Actions")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Pill"
+                     OnClick="OnBadgeClick" />
+        </div>
+        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+            @T("role=button adicionado automaticamente. Tab + Enter/Espaco funcionam.", "role=button added automatically. Tab + Enter/Space work.")
+        </XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+            @T("Ultimo clique: ", "Last click: ")@clicked
+        </XFTypography>
+    </div>;
+
+    // ─── 9. Templates ───
+    private RenderFragment ExTemplates() => @<div class="flex flex-wrap gap-3">
+        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md">
+            <span class="inline-flex items-center gap-1.5">
+                <span class="inline-flex h-3.5 w-3.5">@((MarkupString)XFSvgIcons.MarkupWithSize("circle-check", 14))</span>
+                @T("Aprovado", "Approved")
+            </span>
+        </XFBadge>
+        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Pill">
+            <span class="inline-flex items-center gap-1">3 @T("erros", "errors")</span>
+        </XFBadge>
+        <XFBadge Variant="XFBadgeVariant.Outline" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Md">
+            <span class="inline-flex items-center gap-1.5">
+                <span class="inline-flex h-3.5 w-3.5">@((MarkupString)XFSvgIcons.MarkupWithSize("triangle-exclamation", 14))</span>
+                @T("Atencao", "Warning")
+            </span>
+        </XFBadge>
+    </div>;
+
+    // ─── 10. Toggles ───
+    private RenderFragment ExToggles() => @<div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("Rounded — forca forma pill", "Rounded — forces pill shape")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("O parametro Rounded=true ignora Shape e aplica rounded-full.", "The Rounded=true parameter ignores Shape and applies rounded-full.")</XFTypography>
+            <div class="flex flex-wrap gap-3">
+                <XFBadge Text="@T("Pill forçado", "Forced pill")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" Rounded="true" />
+                <XFBadge Text="@T("Solid pill", "Solid pill")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" Rounded="true" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("Dot — ponto semantico", "Dot — semantic dot")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Dot=true adiciona ponto colorido antes do texto. Ideal para status inline.", "Dot=true adds a colored dot before text. Ideal for inline status.")</XFTypography>
+            <div class="flex flex-wrap gap-3">
+                <XFBadge Text="@T("Online", "Online")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" Dot="true" />
+                <XFBadge Text="@T("Pendente", "Pending")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Md" Dot="true" />
+                <XFBadge Text="@T("Offline", "Offline")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Neutral" Size="XFBadgeSize.Md" Dot="true" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("Circle — contadores numericos", "Circle — numeric counters")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Circle transforma o badge em contador compacto. AriaLabel obrigatorio.", "Circle transforms badge into compact counter. AriaLabel required.")</XFTypography>
+            <div class="flex flex-wrap gap-3">
+                <XFBadge Text="5" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Circle" AriaLabel="@T("Cinco novos", "Five new")" />
+                <XFBadge Text="12" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Circle" AriaLabel="@T("Doze pendentes", "Twelve pending")" />
+                <XFBadge Text="99+" Variant="XFBadgeVariant.Outline" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Circle" AriaLabel="@T("Mais de 99 pendentes", "More than 99 pending")" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">@T("Variant + Shape — combinacoes", "Variant + Shape — combinations")</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Combine variante visual com forma para criar badges unicos.", "Combine visual variant with shape to create unique badges.")</XFTypography>
+            <div class="flex flex-wrap gap-3">
+                <XFBadge Text="Solid + Pill" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Pill" />
+                <XFBadge Text="Outline + Rounded" Variant="XFBadgeVariant.Outline" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Rounded" />
+                <XFBadge Text="Ghost + Pill" Variant="XFBadgeVariant.Ghost" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Md" Shape="XFBadgeShape.Pill" />
+            </div>
+        </div>
+    </div>;
+
+    // ─── 11. Responsive ───
+    private RenderFragment ExResponsivo() => @<div class="flex flex-col gap-4">
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Badges em container de 320px — observe o wrapping automatico.", "Badges in a 320px container — observe automatic wrapping.")
+        </XFTypography>
+        <div class="max-w-[320px] rounded-lg border border-border-light bg-surface-50 p-4">
+            <div class="flex flex-wrap gap-2">
+                <XFBadge Text="@T("Financeiro", "Finance")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Size="XFBadgeSize.Md" />
+                <XFBadge Text="@T("Fiscal", "Tax")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Size="XFBadgeSize.Md" />
+                <XFBadge Text="@T("Estoque", "Inventory")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Size="XFBadgeSize.Md" />
+                <XFBadge Text="@T("Contabil", "Accounting")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Md" />
+                <XFBadge Text="@T("Comercial", "Sales")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Md" />
+                <XFBadge Text="@T("RH", "HR")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Neutral" Size="XFBadgeSize.Md" />
+            </div>
+        </div>
+    </div>;
+
+    // ─── 12. Enterprise ───
+    private RenderFragment ExEnterprise() => @<div class="flex flex-col gap-4">
+        <div class="overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-sm">
+            <div class="flex items-center justify-between border-b border-border-light bg-surface-50/80 px-5 py-3">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("file-invoice", 16))</span>
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Contas a Pagar — Maio 2026", "Accounts Payable — May 2026")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Tech Solutions S.A. | 48 registros", "Tech Solutions Inc | 48 records")</XFTypography>
+                    </div>
+                </div>
+                <div class="hidden sm:flex items-center gap-2">
+                    <XFBadge Text="R$ 45.230" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Size="XFBadgeSize.Sm" />
+                    <XFBadge Text="R$ 12.870" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Sm" />
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <div class="grid grid-cols-[5rem_1fr_8rem_7rem_7rem] gap-2 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-text-muted border-b border-border-light/60 min-w-[480px]">
+                    <span>@T("NF", "INV")</span><span>@T("Fornecedor", "Vendor")</span><span>@T("Vencimento", "Due")</span><span class="text-right">@T("Valor", "Amount")</span><span class="text-center">@T("Status", "Status")</span>
+                </div>
+                <div class="divide-y divide-border-light/40">
+                    @foreach (var row in EnterpriseRows) {
+                        <div class="grid grid-cols-[5rem_1fr_8rem_7rem_7rem] gap-2 px-5 py-3 text-sm items-center hover:bg-surface-50/50 transition-colors min-w-[480px]">
+                            <span class="font-mono text-xs font-semibold text-primary">@row[0]</span>
+                            <span class="text-text-primary truncate">@row[1]</span>
+                            <span class="text-xs text-text-secondary">@row[2]</span>
+                            <span class="text-right font-mono text-sm font-medium text-text-primary">R$ @row[3]</span>
+                            <span class="text-center">
+                                @if (row[4] == "Pago") { <XFBadge Text="@T("Pago", "Paid")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Size="XFBadgeSize.Sm" /> }
+                                else if (row[4] == "Pendente") { <XFBadge Text="@T("Pendente", "Pending")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Size="XFBadgeSize.Sm" Dot="true" /> }
+                                else if (row[4] == "Vencido") { <XFBadge Text="@T("Vencido", "Overdue")" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Size="XFBadgeSize.Sm" /> }
+                                else if (row[4] == "Conciliado") { <XFBadge Text="@T("Conciliado", "Reconciled")" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Info" Size="XFBadgeSize.Sm" /> }
+                                else { <XFBadge Text="@T("Bloqueado", "Blocked")" Variant="XFBadgeVariant.Outline" Color="XFBadgeColor.Neutral" Size="XFBadgeSize.Sm" /> }
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>;
+
+    private List<string[]> EnterpriseRows => new() {
+        new[] { "002.481", T("Distribuidora Nacional LTDA", "National Distributor Ltd"), "05/05/2026", "28.450,00", "Pago" },
+        new[] { "002.482", T("Autopecas Central", "Central Auto Parts"), "10/05/2026", "4.320,00", "Pago" },
+        new[] { "002.483", T("Escritorio Souza & Advogados", "Souza & Associates Law Firm"), "15/05/2026", "1.890,00", "Pendente" },
+        new[] { "002.484", T("Restaurante Sabor Caseiro", "Homestyle Flavors Restaurant"), "18/05/2026", "8.760,00", "Vencido" },
+        new[] { "002.485", T("Clinica Veterinaria PetCare", "PetCare Veterinary Clinic"), "20/05/2026", "2.150,00", "Conciliado" },
+        new[] { "002.486", T("Construtora Horizonte", "Horizon Construction"), "22/05/2026", "15.300,00", "Bloqueado" }
+    };
+
+    // ─── Helpers ───
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // ─── Data ───
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("5 variantes visuais", "5 visual variants"), T("Solid, Outline, Soft, Subtle e Ghost.", "Solid, Outline, Soft, Subtle and Ghost."), "swatchbook"),
+        new(T("7 cores semanticas", "7 semantic colors"), T("Primary, Success, Warning, Danger, Info, Neutral e Secondary.", "Primary, Success, Warning, Danger, Info, Neutral and Secondary."), "palette"),
+        new(T("4 tamanhos + 3 formas", "4 sizes + 3 shapes"), T("Xs, Sm, Md, Lg + Rounded, Pill, Circle.", "Xs, Sm, Md, Lg + Rounded, Pill, Circle."), "expand")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFBadge"),
+        new("Namespace", "XForge.DesignSystem.Components.DataDisplay.Badge"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", T("Components / Data Display / Badge", "Components / Data Display / Badge")),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=button (OnClick), aria-label (Circle), dismiss 44px AAA.", "role=button (OnClick), aria-label (Circle), 44px AAA dismiss.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Status compacto", "Compact status"), T("Comunicacao de estado com texto, cor e variante.", "State communication with text, color and variant."), "tag"),
+        new(T("Interativo", "Interactive"), T("OnClick adiciona role=button e foco teclado.", "OnClick adds role=button and keyboard focus."), "arrow-pointer"),
+        new(T("Dispensavel", "Dismissible"), T("OnDismiss com title e aria-label padrao em ingles.", "OnDismiss with default English title and aria-label."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Estado", "State"), T("Pago, pendente, vencido, conciliado, bloqueado.", "Paid, pending, overdue, reconciled, blocked."), "circle-info"),
+        new(T("Filtro", "Filter"), T("Representa filtros ativos removiveis.", "Represents removable active filters."), "filter"),
+        new(T("Contador", "Counter"), T("Shape Circle para quantidade curta.", "Circle shape for short counts."), "calculator")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Status de registro", "Record status"), T("Aprovado, em atraso, bloqueado.", "Approved, overdue, blocked."), "tag"),
+        new(T("Metadado", "Metadata"), T("Modulo, prioridade, SLA, origem.", "Module, priority, SLA, source."), "file-lines"),
+        new(T("Filtro ativo", "Active filter"), T("Tag removivel com OnDismiss.", "Removable tag with OnDismiss."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Paragrafo longo", "Long paragraph"), T("Badge nao e chip de descricao longa.", "Badge is not a long description chip."), "xmark"),
+        new(T("Cor sem texto", "Color without text"), T("Nao comunique estado so por cor.", "Do not communicate state only by color."), "xmark"),
+        new(T("Acao primaria", "Primary action"), T("Use XFButton para comandos principais.", "Use XFButton for primary commands."), "xmark")
+    ];
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Spans com inline styles para status, sem padrao visual.", "Inline-styled spans for status, no visual pattern."), "xmark"),
+        new(T("Depois", "After"), T("Badge semantico com variantes, cores e tamanhos padronizados.", "Semantic badge with standardized variants, colors and sizes."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("Aria-label, role button para OnClick, dismiss 44px.", "Aria-label, role button for OnClick, 44px dismiss."), "universal-access")
+    ];
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Label", "Label"), T("Texto curto descrevendo o status ou metadado.", "Short text describing status or metadata."), "tag"),
+        new(T("Dot", "Dot"), T("Indicador visual circular antes do texto.", "Circular visual indicator before text."), "circle"),
+        new(T("Dismiss", "Dismiss"), T("Botao X para remover badge (removivel).", "X button to remove badge (removable)."), "xmark"),
+        new(T("Icon", "Icon"), T("StartIcon opcional para enriquecer significado.", "Optional StartIcon to enrich meaning."), "image")
+    ];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Conciso", "Concise"), T("Maximo 2-3 palavras. Metadados curtos.", "Maximum 2-3 words. Short metadata."), "align-left"),
+        new(T("Cor = significado", "Color = meaning"), T("Success=aprovado, Danger=erro, Warning=atraso, Info=neutro.", "Success=approved, Danger=error, Warning=overdue, Info=neutral."), "palette"),
+        new(T("Non-intrusive", "Non-intrusive"), T("Badge complementa, nao substitui o conteudo principal.", "Badge complements, does not replace main content."), "eye"),
+        new(T("Touch-first", "Touch-first"), T("Dismiss button minimo 44px para WCAG 2.5.8.", "Dismiss button minimum 44px for WCAG 2.5.8."), "hand-pointer")
+    ];
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Tamanho responsivo", "Responsive size"), T("Sm para mobile, Md para desktop.", "Sm for mobile, Md for desktop."), "mobile-screen"),
+        new(T("Wrap", "Wrap"), T("Badges em linha envolvem em telas estreitas.", "Badges in a row wrap on narrow screens."), "arrows-left-right")
+    ];
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Renderizacao leve", "Light rendering"), T("Tag span/button nativa, sem wrappers.", "Native span/button tag, no wrappers."), "feather")
+    ];
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Status de NF-e", "NF-e status"), T("Autorizada, Cancelada, Em processamento.", "Authorized, Canceled, Processing."), "file-lines"),
+        new(T("Contadores ERP", "ERP counters"), T("Itens no carrinho, notificacoes pendentes.", "Cart items, pending notifications."), "calculator"),
+        new(T("Filtros ativos", "Active filters"), T("Tags removiveis de filtros de busca.", "Removable search filter tags."), "filter"),
+        new(T("Prioridade", "Priority"), T("Critico, Alto, Medio, Baixo em listas.", "Critical, High, Medium, Low in lists."), "arrow-up")
+    ];
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Badge + Dot", "Badge + Dot"), T("Dot para indicador visual antes do texto.", "Dot for visual indicator before text."), "circle"),
+        new(T("Badge + Icon", "Badge + Icon"), T("StartIcon para enriquecer significado.", "StartIcon to enrich meaning."), "image"),
+        new(T("Badge + Dismiss", "Badge + Dismiss"), T("OnDismiss para tags removiveis.", "OnDismiss for removable tags."), "xmark")
+    ];
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Texto curto", "Short text"), T("Maximo 2-3 palavras por badge.", "Maximum 2-3 words per badge."), "align-left"),
+        new(T("Cor consistente", "Consistent color"), T("Use sempre a mesma cor para o mesmo status.", "Always use the same color for the same status."), "palette"),
+        new(T("Dot minimo 8px", "Dot minimum 8px"), T("Dot visual com h-2 w-2 para visibilidade.", "Visual dot with h-2 w-2 for visibility."), "circle"),
+        new(T("AriaLabel em Circle", "AriaLabel on Circle"), T("Circle badges precisam de nome acessivel.", "Circle badges need an accessible name."), "universal-access")
+    ];
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Texto longo", "Long text"), T("Badge nao e para paragrafos ou descricoes longas.", "Badge is not for paragraphs or long descriptions."), "xmark"),
+        new(T("So cor", "Color only"), T("Nunca comunique estado apenas por cor.", "Never communicate state only by color."), "ban"),
+        new(T("Acao primaria", "Primary action"), T("Use XFButton para comandos, Badge para status.", "Use XFButton for commands, Badge for status."), "triangle-exclamation")
+    ];
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("base", T("inline-flex items-center justify-center gap-1.5 rounded-md text-xs font-semibold.", "inline-flex items-center justify-center gap-1.5 rounded-md text-xs font-semibold.")),
+        new("dot", T("h-2 w-2 rounded-full shrink-0 inline-flex items-center justify-center.", "h-2 w-2 rounded-full shrink-0 inline-flex items-center justify-center.")),
+        new("dismiss", T("min-h-2.75rem min-w-2.75rem (44px) rounded-full ml-1.", "min-h-2.75rem min-w-2.75rem (44px) rounded-full ml-1.")),
+        new("pill", T("rounded-full para forma de pílula.", "rounded-full for pill shape."))
+    ];
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("35 testes: render, props, variants, colors, shapes, dismiss, a11y.", "35 tests: render, props, variants, colors, shapes, dismiss, a11y.")),
+        new("Accessibility", T("role button, aria-label, dismiss 44px, dot aria-hidden.", "role button, aria-label, dismiss 44px, dot aria-hidden."))
+    ];
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Texto", T("Maximo recomendado: 2-3 palavras. Texto longo quebra o layout.", "Recommended maximum: 2-3 words. Long text breaks layout.")),
+        new("Cor", T("Nao e acessivel so por cor. Sempre combinado com texto.", "Not accessible by color alone. Always combined with text."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("role=button", T("OnClick adiciona role button automatico.", "OnClick adds automatic button role."), "universal-access"),
+        new(T("Dismiss 44px", "44px dismiss"), T("Botao dismiss com min-h/w 2.75rem (44px) WCAG AAA.", "Dismiss button with min-h/w 2.75rem (44px) WCAG AAA."), "hand-pointer"),
+        new(T("Aria-label", "Aria-label"), T("Circle badges precisam de nome acessivel.", "Circle badges need an accessible name."), "tag"),
+        new(T("Dot decorativo", "Decorative dot"), T("Dot usa aria-hidden; texto comunica estado.", "Dot uses aria-hidden; text communicates state."), "eye-slash")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFChip", T("Use para selecao/entrada removivel mais rica.", "Use for richer removable selection/input."), "tag"),
+        new("XFTable", T("Status em linhas de DataGrid.", "DataGrid row status."), "table-cells"),
+        new("XFCard", T("Badge no header/footer de cards.", "Badge in card header/footer."), "square")
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Text", "string?", "null", T("Texto do badge.", "Badge text.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo alternativo ao Text.", "Alternative content to Text.")),
+        new("Variant", "XFBadgeVariant", "Soft", T("Solid, Outline, Soft, Subtle, Ghost.", "Solid, Outline, Soft, Subtle, Ghost.")),
+        new("Color", "XFBadgeColor", "Info", T("Primary, Secondary, Success, Warning, Danger, Info, Neutral.", "Primary, Secondary, Success, Warning, Danger, Info, Neutral.")),
+        new("Size", "XFBadgeSize", "Md", T("Xs, Sm, Md, Lg.", "Xs, Sm, Md, Lg.")),
+        new("Shape", "XFBadgeShape", "Rounded", T("Rounded, Pill, Circle.", "Rounded, Pill, Circle.")),
+        new("Rounded", "bool", "false", T("Forca forma pill (rounded-full).", "Forces pill shape (rounded-full).")),
+        new("Dot", "bool", "false", T("Mostra ponto semantico antes do texto.", "Shows semantic dot before text.")),
+        new("StartIcon", "RenderFragment?", "null", T("Icone antes do texto.", "Icon before text.")),
+        new("EndIcon", "RenderFragment?", "null", T("Icone apos o texto.", "Icon after text.")),
+        new("DismissIcon", "RenderFragment?", "null", T("Icone custom do botao dismiss.", "Custom dismiss button icon.")),
+        new("OnClick", "EventCallback<MouseEventArgs>", "default", T("Clique no badge. Adiciona role=button.", "Badge click. Adds role=button.")),
+        new("OnDismiss", "EventCallback<MouseEventArgs>", "default", T("Clique/teclado no botao dismiss.", "Click/keyboard on dismiss button.")),
+        new("AriaLabel", "string?", "null", T("Nome acessivel (obrigatorio para Circle).", "Accessible name (required for Circle).")),
+        new("DismissTitle", "string?", "null", T("Title custom do dismiss. Sobrescreve DefaultDismissTitle.", "Custom dismiss title. Overrides DefaultDismissTitle.")),
+        new("DismissAriaLabel", "string?", "null", T("Aria-label custom do dismiss.", "Custom dismiss aria-label.")),
+        new("DefaultDismissTitle", "string", "\"Remove badge\"", T("Title padrao quando nao ha texto.", "Default title when no text.")),
+        new("DismissTitleFormat", "string", "\"Remove {0}\"", T("Formato do title com texto do badge.", "Title format with badge text.")),
+        new("DefaultDismissAriaLabel", "string", "\"Remove badge\"", T("Aria-label padrao do dismiss.", "Default dismiss aria-label.")),
+        new("DismissAriaLabelFormat", "string", "\"Remove badge {0}\"", T("Formato do aria-label com texto.", "Aria-label format with text.")),
+        new("Class", "string?", "null", T("CSS classes adicionais.", "Additional CSS classes.")),
+        new("Disabled", "bool", "false", T("Desabilita interacao.", "Disables interaction."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnClick", T("Disparado ao clicar no badge. Adiciona role=button automatico.", "Raised when clicking badge. Adds automatic role=button.")),
+        new("OnDismiss", T("Disparado ao remover. Enter/Espaco tambem funcionam no botao dismiss.", "Raised when removing. Enter/Space also work on dismiss button."))
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Move foco entre badges clicaveis e botoes dismiss.", "Moves focus between clickable badges and dismiss buttons.")),
+        new("Enter / Space", T("Ativa badge focado (OnClick) ou executa dismiss (OnDismiss).", "Activates focused badge (OnClick) or executes dismiss (OnDismiss)."))
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Badge pode ser clicavel?", "Can Badge be clickable?"), T("Sim, com OnClick, role=button e foco adicionados automaticamente.", "Yes, with OnClick, role=button and focus added automatically.")),
+        new(T("Quando usar Dot?", "When to use Dot?"), T("Para reforcar estado junto do texto: online/offline, erro, pendente.", "To reinforce state alongside text: online/offline, error, pending.")),
+        new(T("Circle precisa AriaLabel?", "Does Circle need AriaLabel?"), T("Sim, sempre. Circle nao tem texto visivel, aria-label e obrigatorio.", "Always. Circle has no visible text, aria-label is mandatory.")),
+        new(T("Title do dismiss e em ingles?", "Is dismiss title in English?"), T("Sim, padrao: \"Remove badge\", \"Remove {texto}\", \"Remove badge {texto}\".", "Yes, default: \"Remove badge\", \"Remove {text}\", \"Remove badge {text}\"."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-05-27", T("Pagina refeita no padrao inline premium com 12 exemplos, API completa e acessibilidade.", "Page rebuilt in inline premium pattern with 12 examples, full API and accessibility."))
+    ];
+
+    // ─── Code Strings ───
+    private string CodeBasico => T(
+        "\x3CXFBadge Text=\"Status\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Ativo\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Success\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Critico\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Danger\" Size=\"XFBadgeSize.Md\" />",
+        "\x3CXFBadge Text=\"Status\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Active\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Success\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Critical\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Danger\" Size=\"XFBadgeSize.Md\" />");
+
+    private string CodeTamanhos => T(
+        "\x3CXFBadge Text=\"XS\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Xs\" />\n\x3CXFBadge Text=\"SM\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Sm\" />\n\x3CXFBadge Text=\"MD\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"LG\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Lg\" />",
+        "\x3CXFBadge Text=\"XS\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Xs\" />\n\x3CXFBadge Text=\"SM\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Sm\" />\n\x3CXFBadge Text=\"MD\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"LG\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Lg\" />");
+
+    private string CodeCores => T(
+        "\x3CXFBadge Text=\"Primary\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Secondary\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Secondary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Success\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Warning\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Warning\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Danger\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Danger\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Info\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Neutral\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Neutral\" Size=\"XFBadgeSize.Md\" />",
+        "\x3CXFBadge Text=\"Primary\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Secondary\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Secondary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Success\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Warning\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Warning\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Danger\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Danger\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Info\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Neutral\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Neutral\" Size=\"XFBadgeSize.Md\" />");
+
+    private string CodeFormas => T(
+        "\x3CXFBadge Text=\"Rounded\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Rounded\" />\n\x3CXFBadge Text=\"Pill\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Pill\" />\n\x3CXFBadge Text=\"7\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Circle\" AriaLabel=\"Sete pendencias\" />",
+        "\x3CXFBadge Text=\"Rounded\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Rounded\" />\n\x3CXFBadge Text=\"Pill\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Pill\" />\n\x3CXFBadge Text=\"7\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Circle\" AriaLabel=\"Seven pending items\" />");
+
+    private string CodeEstilos => T(
+        "\x3CXFBadge Text=\"Solid\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Outline\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Soft\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Subtle\" Variant=\"XFBadgeVariant.Subtle\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Ghost\" Variant=\"XFBadgeVariant.Ghost\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />",
+        "\x3CXFBadge Text=\"Solid\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Outline\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Soft\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Subtle\" Variant=\"XFBadgeVariant.Subtle\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />\n\x3CXFBadge Text=\"Ghost\" Variant=\"XFBadgeVariant.Ghost\" Color=\"XFBadgeColor.Primary\" Size=\"XFBadgeSize.Md\" />");
+
+    private string CodeDotIcones => T(
+        "\x3CXFBadge Text=\"Online\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" Dot=\"true\" />\n\n\x3CXFBadge Text=\"Seguro\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" OnClick=\"OnBadgeClick\">\n    \x3CStartIcon>\n        @((MarkupString)XFSvgIcons.MarkupWithSize(\"shield-check\", 14))\n    \x3C/StartIcon>\n\x3CXFBadge>\n\n\x3CXFBadge Text=\"Excluir\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Danger\"\n    Size=\"XFBadgeSize.Md\" OnDismiss=\"OnBadgeDismiss\">\n    \x3CDismissIcon>\n        @((MarkupString)XFSvgIcons.MarkupWithSize(\"trash-can\", 12))\n    \x3C/DismissIcon>\n\x3CXFBadge>",
+        "\x3CXFBadge Text=\"Online\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" Dot=\"true\" />\n\n\x3CXFBadge Text=\"Secure\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" OnClick=\"OnBadgeClick\">\n    \x3CStartIcon>\n        @((MarkupString)XFSvgIcons.MarkupWithSize(\"shield-check\", 14))\n    \x3C/StartIcon>\n\x3CXFBadge>\n\n\x3CXFBadge Text=\"Delete\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Danger\"\n    Size=\"XFBadgeSize.Md\" OnDismiss=\"OnBadgeDismiss\">\n    \x3CDismissIcon>\n        @((MarkupString)XFSvgIcons.MarkupWithSize(\"trash-can\", 12))\n    \x3C/DismissIcon>\n\x3CXFBadge>");
+
+    private string CodeDismiss => T(
+        "\x3CXFBadge Text=\"Filtro SP\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\"\n    Size=\"XFBadgeSize.Md\" OnDismiss=\"OnBadgeDismiss\" />\n    \x3C!-- Title padrao: \"Remove Filtro SP\" -->\n\n\x3CXFBadge Text=\"Filtro RJ\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\"\n    Size=\"XFBadgeSize.Md\" OnDismiss=\"OnBadgeDismiss\"\n    DismissAriaLabel=\"Remover filtro RJ\" />\n\n\x3CXFBadge Text=\"Tag ativa\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Warning\"\n    Size=\"XFBadgeSize.Md\" OnDismiss=\"OnBadgeDismiss\" />\n    \x3C!-- Title padrao: \"Remove Tag ativa\" -->",
+        "\x3CXFBadge Text=\"Filter SP\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\"\n    Size=\"XFBadgeSize.Md\" OnDismiss=\"OnBadgeDismiss\" />\n    \x3C!-- Default title: \"Remove Filter SP\" -->\n\n\x3CXFBadge Text=\"Filter RJ\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\"\n    Size=\"XFBadgeSize.Md\" OnDismiss=\"OnBadgeDismiss\"\n    DismissAriaLabel=\"Remove RJ filter\" />\n\n\x3CXFBadge Text=\"Active tag\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Warning\"\n    Size=\"XFBadgeSize.Md\" OnDismiss=\"OnBadgeDismiss\" />\n    \x3C!-- Default title: \"Remove Active tag\" -->");
+
+    private string CodeInterativo => T(
+        "\x3CXFBadge Text=\"Ver detalhes\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\"\n    Size=\"XFBadgeSize.Md\" OnClick=\"OnBadgeClick\" />\n    \x3C!-- role=button adicionado automatico -->\n\n\x3CXFBadge Text=\"Mais filtros\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Info\"\n    Size=\"XFBadgeSize.Md\" OnClick=\"OnBadgeClick\" />\n\n\x3CXFBadge Text=\"Acoes\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Pill\" OnClick=\"OnBadgeClick\" />",
+        "\x3CXFBadge Text=\"View details\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Primary\"\n    Size=\"XFBadgeSize.Md\" OnClick=\"OnBadgeClick\" />\n    \x3C!-- role=button added automatically -->\n\n\x3CXFBadge Text=\"More filters\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Info\"\n    Size=\"XFBadgeSize.Md\" OnClick=\"OnBadgeClick\" />\n\n\x3CXFBadge Text=\"Actions\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Pill\" OnClick=\"OnBadgeClick\" />");
+
+    private string CodeTemplates => T(
+        "\x3CXFBadge Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\" Size=\"XFBadgeSize.Md\">\n    \x3Cspan class=\"inline-flex items-center gap-1.5\">\n        \x3Cspan class=\"inline-flex h-3.5 w-3.5\">icon\x3C/span>\n        Aprovado\n    \x3C/span>\n\x3CXFBadge>\n\n\x3CXFBadge Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Danger\" Size=\"XFBadgeSize.Md\"\n    Shape=\"XFBadgeShape.Pill\">\n    \x3Cspan class=\"inline-flex items-center gap-1\">3 erros\x3C/span>\n\x3CXFBadge>",
+        "\x3CXFBadge Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\" Size=\"XFBadgeSize.Md\">\n    \x3Cspan class=\"inline-flex items-center gap-1.5\">\n        \x3Cspan class=\"inline-flex h-3.5 w-3.5\">icon\x3C/span>\n        Approved\n    \x3C/span>\n\x3CXFBadge>\n\n\x3CXFBadge Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Danger\" Size=\"XFBadgeSize.Md\"\n    Shape=\"XFBadgeShape.Pill\">\n    \x3Cspan class=\"inline-flex items-center gap-1\">3 errors\x3C/span>\n\x3CXFBadge>");
+
+    private string CodeToggles => T(
+        "\x3CXFBadge Text=\"Pill for\xE7\xE3o\" Size=\"XFBadgeSize.Md\" Rounded=\"true\" />\n\n\x3CXFBadge Text=\"Online\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" Dot=\"true\" />\n\x3CXFBadge Text=\"Pendente\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Warning\"\n    Size=\"XFBadgeSize.Md\" Dot=\"true\" />\n\x3CXFBadge Text=\"Offline\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Neutral\"\n    Size=\"XFBadgeSize.Md\" Dot=\"true\" />\n\n\x3CXFBadge Text=\"5\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Danger\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Circle\" AriaLabel=\"Cinco novos\" />\n\x3CXFBadge Text=\"12\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Warning\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Circle\" AriaLabel=\"Doze pendentes\" />\n\x3CXFBadge Text=\"99+\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Info\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Circle\" AriaLabel=\"Mais de 99 pendentes\" />\n\n\x3CXFBadge Text=\"Solid + Pill\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Pill\" />\n\x3CXFBadge Text=\"Ghost + Pill\" Variant=\"XFBadgeVariant.Ghost\" Color=\"XFBadgeColor.Warning\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Pill\" />",
+        "\x3CXFBadge Text=\"Forced pill\" Size=\"XFBadgeSize.Md\" Rounded=\"true\" />\n\n\x3CXFBadge Text=\"Online\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" Dot=\"true\" />\n\x3CXFBadge Text=\"Pending\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Warning\"\n    Size=\"XFBadgeSize.Md\" Dot=\"true\" />\n\x3CXFBadge Text=\"Offline\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Neutral\"\n    Size=\"XFBadgeSize.Md\" Dot=\"true\" />\n\n\x3CXFBadge Text=\"5\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Danger\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Circle\" AriaLabel=\"Five new\" />\n\x3CXFBadge Text=\"12\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Warning\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Circle\" AriaLabel=\"Twelve pending\" />\n\x3CXFBadge Text=\"99+\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Info\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Circle\" AriaLabel=\"More than 99 pending\" />\n\n\x3CXFBadge Text=\"Solid + Pill\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Success\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Pill\" />\n\x3CXFBadge Text=\"Ghost + Pill\" Variant=\"XFBadgeVariant.Ghost\" Color=\"XFBadgeColor.Warning\"\n    Size=\"XFBadgeSize.Md\" Shape=\"XFBadgeShape.Pill\" />");
+
+    private string CodeResponsivo => T(
+        "\x3Cdiv class=\"max-w-[320px]\">\n    \x3Cdiv class=\"flex flex-wrap gap-2\">\n        \x3CXFBadge Text=\"Financeiro\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"Fiscal\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"Estoque\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"Contabil\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"Comercial\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"RH\" Size=\"XFBadgeSize.Md\" />\n    \x3C/div>\n\x3C/div>",
+        "\x3Cdiv class=\"max-w-[320px]\">\n    \x3Cdiv class=\"flex flex-wrap gap-2\">\n        \x3CXFBadge Text=\"Finance\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"Tax\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"Inventory\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"Accounting\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"Sales\" Size=\"XFBadgeSize.Md\" />\n        \x3CXFBadge Text=\"HR\" Size=\"XFBadgeSize.Md\" />\n    \x3C/div>\n\x3C/div>");
+
+    private string CodeEnterprise => T(
+        "\x3Cforeach (var row in EnterpriseRows) {\n    @if (row.Status == \"Pago\") {\n        \x3CXFBadge Text=\"Pago\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Success\" Size=\"XFBadgeSize.Sm\" />\n    } else if (row.Status == \"Pendente\") {\n        \x3CXFBadge Text=\"Pendente\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Warning\" Size=\"XFBadgeSize.Sm\" Dot=\"true\" />\n    } else if (row.Status == \"Vencido\") {\n        \x3CXFBadge Text=\"Vencido\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Danger\" Size=\"XFBadgeSize.Sm\" />\n    } else if (row.Status == \"Conciliado\") {\n        \x3CXFBadge Text=\"Conciliado\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Sm\" />\n    } else {\n        \x3CXFBadge Text=\"Bloqueado\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Neutral\" Size=\"XFBadgeSize.Sm\" />\n    }\n}",
+        "\x3Cforeach (var row in EnterpriseRows) {\n    @if (row.Status == \"Paid\") {\n        \x3CXFBadge Text=\"Paid\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Success\" Size=\"XFBadgeSize.Sm\" />\n    } else if (row.Status == \"Pending\") {\n        \x3CXFBadge Text=\"Pending\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Warning\" Size=\"XFBadgeSize.Sm\" Dot=\"true\" />\n    } else if (row.Status == \"Overdue\") {\n        \x3CXFBadge Text=\"Overdue\" Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Danger\" Size=\"XFBadgeSize.Sm\" />\n    } else if (row.Status == \"Reconciled\") {\n        \x3CXFBadge Text=\"Reconciled\" Variant=\"XFBadgeVariant.Solid\" Color=\"XFBadgeColor.Info\" Size=\"XFBadgeSize.Sm\" />\n    } else {\n        \x3CXFBadge Text=\"Blocked\" Variant=\"XFBadgeVariant.Outline\" Color=\"XFBadgeColor.Neutral\" Size=\"XFBadgeSize.Sm\" />\n    }\n}");
+
+    // ─── Records ───
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

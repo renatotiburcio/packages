@@ -1,0 +1,28 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <div class="@WrapperClass">
+        <table id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes">
+            @if (!string.IsNullOrWhiteSpace(Caption))
+            {
+                <caption class="@CaptionClass">@Caption</caption>
+            }
+
+            <CascadingValue Value="this">
+                @if (ChildContent is not null)
+                {
+                    @ChildContent
+                }
+                else
+                {
+                    <tbody>
+                        <tr>
+                            <td class="@EmptyClass">@EmptyText</td>
+                        </tr>
+                    </tbody>
+                }
+            </CascadingValue>
+        </table>
+    </div>
+}

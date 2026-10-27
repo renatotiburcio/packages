@@ -1,0 +1,44 @@
+@inherits XForgeComponentBase
+
+<article @attributes="AdditionalAttributes"
+         id="@Id"
+         role="@Role"
+         aria-label="@AriaLabel"
+         class="@GetComponentClass()"
+         style="@Style"
+         @onclick="HandleClickAsync">
+    @if (Media != null)
+    {
+        <div class="@GetMediaClass()">
+            @Media
+        </div>
+    }
+
+    @if (Header != null)
+    {
+        <div class="@GetHeaderClass()">
+            @Header
+        </div>
+    }
+
+    @if (ChildContent != null)
+    {
+        <div class="@GetContentClass()">
+            @ChildContent
+        </div>
+    }
+
+    @if (Actions != null)
+    {
+        <div class="@GetActionsClass()">
+            @Actions
+        </div>
+    }
+
+    @if (Footer != null)
+    {
+        <div class="@GetFooterClass()">
+            @Footer
+        </div>
+    }
+</article>

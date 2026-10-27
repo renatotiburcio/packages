@@ -1,0 +1,108 @@
+@typeparam TItem
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes"
+     role="group" aria-label="@AriaLabel">
+
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <div class="flex items-center justify-between mb-3">
+            <label class="text-sm font-semibold text-text-primary">@Label</label>
+            @if (ShowItemCount && Items?.Any() == true)
+            {
+                <span class="text-xs text-text-muted">@Items.Count @ItemCountText</span>
+            }
+        </div>
+    }
+
+    <!-- Items -->
+    <div class="@ListContainerClass">
+        @if (Items?.Any() == true)
+        {
+            var index = 0;
+            @foreach (var item in Items)
+            {
+                var capturedIndex = index;
+                var isExpanded = _expandedItems.Contains(capturedIndex);
+
+                <div class="@ItemClass(isExpanded)"
+                     draggable="@(AllowReorder ? "true" : null)"
+                     @ondragstart="() => OnDragStart(capturedIndex)"
+                     @ondragover:preventDefault="true"
+                     @ondrop="() => OnDrop(capturedIndex)">
+
+                    <!-- Item header -->
+                    <div class="flex items-center gap-2">
+                        @if (AllowReorder)
+                        {
+                            <button type="button" class="@DragHandleClass" aria-label="@ReorderText">
+                                <span class="inline-block h-4 w-4 text-text-muted">@XFSvgIcons.Markup("grip-vertical")</span>
+                            </button>
+                        }
+
+                        @if (AllowExpand)
+                        {
+                            <button type="button" class="@ExpandButtonClass" @onclick="() => ToggleExpand(capturedIndex)">
+                                <span class="inline-block h-4 w-4 transition-transform @(isExpanded ? "rotate-90" : "")">@XFSvgIcons.Markup("chevron-right")</span>
+                            </button>
+                        }
+
+                        <div class="flex-1 min-w-0">
+                            @if (HeaderTemplate != null)
+                            {
+                                @HeaderTemplate(new XFRepeaterItemContext<TItem>(item, capturedIndex))
+                            }
+                            else
+                            {
+                                <span class="text-sm font-medium text-text-primary">@GetItemTitle(item, capturedIndex)</span>
+                            }
+                        </div>
+
+                        @if (!ReadOnly && AllowRemove)
+                        {
+                            <button type="button" class="@RemoveButtonClass"
+                                    aria-label="@string.Format(RemoveItemText, capturedIndex + 1)"
+                                    @onclick="() => RemoveItemAsync(capturedIndex)">
+                                <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("xmark")</span>
+                            </button>
+                        }
+                    </div>
+
+                    <!-- Item content -->
+                    @if (!AllowExpand || isExpanded)
+                    {
+                        <div class="mt-3 pl-8">
+                            @if (ItemTemplate != null)
+                            {
+                                @ItemTemplate(new XFRepeaterItemContext<TItem>(item, capturedIndex))
+                            }
+                        </div>
+                    }
+                </div>
+                index++;
+            }
+        }
+        else if (EmptyTemplate != null)
+        {
+            @EmptyTemplate
+        }
+        else
+        {
+            <div class="@EmptyStateClass">@EmptyText</div>
+        }
+    </div>
+
+    <!-- Add button -->
+    @if (!ReadOnly && AllowAdd)
+    {
+        <button type="button" class="@AddButtonClass" @onclick="AddItemAsync">
+            <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("plus")</span>
+            <span>@AddItemText</span>
+        </button>
+    }
+
+    @if (!string.IsNullOrEmpty(HelperText))
+    {
+        <div class="mt-1 text-xs text-text-muted">@HelperText</div>
+    }
+</div>

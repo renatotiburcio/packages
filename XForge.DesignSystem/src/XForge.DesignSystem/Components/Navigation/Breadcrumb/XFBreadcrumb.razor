@@ -1,0 +1,38 @@
+@inherits XForgeComponentBase
+
+<nav @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     aria-label="@AriaLabel">
+    <ol class="@ListClass">
+        @if (Items.Count > 0)
+        {
+            var visibleItems = GetVisibleItems().ToArray();
+            var collapsedCount = Items.Count - visibleItems.Length;
+
+            @foreach (var entry in visibleItems.Select((item, index) => new { item, index }))
+            {
+                if (entry.index == 1 && collapsedCount > 0)
+                {
+                    <li class="@ItemShellClass">
+                        @RenderSeparator()
+                        <span class="@CollapsedClass" aria-label="@GetCollapsedLabel(collapsedCount)">...</span>
+                    </li>
+                }
+
+                <li class="@ItemShellClass">
+                    @if (entry.index > 0)
+                    {
+                        @RenderSeparator()
+                    }
+                    @RenderItem(entry.item)
+                </li>
+            }
+        }
+        else
+        {
+            @ChildContent
+        }
+    </ol>
+</nav>

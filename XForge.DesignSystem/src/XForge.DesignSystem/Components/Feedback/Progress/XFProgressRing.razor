@@ -1,0 +1,47 @@
+@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <div @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@GetComponentClass()"
+         style="@Style"
+         role="progressbar"
+         aria-label="@AriaLabel"
+         aria-valuemin="@Min"
+         aria-valuemax="@Max"
+         aria-valuenow="@AriaValueNow"
+         aria-valuetext="@AriaValueText">
+        <svg class="@SvgClass" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="@TrackClass"
+                    cx="60"
+                    cy="60"
+                    r="@Radius"
+                    fill="none"
+                    stroke-width="@StrokeWidth" />
+            <circle class="@IndicatorClass"
+                    cx="60"
+                    cy="60"
+                    r="@Radius"
+                    fill="none"
+                    stroke-width="@StrokeWidth"
+                    stroke-linecap="@StrokeLineCap"
+                    stroke-dasharray="@CircumferenceString"
+                    stroke-dashoffset="@DashOffsetString" />
+        </svg>
+
+        @if (ShowValue || ChildContent is not null)
+        {
+            <div class="@CenterClass">
+                @if (ChildContent is not null)
+                {
+                    @ChildContent
+                }
+                else if (!Indeterminate)
+                {
+                    @ValueText
+                }
+            </div>
+        }
+    </div>
+}

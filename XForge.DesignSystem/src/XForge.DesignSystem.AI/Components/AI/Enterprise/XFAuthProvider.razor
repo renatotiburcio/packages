@@ -1,0 +1,138 @@
+@inherits XForgeComponentBase
+@implements IDisposable
+
+<div id="@Id"
+     class="@RootClass"
+     style="@Style"
+     role="region"
+     aria-label="Authentication Provider"
+     data-theme="true"
+     @attributes="AdditionalAttributes">
+
+    @if (State == XFAuthState.Authenticated && CurrentUser is not null)
+    {
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+            @if (!string.IsNullOrEmpty(CurrentUser.AvatarUrl))
+            {
+                <img src="@CurrentUser.AvatarUrl"
+                     alt="@CurrentUser.DisplayName"
+                     class="w-10 h-10 rounded-full object-cover ring-2 ring-green-400 dark:ring-green-600" />
+            }
+            else
+            {
+                <div class="w-10 h-10 rounded-full bg-green-500 dark:bg-green-700 flex items-center justify-center text-white font-bold text-sm">
+                    @GetInitials(CurrentUser.DisplayName)
+                </div>
+            }
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-green-900 dark:text-green-100 truncate">@CurrentUser.DisplayName</p>
+                @if (!string.IsNullOrEmpty(CurrentUser.Email))
+                {
+                    <p class="text-xs text-green-700 dark:text-green-300 truncate">@CurrentUser.Email</p>
+                }
+                @if (CurrentUser.Roles.Any())
+                {
+                    <div class="flex flex-wrap gap-1 mt-1">
+                        @foreach (var role in CurrentUser.Roles)
+                        {
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200">@role</span>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="flex flex-col items-end gap-1">
+                <span class="inline-flex items-center gap-1 text-xs text-green-700 dark:text-green-300">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    @GetProviderLabel(Provider)
+                </span>
+                @if (CurrentSession?.ExpiresAt is { } exp)
+                {
+                    <span class="text-[10px] text-green-600 dark:text-green-400">Expira @FormatExpiry(exp)</span>
+                }
+            </div>
+            @if (ShowLogoutButton)
+            {
+                <button type="button"
+                        class="ml-2 px-3 py-1.5 text-xs font-medium rounded border border-green-300 dark:border-green-700 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                        @onclick="HandleLogoutAsync"
+                        aria-label="Sair da conta">
+                    @LogoutLabel
+                </button>
+            }
+        </div>
+    }
+    else if (State == XFAuthState.Authenticating)
+    {
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+            <svg class="w-5 h-5 text-blue-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span class="text-sm text-blue-800 dark:text-blue-200">@AuthenticatingLabel</span>
+        </div>
+    }
+    else if (State == XFAuthState.Expired)
+    {
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+            <svg class="w-5 h-5 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.072 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <span class="text-sm text-amber-800 dark:text-amber-200">@SessionExpiredLabel</span>
+            @if (ShowLoginButton)
+            {
+                <button type="button"
+                        class="ml-auto px-3 py-1.5 text-xs font-medium rounded bg-amber-500 text-white hover:bg-amber-600 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        @onclick="HandleLoginAsync"
+                        aria-label="Renovar sessao">
+                    @LoginLabel
+                </button>
+            }
+        </div>
+    }
+    else if (State == XFAuthState.Locked)
+    {
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+            <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <span class="text-sm text-red-800 dark:text-red-200">@LockedLabel</span>
+        </div>
+    }
+    else if (State == XFAuthState.Error)
+    {
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+            <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-sm text-red-800 dark:text-red-200">@(ErrorMessage ?? ErrorLabel)</span>
+            @if (ShowLoginButton)
+            {
+                <button type="button"
+                        class="ml-auto px-3 py-1.5 text-xs font-medium rounded bg-red-500 text-white hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                        @onclick="HandleLoginAsync"
+                        aria-label="Tentar novamente">
+                    @RetryLabel
+                </button>
+            }
+        </div>
+    }
+    else
+    {
+        @* Anonymous — show login *@
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+            <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span class="text-sm text-gray-600 dark:text-gray-300">@AnonymousLabel</span>
+            @if (ShowLoginButton)
+            {
+                <button type="button"
+                        class="ml-auto px-4 py-1.5 text-sm font-medium rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                        @onclick="HandleLoginAsync"
+                        aria-label="Entrar">
+                    @LoginLabel
+                </button>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,152 @@
+@typeparam TItem
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <section id="@Id" class="@GetComponentClass()" aria-label="@AriaLabel" @attributes="AdditionalAttributes">
+        @if (ShowHeader)
+        {
+            <header class="@HeaderClass">
+                <div class="flex min-w-0 items-center gap-2">
+                    <button type="button" class="@IconButtonClass" aria-label="@PreviousPeriodLabel" @onclick="GoPreviousAsync">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-left")</span>
+                    </button>
+                    <button type="button" class="@TodayButtonClass" @onclick="GoTodayAsync">@TodayText</button>
+                    <button type="button" class="@IconButtonClass" aria-label="@NextPeriodLabel" @onclick="GoNextAsync">
+                        <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-right")</span>
+                    </button>
+                </div>
+
+                <div class="min-w-0 text-center">
+                    <div class="@TitleClass">@Title</div>
+                    <div class="text-xs font-medium text-text-muted">@Subtitle</div>
+                </div>
+
+                <div class="@ViewToggleClass" role="tablist" aria-label="@ViewSwitcherLabel">
+                    @foreach (var view in Enum.GetValues<XFSchedulerView>())
+                    {
+                        <button type="button" class="@ViewButtonClass(view)" aria-selected="@(View == view)" @onclick="() => SetViewAsync(view)">
+                            @GetViewLabel(view)
+                        </button>
+                    }
+                </div>
+            </header>
+        }
+
+        @if (View == XFSchedulerView.Month)
+        {
+            <div class="@WeekdayGridClass" aria-hidden="true">
+                @foreach (var dayName in WeekdayNames)
+                {
+                    <span>@dayName</span>
+                }
+            </div>
+            <div class="@MonthGridClass" role="grid" aria-label="@Title">
+                @foreach (var day in MonthDays)
+                {
+                    <div role="button" tabindex="0" class="@MonthCellClass(day)" data-xf-scheduler-slot="@day.ToString("yyyy-MM-dd")"
+                         @onclick="() => SelectSlotAsync(day.ToDateTime(TimeOnly.MinValue), day.ToDateTime(TimeOnly.MaxValue))"
+                         ondragover="event.preventDefault()"
+                         @ondrop="() => OnDrop(day.ToDateTime(TimeOnly.MinValue))">
+                        <span class="@MonthDayLabelClass(day)">@day.Day</span>
+                        @RenderMonthSlot(day)
+                    </div>
+                }
+            </div>
+        }
+        else if (View == XFSchedulerView.Week)
+        {
+            <div class="@WeekViewWrapperClass" role="grid" aria-label="@Title">
+                <div class="flex border-b border-border-light">
+                    <div class="w-16 shrink-0"></div>
+                    @foreach (var day in WeekDays)
+                    {
+                        var isToday = day.Date == DateTime.Today;
+                        <div class="flex-1 text-center text-xs font-medium py-2 border-l border-border-light @(isToday ? "text-primary font-bold" : "text-text-muted")">
+                            @day.ToString("ddd dd")
+                        </div>
+                    }
+                </div>
+                <div class="flex overflow-y-auto" style="max-height:42rem;">
+                    <div class="w-16 shrink-0">
+                        @for (var h = StartHour; h < EndHour; h++)
+                        {
+                            <div class="h-12 text-xs text-text-muted pr-2 text-right leading-none border-b border-surface-100 pt-0.5">@($"{h:D2}:00")</div>
+                        }
+                    </div>
+                    <div class="flex flex-1">
+                        @foreach (var day in WeekDays)
+                        {
+                            var dayDate = DateOnly.FromDateTime(day);
+                            var dayAppts = AppointmentsForDay(dayDate);
+                            var isToday = day.Date == DateTime.Today;
+                            <div class="flex-1 border-l border-border-light relative">
+                                @for (var h = StartHour; h < EndHour; h++)
+                                {
+                                    <div class="h-12 border-b border-surface-100 @(isToday ? "bg-[color-mix(in_oklab,var(--color-primary)_3%,var(--color-bg-surface))]" : "")"></div>
+                                }
+                                @foreach (var appt in dayAppts)
+                                {
+                                    var info = WeekOverlapInfo(appt, dayAppts);
+                                    var left = info.Total > 0 ? $"{info.Column * 100.0 / info.Total:F1}%" : "0%";
+                                    var width = info.Total > 0 ? $"{100.0 / info.Total:F1}%" : "100%";
+                                    <button type="button"
+                                            class="absolute rounded px-1 py-0.5 text-[0.6875rem] font-semibold leading-tight truncate z-10 bg-[color-mix(in_oklab,var(--color-primary)_12%,transparent)] text-primary ring-1 ring-[color-mix(in_oklab,var(--color-primary)_18%,transparent)] hover:bg-[color-mix(in_oklab,var(--color-primary)_18%,transparent)] focus-visible:ring-2 focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_28%,transparent)]"
+                                            style="@WeekAppointmentTop(appt, dayDate); @WeekAppointmentHeight(appt); left:@left; width:@width;"
+                                            data-xf-scheduler-appointment="@appt.Text"
+                                            aria-label="@appt.Text"
+                                            @onclick="() => SelectAppointmentAsync(appt)"
+                                            @onclick:stopPropagation="true">
+                                        <span class="truncate block">@appt.Text</span>
+                                        <span class="truncate block opacity-70 text-[0.625rem]">@($"{appt.Start:HH:mm}\u2013{appt.End:HH:mm}")</span>
+                                    </button>
+                                }
+                                @if (isToday)
+                                {
+                                    <div class="absolute left-0 right-0 z-20 pointer-events-none" style="@WeekTimeIndicatorStyle()">
+                                        <div class="relative">
+                                            <div class="absolute -left-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-red-500"></div>
+                                            <div class="h-0.5 bg-red-500"></div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="@TimelineClass" role="grid" aria-label="@Title">
+                <div class="grid grid-cols-[4rem_1fr] border-b border-border-light text-xs font-bold uppercase text-text-muted">
+                    <span class="p-2">@HourHeaderText</span>
+                    <span class="p-2">@TimelineHeader</span>
+                </div>
+                @foreach (var slot in TimelineSlots)
+                {
+                    <div role="button" tabindex="0" class="@TimelineSlotClass(slot)" data-xf-scheduler-slot="@slot.Start.ToString("yyyy-MM-ddTHH:mm")"
+                         @onclick="() => SelectSlotAsync(slot.Start, slot.End)"
+                         ondragover="event.preventDefault()"
+                         @ondrop="() => OnDrop(slot.Start)">
+                        <span class="text-xs font-semibold text-text-muted">@slot.Start.ToString("HH:mm")</span>
+                        @if (HasResources)
+                        {
+                            <span class="grid min-w-0 gap-2">
+                                <span class="sr-only">@ResourceHeaderText</span>
+                                @foreach (var resource in Resources)
+                                {
+                                    @RenderSlot(slot, resource.Id, resource.Text)
+                                }
+                            </span>
+                        }
+                        else
+                        {
+                            @RenderSlot(slot)
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </section>
+}

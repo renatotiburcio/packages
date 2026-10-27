@@ -1,0 +1,506 @@
+@page "/forms/search"
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="Search"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSearch" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Debounce", "Debounce")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Clearable", "Clearable")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Filtros", "Filters")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Campo de pesquisa com debounce, limpar por Escape e filtros globais.", "Search field with debounce, clear-on-escape and global filters.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFSearch e o campo especializado para pesquisa em listas, grids e dashboards.", "XFSearch is the specialized field for searching lists, grids and dashboards.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts)
+                            {
+                                @Tile(item)
+                            }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                        @Example(T("Preview renderizado", "Live Preview"),
+                T("Campo de pesquisa com debounce e limpeza.", "Search field with debounce and clear."),
+                BasicPreview(), BasicCode)
+            @Example(T("Controles de debounce", "Debounce Controls"),
+                T("Immediate, Clearable e debounce configuraveis.", "Immediate, Clearable and configurable debounce."),
+                VariantsPreview(), VariantsCode)
+            @Example(T("Cenarios enterprise", "Enterprise Scenarios"),
+                T("Filtro global de dashboard e filtro de tabela.", "Dashboard global filter and table filter."),
+                EnterprisePreview(), EnterpriseCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFSearch Label="@T("Pesquisar pedidos", "Search orders")" Placeholder="@T("Cliente, numero ou status", "Client, number or status")" />
+        </XFStack>
+        <XFGrid Cols="1" Md="3" Gap="3">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Pedidos", "Orders")</XFTypography>
+                    <XFSearch Placeholder="@T("Filtrar pedidos...", "Filter orders...")" Clearable="true" />
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Clientes", "Clients")</XFTypography>
+                    <XFSearch Placeholder="@T("Filtrar clientes...", "Filter clients...")" Clearable="true" />
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Produtos", "Products")</XFTypography>
+                    <XFSearch Placeholder="@T("Filtrar produtos...", "Filter products...")" Clearable="true" />
+                </ChildContent>
+            </XFCard>
+        </XFGrid>
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts =>
+    [
+        new(T("Debounce nativo", "Native debounce"), T("300ms padrao; configuravel via DebounceMilliseconds.", "300ms default; configurable via DebounceMilliseconds."), "bolt"),
+        new(T("Clear on Escape", "Clear on Escape"), T("Escape limpa o campo quando ClearOnEscape=true.", "Escape clears the field when ClearOnEscape=true."), "xmark"),
+        new(T("Enterprise-ready", "Enterprise-ready"), T("OnSearch, OnFocus, OnBlur e validacao integrada.", "OnSearch, OnFocus, OnBlur and integrated validation."), "briefcase")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows =>
+    [
+        new("Component", "XFSearch"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.Search"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Forms / Search"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=search, aria-label e clear acessivel.", "role=search, aria-label and accessible clear."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems =>
+    [
+        new(T("Pesquisa especializada", "Specialized search"), T("Campo com debounce, limpeza e eventos de pesquisa.", "Field with debounce, clear and search events."), "magnifying-glass"),
+        new(T("Integracao com filtros", "Filter integration"), T("OnSearch dispara apos debounce ou Enter.", "OnSearch fires after debounce or Enter."), "filter"),
+        new(T("Limpeza rapida", "Quick clear"), T("Clearable e ClearOnEscape para UX fluida.", "Clearable and ClearOnEscape for fluid UX."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems =>
+    [
+        new(T("Filtro de tabela", "Table filter"), T("Pesquisa em grids, listas e resultados.", "Search in grids, lists and results."), "table-cells"),
+        new(T("Busca global", "Global search"), T("Pesquisa em todo o sistema ou modulo.", "Search across system or module."), "magnifying-glass"),
+        new(T("Filtro de dashboard", "Dashboard filter"), T("Filtrar widgets e cards por termo.", "Filter widgets and cards by term."), "chart-line-up")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems =>
+    [
+        new(T("Antes", "Before"), T("Input generico sem debounce, clear ou evento de pesquisa.", "Generic input without debounce, clear or search event."), "xmark"),
+        new(T("Depois", "After"), T("Campo com debounce configuravel e OnSearch.", "Field with configurable debounce and OnSearch."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("Evita requisicoes excessivas e duplo submit.", "Prevents excessive requests and double submit."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems =>
+    [
+        new(T("Grid de dados", "Data grid"), T("Pesquisa em tabelas com muitas linhas.", "Search in tables with many rows."), "table-cells"),
+        new(T("Dashboard", "Dashboard"), T("Filtro global para cards e widgets.", "Global filter for cards and widgets."), "chart-line-up"),
+        new(T("Catalogo", "Catalog"), T("Busca em lista de produtos, clientes ou servicos.", "Search in product, client or service list."), "list-ul")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems =>
+    [
+        new(T("Formulario de cadastro", "Registration form"), T("Use XFTextInput para campos de formulario regulares.", "Use XFTextInput for regular form fields."), "triangle-exclamation"),
+        new(T("Filtro avancado", "Advanced filter"), T("Use filtros estruturados para multi-criterio.", "Use structured filters for multi-criteria."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems =>
+    [
+        new("Root", T("Container com label, input, clear button e helper text.", "Container with label, input, clear button and helper text."), "code"),
+        new(T("Icone de busca", "Search icon"), T("Magnifier icon como prefixo visual.", "Magnifier icon as visual prefix."), "magnifying-glass"),
+        new(T("Botao limpar", "Clear button"), T("X button para limpar valor rapidamente.", "X button to clear value quickly."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems =>
+    [
+        new(T("Resposta rapida", "Fast response"), T("Debounce equilibra performance e feedback.", "Debounce balances performance and feedback."), "bolt"),
+        new(T("Limpeza clara", "Clear cleanup"), T("Escape e X button para resetar rapidamente.", "Escape and X button for quick reset."), "xmark"),
+        new(T("Placeholder util", "Useful placeholder"), T("Exemplo do que pode ser buscado.", "Example of what can be searched."), "tag")
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("Value", "string?", "null", T("Valor atual da pesquisa.", "Current search value.")),
+        new("ValueChanged", "EventCallback<string?>", "default", T("Two-way binding.", "Two-way binding.")),
+        new("Change", "EventCallback<string?>", "default", T("Mudanca confirmada.", "Committed change.")),
+        new("OnSearch", "EventCallback<string?>", "default", T("Disparado apos debounce ou Enter.", "Fired after debounce or Enter.")),
+        new("OnFocus", "EventCallback<FocusEventArgs>", "default", T("Disparado ao focar.", "Fired on focus.")),
+        new("OnBlur", "EventCallback<FocusEventArgs>", "default", T("Disparado ao desfocar.", "Fired on blur.")),
+        new("Label", "string?", "null", T("Texto do label.", "Label text.")),
+        new("AriaLabel", "string?", "null", T("Label acessivel.", "Accessible label.")),
+        new("Placeholder", "string?", "\"Pesquisar\"", T("Placeholder padrao.", "Default placeholder.")),
+        new("HelperText", "string?", "null", T("Texto de ajuda.", "Helper text.")),
+        new("AutoComplete", "string?", "\"off\"", T("Autocomplete padrao desligado.", "Default autocomplete off.")),
+        new("MaxLength", "int?", "null", T("Maximo de caracteres.", "Maximum characters.")),
+        new("MinLength", "int?", "null", T("Minimo de caracteres.", "Minimum characters.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read-only.")),
+        new("FullWidth", "bool", "true", T("Ocupa toda a largura.", "Fills width.")),
+        new("Immediate", "bool", "true", T("Atualiza Value a cada tecla.", "Updates Value on each keystroke.")),
+        new("Clearable", "bool", "true", T("Exibe botao de limpar.", "Shows clear button.")),
+        new("ClearOnEscape", "bool", "true", T("Limpa ao pressionar Escape.", "Clears on Escape.")),
+        new("DebounceMilliseconds", "int", "300", T("Delay do debounce em ms.", "Debounce delay in ms.")),
+        new("ClearLabel", "string", "\"Limpar pesquisa\"", T("Label do botao limpar.", "Clear button label."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows =>
+    [
+        new("ValueChanged", T("A cada mudanca de valor.", "On each value change.")),
+        new("Change", T("Mudanca confirmada (blur).", "Committed change (blur).")),
+        new("OnSearch", T("Apos debounce ou Enter.", "After debounce or Enter.")),
+        new("OnFocus", T("Ao focar o campo.", "On field focus.")),
+        new("OnBlur", T("Ao desfocar o campo.", "On field blur."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems =>
+    [
+        new("Label", T("Label associado ao input.", "Label associated to input."), "tag"),
+        new("AriaLabel", T("Nome acessivel explicito.", "Explicit accessible name."), "universal-access"),
+        new(T("Botao limpar", "Clear button"), T("aria-label configuravel.", "Configurable aria-label."), "xmark")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows =>
+    [
+        new("Tab", T("Foca o campo.", "Focuses the field.")),
+        new("Shift+Tab", T("Controle anterior.", "Previous control.")),
+        new("Escape", T("Limpa quando ClearOnEscape.", "Clears when ClearOnEscape.")),
+        new("Enter", T("Dispara OnSearch.", "Fires OnSearch."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems =>
+    [
+        new("FullWidth", T("Ocupa largura em mobile.", "Fills width on mobile."), "mobile-screen"),
+        new(T("Placeholder", "Placeholder"), T("Adapta texto ao espaco disponivel.", "Adapts text to available space."), "font")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems =>
+    [
+        new(T("Debounce", "Debounce"), T("Reduz chamadas durante digitacao.", "Reduces calls during typing."), "bolt"),
+        new(T("Timer cleanup", "Timer cleanup"), T("DisposeAsync cancela timer pendente.", "DisposeAsync cancels pending timer."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems =>
+    [
+        new("ERP", T("Pesquisa em grids de pedidos, notas e cadastros.", "Search in order, invoice and record grids."), "briefcase"),
+        new(T("Financeiro", "Finance"), T("Buscar titulos, movimentacoes e conciliacoes.", "Search receivables, transactions and reconciliations."), "chart-line-up"),
+        new("CRM", T("Buscar leads, contatos e oportunidades.", "Search leads, contacts and opportunities."), "users"),
+        new(T("Estoque", "Inventory"), T("Buscar produtos por SKU, nome ou categoria.", "Search products by SKU, name or category."), "box-archive"),
+        new(T("RH", "HR"), T("Buscar funcionarios e cargos.", "Search employees and positions."), "users"),
+        new(T("Dashboard", "Dashboard"), T("Filtro global para todos os widgets.", "Global filter for all widgets."), "chart-line-up")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems =>
+    [
+        new("Tables", T("Use acima de grids para filtrar linhas.", "Use above grids to filter rows."), "table-cells"),
+        new("Cards", T("Use em cards de filtros ou busca.", "Use in filter or search cards."), "square"),
+        new("Toolbar", T("Use em toolbar de filtros.", "Use in filter toolbars."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems =>
+    [
+        new(T("Placeholder descritivo", "Descriptive placeholder"), T("Indique o que pode ser buscado.", "Indicate what can be searched."), "tag"),
+        new(T("Debounce adequado", "Adequate debounce"), T("200-400ms para APIs; 0 para filtros locais.", "200-400ms for APIs; 0 for local filters."), "bolt"),
+        new(T("Clear sempre disponivel", "Clear always available"), T("Clearable=true para UX fluida.", "Clearable=true for fluid UX."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems =>
+    [
+        new(T("Sem debounce", "No debounce"), T("Chama API a cada tecla sem debounce.", "Calls API on each keystroke without debounce."), "xmark"),
+        new(T("Sem label", "No label"), T("Quebra acessibilidade e contexto.", "Breaks accessibility and context."), "eye-slash")
+    ];
+
+
+    private IReadOnlyList<NameValueRow> TokenRows =>
+    [
+        new("colors", T("bg-primary, border-border-light.", "bg-primary, border-border-light.")),
+        new("typography", T("text-sm/base para input.", "text-sm/base for input.")),
+        new("spacing", T("h-8/9/10, px-3/4.", "h-8/9/10, px-3/4."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems =>
+    [
+        new("data-theme", T("Light e dark via CSS variables.", "Light and dark via CSS variables."), "moon"),
+        new(T("Contraste", "Contrast"), T("AA em ambos temas.", "AA in both themes."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows =>
+    [
+        new("Unit", T("Render, valor, debounce, clear, OnSearch.", "Render, value, debounce, clear, OnSearch.")),
+        new("Accessibility", T("Label, aria-label e clear button.", "Label, aria-label and clear button."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows =>
+    [
+        new(T("Sem variantes", "No variants"), T("Nao possui Variant visual proprio.", "No own visual Variant.")),
+        new(T("Sem prefix/suffix", "No prefix/suffix"), T("Nao suporta PrefixText/SuffixText.", "No PrefixText/SuffixText support."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems =>
+    [
+        new("XFTextInput", T("Use para campos de formulario regulares.", "Use for regular form fields."), "font"),
+        new("XFField", T("Wrapper com label e erro.", "Wrapper with label and error."), "tag"),
+        new("XFTable", T("Use XFSearch acima de grids.", "Use XFSearch above grids."), "table-cells")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows =>
+    [
+        new(T("Qual valor de debounce?", "What debounce value?"), T("300ms padrao; 200-400ms para APIs.", "300ms default; 200-400ms for APIs.")),
+        new(T("OnSearch vs Change?", "OnSearch vs Change?"), T("OnSearch e debounced; Change e imediato.", "OnSearch is debounced; Change is immediate."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows =>
+    [
+        new("2026-05-26", T("Pagina refeita no padrao enterprise.", "Page rebuilt in enterprise standard."))
+    ];
+
+    private RenderFragment BasicPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFSearch Label="@T("Pesquisar pedidos", "Search orders")" Placeholder="@T("Cliente, numero ou status", "Client, number or status")" />
+        </XFStack>
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Campo de pesquisa com debounce de 300ms e limpeza por Escape.",
+               "Search field with 300ms debounce and Escape-to-clear.")
+        </XFTypography>
+    </XFStack>;
+
+    private string BasicCode => T(
+        "<XFSearch Label=\"Pesquisar pedidos\" Placeholder=\"Cliente, numero ou status\" />",
+        "<XFSearch Label=\"Search orders\" Placeholder=\"Client, number or status\" />");
+
+    private RenderFragment VariantsPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFSearch Placeholder="@T("Immediate=true, Debounce=300ms", "Immediate=true, Debounce=300ms")" Immediate="true" DebounceMilliseconds="300" />
+            <XFSearch Placeholder="@T("Immediate=false", "Immediate=false")" Immediate="false" />
+            <XFSearch Placeholder="@T("Clearable=false", "Clearable=false")" Clearable="false" />
+        </XFStack>
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Controles de debounce: Immediate controla quando Value atualiza; Clearable exibe ou oculta o botao limpar.",
+               "Debounce controls: Immediate controls when Value updates; Clearable shows or hides the clear button.")
+        </XFTypography>
+    </XFStack>;
+
+    private string VariantsCode => "<XFSearch Placeholder=\"Immediate=true\" Immediate=\"true\" DebounceMilliseconds=\"300\" />\n<XFSearch Placeholder=\"Immediate=false\" Immediate=\"false\" />\n<XFSearch Placeholder=\"Clearable=false\" Clearable=\"false\" />";
+
+    private RenderFragment EnterprisePreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFGrid Cols="1" Md="2" Gap="3">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Filtro global de dashboard", "Dashboard global filter")</XFTypography>
+                    <XFSearch Placeholder="@T("Buscar em todos os modulos...", "Search all modules...")" FullWidth="true" />
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Filtro de tabela", "Table filter")</XFTypography>
+                    <XFSearch Placeholder="@T("Filtrar linhas da tabela...", "Filter table rows...")" FullWidth="true" DebounceMilliseconds="200" />
+                </ChildContent>
+            </XFCard>
+        </XFGrid>
+    </XFStack>;
+
+    private string EnterpriseCode => T(
+        "<XFSearch Placeholder=\"Buscar em todos os modulos...\" FullWidth=\"true\" />",
+        "<XFSearch Placeholder=\"Search all modules...\" FullWidth=\"true\" />");
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header>
+            <div class="px-6 pt-6">
+                <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+            </div>
+        </Header>
+        <ChildContent>
+            <div class="grid">
+                <div class="border-t border-border-light p-6">@preview</div>
+                <div class="border-t border-border-light bg-surface-50 p-6">
+                    <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                </div>
+            </div>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                    <div class="min-w-0">
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                    </div>
+                </div>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">
+        @foreach (var item in items)
+        {
+            @Tile(item)
+        }
+    </XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">
+        @foreach (var item in items)
+        {
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                        <div class="flex items-center gap-4">
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                            <div class="min-w-0">
+                                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                            </div>
+                        </div>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        }
+    </XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@nameHeader</XFTableCell>
+                <XFTableCell Header="true">@valueHeader</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Value</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+                <XFTableCell Header="true">Type</XFTableCell>
+                <XFTableCell Header="true">Default</XFTableCell>
+                <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Type</XFTableCell>
+                    <XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell>
+                    <XFTableCell>@row.Description</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

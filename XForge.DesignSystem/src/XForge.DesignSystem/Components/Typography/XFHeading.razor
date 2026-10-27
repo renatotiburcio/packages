@@ -1,0 +1,17 @@
+@inherits XForgeComponentBase
+
+<DynamicElement TagName="@TagName"
+                @attributes="AdditionalAttributes"
+                id="@Id"
+                class="@GetComponentClass()"
+                style="@Style"
+                aria-label="@AriaLabel">
+    @if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        @Text
+    }
+</DynamicElement>

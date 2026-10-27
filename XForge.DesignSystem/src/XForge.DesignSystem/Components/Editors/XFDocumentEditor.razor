@@ -1,0 +1,16 @@
+@namespace XForge.Components.Editors
+@inherits XForgeComponentBase
+
+<div class="xf-documenteditor" data-pages="@Pages" data-orientation="@Orientation">
+  <div class="xf-de-toolbar">@foreach (var cmd in ToolbarCommands) { <button @onclick="() => OnCommand.InvokeAsync(cmd)">@cmd</button> }</div>
+  <div class="xf-de-pages">
+    @for (int p = 0; p < Pages; p++)
+    {
+      <div class="xf-de-page">
+        @if (p == 0) { <div class="xf-de-header">@Header</div> }
+        <div class="xf-de-content">@ChildContent</div>
+        @if (p == Pages - 1) { <div class="xf-de-footer">@Footer</div> }
+      </div>
+    }
+  </div>
+</div>

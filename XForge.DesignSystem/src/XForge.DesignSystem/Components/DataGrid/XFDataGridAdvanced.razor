@@ -1,0 +1,11 @@
+@namespace XForge.Components.DataGrid
+@inherits XForgeComponentBase
+
+<div class="xf-datagrid-advanced" data-server-side="@ServerSide" data-virtual="@VirtualScrolling">
+  <table>
+    <thead>@RenderHeader()</thead>
+    <tbody>@RenderBody()</tbody>
+  </table>
+  <div class="xf-dg-pager">@RenderPager()</div>
+  <div class="xf-dg-status">Showing @VisibleCount of @TotalCount</div>
+</div>

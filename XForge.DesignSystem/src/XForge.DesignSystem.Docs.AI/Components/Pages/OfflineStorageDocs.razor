@@ -1,0 +1,435 @@
+@page "/ai/offline-storage"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="XFOfflineStorage"
+                 Status="@L.Text("Estavel", "Stable")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFOfflineStorage" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Persistencia", "Persistence")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Sync Queue", "Sync Queue")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Persistencia local para experiencias AI resilientes em cenarios offline ou instaveis.",
+                               "Local persistence for resilient AI experiences in offline or unstable scenarios.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Armazenamento key-value com fila de sincronizacao, resolucao de conflitos, estatisticas de uso e callbacks de status online.",
+                               "Key-value storage with sync queue, conflict resolution, usage statistics and online status callbacks.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Armazenamento em memoria do servidor.", "In-memory server storage.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Armazenamento em memoria do browser.", "In-memory browser storage.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Limitado", "Limited")" /></XFTableCell><XFTableCell>@T("Armazenamento em memoria sem persistencia.", "In-memory storage without persistence.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Operacoes basicas", "1. Basic Operations"), T("SetItem, GetItem, RemoveItem e HasItem.", "SetItem, GetItem, RemoveItem and HasItem."), ExBasicOps(), Code1)
+            @Example(T("2. Fila de sincronizacao", "2. Sync Queue"), T("Enfileiramento e processamento de itens pendentes.", "Queuing and processing of pending items."), ExSyncQueue(), Code2)
+            @Example(T("3. Resolucao de conflitos", "3. Conflict Resolution"), T("Estrategia LastWriteWins e resolucao manual.", "LastWriteWins strategy and manual resolution."), ExConflictResolution(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFOfflineStorage>
+            <ChildContent>
+                @if (ctx is not null)
+                {
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="rounded border border-border-light p-2 @(ctx.IsOnline ? "bg-success/10 text-success" : "bg-danger/10 text-danger")">
+                            @T("Online: ", "Online: ")@(ctx.IsOnline ? "Sim" : "Nao")
+                        </div>
+                        <div class="rounded border border-border-light p-2">
+                            @T("Entradas: ", "Entries: ")@ctx.EntryCount
+                        </div>
+                        <div class="rounded border border-border-light p-2">
+                            @T("Sync pendente: ", "Pending sync: ")@ctx.PendingSyncCount
+                        </div>
+                        <div class="rounded border border-border-light p-2">
+                            @T("Conflitos: ", "Conflicts: ")@ctx.ConflictCount
+                        </div>
+                    </div>
+                }
+            </ChildContent>
+        </XFOfflineStorage>
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Key-value", "Key-value"), T("Armazenamento simples com SetItem/GetItem.", "Simple storage with SetItem/GetItem."), "database"),
+        new(T("Sync queue", "Sync queue"), T("Fila automatica de itens para sincronizacao.", "Automatic queue of items for synchronization."), "arrows-rotate"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFOfflineStorage"),
+        new("Namespace", "XForge.DesignSystem.Components.CrossPlatform"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "CrossPlatform / Storage"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("Classe CSS xf-storage-online/xf-storage-offline/xf-storage-syncing para estilos.", "CSS classes xf-storage-online/xf-storage-offline/xf-storage-syncing for styles.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Key-value storage", "Key-value storage"), T("SetItem, GetItem, RemoveItem, HasItem, GetKeys.", "SetItem, GetItem, RemoveItem, HasItem, GetKeys."), "database"),
+        new(T("Sync queue", "Sync queue"), T("Fila automatica com status Pending/Syncing/Synced/Failed.", "Automatic queue with status Pending/Syncing/Synced/Failed."), "arrows-rotate"),
+        new(T("Conflict resolution", "Conflict resolution"), T("ClientWins, ServerWins, LastWriteWins, Manual, Merge.", "ClientWins, ServerWins, LastWriteWins, Manual, Merge."), "shield")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Offline-first", "Offline-first"), T("Dados acessiveis sem conexao.", "Data accessible without connection."), "wifi"),
+        new(T("Sync diferencial", "Differential sync"), T("Apenas alteracoes sao sincronizadas.", "Only changes are synchronized."), "arrows-rotate"),
+        new(T("Resiliencia", "Resilience"), T("Dados preservados em conexoes instaveis.", "Data preserved on unstable connections."), "shield")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Perda de dados em offline.", "Data loss in offline."), "xmark"),
+        new(T("Depois", "After"), T("Fila de sync com resolucao de conflitos.", "Sync queue with conflict resolution."), "check"),
+        new(T("Visibilidade", "Visibility"), T("Estatisticas de uso e quota.", "Usage statistics and quota."), "chart-bar")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Formularios offline", "Offline forms"), T("Salvar rascunhos localmente.", "Save drafts locally."), "pen"),
+        new(T("Fila de operacoes", "Operations queue"), T("Enfileirar acoes para executar online.", "Queue actions for online execution."), "list")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Dados criticos", "Critical data"), T("Use banco de dados para dados que nao podem ser perdidos.", "Use database for data that cannot be lost."), "database"),
+        new(T("Sync em tempo real", "Real-time sync"), T("Use SignalR para atualizacoes instantaneas.", "Use SignalR for instant updates."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("ChildContent", T("Render fragment com XFOfflineStorageContext.", "Render fragment with XFOfflineStorageContext."), "puzzle"),
+        new("XFOfflineStorageContext", T("Registro com EntryCount, PendingSyncCount, IsOnline, IsSyncing, Stats.", "Record with EntryCount, PendingSyncCount, IsOnline, IsSyncing, Stats."), "database"),
+        new("XFStorageStats", T("Estatisticas: TotalEntries, TotalSizeBytes, PendingSyncItems, UsagePercent.", "Stats: TotalEntries, TotalSizeBytes, PendingSyncItems, UsagePercent."), "chart-bar")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Offline-first", "Offline-first"), T("Sempre funcional, com ou sem conexao.", "Always functional, with or without connection."), "wifi"),
+        new(T("Sync automatica", "Auto sync"), T("Itens enfileirados automaticamente.", "Items queued automatically."), "arrows-rotate"),
+        new(T("Conflitos explicitos", "Explicit conflicts"), T("Conflitos visiveis e resolviveis manualmente.", "Visible and manually resolvable conflicts."), "shield")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasicOps() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFOfflineStorage>
+            <ChildContent>
+                <div class="rounded-lg border border-border-light bg-surface-50 p-4 text-sm text-text-secondary">
+                    @T("Use SetItem(\"chave\", \"valor\") para salvar, GetItem(\"chave\") para ler.", "Use SetItem(\"key\", \"value\") to save, GetItem(\"key\") to read.")
+                </div>
+            </ChildContent>
+        </XFOfflineStorage>
+    </XFStack>;
+
+    private RenderFragment ExSyncQueue() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFOfflineStorage>
+            <ChildContent>
+                @if (ctx is not null)
+                {
+                    <div class="rounded-lg border border-border-light bg-surface-50 p-4 text-sm">
+                        <div class="font-semibold mb-2">@T("Fila de sincronizacao", "Sync Queue")</div>
+                        <div class="text-text-secondary">@T("Itens pendentes: ", "Pending items: ")@ctx.PendingSyncCount</div>
+                        <div class="text-text-secondary">@T("Sincronizando: ", "Syncing: ")@(ctx.IsSyncing ? "Sim" : "Nao")</div>
+                    </div>
+                }
+            </ChildContent>
+        </XFOfflineStorage>
+    </XFStack>;
+
+    private RenderFragment ExConflictResolution() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFOfflineStorage ConflictStrategy="XFSyncConflictStrategy.LastWriteWins">
+            <ChildContent>
+                @if (ctx is not null)
+                {
+                    <div class="rounded-lg border border-border-light bg-surface-50 p-4 text-sm">
+                        <div class="font-semibold mb-2">@T("Estrategia: LastWriteWins", "Strategy: LastWriteWins")</div>
+                        <div class="text-text-secondary">@T("Conflitos: ", "Conflicts: ")@ctx.ConflictCount</div>
+                    </div>
+                }
+            </ChildContent>
+        </XFOfflineStorage>
+    </XFStack>;
+
+    private const string Code1 = @"<XFOfflineStorage>
+    <ChildContent>
+        @if (ctx is not null)
+        {
+            <div>Entradas: @ctx.EntryCount</div>
+            <div>Online: @ctx.IsOnline</div>
+        }
+    </ChildContent>
+</XFOfflineStorage>";
+
+    private const string Code2 = @"<XFOfflineStorage>
+    <ChildContent>
+        @if (ctx is not null)
+        {
+            <div>Sync pendente: @ctx.PendingSyncCount</div>
+            <div>Sincronizando: @ctx.IsSyncing</div>
+        }
+    </ChildContent>
+</XFOfflineStorage>";
+
+    private const string Code3 = @"<XFOfflineStorage ConflictStrategy=""XFSyncConflictStrategy.LastWriteWins"">
+    <ChildContent>
+        @if (ctx is not null)
+        {
+            <div>Conflitos: @ctx.ConflictCount</div>
+        }
+    </ChildContent>
+</XFOfflineStorage>";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("ChildContent", "RenderFragment<XFOfflineStorageContext>?", "null", T("Conteudo com contexto do storage.", "Content with storage context.")),
+        new("StorageQuotaBytes", "long", "5242880", T("Quota maxima em bytes (5 MB padrao).", "Maximum quota in bytes (5 MB default).")),
+        new("ConflictStrategy", "XFSyncConflictStrategy", "LastWriteWins", T("Estrategia de resolucao de conflitos.", "Conflict resolution strategy.")),
+        new("OnSyncItemProcessed", "EventCallback<XFSyncQueueItem>", "EventCallback", T("Dispara apos processar item da fila.", "Fires after processing queue item.")),
+        new("OnConflictDetected", "EventCallback<XFSyncConflict>", "EventCallback", T("Dispara quando conflito e detectado.", "Fires when conflict is detected.")),
+        new("OnStatsChanged", "EventCallback<XFStorageStats>", "EventCallback", T("Dispara quando estatisticas mudam.", "Fires when statistics change.")),
+        new("Class", "string?", "null", T("Classes CSS adicionais.", "Additional CSS classes.")),
+        new("Style", "string?", "null", T("Estilos inline.", "Inline styles."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnSyncItemProcessed", T("Dispara apos cada item sincronizado. Recebe XFSyncQueueItem.", "Fires after each synced item. Receives XFSyncQueueItem.")),
+        new("OnConflictDetected", T("Dispara quando conflito local/remote e detectado. Recebe XFSyncConflict.", "Fires when local/remote conflict is detected. Receives XFSyncConflict.")),
+        new("OnStatsChanged", T("Dispara quando estatisticas mudam. Recebe XFStorageStats.", "Fires when statistics change. Receives XFStorageStats."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("xf-storage-online", "xf-storage-online"), T("Classe CSS quando online.", "CSS class when online."), "wifi"),
+        new(T("xf-storage-offline", "xf-storage-offline"), T("Classe CSS quando offline.", "CSS class when offline."), "wifi-slash"),
+        new(T("xf-storage-syncing", "xf-storage-syncing"), T("Classe CSS durante sincronizacao.", "CSS class during synchronization."), "arrows-rotate")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Indiferente a viewport", "Viewport independent"), T("Logica de storage nao depende de breakpoint.", "Storage logic does not depend on breakpoint."), "maximize"),
+        new(T("Callback responsivo", "Responsive callback"), T("OnStatsChanged notifica mudancas em tempo real.", "OnStatsChanged notifies changes in real time."), "bell")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Dictionary lookup", "Dictionary lookup"), T("Operacoes O(1) para Get/Set/Remove.", "O(1) operations for Get/Set/Remove."), "gauge")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Formularios ERP", "ERP forms"), T("Rascunhos de formulario offline.", "Offline form drafts."), "pen"),
+        new(T("Fila de notas", "Invoice queue"), T("Enfileirar envio de NF-e para sync.", "Queue NF-e for sync."), "file-invoice"),
+        new(T("Cache de dados", "Data cache"), T("Cache local de dados da AI.", "Local cache of AI data."), "database")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Storage + Bridge", "Storage + Bridge"), T("Combinar com XFDeviceBridge para status online.", "Combine with XFDeviceBridge for online status."), "laptop"),
+        new(T("Storage + Responsive", "Storage + Responsive"), T("Combinar com XFResponsiveContainer.", "Combine with XFResponsiveContainer."), "arrows-maximize"),
+        new(T("Storage + Card", "Storage + Card"), T("Estatisticas em XFCard para dashboard.", "Stats in XFCard for dashboard."), "square")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Definir quota", "Set quota"), T("Configure StorageQuotaBytes apropriado.", "Configure appropriate StorageQuotaBytes."), "gauge"),
+        new(T("Tratar conflitos", "Handle conflicts"), T("Use OnConflictDetected para resolucao automatica.", "Use OnConflictDetected for automatic resolution."), "shield"),
+        new(T("Monitorar estatisticas", "Monitor stats"), T("Use OnStatsChanged para dashboards.", "Use OnStatsChanged for dashboards."), "chart-bar")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Dados sem backup", "Data without backup"), T("Nao confie apenas em storage local.", "Do not rely only on local storage."), "xmark"),
+        new(T("Sync sem retry", "Sync without retry"), T("Implemente retry com backoff exponencial.", "Implement retry with exponential backoff."), "ban"),
+        new(T("Quota excedida", "Quota exceeded"), T("Monitore UsagePercent e limpe dados antigos.", "Monitor UsagePercent and clean old data."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("xf-offline-storage", T("Container principal do storage.", "Main storage container.")),
+        new("xf-storage-online", T("Classe quando online.", "Class when online.")),
+        new("xf-storage-offline", T("Classe quando offline.", "Class when offline.")),
+        new("xf-storage-syncing", T("Classe durante sincronizacao.", "Class during synchronization."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("SetItem, GetItem, RemoveItem, HasItem, Clear, ProcessSyncQueueAsync.", "SetItem, GetItem, RemoveItem, HasItem, Clear, ProcessSyncQueueAsync.")),
+        new("Extended", T("Conflitos, quota, estatisticas, resolucao de conflitos.", "Conflicts, quota, statistics, conflict resolution."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Memoria", T("Armazenamento em memoria, nao persiste entre recarregamentos.", "In-memory storage, does not persist across reloads.")),
+        new("Quota", T("StorageQuotaBytes limita tamanho total. Monitore UsagePercent.", "StorageQuotaBytes limits total size. Monitor UsagePercent.")),
+        new("Concorrencia", T("Nao suporta acesso concorrente entre abas.", "Does not support concurrent access between tabs."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFDeviceBridge", T("Deteccao de status online.", "Online status detection."), "laptop"),
+        new("XFGestureHandler", T("Captura de gestos touch.", "Touch gesture capture."), "hand-pointer"),
+        new("XFResponsiveContainer", T("Deteccao de breakpoint responsivo.", "Responsive breakpoint detection."), "arrows-maximize")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Persiste entre recarregamentos?", "Persists across reloads?"), T("Nao. E armazenamento em memoria. Use localStorage para persistencia.", "No. It is in-memory storage. Use localStorage for persistence.")),
+        new(T("Como resolver conflitos?", "How to resolve conflicts?"), T("Use OnConflictDetected e ResolveConflict(key, useLocal).", "Use OnConflictDetected and ResolveConflict(key, useLocal).")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Componente criado com key-value, sync queue e conflitos.", "Component created with key-value, sync queue and conflicts.")),
+        new("2026-06-12", T("Documentacao completa no padrao AppShellDocs com 3 exemplos.", "Full documentation in AppShellDocs pattern with 3 examples."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+
+    // === DATA ===
+    private XFOfflineStorageContext? ctx;
+}

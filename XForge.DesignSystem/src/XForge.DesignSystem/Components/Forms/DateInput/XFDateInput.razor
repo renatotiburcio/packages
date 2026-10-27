@@ -1,0 +1,72 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@FieldShellClass">
+        @if (StartIcon is not null || !string.IsNullOrWhiteSpace(PrefixText))
+        {
+            <div class="@AdornmentClass">
+                @if (StartIcon is not null)
+                {
+                    @StartIcon
+                }
+                else
+                {
+                    <span>@PrefixText</span>
+                }
+            </div>
+        }
+
+        <input @ref="InputRef"
+               @attributes="AdditionalAttributes"
+               id="@Id"
+               name="@Name"
+               class="@InputClass"
+               type="date"
+               min="@MinString"
+               max="@MaxString"
+               disabled="@Disabled"
+               readonly="@ReadOnly"
+               required="@Required"
+               aria-label="@AriaLabel"
+               aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+               aria-invalid="@AriaInvalid"
+               aria-required="@Required"
+               aria-readonly="@ReadOnly"
+               aria-describedby="@DescribedBy"
+               aria-valuetext="@AriaValueText"
+               value="@CurrentValueAsString"
+               @oninput="HandleInputAsync"
+               @onchange="HandleChangeAsync" />
+
+        @if (!string.IsNullOrWhiteSpace(SuffixText))
+        {
+            <div class="@AdornmentClass">
+                <span>@SuffixText</span>
+            </div>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+</div>

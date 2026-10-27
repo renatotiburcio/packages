@@ -1,0 +1,452 @@
+@page "/ai/report-builder"
+@using XForge.DesignSystem.Components.AI.Common
+@using XForge.DesignSystem.Components.AI.Documents
+@using XForge.DesignSystem.Services.AI
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="@L.Text("Report Builder","Report Builder")"
+                 Status="@L.Text("Documentacao completa","Complete docs")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiReportBuilder" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("Geracao por IA","AI-powered generation")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Gerador de relatorios por linguagem natural com campos, filtros, agrupamento, ordenacao e formato de saida.",
+                                   "Natural language report generator with fields, filters, grouping, sorting and output format.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Componente AI que recebe descricao em linguagem natural e gera uma definicao completa de relatorio com campos, filtros, agrupamento, ordenacao, formato e resumo por IA.",
+                                   "AI component that takes natural language descriptions and generates complete report definitions with fields, filters, grouping, sorting, format and AI summary.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona com provider configurado.", "Works with configured provider.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@L.Text("Limitado", "Limited")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico, sem geracao IA.", "Renders as static HTML, no AI generation.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Basico", "1. Basic"), L.Text("Relatorio com titulo, placeholder e formatos.", "Report with title, placeholder and formats."), ExBasic(), Code1)
+            @Example(L.Text("2. Campos disponiveis", "2. Available fields"), L.Text("Campos de dados para o contexto da IA.", "Data fields for AI context."), ExFields(), Code2)
+            @Example(L.Text("3. Formatos de saida", "3. Output formats"), L.Text("Selecao de formato PDF, Excel, CSV, Word e Dashboard.", "Selection of PDF, Excel, CSV, Word and Dashboard format."), ExFormats(), Code3)
+            @Example(L.Text("4. Com provider", "4. With provider"), L.Text("Integracao com IAiProvider para geracao real.", "Integration with IAiProvider for real generation."), ExWithProvider(), Code4)
+            @Example(L.Text("5. Customizacao de header", "5. Header customization"), L.Text("Substituicao do header padrao por template customizado.", "Replace default header with custom template."), ExCustomHeader(), Code5)
+            @Example(L.Text("6. Estado vazio customizado", "6. Custom empty state"), L.Text("Template personalizado para o estado inicial.", "Custom template for the initial state."), ExEmptyState(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiReportBuilder Title="Gerador de relatorios"
+                           Placeholder="Crie um relatorio de vendas por cliente no trimestre..."
+                           SupportedFormats="Formats" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("Linguagem natural", "Natural language"), L.Text("Descreva o relatorio em texto simples.", "Describe the report in plain text."), "wand-magic-sparkles"),
+        new(L.Text("5 formatos", "5 formats"), L.Text("PDF, Excel, CSV, Word e Dashboard.", "PDF, Excel, CSV, Word and Dashboard."), "file-lines"),
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Puro C# + Tailwind, sem JavaScript interop.", "Pure C# + Tailwind, no JavaScript interop."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiReportBuilder"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Documents"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Documents"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", "role=region, aria-label, aria-busy, aria-pressed."),
+        new("Theme support", L.Text("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Geracao IA", "AI generation"), L.Text("Transforma texto em definicao de relatorio.", "Transforms text into report definition."), "wand-magic-sparkles"),
+        new(L.Text("5 formatos", "5 formats"), L.Text("PDF, Excel, CSV, Word e Dashboard.", "PDF, Excel, CSV, Word and Dashboard."), "file-lines"),
+        new(L.Text("Campos e filtros", "Fields and filters"), L.Text("Selecao automatica de campos e filtros.", "Automatic field and filter selection."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Relatorios sob demanda", "On-demand reports"), L.Text("Criar relatorios personalizados via IA.", "Create custom reports via AI."), "sparkles"),
+        new(L.Text("Exploracao de dados", "Data exploration"), L.Text("Consultas em linguagem natural.", "Natural language queries."), "magnifying-glass"),
+        new(L.Text("Automacao", "Automation"), L.Text("Gerar relatorios repetitivos automaticamente.", "Generate repetitive reports automatically."), "arrows-rotate")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Configuracao manual de cada relatorio.", "Manual configuration of each report."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Uma frase gera o relatorio completo.", "One sentence generates the complete report."), "check"),
+        new(L.Text("Confianca", "Confidence"), L.Text("Score de confianca da IA visivel.", "Visible AI confidence score."), "gauge")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Consultas ad hoc", "Ad hoc queries"), L.Text("Relatorios sob demanda por usuarios.", "On-demand reports by users."), "magnifying-glass"),
+        new(L.Text("Dashboards", "Dashboards"), L.Text("Gerar visualizacoes interativas.", "Generate interactive visualizations."), "chart-line")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Relatorios fixos", "Fixed reports"), L.Text("Use XFTable para relatorios estaticos.", "Use XFTable for static reports."), "table"),
+        new(L.Text("CRUD simples", "Simple CRUD"), L.Text("Use forms para operacoes de dados.", "Use forms for data operations."), "pencil")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(L.Text("Header", "Header"), L.Text("Barra de titulo com icone de IA.", "Title bar with AI icon."), "heading"),
+        new(L.Text("Textarea", "Textarea"), L.Text("Entrada de texto multi-linha.", "Multi-line text input."), "font"),
+        new(L.Text("Format Chips", "Format Chips"), L.Text("Botoes de selecao de formato.", "Format selection buttons."), "tag"),
+        new(L.Text("Preview", "Preview"), L.Text("Visualizacao do relatorio gerado.", "Generated report preview."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Linguagem natural", "Natural language"), L.Text("Entrada em texto simples, saida estruturada.", "Plain text input, structured output."), "comments"),
+        new(L.Text("Confianca", "Confidence"), L.Text("Score de confianca sempre visivel.", "Confidence score always visible."), "gauge"),
+        new(L.Text("Feedback visual", "Visual feedback"), L.Text("Skeleton loading, erros claros, preview imediato.", "Skeleton loading, clear errors, immediate preview."), "eye")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<div class="rounded-lg border border-border-light p-4">
+        <XFAiReportBuilder Title="Gerador de relatorios"
+                           Placeholder="Crie um relatorio de vendas por cliente no trimestre..." />
+    </div>;
+
+    private RenderFragment ExFields() => @<div class="rounded-lg border border-border-light p-4">
+        <XFAiReportBuilder Title="Relatorio com campos"
+                           Placeholder="Gere um relatorio de receita mensal..."
+                           AvailableFields="Fields" />
+    </div>;
+
+    private RenderFragment ExFormats() => @<div class="rounded-lg border border-border-light p-4">
+        <XFAiReportBuilder Title="Formatos de saida"
+                           Placeholder="Selecione o formato e descreva o relatorio..."
+                           SupportedFormats="AllFormats" />
+    </div>;
+
+    private RenderFragment ExWithProvider() => @<div class="rounded-lg border border-border-light p-4">
+        <XFAiReportBuilder Title="Com provider de IA"
+                           Placeholder="Descreva o relatorio desejado..."
+                           SupportedFormats="Formats" />
+    </div>;
+
+    private RenderFragment ExCustomHeader() => @<div class="rounded-lg border border-border-light p-4">
+        <XFAiReportBuilder Title="Header customizado"
+                           Placeholder="Relatorio personalizado..."
+                           ShowHeader="true" />
+    </div>;
+
+    private RenderFragment ExEmptyState() => @<div class="rounded-lg border border-border-light p-4">
+        <XFAiReportBuilder Title="Estado vazio"
+                           Placeholder="Descreva o relatorio..." />
+    </div>;
+
+    private const string Code1 = @"<XFAiReportBuilder Title=""Gerador de relatorios""
+    Placeholder=""Crie um relatorio de vendas por cliente no trimestre..."" />";
+    private const string Code2 = @"<XFAiReportBuilder Title=""Relatorio com campos""
+    Placeholder=""Gere um relatorio de receita mensal...""
+    AvailableFields=""@Fields"" />";
+    private const string Code3 = @"<XFAiReportBuilder Title=""Formatos de saida""
+    Placeholder=""Selecione o formato e descreva o relatorio...""
+    SupportedFormats=""@AllFormats"" />";
+    private const string Code4 = @"<XFAiReportBuilder Title=""Com provider de IA""
+    Placeholder=""Descreva o relatorio desejado...""
+    Provider=""@AiProvider""
+    SupportedFormats=""@Formats""
+    OnReportGenerated=""HandleReportAsync""
+    OnError=""HandleErrorAsync"" />";
+    private const string Code5 = @"<XFAiReportBuilder Title=""Header customizado""
+    Placeholder=""Relatorio personalizado..."">
+    <HeaderContent>
+        <div class=""flex items-center gap-2"">
+            <span class=""text-primary"">📊</span>
+            <span class=""font-bold"">Meu Relatorio</span>
+        </div>
+    </HeaderContent>
+</XFAiReportBuilder>";
+    private const string Code6 = @"<XFAiReportBuilder Title=""Estado vazio""
+    Placeholder=""Descreva o relatorio..."">
+    <EmptyContent>
+        <div class=""text-center py-8"">
+            <p class=""text-sm text-text-muted"">Nenhum relatorio gerado ainda.</p>
+        </div>
+    </EmptyContent>
+</XFAiReportBuilder>";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Provider", "IAiProvider?", "null", L.Text("Provedor de IA para geracao do relatorio.", "AI provider for report generation.")),
+        new("Title", "string", "Gerador de Relatorios", L.Text("Titulo do cabecalho.", "Header title.")),
+        new("Placeholder", "string", "Descreva...", L.Text("Texto de placeholder da entrada.", "Input placeholder text.")),
+        new("AvailableFields", "IReadOnlyList<XFAiReportField>?", "null", L.Text("Campos de dados disponiveis.", "Available data fields.")),
+        new("SupportedFormats", "IReadOnlyList<XFAiReportFormat>?", "null", L.Text("Formatos de exportacao suportados.", "Supported export formats.")),
+        new("ShowHeader", "bool", "true", L.Text("Exibir barra de cabecalho.", "Show header bar.")),
+        new("Loading", "bool", "false", L.Text("Estado de carregamento externo.", "External loading state.")),
+        new("SystemPrompt", "string?", "null", L.Text("Prompt do sistema para o provider.", "System prompt for the provider.")),
+        new("OnReportGenerated", "EventCallback<XFAiReportDefinition>", "-", L.Text("Disparado quando o relatorio e gerado.", "Fired when report is generated.")),
+        new("OnError", "EventCallback<string>", "-", L.Text("Disparado quando ocorre erro.", "Fired when error occurs.")),
+        new("ReportPreview", "RenderFragment<XFAiReportDefinition>?", "null", L.Text("Template de visualizacao do relatorio.", "Report preview template.")),
+        new("HeaderContent", "RenderFragment?", "null", L.Text("Conteudo customizado do cabecalho.", "Custom header content.")),
+        new("EmptyContent", "RenderFragment?", "null", L.Text("Conteudo do estado vazio.", "Empty state content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnReportGenerated", L.Text("Retorna XFAiReportDefinition com titulo, campos, filtros, agrupamento, ordenacao, formato, SQL e confianca.", "Returns XFAiReportDefinition with title, fields, filters, grouping, sorting, format, SQL and confidence.")),
+        new("OnError", L.Text("Retorna string com mensagem de erro do provider ou parsing.", "Returns string with error message from provider or parsing.")),
+        new("InsightsChanged", L.Text("Two-way binding para lista de insights controlada.", "Two-way binding for controlled insights list."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("role=region", L.Text("Secao usa role=region para leitores de tela.", "Section uses role=region for screen readers."), "universal-access"),
+        new("aria-busy", L.Text("Indica estado de geracao para leitores de tela.", "Indicates generation state for screen readers."), "spinner"),
+        new("aria-pressed", L.Text("Format chips usam aria-pressed para selecao.", "Format chips use aria-pressed for selection."), "toggle-on"),
+        new("aria-label", L.Text("Labels descritivos em cada interacao.", "Descriptive labels on each interaction."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Enter", L.Text("Envia o relatorio (quando valido).", "Sends the report (when valid).")),
+        new("Shift+Enter", L.Text("Insere nova linha no textarea.", "Inserts newline in textarea.")),
+        new("Escape", L.Text("Limpa o campo de entrada.", "Clears the input field.")),
+        new("Tab", L.Text("Navega entre chips de formato e botao Enviar.", "Navigates between format chips and Send button."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Largura total", "Full width"), L.Text("Componente ocupa 100% do container.", "Component occupies 100% of container."), "maximize"),
+        new(L.Text("Textarea responsivo", "Responsive textarea"), L.Text("Resize vertical automatico.", "Automatic vertical resize."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Cancelamento", "Cancellation"), L.Text("CancellationTokenSource cancela geracoes anteriores.", "CancellationTokenSource cancels previous generations."), "xmark"),
+        new(L.Text("Debounce", "Debounce"), L.Text("Entrada com debounce para evitar geracoes excessivas.", "Input debouncing to prevent excessive generations."), "clock")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Vendas ERP", "ERP Sales"), L.Text("Relatorio de vendas por cliente e periodo.", "Sales report by customer and period."), "chart-line"),
+        new(L.Text("Financeiro", "Financial"), L.Text("Relatorio de receitas e despesas.", "Revenue and expense report."), "coins"),
+        new(L.Text("Estoque", "Inventory"), L.Text("Relatorio de movimentacao de estoque.", "Stock movement report."), "boxes-stacked")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("ReportBuilder + Fields", "ReportBuilder + Fields"), L.Text("Campos AvailableFields para contexto da IA.", "AvailableFields for AI context."), "database"),
+        new(L.Text("ReportBuilder + Formats", "ReportBuilder + Formats"), L.Text("Formatos SupportedFormats para selecao.", "SupportedFormats for selection."), "file-lines"),
+        new(L.Text("ReportBuilder + Preview", "ReportBuilder + Preview"), L.Text("ReportPreview para template customizado.", "ReportPreview for custom template."), "eye")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("Placeholder descritivo", "Descriptive placeholder"), L.Text("Guie o usuario com exemplos no placeholder.", "Guide the user with examples in the placeholder."), "comment"),
+        new(L.Text("Campos disponiveis", "Available fields"), L.Text("Forneça campos para melhorar a qualidade da IA.", "Provide fields to improve AI quality."), "database"),
+        new(L.Text("Formato pre-definido", "Pre-defined format"), L.Text("Defina SupportedFormats para restringir opcoes.", "Define SupportedFormats to restrict options."), "filter"),
+        new(L.Text("Tratamento de erros", "Error handling"), L.Text("Use OnError para feedback ao usuario.", "Use OnError for user feedback."), "circle-exclamation")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Sem Provider", "No Provider"), L.Text("Componente nao gera relatorios sem provider.", "Component cannot generate reports without provider."), "xmark"),
+        new(L.Text("Prompt vazio", "Empty prompt"), L.Text("Nao permita envio com texto vazio.", "Do not allow sending with empty text."), "ban"),
+        new(L.Text("Sem tratamento de erro", "No error handling"), L.Text("Sem OnError, erros ficam silenciosos.", "Without OnError, errors are silent."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", L.Text("rounded-lg border border-border-light bg-bg-surface shadow.", "rounded-lg border border-border-light bg-bg-surface shadow.")),
+        new("header", L.Text("flex items-center justify-between gap-3 border-b px-4 py-3.", "flex items-center justify-between gap-3 border-b px-4 py-3.")),
+        new("textarea", L.Text("w-full resize-none rounded-lg border px-3 py-2.5 text-sm.", "w-full resize-none rounded-lg border px-3 py-2.5 text-sm."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", L.Text("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Render, props, formatos, geracao, erros.", "Render, props, formats, generation, errors.")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-busy, aria-pressed.", "role=region, aria-label, aria-busy, aria-pressed."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(L.Text("Provider necessario", "Provider required"), L.Text("Sem provider, nao e possivel gerar relatorios.", "Without provider, it is not possible to generate reports.")),
+        new(L.Text("Latencia de IA", "AI latency"), L.Text("Geracao depende da velocidade do provider.", "Generation depends on provider speed.")),
+        new(L.Text("Idioma", "Language"), L.Text("Prompt padrao em portugues.", "Default prompt in Portuguese."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiDocumentReader", L.Text("Leitura de documentos.", "Document reading."), "file-lines"),
+        new("XFAiDashboardInsight", L.Text("Insights de dashboard.", "Dashboard insights."), "chart-line"),
+        new("XFAiChat", L.Text("Chat generico com IA.", "Generic AI chat."), "comments")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Preciso de Provider?", "Need Provider?"), L.Text("Sim. Sem provider o componente nao gera relatorios.", "Yes. Without provider the component cannot generate reports.")),
+        new(L.Text("Quais formatos?", "Which formats?"), L.Text("Pdf, Excel, Csv, Word e Dashboard via XFAiReportFormat.", "Pdf, Excel, Csv, Word and Dashboard via XFAiReportFormat.")),
+        new(L.Text("Funciona no Wasm?", "Works on Wasm?"), L.Text("Sim, desde que o provider esteja configurado.", "Yes, as long as the provider is configured."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-01", L.Text("Componente criado com geracao IA por linguagem natural.", "Component created with AI generation by natural language.")),
+        new("2026-06-12", L.Text("Pagina refeita no padrao AppShellDocs com 26 secoes.", "Page rewritten in AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === MODELS ===
+    private static readonly IReadOnlyList<XFAiReportFormat> Formats =
+    [
+        XFAiReportFormat.Pdf,
+        XFAiReportFormat.Excel,
+        XFAiReportFormat.Dashboard
+    ];
+
+    private static readonly IReadOnlyList<XFAiReportFormat> AllFormats =
+    [
+        XFAiReportFormat.Pdf,
+        XFAiReportFormat.Excel,
+        XFAiReportFormat.Csv,
+        XFAiReportFormat.Word,
+        XFAiReportFormat.Dashboard
+    ];
+
+    private static readonly IReadOnlyList<XFAiReportField> Fields =
+    [
+        new() { Name = "cliente", DisplayName = "Cliente", DataType = "string", IsRequired = true },
+        new() { Name = "receita", DisplayName = "Receita", DataType = "number", IsRequired = true },
+        new() { Name = "data", DisplayName = "Data", DataType = "date", IsRequired = false },
+        new() { Name = "regiao", DisplayName = "Regiao", DataType = "string", IsRequired = false }
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,0 +1,395 @@
+@page "/ai/video-analyzer"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiVideoAnalyzer" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Extracao de frames", "Frame extraction")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Provider via DI", "Provider via DI")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Analise de video por IA com extracao de frames, resumo e confianca por frame.",
+                               "AI video analysis with frame extraction, summary and per-frame confidence.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente enterprise para analise de video via IAiVisionProvider. Extrai frames, analisa cada um individualmente e gera um resumo consolidado com confianca media.",
+                               "Enterprise component for video analysis via IAiVisionProvider. Extracts frames, analyzes each individually and generates a consolidated summary with average confidence.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com IAiVisionProvider via DI.", "Works with IAiVisionProvider via DI.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com IAiVisionProvider via DI.", "Works with IAiVisionProvider via DI.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Limitado", "Limited")" /></XFTableCell><XFTableCell>@T("URL input e analise requerem interatividade.", "URL input and analysis require interactivity.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Dependencia JS", "JS Dependency")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop para renderizacao. A extracao real de frames de video requer JS interop em producao.", "This component does not use JavaScript interop for rendering. Actual video frame extraction requires JS interop in production.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Analise basica", "1. Basic Analysis"), T("Analise de video com seletor de frames e prompt.", "Video analysis with frame selector and prompt."), ExBasic(), Code1)
+            @Example(T("2. Analise de entrega", "2. Delivery Analysis"), T("Validacao de entrega com frames e titulo personalizado.", "Delivery validation with frames and custom title."), ExDelivery(), Code2)
+            @Example(T("3. Sem seletor de frames", "3. Without Frame Selector"), T("Analise com frames fixos e sem seletor.", "Analysis with fixed frames and no selector."), ExFixed(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Descricao", "Description"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string PageTitleText => T("XFVideoAnalyzer", "XFVideoAnalyzer");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiVideoAnalyzer Title="Analise de entrega"
+                           Placeholder="Descreva o que validar no video..."
+                           ShowFrameSelector="true"
+                           AnalyzeText="Analisar video" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Extracao de frames", "Frame extraction"), T("Analise frame a frame com configuracao de quantidade.", "Frame-by-frame analysis with configurable count."), "film"),
+        new(T("Resumo consolidado", "Consolidated summary"), T("Resumo automatico com confianca media dos frames.", "Automatic summary with average frame confidence."), "clipboard-check"),
+        new(T("Provider abstrato", "Abstract provider"), T("IAiVisionProvider permite qualquer backend de visao.", "IAiVisionProvider allows any vision backend."), "plug")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiVideoAnalyzer"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Vision"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Vision"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=region, aria-label, aria-busy, aria-live.", "role=region, aria-label, aria-busy, aria-live.")),
+        new("Theme support", T("Light e dark via Tailwind CSS.", "Light and dark via Tailwind CSS."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Analise de video AI", "AI video analysis"), T("Extracao de frames e analise via IAiVisionProvider.", "Frame extraction and analysis via IAiVisionProvider."), "film"),
+        new(T("Resumo automatico", "Automatic summary"), T("Consolida resultados de todos os frames em um resumo.", "Consolidates all frame results into a summary."), "clipboard-check"),
+        new(T("Confianca por frame", "Per-frame confidence"), T("Cada frame tem seu score de confianca visual.", "Each frame has its own visual confidence score."), "chart-simple")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Controle de entrega", "Delivery control"), T("Validar se entregas foram realizadas corretamente.", "Validate if deliveries were made correctly."), "truck"),
+        new(T("Seguranca", "Security"), T("Analise de imagens de cameras de seguranca.", "Security camera image analysis."), "shield-halved"),
+        new(T("Conformidade", "Compliance"), T("Verificar conformidade operacional via video.", "Verify operational compliance via video."), "clipboard-check")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Analise manual de videos é lenta e propensa a erro.", "Manual video analysis is slow and error-prone."), "xmark"),
+        new(T("Depois", "After"), T("Extracao automatica com resumo e confianca.", "Automatic extraction with summary and confidence."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=region, aria-busy durante analise, aria-live para resultados.", "role=region, aria-busy during analysis, aria-live for results."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Validacao de entrega", "Delivery validation"), T("Analise de video de entrega para confirmar recebimento.", "Delivery video analysis to confirm receipt."), "truck"),
+        new(T("Monitoramento", "Monitoring"), T("Analise de video de cameras para detectar atividades.", "Camera video analysis to detect activities."), "video")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Imagens estaticas", "Static images"), T("Use XFAiVisionPanel para analise de imagens.", "Use XFAiVisionPanel for image analysis."), "image"),
+        new(T("Aprovacao de acoes", "Action approval"), T("Use XFAiHumanApprovalCard para decisoes humanas.", "Use XFAiHumanApprovalCard for human decisions."), "user-shield")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Header", "Header"), T("Titulo, icone e conteudo customizavel via HeaderContent.", "Title, icon and customizable content via HeaderContent."), "heading"),
+        new(T("URL Input", "URL Input"), T("Campo para URL do video a ser analisado.", "Field for the video URL to be analyzed."), "link"),
+        new(T("Frame Selector", "Frame Selector"), T("Range slider para quantidade de frames (1-20).", "Range slider for frame count (1-20)."), "sliders"),
+        new(T("Prompt", "Prompt"), T("Textarea para instrucao de analise.", "Textarea for analysis instruction."), "comment"),
+        new(T("Resultados", "Results"), T("Lista de frames com texto e confianca por frame.", "Frame list with text and per-frame confidence."), "list"),
+        new(T("Resumo", "Summary"), T("Card com resumo consolidado e confianca media.", "Card with consolidated summary and average confidence."), "clipboard-check")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Frame a frame", "Frame by frame"), T("Cada frame e analisado individualmente.", "Each frame is analyzed individually."), "film"),
+        new(T("Resumo automatico", "Automatic summary"), T("Consolidacao inteligente dos resultados.", "Smart consolidation of results."), "clipboard-check"),
+        new(T("Provider abstrato", "Abstract provider"), T("IAiVisionProvider permite qualquer backend.", "IAiVisionProvider allows any backend."), "plug")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiVideoAnalyzer Title="Analise de video"
+                           Placeholder="Descreva o que validar no video..."
+                           ShowFrameSelector="true"
+                           AnalyzeText="Analisar video" />
+    </XFStack>;
+
+    private RenderFragment ExDelivery() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiVideoAnalyzer Title="Validacao de entrega"
+                           Placeholder="Confirme se a entrega foi realizada corretamente..."
+                           ShowFrameSelector="true"
+                           AnalyzeText="Validar entrega" />
+    </XFStack>;
+
+    private RenderFragment ExFixed() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiVideoAnalyzer Title="Monitoramento de seguranca"
+                           Placeholder="Detecte atividades suspeitas no video..."
+                           ShowFrameSelector="false"
+                           AnalyzeText="Analisar" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFAiVideoAnalyzer Title=""Analise de video""
+                       Placeholder=""Descreva o que validar no video...""
+                       ShowFrameSelector=""true""
+                       AnalyzeText=""Analisar video"" />";
+    private const string Code2 = @"<XFAiVideoAnalyzer Title=""Validacao de entrega""
+                       Placeholder=""Confirme se a entrega foi realizada corretamente...""
+                       ShowFrameSelector=""true""
+                       AnalyzeText=""Validar entrega"" />";
+    private const string Code3 = @"<XFAiVideoAnalyzer Title=""Monitoramento de seguranca""
+                       Placeholder=""Detecte atividades suspeitas no video...""
+                       ShowFrameSelector=""false""
+                       AnalyzeText=""Analisar"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Title", "string?", "null", T("Titulo exibido no cabecalho.", "Title displayed in the header.")),
+        new("ShowHeader", "bool", "true", T("Exibe o cabecalho do analisador.", "Displays the analyzer header.")),
+        new("ShowFrameSelector", "bool", "true", T("Exibe o seletor de quantidade de frames.", "Displays the frame count selector.")),
+        new("Placeholder", "string?", "null", T("Texto placeholder do prompt.", "Prompt placeholder text.")),
+        new("AnalyzeText", "string", "Analisar", T("Texto do botao de analise.", "Analyze button text.")),
+        new("AriaLabel", "string", "Analisador de video AI", T("Label ARIA do analisador.", "Analyzer ARIA label."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnAnalysisComplete", T("EventCallback<IReadOnlyList<XFAiVisionResult>> — disparado quando todos os frames foram analisados.", "EventCallback<IReadOnlyList<XFAiVisionResult>> — fired when all frames have been analyzed.")),
+        new("OnError", T("EventCallback<string> — disparado quando ocorre um erro na analise.", "EventCallback<string> — fired when an error occurs during analysis."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("Clear()", T("Limpa todos os resultados e o estado interno.", "Clears all results and internal state."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=region", "role=region"), T("Analise usa role=region com aria-label descritivo.", "Analyzer uses role=region with descriptive aria-label."), "universal-access"),
+        new(T("aria-busy", "aria-busy"), T("Indica estado de carregamento durante analise.", "Indicates loading state during analysis."), "spinner"),
+        new(T("aria-live=polite", "aria-live=polite"), T("Resultados e resumo anunciados para leitores de tela.", "Results and summary announced for screen readers."), "megaphone"),
+        new(T("Details/summary", "Details/summary"), T("Frames usam details/summary nativo para expansao.", "Frames use native details/summary for expansion."), "chevrons-down")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre URL input, seletor, prompt e botao Analisar.", "Navigates between URL input, selector, prompt and Analyze button.")),
+        new("Enter", T("Aciona o botao de analise quando focado.", "Triggers the analyze button when focused.")),
+        new("Space", T("Abre/fecha details de frames.", "Opens/closes frame details."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("Analise ocupa 100% do container.", "Analyzer occupies 100% of container."), "maximize"),
+        new(T("URL input flexivel", "Flexible URL input"), T("Campo URL se adapta ao container.", "URL field adapts to container."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Frames progressivos", "Progressive frames"), T("Cada frame e analisado sequencialmente com atualizacao de UI.", "Each frame is analyzed sequentially with UI update."), "chart-line"),
+        new(T("Lazy analysis", "Lazy analysis"), T("Analise so inicia ao clicar em Analisar.", "Analysis only starts when clicking Analyze."), "clock")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Controle de entrega", "Delivery control"), T("Validacao automatica de videos de entrega.", "Automatic delivery video validation."), "truck"),
+        new(T("Seguranca corporativa", "Corporate security"), T("Analise de videos de cameras de seguranca.", "Security camera video analysis."), "shield-halved"),
+        new(T("Conformidade operacional", "Operational compliance"), T("Verificacao de procedimentos via video.", "Procedure verification via video."), "clipboard-check")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("VideoAnalyzer + XFCard", "VideoAnalyzer + XFCard"), T("Analise dentro de um card para contexto.", "Analyzer inside a card for context."), "square"),
+        new(T("VideoAnalyzer + XFGrid", "VideoAnalyzer + XFGrid"), T("Grid com multiplos analisadores.", "Grid with multiple analyzers."), "table-cells"),
+        new(T("VideoAnalyzer + XFBadge", "VideoAnalyzer + XFBadge"), T("Badges no resumo indicam status e confianca.", "Badges on summary indicate status and confidence."), "tag")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Frames adequados", "Adequate frames"), T("5-10 frames para videos curtos, 15-20 para longos.", "5-10 frames for short videos, 15-20 for long ones."), "sliders"),
+        new(T("Prompt especifico", "Specific prompt"), T("Orient a IA sobre o que procurar em cada frame.", "Guide the AI on what to look for in each frame."), "comment"),
+        new(T("Provider configurado", "Provider configured"), T("Certifique-se de que IAiVisionProvider esta registrado no DI.", "Ensure IAiVisionProvider is registered in DI."), "plug"),
+        new(T("Tratar OnError", "Handle OnError"), T("Sempre trate erros de captura, analise ou provider.", "Always handle capture, analysis or provider errors."), "triangle-exclamation")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem provider", "No provider"), T("Nao use sem IAiVisionProvider registrado.", "Do not use without IAiVisionProvider registered."), "xmark"),
+        new(T("Frames exagerados", "Too many frames"), T("Mais de 20 frames aumenta custo e latencia.", "More than 20 frames increases cost and latency."), "ban"),
+        new(T("Ignorar erros", "Ignore errors"), T("Nao ignore OnError — sempre informe o usuario.", "Do not ignore OnError — always inform the user."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("xf-ai-video-analyzer", T("Container principal com role=region.", "Main container with role=region.")),
+        new("bg-rose-600", T("Botao Analisar com cor rose.", "Analyze button with rose color.")),
+        new("bg-rose-50", T("Card de resumo com fundo rose-50.", "Summary card with rose-50 background.")),
+        new("text-green-600", T("Confianca alta (>= 80%).", "High confidence (>= 80%)."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via Tailwind dark: prefix.", "Light/dark tokens via Tailwind dark: prefix."), "moon"),
+        new("Rose accent", T("Cor de destaque padrao e rose-500/600.", "Default accent color is rose-500/600."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, eventos, Clear, frame selector.", "Render, props, events, Clear, frame selector.")),
+        new("Extended", T("Integracao com provider mock, fluxo completo frame a frame.", "Integration with mock provider, full frame-by-frame flow.")),
+        new("Accessibility", T("role=region, aria-busy, aria-live, details/summary.", "role=region, aria-busy, aria-live, details/summary."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("Extracao real", "Real extraction"), T("Extracao de frames reais de video requer JS interop em producao.", "Real video frame extraction requires JS interop in production.")),
+        new(T("Provider necessario", "Provider required"), T("Sem IAiVisionProvider registrado, o botao Analisar nao funciona.", "Without IAiVisionProvider registered, Analyze button does not work.")),
+        new(T("Limite de frames", "Frame limit"), T("Maximo de 20 frames por analise para controlar custo.", "Maximum of 20 frames per analysis to control cost."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiVisionPanel", T("Analise de imagens estaticas.", "Static image analysis."), "image"),
+        new("XFAiMultiModalChat", T("Chat multimodal com video.", "Multimodal chat with video."), "comment-dots"),
+        new("XFAiDocumentReader", T("Leitura de documentos AI.", "AI document reading."), "file-lines")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual a diferenca entre VisionPanel e VideoAnalyzer?", "What is the difference between VisionPanel and VideoAnalyzer?"), T("VisionPanel analisa imagens estaticas. VideoAnalyzer extrai frames de video e analisa cada um.", "VisionPanel analyzes static images. VideoAnalyzer extracts video frames and analyzes each one.")),
+        new(T("Quantos frames devo usar?", "How many frames should I use?"), T("5-10 para videos curtos (<1min). 15-20 para videos longos (>5min).", "5-10 for short videos (<1min). 15-20 for long videos (>5min).")),
+        new(T("Posso usar sem provider?", "Can I use without a provider?"), T("Sim, mas o botao Analisar nao funcionara. Registre IAiVisionProvider no DI.", "Yes, but the Analyze button will not work. Register IAiVisionProvider in DI."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-01", T("Componente criado com extracao de frames e resumo consolidado.", "Component created with frame extraction and consolidated summary.")),
+        new("2026-06-12", T("Documentacao refeita no padrao AppShellDocs com 26 secoes.", "Documentation rewritten in AppShellDocs standard with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

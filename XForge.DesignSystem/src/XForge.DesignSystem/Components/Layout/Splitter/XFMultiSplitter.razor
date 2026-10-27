@@ -1,0 +1,46 @@
+@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <CascadingValue Value="this" IsFixed="true">
+        <div class="hidden">
+            @ChildContent
+        </div>
+    </CascadingValue>
+
+    <div @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@RootClass"
+         style="@RootStyle">
+        @for (var index = 0; index < Panes.Count; index++)
+        {
+            var pane = Panes[index];
+            <div class="@PaneClass(pane)" style="@PaneStyle(pane)" aria-label="@pane.Label">
+                @pane.ChildContent
+            </div>
+
+            @if (index < Panes.Count - 1)
+            {
+                var handleIndex = index;
+                <div class="@SeparatorWrapClass">
+                    <button type="button"
+                            class="@HandleClass"
+                            role="separator"
+                            disabled="@Disabled"
+                            aria-label="@ResolvedHandleLabel(handleIndex)"
+                            aria-orientation="@OrientationValue"
+                            aria-valuemin="@HandleMin(handleIndex)"
+                            aria-valuemax="@HandleMax(handleIndex)"
+                            aria-valuenow="@HandleValue(handleIndex)"
+                            data-xf-multisplitter-handle="@handleIndex"
+                            @onkeydown="args => HandleKeyDownAsync(args, handleIndex)"
+                            @ondblclick="() => ResetHandleAsync(handleIndex)">
+                        <span class="@HandleVisualClass" aria-hidden="true">
+                            <span class="@GripClass"></span>
+                        </span>
+                    </button>
+                </div>
+            }
+        }
+    </div>
+}

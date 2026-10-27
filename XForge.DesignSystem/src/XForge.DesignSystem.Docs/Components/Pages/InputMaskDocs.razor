@@ -1,0 +1,471 @@
+@page "/forms/input-mask"
+
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="InputMask"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFInputMask" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Masked Input", "Masked Input")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("CPF/CNPJ", "CPF/CNPJ")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Clearable", "Clearable")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Input mascarado para CPF, CNPJ, telefone, CEP e formatos customizados com validacao de completude.", "Masked input for CPF, CNPJ, phone, ZIP and custom formats with completeness validation.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFInputMask e o campo de entrada com mascara configuravel para formatos como CPF, CNPJ, telefone, CEP e padroes customizados, com suporte a unmask, clear e validacao de completude.", "XFInputMask is the configurable mask input field for formats like CPF, CNPJ, phone, ZIP and custom patterns, with unmask, clear and completeness validation support.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts)
+                            {
+                                @Tile(item)
+                            }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                        @Example(T("Preview basico", "Basic Preview"),
+                T("Mascaras para CPF, CNPJ, telefone e CEP.", "Masks for CPF, CNPJ, phone and ZIP."),
+                HeroPreview(), BasicCode)
+            @Example(T("Opcoes de mascara", "Mask Options"),
+                T("ShowMaskPlaceholder, UnmaskValue, ClearIncomplete.", "ShowMaskPlaceholder, UnmaskValue, ClearIncomplete."),
+                OptionsPreview(), OptionsCode)
+            @Example(T("Cenarios enterprise", "Enterprise Scenarios"),
+                T("Formulario de cadastro com mascaras.", "Registration form with masks."),
+                EnterprisePreview(), EnterpriseCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFGrid Cols="1" Md="2" Gap="3">
+            <XFInputMask Label="CPF" Mask="000.000.000-00" Placeholder="@T("000.000.000-00", "000.000.000-00")" />
+            <XFInputMask Label="CNPJ" Mask="00.000.000/0000-00" />
+            <XFInputMask Label="@T("Telefone", "Phone")" Mask="(00) 00000-0000" />
+            <XFInputMask Label="CEP" Mask="00000-000" Clearable="true" />
+        </XFGrid>
+    </XFStack>;
+
+
+    private IReadOnlyList<DocTile> QuickFacts =>
+    [
+        new(T("Mascara configuravel", "Configurable mask"), T("Tokens 0, 9, A, * para digitos, letras e alfanumerico.", "Tokens 0, 9, A, * for digits, letters and alphanumeric."), "code"),
+        new(T("UnmaskValue", "UnmaskValue"), T("Valor armazenado sem literais da mascara.", "Stored value without mask literals."), "filter"),
+        new(T("ClearIncomplete", "ClearIncomplete"), T("Limpa valor incompleto ao desfocar.", "Clears incomplete value on blur."), "shield-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows =>
+    [
+        new("Component", "XFInputMask"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.InputMask"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Forms / InputMask"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("Label, aria-label, aria-invalid, describedby.", "Label, aria-label, aria-invalid, describedby."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems =>
+    [
+        new(T("Mascara em tempo real", "Real-time mask"), T("Aplica mascara durante digitacao.", "Applies mask during typing."), "keyboard"),
+        new(T("Tokens flexiveis", "Flexible tokens"), T("0=digito, 9=opcional, A=letra, *=alfanumerico.", "0=digit, 9=optional, A=letter, *=alphanumeric."), "code"),
+        new(T("Integracao EditForm", "EditForm integration"), T("Validacao, NotifyFieldChanged e ValueExpression.", "Validation, NotifyFieldChanged and ValueExpression."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems =>
+    [
+        new(T("Documentos fiscais", "Tax documents"), T("CPF, CNPJ, IE com formato garantido.", "CPF, CNPJ, IE with guaranteed format."), "file-lines"),
+        new(T("Contatos", "Contacts"), T("Telefone, celular com DDD.", "Phone, mobile with area code."), "phone"),
+        new(T("Enderecos", "Addresses"), T("CEP com formato 00000-000.", "ZIP with 00000-000 format."), "location-dot")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems =>
+    [
+        new(T("Antes", "Before"), T("Input livre sem formato, validacao manual e erro comum.", "Free input without format, manual validation and common errors."), "xmark"),
+        new(T("Depois", "After"), T("Mascara automatica com validacao de completude.", "Automatic mask with completeness validation."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("Formato garantido reduz erros de entrada.", "Guaranteed format reduces input errors."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems =>
+    [
+        new("ERP", T("Cadastro de clientes com CPF/CNPJ.", "Customer registration with CPF/CNPJ."), "briefcase"),
+        new("Financeiro", T("Agencia, conta e codigos bancarios.", "Branch, account and bank codes."), "chart-line-up"),
+        new("RH", T("Cadastro de funcionarios com documentos.", "Employee registration with documents."), "users")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems =>
+    [
+        new(T("Texto livre", "Free text"), T("Use XFTextInput para campos sem formato fixo.", "Use XFTextInput for fields without fixed format."), "triangle-exclamation"),
+        new(T("Senha", "Password"), T("Use XFPasswordStrength para senhas.", "Use XFPasswordStrength for passwords."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems =>
+    [
+        new("Root", T("Container com label, field shell, helper e error.", "Container with label, field shell, helper and error."), "code"),
+        new("Input", T("Campo com mascara aplicada em tempo real.", "Field with mask applied in real time."), "keyboard"),
+        new(T("Clear button", "Clear button"), T("X button para limpar valor.", "X button to clear value."), "xmark"),
+        new(T("Prefixo/Sufixo", "Prefix/Suffix"), T("Textos de adornamento opcionais.", "Optional adornment texts."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems =>
+    [
+        new(T("Formato claro", "Clear format"), T("ShowMaskPlaceholder mostra o formato esperado.", "ShowMaskPlaceholder shows expected format."), "eye"),
+        new(T("Valor limpo", "Clean value"), T("UnmaskValue armazena apenas dados uteis.", "UnmaskValue stores only useful data."), "filter"),
+        new(T("Feedback imediato", "Immediate feedback"), T("Mascara aplicada durante digitacao.", "Mask applied during typing."), "bolt")
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("Value", "string?", "null", T("Valor atual (mascarado ou unmasked).", "Current value (masked or unmasked).")),
+        new("ValueChanged", "EventCallback<string?>", "default", T("Two-way binding.", "Two-way binding.")),
+        new("Change", "EventCallback<string?>", "default", T("Mudanca confirmada.", "Committed change.")),
+        new("Mask", "string", "\"\"", T("Padrao de mascara (0, 9, A, *).", "Mask pattern (0, 9, A, *).")),
+        new("PlaceholderChar", "char", "'_'", T("Char do placeholder na mascara.", "Mask placeholder char.")),
+        new("ShowMaskPlaceholder", "bool", "false", T("Mostra mascara como placeholder.", "Shows mask as placeholder.")),
+        new("UnmaskValue", "bool", "true", T("Remove literais do valor.", "Removes literals from value.")),
+        new("ClearIncomplete", "bool", "false", T("Limpa valor incompleto no blur.", "Clears incomplete value on blur.")),
+        new("Clearable", "bool", "false", T("Exibe botao de limpar.", "Shows clear button.")),
+        new("Label", "string?", "null", T("Texto do label.", "Label text.")),
+        new("AriaLabel", "string?", "null", T("Label acessivel.", "Accessible label.")),
+        new("Placeholder", "string?", "null", T("Placeholder customizado.", "Custom placeholder.")),
+        new("HelperText", "string?", "null", T("Texto de ajuda.", "Helper text.")),
+        new("Variant", "XFFormVariant", "Outline", T("Variante visual.", "Visual variant.")),
+        new("Size", "XFSize", "Md", T("Tamanho do campo.", "Field size.")),
+        new("Tone", "XFSemanticColor", "Default", T("Tom semantico.", "Semantic tone.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read-only.")),
+        new("Required", "bool", "false", T("Obrigatorio.", "Required.")),
+        new("FullWidth", "bool", "true", T("Ocupa toda a largura.", "Fills width.")),
+        new("Immediate", "bool", "true", T("Atualiza a cada tecla.", "Updates on each keystroke.")),
+        new("AutoComplete", "string?", "null", T("Atributo autocomplete.", "Autocomplete attribute.")),
+        new("InputMode", "string?", "null", T("Atributo inputmode.", "Inputmode attribute.")),
+        new("MaskDescriptionFormat", "string?", "null", T("Formato da descricao da mascara.", "Mask description format."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows =>
+    [
+        new("ValueChanged", T("A cada mudanca de valor.", "On each value change.")),
+        new("Change", T("Mudanca confirmada (blur).", "Committed change (blur)."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems =>
+    [
+        new("Label", T("Label associado ao input.", "Label associated to input."), "tag"),
+        new("AriaLabel", T("Nome acessivel explicito.", "Explicit accessible name."), "universal-access"),
+        new("AriaInvalid", T("Marcado quando ha erro de validacao.", "Marked when validation error."), "shield-check"),
+        new("DescribedBy", T("HelperText ou erro associado.", "Associated HelperText or error."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows =>
+    [
+        new("Tab", T("Foca o campo.", "Focuses the field.")),
+        new("Shift+Tab", T("Controle anterior.", "Previous control.")),
+        new("Escape", T("Limpa quando Clearable.", "Clears when Clearable."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems =>
+    [
+        new("FullWidth", T("Ocupa largura em mobile.", "Fills width on mobile."), "mobile-screen"),
+        new("Size", T("Sm/Md/Lg para diferentes contextos.", "Sm/Md/Lg for different contexts."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems =>
+    [
+        new(T("Mascara client-side", "Client-side mask"), T("Aplicacao instantanea sem servidor.", "Instant application without server."), "bolt"),
+        new(T("Regex compilado", "Compiled regex"), T("Validacao hex com regex compilado.", "Hex validation with compiled regex."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems =>
+    [
+        new("ERP", T("CPF/CNPJ em cadastros.", "CPF/CNPJ in registrations."), "briefcase"),
+        new("Financeiro", T("Agencia, conta, codigos bancarios.", "Branch, account, bank codes."), "chart-line-up"),
+        new("RH", T("CPF, PIS, documentos de funcionarios.", "CPF, PIS, employee documents."), "users"),
+        new("Fiscal", T("IE, IM, NCM.", "IE, IM, NCM."), "file-lines"),
+        new("Comercial", T("Telefone de contato.", "Contact phone."), "phone"),
+        new("Estoque", T("CEP de entrega.", "Delivery ZIP."), "location-dot")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems =>
+    [
+        new("Formularios", T("Use com XFEditForm para validacao.", "Use with XFEditForm for validation."), "file-lines"),
+        new("Grid", T("Agrupe mascaras em grids.", "Group masks in grids."), "grid"),
+        new("Card", T("Use em cards de cadastro.", "Use in registration cards."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems =>
+    [
+        new("UnmaskValue", T("Mantenha true para armazenar dados limpos.", "Keep true to store clean data."), "filter"),
+        new("ShowMaskPlaceholder", T("Use para formatos complexos.", "Use for complex formats."), "eye"),
+        new("ClearIncomplete", T("Use para campos obrigatorios.", "Use for required fields."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems =>
+    [
+        new("Mascara errada", T("Use 0 para digitos obrigatorios, 9 para opcionais.", "Use 0 for required digits, 9 for optional."), "xmark"),
+        new("Sem label", T("Mascaras precisam de contexto claro.", "Masks need clear context."), "eye-slash")
+    ];
+
+
+    private IReadOnlyList<NameValueRow> TokenRows =>
+    [
+        new("colors", T("border-surface-200, bg-primary, text-primary.", "border-surface-200, bg-primary, text-primary.")),
+        new("typography", T("text-sm para input.", "text-sm for input.")),
+        new("spacing", T("h-9/10/12, px-3/4.", "h-9/10/12, px-3/4."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems =>
+    [
+        new("data-theme", T("Light e dark via CSS variables.", "Light and dark via CSS variables."), "moon"),
+        new("Contraste", T("AA em ambos temas.", "AA in both themes."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows =>
+    [
+        new("Unit", T("Render, mascara, unmask, clear, validacao.", "Render, mask, unmask, clear, validation.")),
+        new("Accessibility", T("Label, aria-label, aria-invalid.", "Label, aria-label, aria-invalid."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows =>
+    [
+        new(T("Mascara fixa", "Fixed mask"), T("Nao suporta mascaras dinamicas por condicao.", "No dynamic masks by condition.")),
+        new(T("Sem moeda", "No currency"), T("Use XFNumberInput para moeda.", "Use XFNumberInput for currency."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems =>
+    [
+        new("XFTextInput", T("Input de texto generico.", "Generic text input."), "font"),
+        new("XFNumberInput", T("Input numerico.", "Numeric input."), "hashtag"),
+        new("XFField", T("Wrapper de campo.", "Field wrapper."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows =>
+    [
+        new(T("Tokens da mascara?", "Mask tokens?"), T("0=digito, 9=digito opcional, A=letra, *=alfanumerico.", "0=digit, 9=optional digit, A=letter, *=alphanumeric.")),
+        new(T("Valor mascarado ou limpo?", "Masked or clean value?"), T("UnmaskValue=true armazena limpo.", "UnmaskValue=true stores clean."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows =>
+    [
+        new("2026-05-26", T("Pagina criada no padrao enterprise.", "Page created in enterprise standard."))
+    ];
+
+    private RenderFragment OptionsPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFInputMask Label="CPF" Mask="000.000.000-00" ShowMaskPlaceholder="true" UnmaskValue="true" />
+        <XFInputMask Label=@T("Telefone", "Phone")" Mask="(00) 00000-0000" ClearIncomplete="true" Clearable="true" />
+    </XFStack>;
+
+    private RenderFragment EnterprisePreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFGrid Cols="1" Md="2" Gap="3">
+            <XFInputMask Label="CPF" Mask="000.000.000-00" Required="true" />
+            <XFInputMask Label="CNPJ" Mask="00.000.000/0000-00" Required="true" />
+            <XFInputMask Label=@T("Telefone", "Phone")" Mask="(00) 00000-0000" />
+            <XFInputMask Label="CEP" Mask="00000-000" />
+        </XFGrid>
+    </XFStack>;
+
+
+    private string BasicCode => @T(
+        "<XFInputMask Label=\"CPF\" Mask=\"000.000.000-00\" />",
+        "<XFInputMask Label=\"CPF\" Mask=\"000.000.000-00\" />");
+
+    private string OptionsCode => @T(
+        "<XFInputMask Mask=\"000.000.000-00\" ShowMaskPlaceholder=\"true\" UnmaskValue=\"true\" />",
+        "<XFInputMask Mask=\"000.000.000-00\" ShowMaskPlaceholder=\"true\" UnmaskValue=\"true\" />");
+
+    private string EnterpriseCode => @T(
+        "<XFInputMask Label=\"CPF\" Mask=\"000.000.000-00\" Required=\"true\" />",
+        "<XFInputMask Label=\"CPF\" Mask=\"000.000.000-00\" Required=\"true\" />");
+
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header>
+            <div class="px-6 pt-6">
+                <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+            </div>
+        </Header>
+        <ChildContent>
+            <div class="grid">
+                <div class="border-t border-border-light p-6">@preview</div>
+                <div class="border-t border-border-light bg-surface-50 p-6">
+                    <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                </div>
+            </div>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                    <div class="min-w-0">
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                    </div>
+                </div>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">
+        @foreach (var item in items)
+        {
+            @Tile(item)
+        }
+    </XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">
+        @foreach (var item in items)
+        {
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                        <div class="flex items-center gap-4">
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                            <div class="min-w-0">
+                                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                            </div>
+                        </div>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        }
+    </XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@nameHeader</XFTableCell>
+                <XFTableCell Header="true">@valueHeader</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Value</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+                <XFTableCell Header="true">Type</XFTableCell>
+                <XFTableCell Header="true">Default</XFTableCell>
+                <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Type</XFTableCell>
+                    <XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell>
+                    <XFTableCell>@row.Description</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

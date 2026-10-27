@@ -1,0 +1,388 @@
+@page "/ai/multimodal-chat"
+@page "/ai/multi-modal-chat"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="XFAiMultiModalChat"
+                 Status="@L.Text("Estavel", "Stable")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiMultiModalChat" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Multi-modal", "Multi-modal")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Vision + Text", "Vision + Text")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Chat multimodal para mensagens com anexos, imagens, documentos e interacoes assistidas.",
+                               "Multi-modal chat for messages with attachments, images, documents and assisted interactions.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente de chat IA completo com suporte a texto, imagens, audio e arquivos. Integra com IAiProvider e IAiVisionProvider para interacoes abrangentes. Inclui upload de anexos, envio por Enter, historico de mensagens e tratamento de erros.",
+                               "Complete AI chat component with support for text, images, audio and files. Integrates with IAiProvider and IAiVisionProvider for comprehensive interactions. Includes attachment upload, Enter-to-send, message history and error handling.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes. Vision via IAiVisionProvider.", "Works without restrictions. Vision via IAiVisionProvider.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com provider compativel.", "Works with compatible provider.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Limitado", "Limited")" /></XFTableCell><XFTableCell>@T("Envio sem IA. Somente OnMessageSent.", "Send without AI. OnMessageSent only.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Chat basico", "1. Basic Chat"), T("Chat com titulo, placeholder e header padrao.", "Chat with title, placeholder and default header."), ExBasicChat(), Code1)
+            @Example(T("2. Com anexos", "2. With Attachments"), T("Chat com upload de anexos habilitado.", "Chat with attachment upload enabled."), ExWithAttachments(), Code2)
+            @Example(T("3. Sem header e com MaxMessages", "3. Without Header and with MaxMessages"), T("Chat compacto sem header e limite de 50 mensagens.", "Compact chat without header and 50 message limit."), ExCompactChat(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+<XForgeDocsPageStandard ComponentName="MultiModalChatDocs" />
+
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiMultiModalChat Title="Atendimento multimodal"
+                            Placeholder="Envie texto, imagem ou documento para analise..."
+                            MaxMessages="50" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Multi-modal", "Multi-modal"), T("Texto, imagem, audio e arquivos em um chat.", "Text, image, audio and files in one chat."), "layer-group"),
+        new(T("Vision + Text", "Vision + Text"), T("IAiProvider para texto, IAiVisionProvider para imagens.", "IAiProvider for text, IAiVisionProvider for images."), "eye"),
+        new(T("Anexos", "Attachments"), T("Upload de arquivos com preview e gestao.", "File upload with preview and management."), "paperclip")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiMultiModalChat"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.MultiModal"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / MultiModal"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", "role=log, aria-live=polite, aria-label, aria-busy"),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Chat multi-modal", "Multi-modal chat"), T("Mensagens com texto, imagem, audio e arquivos.", "Messages with text, image, audio and files."), "layer-group"),
+        new(T("Vision integration", "Vision integration"), T("Análise de imagens via IAiVisionProvider.", "Image analysis via IAiVisionProvider."), "eye"),
+        new(T("Anexos", "Attachments"), T("Upload e gestao de arquivos pendentes.", "Upload and management of pending files."), "paperclip")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Atendimento", "Customer support"), T("Chatbot com suporte a imagens e documentos.", "Chatbot with image and document support."), "headset"),
+        new(T("Analise de imagens", "Image analysis"), T("Envio de imagens para analise via IA.", "Send images for AI analysis."), "image"),
+        new(T("Documentos", "Documents"), T("Envio de PDFs e XMLs para analise de IA.", "Send PDFs and XMLs for AI analysis."), "file")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Chat apenas com texto, sem suporte a multimidia.", "Chat with text only, no multimedia support."), "xmark"),
+        new(T("Depois", "After"), T("Chat completo com texto, imagem e arquivos em um componente.", "Complete chat with text, image and files in one component."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=log, aria-live, labels e suporte de teclado.", "role=log, aria-live, labels and keyboard support."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Atendimento enterprise", "Enterprise support"), T("Chatbot com suporte a imagens de problemas e documentos.", "Chatbot with image and document support."), "building"),
+        new(T("Analise de dados visuais", "Visual data analysis"), T("Envio de graficos e screenshots para analise de IA.", "Send charts and screenshots for AI analysis."), "chart-bar")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Chat simples", "Simple chat"), T("Use XFAiChat para chat apenas com texto.", "Use XFAiChat for text-only chat."), "comments"),
+        new(T("Upload apenas", "Upload only"), T("Use XFUpload para upload sem chat.", "Use XFUpload for upload without chat."), "upload")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Header", "Header"), T("Barra superior com titulo e acoes.", "Top bar with title and actions."), "bars"),
+        new(T("Mensagens", "Messages"), T("Area scrollavel com bolhas de conversa.", "Scrollable area with conversation bubbles."), "comments"),
+        new(T("Anexos", "Attachments"), T("Area de preview de anexos pendentes.", "Pending attachments preview area."), "paperclip"),
+        new(T("Composer", "Composer"), T("Textarea com botoes de envio e anexo.", "Textarea with send and attach buttons."), "pen")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Conversacao natural", "Natural conversation"), T("Layout familiar de chat com bolhas e avatares.", "Familiar chat layout with bubbles and avatares."), "comments"),
+        new(T("Multi-modal", "Multi-modal"), T("Texto e midia em uma unica interface.", "Text and media in a single interface."), "layer-group"),
+        new(T("Extensibilidade", "Extensibility"), T("Header customizavel via HeaderContent.", "Customizable header via HeaderContent."), "puzzle")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasicChat() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiMultiModalChat Title="Atendimento multimodal"
+                            Placeholder="Envie texto, imagem ou documento para analise..."
+                            MaxMessages="50" />
+    </XFStack>;
+
+    private RenderFragment ExWithAttachments() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiMultiModalChat Title="Chat com Anexos"
+                            Placeholder="Envie um arquivo ou documento..."
+                            AriaLabel="Chat com anexos para analise de documentos" />
+    </XFStack>;
+
+    private RenderFragment ExCompactChat() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiMultiModalChat Title="Chat Compacto"
+                            ShowHeader="false"
+                            MaxMessages="50"
+                            Placeholder="Digite sua mensagem..." />
+    </XFStack>;
+
+    private const string Code1 = @"<XFAiMultiModalChat Title=""Atendimento multimodal""
+                          Placeholder=""Envie texto, imagem ou documento para analise...""
+                          MaxMessages=""50"" />";
+
+    private const string Code2 = @"<XFAiMultiModalChat Title=""Chat com Anexos""
+                          Placeholder=""Envie um arquivo ou documento...""
+                          AriaLabel=""Chat com anexos para analise de documentos"" />";
+
+    private const string Code3 = @"<XFAiMultiModalChat Title=""Chat Compacto""
+                          ShowHeader=""false""
+                          MaxMessages=""50""
+                          Placeholder=""Digite sua mensagem..."" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Title", "string?", "null", T("Titulo exibido no cabecalho.", "Title displayed in header.")),
+        new("ShowHeader", "bool", "true", T("Exibe o cabecalho.", "Shows the header.")),
+        new("Placeholder", "string?", "null", T("Texto do placeholder do input.", "Input placeholder text.")),
+        new("AriaLabel", "string", "''", T("Label de acessibilidade do chat.", "Chat accessibility label.")),
+        new("MaxMessages", "int", "100", T("Maximo de mensagens exibidas.", "Maximum messages displayed.")),
+        new("HeaderContent", "RenderFragment?", "null", T("Conteudo customizado do cabecalho.", "Custom header content.")),
+        new("OnMessageSent", "EventCallback<XFAiMultiModalMessage>", "null", T("Dispara quando mensagem e enviada.", "Fires when message is sent.")),
+        new("OnResponseReceived", "EventCallback<XFAiMultiModalMessage>", "null", T("Dispara quando resposta e recebida.", "Fires when response is received.")),
+        new("OnError", "EventCallback<string>", "null", T("Dispara em erro. Recebe string com mensagem.", "Fires on error. Receives string with message."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnMessageSent", T("Dispara quando usuario envia mensagem. Recebe XFAiMultiModalMessage.", "Fires when user sends message. Receives XFAiMultiModalMessage.")),
+        new("OnResponseReceived", T("Dispara quando IA responde. Recebe XFAiMultiModalMessage.", "Fires when AI responds. Receives XFAiMultiModalMessage.")),
+        new("OnError", T("Dispara em erro. Recebe string com mensagem.", "Fires on error. Receives string with message."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=log", "role=log"), T("Container de mensagens usa role=log.", "Message container uses role=log."), "universal-access"),
+        new(T("aria-live=polite", "aria-live=polite"), T("Novas mensagens anunciadas a leitores de tela.", "New messages announced to screen readers."), "volume-high"),
+        new(T("aria-busy", "aria-busy"), T("Indica estado de carregamento durante IA response.", "Indicates loading state during AI response."), "spinner"),
+        new(T("aria-label", "aria-label"), T("Labels descritivos em todos os interativos.", "Descriptive labels on all interactive elements."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Enter", T("Envia mensagem.", "Sends message.")),
+        new("Shift+Enter", T("Insere nova linha na mensagem.", "Inserts newline in message.")),
+        new("Escape", T("Cancela operacao em andamento.", "Cancels operation in progress."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura responsiva", "Responsive width"), T("Chat se adapta a diferentes tamanhos de tela.", "Chat adapts to different screen sizes."), "mobile-screen"),
+        new(T("MaxMessages responsivo", "Responsive MaxMessages"), T("Limite ajustavel conforme necessidade.", "Adjustable limit based on need."), "arrows-left-right")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("MaxMessages", "MaxMessages"), T("Limita mensagens no DOM para performance.", "Limits messages in DOM for performance."), "gauge"),
+        new(T("Lazy rendering", "Lazy rendering"), T("Mensagens renderizadas sob demanda.", "Messages rendered on demand."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Atendimento fiscal", "Fiscal support"), T("Chat com upload de NF-e e imagens de problemas.", "Chat with NF-e upload and problem images."), "file-invoice"),
+        new(T("Analise de imagens", "Image analysis"), T("Envio de screenshots para analise de IA.", "Send screenshots for AI analysis."), "image"),
+        new(T("Documentos", "Documents"), T("Envio de PDFs e XMLs para analise de IA.", "Send PDFs and XMLs for AI analysis."), "file")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Chat + Vision", "Chat + Vision"), T("Integracao com IAiVisionProvider para imagens.", "Integration with IAiVisionProvider for images."), "eye"),
+        new(T("Chat + Attachments", "Chat + Attachments"), T("Upload de arquivos com preview.", "File upload with preview."), "paperclip"),
+        new(T("Chat + Header", "Chat + Header"), T("HeaderContent para customizacao.", "HeaderContent for customization."), "bars")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Placeholder descritivo", "Descriptive placeholder"), T("Descreva o tipo de mensagem esperado.", "Describe the expected message type."), "tag"),
+        new(T("MaxMessages adequado", "Adequate MaxMessages"), T("Limite entre 50-200 para performance.", "Limit between 50-200 for performance."), "gauge"),
+        new(T("AriaLabel sempre", "AriaLabel always"), T("Sempre defina AriaLabel para acessibilidade.", "Always set AriaLabel for accessibility."), "universal-access"),
+        new(T("Tratamento de erros", "Error handling"), T("Sempre use OnError para tratar falhas.", "Always use OnError to handle failures."), "exclamation")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem MaxMessages", "No MaxMessages"), T("Sem limite, o DOM cresce indefinidamente.", "Without limit, DOM grows indefinitely."), "xmark"),
+        new(T("Sem AriaLabel", "No AriaLabel"), T("Chat sem label e inacessivel para leitores de tela.", "Chat without label is inaccessible to screen readers."), "ban"),
+        new(T("Erro silencioso", "Silent error"), T("Sempre trate e exiba erros via OnError.", "Always handle and display errors via OnError."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("xf-ai-multimodal-chat", T("Container principal do chat multi-modal.", "Main multi-modal chat container.")),
+        new("xf-ai-multimodal-messages", T("Area scrollavel de mensagens.", "Scrollable message area.")),
+        new("xf-ai-multimodal-attachments", T("Area de anexos pendentes.", "Pending attachments area.")),
+        new("bg-primary", T("Cor de fundo da bolha do usuario.", "User bubble background color.")),
+        new("ring-border-light", T("Borda da bolha da IA.", "AI bubble border ring."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, mensagens, anexos, envio, erro.", "Render, props, messages, attachments, send, error.")),
+        new("Accessibility", T("role=log, aria-live, aria-busy, aria-label.", "role=log, aria-live, aria-busy, aria-label."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("SSR", T("Chat com IA indisponivel em Static SSR.", "AI chat unavailable in Static SSR.")),
+        new("Anexos", T("Upload requer JavaScript interop em producao.", "Upload requires JavaScript interop in production.")),
+        new("Vision", T("IAiVisionProvider opcional. Sem provider, apenas texto.", "IAiVisionProvider optional. Without provider, text only."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiChat", T("Chat apenas com texto.", "Text-only chat."), "comments"),
+        new("XFAiVisionPanel", T("Painel de visao para imagens.", "Vision panel for images."), "eye"),
+        new("XFUpload", T("Upload de arquivos standalone.", "Standalone file upload."), "upload")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Precisa de provider?", "Needs provider?"), T("Sem provider, envio funciona mas IA responde com mensagem padrao.", "Without provider, send works but AI responds with default message.")),
+        new(T("Suporta imagens?", "Supports images?"), T("Sim, via IAiVisionProvider. Anexos do tipo Image usam vision.", "Yes, via IAiVisionProvider. Image-type attachments use vision.")),
+        new(T("Como limitar mensagens?", "How to limit messages?"), T("Use MaxMessages. Mensagens excedentes sao removidas do inicio.", "Use MaxMessages. Excess messages are removed from the beginning."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-01", T("Componente criado com suporte multi-modal, anexos e vision.", "Component created with multi-modal support, attachments and vision.")),
+        new("2026-06-12", T("Documentacao completa no padrao AppShellDocs com 3 exemplos.", "Full documentation in AppShellDocs pattern with 3 examples."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

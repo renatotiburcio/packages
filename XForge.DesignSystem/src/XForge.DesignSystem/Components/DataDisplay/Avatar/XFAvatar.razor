@@ -1,0 +1,34 @@
+@namespace XForge.DesignSystem.Components.DataDisplay.Avatar
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <span id="@Id"
+          class="@GetComponentClass()"
+          role="@Role"
+          aria-label="@AriaLabelValue"
+          title="@TitleValue"
+          @attributes="AdditionalAttributes">
+        @if (ShouldRenderImage)
+        {
+            <img class="h-full w-full rounded-[inherit] object-cover"
+                 src="@ResolvedImageSource"
+                 alt="@ImageAlt"
+                 loading="@LoadingValue"
+                 @onerror="HandleImageError" />
+        }
+        else if (Icon is not null)
+        {
+            <span class="@IconClass">@Icon</span>
+        }
+        else
+        {
+            <span class="@InitialsClass">@ResolvedInitials</span>
+        }
+
+        @if (Status != XFAvatarStatus.None)
+        {
+            <span class="@StatusClass" title="@StatusTitle" aria-label="@StatusAriaLabel"></span>
+        }
+    </span>
+}

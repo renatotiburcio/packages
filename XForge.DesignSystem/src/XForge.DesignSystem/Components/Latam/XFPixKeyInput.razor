@@ -1,0 +1,9 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<div class="xf-pix-input">
+  <select @bind="PixType" @bind:after="OnTypeChanged">
+    <option value="cpf">CPF</option><option value="cnpj">CNPJ</option><option value="email">Email</option><option value="phone">Phone</option><option value="random">Random Key</option>
+  </select>
+  <input type="text" placeholder="@Placeholder" @bind="Value" @bind:after="() => ValueChanged.InvokeAsync(Value)" />
+</div>

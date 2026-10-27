@@ -1,0 +1,304 @@
+@typeparam TItem
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (HasData)
+{
+    <div id="@Id" class="@ContainerClass" style="@Style" @attributes="AdditionalAttributes"
+         role="grid"
+         aria-label="Gantt chart">
+
+        <!-- Resource Panel (optional) -->
+        @if (ShowResourcePanel && Resources?.Any() == true)
+        {
+            <div class="@ResourcePanelClass" style="width: @ResourcePanelWidth; min-width: @ResourcePanelWidth;">
+                <!-- Resource Header -->
+                <div class="@HeaderClass" style="height: @(EffectiveRowHeight)px;">
+                    <div class="flex items-center px-3 font-semibold truncate">
+                        @ResourceLabel
+                    </div>
+                </div>
+
+                <!-- Resource Rows -->
+                <div>
+                    @foreach (var resource in Resources)
+                    {
+                        var taskCount = CountTasksForResource(resource.Id);
+                        <div class="flex items-center border-b border-border-light px-3 hover:bg-surface-100 transition-colors"
+                             style="height: @(EffectiveRowHeight)px;">
+                            <div class="flex items-center gap-2 truncate">
+                                @if (!string.IsNullOrEmpty(resource.Color))
+                                {
+                                    <span class="inline-block w-3 h-3 rounded-full" style="background-color: @resource.Color;"></span>
+                                }
+                                <span class="truncate text-sm text-text-primary">@resource.Name</span>
+                                @if (taskCount > 0)
+                                {
+                                    <span class="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium rounded-full bg-surface-200 text-text-secondary">
+                                        @taskCount
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Task List Panel -->
+        <div class="@TaskListPanelClass" style="width: @TaskListWidth; min-width: @TaskListWidth;">
+
+            <!-- Task List Header -->
+            <div class="@HeaderClass" style="height: @(EffectiveRowHeight)px;">
+                <div class="flex items-center px-3 font-semibold truncate">
+                    @TitleLabel
+                </div>
+            </div>
+
+            <!-- Task List Rows -->
+            <div>
+                @foreach (var node in _flatVisible)
+                {
+                    var isSelected = IsSelected(node.Item);
+                    var isEditing = _editingTaskId == node.Id;
+                    var rowClass = Join(
+                        "xf-gantt-row flex items-center border-b cursor-pointer transition-colors",
+                        "border-border-light",
+                        "hover:bg-surface-100",
+                        isSelected ? "bg-primary-50" : null
+                    );
+
+                    <div class="@rowClass"
+                         style="height: @(EffectiveRowHeight)px; padding-left: @(node.Depth * 20 + 8)px;"
+                         role="row"
+                         aria-level="@(node.Depth + 1)"
+                         aria-expanded="@(node.HasChildren ? node.IsExpanded.ToString().ToLower() : null)"
+                         aria-selected="@(isSelected.ToString().ToLower())"
+                         @onclick="() => HandleTaskClick(node)"
+                         @onclick:stopPropagation>
+
+                        @if (node.HasChildren)
+                        {
+                            <button class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-text-muted hover:bg-surface-200 hover:text-text-secondary mr-1 transition-colors"
+                                    @onclick="() => ToggleExpand(node.Id)"
+                                    @onclick:stopPropagation
+                                    aria-label="@(node.IsExpanded ? "Recolher" : "Expandir")">
+                                <span class="text-[10px] font-bold">@(node.IsExpanded ? "−" : "+")</span>
+                            </button>
+                        }
+                        else
+                        {
+                            <span class="flex-shrink-0 w-6 mr-1"></span>
+                        }
+
+                         @if (isEditing)
+                        {
+                            <input class="flex-1 min-w-0 px-1 py-0.5 text-sm border border-primary rounded bg-bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                                   value="@_editValue"
+                                   @oninput="e => _editValue = e.Value?.ToString() ?? string.Empty"
+                                   @onkeydown="e => HandleEditKeydown(e, node)"
+                                   @onblur="() => FinishEdit(node)"
+                                   @onclick:stopPropagation />
+                        }
+                        else
+                        {
+                            <span class="truncate text-text-primary"
+                                  @ondblclick="() => StartEdit(node)">
+                                @node.Title
+                            </span>
+                        }
+
+                        @if (node.HasChildren && !node.IsExpanded)
+                        {
+                            <span class="ml-auto flex-shrink-0 text-[10px] text-text-muted bg-surface-200 rounded-full px-1.5 py-0.5 mr-1 font-medium">
+                                @CountDescendants(node)
+                            </span>
+                        }
+
+                        @if (ShowProgress && !isEditing)
+                        {
+                            <span class="ml-auto flex-shrink-0 text-xs text-text-muted mr-2">
+                                @node.Progress.ToString("F0")%
+                            </span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Timeline Panel -->
+        <div class="@TimelinePanelClass">
+
+            <!-- Timeline Header -->
+            <div class="@HeaderClass sticky top-0 z-20 bg-surface-100"
+                 style="height: @(EffectiveRowHeight)px; width: @(TimelineWidth)px;">
+                @foreach (var header in ColumnHeaders)
+                {
+                    <div class="flex items-center justify-center border-r border-border-light truncate px-1"
+                         style="width: @(_columnWidthPx)px; height: @(EffectiveRowHeight)px;">
+                        @header
+                    </div>
+                }
+            </div>
+
+            <!-- Timeline Body -->
+            <div class="relative" style="width: @(TimelineWidth)px;"
+                 @onpointermove="OnBarPointerMove"
+                 @onpointerup="OnBarPointerUp">
+
+                <!-- Grid Lines -->
+                @if (ShowGridLines)
+                {
+                    @for (int i = 0; i <= _columnCount; i++)
+                    {
+                        <div class="absolute top-0 bottom-0 border-r border-border-light"
+                             style="left: @(i * _columnWidthPx)px;"
+                             aria-hidden="true"></div>
+                    }
+                }
+
+                <!-- Task Bars -->
+                @{
+                    int barIndex = 0;
+                }
+                @foreach (var node in _flatVisible)
+                {
+                    var left = GetBarLeft(node.Start);
+                    var width = GetBarWidth(node.Start, node.End);
+                    var isSelected = IsSelected(node.Item);
+                    var barColor = GetBarColor(node);
+                    var progressColor = GetProgressColor(node);
+                    var progressWidth = ShowProgress ? width * node.Progress / 100 : 0;
+                    var capturedIndex = barIndex;
+
+                    var rowClass = Join(
+                        "xf-gantt-row relative border-b",
+                        "border-border-light",
+                        isSelected ? "bg-primary-50/50" : null
+                    );
+
+                    <div class="@rowClass"
+                         style="height: @(EffectiveRowHeight)px;"
+                         role="row"
+                         @onclick="() => HandleTaskClick(node)">
+
+                        <!-- Bar -->
+                         <div class="absolute top-1 bottom-1 rounded-sm overflow-hidden cursor-pointer transition-shadow hover:shadow-md @barColor"
+                             style="left: @(left)px; width: @(width)px;"
+                             role="img"
+                             aria-label="@GetBarAriaLabel(node)"
+                             @onpointerdown:stopPropagation="true"
+                             @onpointerdown="e => OnBarPointerDown(e, capturedIndex, AllowTaskMove)">
+
+                            <!-- Progress fill -->
+                            @if (ShowProgress && node.Progress > 0)
+                            {
+                                <div class="absolute inset-0 @progressColor"
+                                     style="width: @(node.Progress)%;"
+                                     aria-hidden="true"></div>
+                            }
+
+                            <!-- Bar label -->
+                            <span class="relative z-[1] px-1.5 text-primary-contrast text-xs leading-none flex items-center h-full truncate font-medium pointer-events-none">
+                                @node.Title
+                            </span>
+
+                            <!-- Resize handle -->
+                            @if (AllowTaskResize)
+                            {
+                                <div class="absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize bg-black/20 hover:bg-black/30 rounded-r"
+                                     @onpointerdown:stopPropagation="true"
+                                     @onpointerdown="e => OnBarResizePointerDown(e, capturedIndex)"></div>
+                            }
+                        </div>
+                    </div>
+                    barIndex++;
+                }
+
+                <!-- Today Line -->
+                @if (ShowTodayLine && GetTodayLineLeft() >= 0)
+                {
+                    <div class="@TodayLineClass"
+                         style="left: @(GetTodayLineLeft())px; top: 0; height: @(_flatVisible.Count * EffectiveRowHeight)px;"
+                         title="@TodayLabel">
+                        <span class="absolute -top-5 left-1 text-xs text-primary font-medium whitespace-nowrap">
+                            @TodayLabel
+                        </span>
+                    </div>
+                }
+
+                <!-- Dependency Lines (SVG overlay) -->
+                @if (ShowDependencies && Dependencies?.Any() == true)
+                {
+                    var totalHeight = _flatVisible.Count * EffectiveRowHeight;
+                    <svg class="absolute inset-0 pointer-events-none" style="width: @(TimelineWidth)px; height: @(totalHeight)px;">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280" />
+                            </marker>
+                        </defs>
+                        @foreach (var dep in Dependencies)
+                        {
+                            var fromIndex = FindTaskIndex(dep.FromId);
+                            var toIndex = FindTaskIndex(dep.ToId);
+                            if (fromIndex >= 0 && toIndex >= 0)
+                            {
+                                var fromNode = _flatVisible[fromIndex];
+                                var toNode = _flatVisible[toIndex];
+
+                                double fromX, toX;
+                                switch (dep.Type)
+                                {
+                                    case XFGanttDependencyType.StartToStart:
+                                        fromX = GetBarLeft(fromNode.Start);
+                                        toX = GetBarLeft(toNode.Start);
+                                        break;
+                                    case XFGanttDependencyType.FinishToFinish:
+                                        fromX = GetBarLeft(fromNode.End);
+                                        toX = GetBarLeft(toNode.End);
+                                        break;
+                                    case XFGanttDependencyType.StartToFinish:
+                                        fromX = GetBarLeft(fromNode.Start);
+                                        toX = GetBarLeft(toNode.End);
+                                        break;
+                                    default: // FinishToStart
+                                        fromX = GetBarLeft(fromNode.End);
+                                        toX = GetBarLeft(toNode.Start);
+                                        break;
+                                }
+
+                                var fromY = fromIndex * EffectiveRowHeight + EffectiveRowHeight / 2;
+                                var toY = toIndex * EffectiveRowHeight + EffectiveRowHeight / 2;
+                                var midX = fromX + (toX - fromX) / 2;
+
+                                <path d="M @fromX @fromY H @midX V @toY H @toX"
+                                      fill="none" stroke="var(--color-text-muted)" stroke-width="1.5"
+                                      marker-end="url(#arrowhead)" />
+                            }
+                        }
+                    </svg>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div id="@Id" class="@ContainerClass" style="@Style" @attributes="AdditionalAttributes"
+         role="status"
+         aria-label="Gantt chart">
+        <div class="@EmptyClass w-full">
+            @NoDataText
+        </div>
+    </div>
+}
+
+@code {
+    private string TitleLabel => View switch
+    {
+        XFGanttView.Day => "Hora",
+        XFGanttView.Week => "Dia",
+        XFGanttView.Month => "Dia",
+        XFGanttView.Year => "Mês",
+        _ => "Tarefa"
+    };
+}

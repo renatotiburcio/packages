@@ -1,0 +1,11 @@
+@inherits XForgeComponentBase
+
+<button @onclick="OnClickAsync"
+        class="xf-toolbar-btn inline-flex h-8 w-8 items-center justify-center rounded border border-surface-200 bg-bg-surface text-text-secondary hover:bg-surface-50 hover:text-text-primary disabled:opacity-50"
+        title="@Title"
+        disabled="@Disabled">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+        <path d="M9.355 4.014a.75.75 0 01.645.855l-.8 4a.75.75 0 11-1.49-.299l.8-4a.75.75 0 01.845-.556zm1.29 0a.75.75 0 01.645.855l-.4 2a.75.75 0 11-1.49-.299l.4-2a.75.75 0 01.845-.556z" />
+    </svg>
+</button>

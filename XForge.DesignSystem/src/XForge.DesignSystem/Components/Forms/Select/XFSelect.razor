@@ -1,0 +1,92 @@
+@typeparam TValue
+@inherits XFInputComponentBase
+
+@* Root wrapper — id="@Id" for JS interop targeting *@
+<div class="@RootClass" id="@Id" style="@Style">
+    @* Label *@
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    @* Hidden input for form submission *@
+    <input type="hidden" name="@Name" value="@CurrentValueAsString" />
+
+    @* Trigger button *@
+    <button type="button"
+            @onclick="ToggleDropdown"
+            class="@SelectButtonClass"
+            aria-haspopup="listbox"
+            aria-expanded="@(IsOpen ? "true" : "false")"
+            aria-label="@AriaLabel"
+            disabled="@Disabled">
+        <span class="flex-1 truncate text-left">
+            @if (SelectedTemplate is not null && CurrentValue is not null)
+            {
+                @SelectedTemplate(CurrentValue)
+            }
+            else if (HasValue)
+            {
+                @(SelectedDisplayText ?? CurrentValueAsString)
+            }
+            else if (!string.IsNullOrWhiteSpace(Placeholder))
+            {
+                @Placeholder
+            }
+        </span>
+        <span class="flex items-center shrink-0 ml-2">
+            @if (Clearable && HasValue)
+            {
+                <button type="button" class="@ClearButtonClass"
+                        aria-label="@ClearLabel"
+                        @onclick="ClearAsync"
+                        @onclick:stopPropagation>
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            }
+            else
+            {
+                <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            }
+        </span>
+    </button>
+
+    @* Dropdown popup *@
+    @if (IsOpen)
+    {
+        <div class="@DropdownClass" role="listbox" id="@($"select-{Id}-dropdown")">
+            @if (Searchable)
+            {
+                <input @bind="SearchText"
+                       @bind:event="oninput"
+                       @onclick:stopPropagation
+                       placeholder="@SearchPlaceholder"
+                       class="w-full border-0 bg-transparent px-3 py-2 text-sm outline-none" />
+            }
+            <CascadingValue Value="this">
+                @ChildContent
+            </CascadingValue>
+        </div>
+    }
+</div>
+
+@* Validation / Helper messages *@
+@if (HasValidationError)
+{
+    <div id="@ErrorId" class="@ErrorClass" role="alert">@FirstValidationMessage</div>
+}
+else if (!string.IsNullOrWhiteSpace(HelperText))
+{
+    <div id="@HelperId" class="@HelperClass">@HelperText</div>
+}

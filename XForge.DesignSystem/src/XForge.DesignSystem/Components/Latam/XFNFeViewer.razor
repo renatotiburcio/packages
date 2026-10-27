@@ -1,0 +1,28 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<div class="xf-nfe-viewer" data-key="@AccessKey">
+  <div class="xf-nfe-header">
+    <span class="xf-nfe-status" data-status="@Status">@Status</span>
+    <span class="xf-nfe-number">NFe @Number</span>
+    <span class="xf-nfe-date">@IssueDate.ToString("dd/MM/yyyy")</span>
+  </div>
+  <div class="xf-nfe-parties">
+    <div><strong>Emitente:</strong> @IssuerName (@IssuerCnpj)</div>
+    <div><strong>Destinatario:</strong> @RecipientName (@RecipientCnpj)</div>
+  </div>
+  <div class="xf-nfe-items">
+    @foreach (var i in Items) { <div>@i.Code - @i.Description: @i.Quantity x @i.UnitPrice = @i.TotalPrice</div> }
+  </div>
+  <div class="xf-nfe-totals">
+    <div>Produtos: @TotalProducts.ToString("C")</div>
+    <div>ICMS: @IcmsValue.ToString("C")</div>
+    <div>IPI: @IpiValue.ToString("C")</div>
+    <div><strong>Total: @TotalAmount.ToString("C")</strong></div>
+  </div>
+  @ChildContent
+</div>
+
+@code {
+  public record NFeItem(string Code, string Description, double Quantity, decimal UnitPrice, decimal TotalPrice);
+}

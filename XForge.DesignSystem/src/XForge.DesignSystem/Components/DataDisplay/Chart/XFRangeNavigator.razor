@@ -1,0 +1,62 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     @onmousedown="OnMouseDownAsync">
+
+    @* ── Mini Chart Area *@
+    @if (ChildContent is not null)
+    {
+        <div class="relative h-full w-full">
+            @ChildContent
+        </div>
+    }
+
+    @* ── Selection Window (handles + highlighted area) *@
+    <div class="absolute inset-y-0 z-10" style="left: @(Start * 100)%; width: @((End - Start) * 100)%;">
+        @* ── Window Border *@
+        <div class="h-full border-y-2 border-primary bg-primary/10"></div>
+
+        @* ── Start Handle *@
+        <div class="absolute inset-y-0 -left-1.5 w-3 cursor-ew-resize rounded bg-primary shadow-md hover:bg-primary-hover"
+             @onmousedown:stopPropagation="true"
+             @onmousedown="@(e => StartDragAsync(HandleType.Start))">
+            <div class="absolute left-1/2 top-1/2 h-4 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded bg-white/80"></div>
+        </div>
+
+        @* ── End Handle *@
+        <div class="absolute inset-y-0 -right-1.5 w-3 cursor-ew-resize rounded bg-primary shadow-md hover:bg-primary-hover"
+             @onmousedown:stopPropagation="true"
+             @onmousedown="@(e => StartDragAsync(HandleType.End))">
+            <div class="absolute left-1/2 top-1/2 h-4 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded bg-white/80"></div>
+        </div>
+
+        @* ── Handle Labels *@
+        @if (ShowHandleLabels)
+        {
+            <div class="absolute -top-6 left-0 -translate-x-1/2 whitespace-nowrap rounded bg-bg-surface px-1.5 py-0.5 text-xs text-text-primary border border-border-light">
+                @FormatHandleLabel(Start)
+            </div>
+            <div class="absolute -top-6 right-0 translate-x-1/2 whitespace-nowrap rounded bg-bg-surface px-1.5 py-0.5 text-xs text-text-primary border border-border-light">
+                @FormatHandleLabel(End)
+            </div>
+        }
+    </div>
+
+    @* ── Shaded Areas (outside selection) *@
+    <div class="absolute inset-y-0 left-0 z-5 bg-surface-900/30" style="width: @(Start * 100)%;"></div>
+    <div class="absolute inset-y-0 right-0 z-5 bg-surface-900/30" style="width: @((1 - End) * 100)%;"></div>
+
+    @* ── Axis *@
+    @if (ShowAxis)
+    {
+        <div class="absolute bottom-0 left-0 right-0 flex justify-between border-t border-surface-200 px-2 py-1">
+            @foreach (var tick in GetAxisTicks())
+            {
+                <span class="text-[10px] text-text-secondary">@tick</span>
+            }
+        </div>
+    }
+</div>

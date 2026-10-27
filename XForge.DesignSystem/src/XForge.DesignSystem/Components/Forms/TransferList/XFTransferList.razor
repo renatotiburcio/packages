@@ -1,0 +1,88 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes" id="@Id" class="@RootClass">
+    @RenderPane(false)
+
+    <div class="flex shrink-0 flex-row items-center justify-center gap-2 lg:flex-col">
+        <button class="@MoveButtonClass" type="button" disabled="@(!CanMoveRight)" aria-disabled="@(!CanMoveRight).ToString().ToLowerInvariant()" aria-label="@MoveSelectedRightLabel" @onclick="MoveSelectedRightAsync">
+            <span class="h-3.5 w-3.5 lg:block hidden">@((MarkupString)XFSvgIcons.Get("chevron-right"))</span>
+            <span class="h-3.5 w-3.5 lg:hidden">@((MarkupString)XFSvgIcons.Get("chevron-down"))</span>
+        </button>
+        <button class="@MoveButtonClass" type="button" disabled="@(!CanMoveLeft)" aria-disabled="@(!CanMoveLeft).ToString().ToLowerInvariant()" aria-label="@MoveSelectedLeftLabel" @onclick="MoveSelectedLeftAsync">
+            <span class="h-3.5 w-3.5 lg:block hidden">@((MarkupString)XFSvgIcons.Get("chevron-left"))</span>
+            <span class="h-3.5 w-3.5 lg:hidden">@((MarkupString)XFSvgIcons.Get("chevron-up"))</span>
+        </button>
+        <button class="@MoveButtonClass" type="button" disabled="@(!CanMoveAllRight)" aria-disabled="@(!CanMoveAllRight).ToString().ToLowerInvariant()" aria-label="@MoveAllRightLabel" @onclick="MoveAllRightAsync">
+            <span class="h-3.5 w-3.5 lg:block hidden">@((MarkupString)XFSvgIcons.Get("chevrons-right"))</span>
+            <span class="h-3.5 w-3.5 lg:hidden">@((MarkupString)XFSvgIcons.Get("chevrons-down"))</span>
+        </button>
+        <button class="@MoveButtonClass" type="button" disabled="@(!CanMoveAllLeft)" aria-disabled="@(!CanMoveAllLeft).ToString().ToLowerInvariant()" aria-label="@MoveAllLeftLabel" @onclick="MoveAllLeftAsync">
+            <span class="h-3.5 w-3.5 lg:block hidden">@((MarkupString)XFSvgIcons.Get("chevrons-left"))</span>
+            <span class="h-3.5 w-3.5 lg:hidden">@((MarkupString)XFSvgIcons.Get("chevrons-up"))</span>
+        </button>
+    </div>
+
+    @RenderPane(true)
+
+    <div class="sr-only" aria-live="polite">@liveMessage</div>
+</div>
+
+@code {
+    private RenderFragment RenderPane(bool target) => @<section class="@PaneClass" aria-label="@(target ? TargetLabel : SourceLabel)">
+        <div class="flex items-start justify-between gap-3 border-b border-border-light p-3">
+            <div>
+                <div class="text-sm font-semibold text-text-primary">@(target ? TargetLabel : SourceLabel)</div>
+                <div class="text-xs text-text-secondary">@GetPaneCountText(target)</div>
+            </div>
+            <button class="rounded-md px-2 py-1 text-xs font-medium text-primary outline-none hover:bg-[color-mix(in_oklab,var(--color-primary)_10%,transparent)] focus-visible:ring-2 focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_25%,transparent)] disabled:pointer-events-none disabled:text-text-muted"
+                    type="button"
+                    disabled="@(target ? !CanMoveAllLeft : !CanMoveAllRight)"
+                    @onclick="@(target ? MoveAllLeftAsync : MoveAllRightAsync)">
+                @SelectAllText
+            </button>
+        </div>
+
+        @if (Searchable)
+        {
+            <div class="border-b border-border-light p-3">
+                <input class="@SearchClass"
+                       type="search"
+                       value="@GetSearch(target)"
+                       placeholder="@SearchPlaceholder"
+                       aria-label="@(target ? TargetSearchLabel : SourceSearchLabel)"
+                       @oninput="@(args => SetSearch(target, args.Value?.ToString()))" />
+            </div>
+        }
+
+        <ul class="max-h-72 min-h-56 overflow-auto p-2" role="listbox" aria-multiselectable="true">
+            @foreach (var item in GetVisibleItems(target))
+            {
+                var selected = IsSelected(target, item.Value);
+                <li>
+                    <button class="@ItemClass(selected, item.Disabled)"
+                    type="button"
+                    role="option"
+                    aria-selected="@selected.ToString().ToLowerInvariant()"
+                    aria-disabled="@item.Disabled.ToString().ToLowerInvariant()"
+                    disabled="@item.Disabled"
+                            @onclick="@(() => ToggleSelection(target, item))"
+                            @ondblclick="@(() => MoveSingleAsync(target, item))">
+                        <span class="@CheckClass(selected)" aria-hidden="true">
+                            @if (selected)
+                            {
+                                <span class="h-3 w-3">@((MarkupString)XFSvgIcons.Get("check"))</span>
+                            }
+                        </span>
+                        <span class="min-w-0 text-left">
+                            <span class="block truncate text-sm font-medium">@item.Text</span>
+                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                            {
+                                <span class="block truncate text-xs text-text-secondary">@item.Description</span>
+                            }
+                        </span>
+                    </button>
+                </li>
+            }
+        </ul>
+    </section>;
+}

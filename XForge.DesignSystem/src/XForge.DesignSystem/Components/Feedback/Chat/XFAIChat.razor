@@ -1,0 +1,95 @@
+@using XForge.DesignSystem.AI
+@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <div @attributes="AdditionalAttributes" class="xf-ai-chat flex min-h-[32rem] flex-col overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-[0_1px_2px_rgb(15_23_42/.04)]" style="@Style" id="@Id" aria-label="@AriaLabel">
+        <!-- Header -->
+        @if (!string.IsNullOrWhiteSpace(Title) || ShowClearButton)
+        {
+            <div class="flex items-center justify-between gap-3 border-b border-border-light px-4 py-3">
+                @if (!string.IsNullOrWhiteSpace(Title))
+                {
+                    <span class="text-sm font-semibold text-text-primary">@Title</span>
+                }
+                <div class="flex items-center gap-2">
+                    @if (ShowModelSelector && AvailableModels?.Length > 0)
+                    {
+                        <select @bind="SelectedModel" class="text-xs rounded border border-surface-200 bg-bg-surface px-2 py-1 text-text-secondary">
+                            @foreach (var model in AvailableModels)
+                            {
+                                <option value="@model">@model</option>
+                            }
+                        </select>
+                    }
+                    @if (ShowClearButton)
+                    {
+                        <button @onclick="OnClearChatAsync" class="inline-flex h-8 items-center justify-center rounded-md border border-surface-200 bg-bg-surface px-2 text-xs font-semibold text-text-secondary outline-none hover:text-primary" title="Clear chat history">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Messages -->
+        <div class="flex-1 overflow-y-auto p-4">
+            @if (InternalMessages.Count == 0)
+            {
+                <div class="flex flex-col items-center justify-center gap-3 py-12 text-text-muted">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                    <span class="text-sm">@EmptyText</span>
+                </div>
+            }
+            else
+            {
+                @foreach (var message in InternalMessages)
+                {
+                    <div class="mb-4 flex @(message.IsUser ? "justify-end" : "justify-start")">
+                        <div class="max-w-[80%] @(message.IsUser ? "rounded-2xl rounded-br-md bg-primary px-4 py-3 text-sm text-primary-contrast" : "rounded-2xl rounded-bl-md border border-surface-200 bg-bg-surface px-4 py-3 text-sm text-text-primary")">
+                            @if (!message.IsUser && ShowAvatar)
+                            {
+                                <div class="mb-2 flex items-center gap-2">
+                                    <div class="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">@AssistantAvatarText</div>
+                                    <span class="text-xs font-medium text-text-secondary">@AssistantName</span>
+                                </div>
+                            }
+                            @if (message.IsStreaming)
+                            {
+                                <div class="whitespace-pre-wrap">@message.Content<span class="animate-pulse">|</span></div>
+                            }
+                            else
+                            {
+                                <div class="whitespace-pre-wrap">@message.Content</div>
+                            }
+                            @if (ShowTimestamps)
+                            {
+                                <div class="mt-1 text-xs @(message.IsUser ? "text-primary-contrast/70" : "text-text-muted")">@message.Timestamp.ToString(TimestampFormat)</div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            @if (IsStreaming)
+            {
+                <div class="mb-4 flex justify-start">
+                    <div class="flex items-center gap-2 rounded-2xl rounded-bl-md border border-surface-200 bg-bg-surface px-4 py-3 text-sm text-text-muted">
+                        <span class="animate-pulse">●</span>
+                        <span>@StreamingText</span>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Input -->
+        <div class="flex items-end gap-2 border-t border-border-light bg-surface-50 p-3">
+            <textarea value="@Draft" @oninput="OnInputAsync" @onkeydown="OnKeyDownAsync"
+                      class="min-h-10 flex-1 resize-none rounded-lg border border-surface-200 bg-bg-surface px-3 py-2 text-sm leading-6 text-text-primary outline-none transition-all placeholder:text-text-muted focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--color-primary)_18%,transparent)]"
+                      placeholder="@Placeholder" disabled="@IsStreaming" rows="1"></textarea>
+            <button @onclick="OnSendMessageAsync" disabled="@(string.IsNullOrWhiteSpace(Draft) || IsStreaming)"
+                    class="inline-flex h-10 min-w-10 items-center justify-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-contrast outline-none transition-all hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
+            </button>
+        </div>
+    </div>
+}

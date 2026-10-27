@@ -1,0 +1,10 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<div class="xf-boleto-generator">
+  <input type="text" placeholder="Amount in BRL" @bind="Amount" />
+  <input type="text" placeholder="Beneficiary CNPJ" @bind="BeneficiaryCnpj" />
+  <input type="text" placeholder="Document Number" @bind="DocumentNumber" />
+  <button @onclick="Generate">Generate Boleto</button>
+  @if (!string.IsNullOrEmpty(Barcode)) { <div class="xf-boleto-result"><strong>Linha digitavel:</strong> @Barcode</div> }
+</div>

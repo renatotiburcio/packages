@@ -1,0 +1,27 @@
+﻿@namespace XForge.DesignSystem.Components
+@inject IXFComponentDiscovery Discovery
+<div class="xf-component-grid" role="grid" aria-label="Components">
+  <input type="search" @bind="_filter" @bind:event="oninput" placeholder="Filter components..."
+         aria-label="Filter components" class="xf-component-grid__search" />
+  <div class="xf-component-grid__cells" role="rowgroup">
+    @foreach (var c in Filtered)
+    {
+      <article class="xf-component-grid__cell" role="gridcell" @key="c.Name">
+        <h3>@c.Name</h3>
+        <p>@c.Description</p>
+        <small>Category: @c.Category | Icons: @c.UsesIcons.Length</small>
+      </article>
+    }
+  </div>
+  @if (!Filtered.Any()) { <p class="xf-component-grid__empty">No components match "@_filter"</p> }
+</div>
+@code {
+    [Parameter] public string? Category { get; set; }
+    private string _filter = "";
+    private IEnumerable<XFComponentInfo> Filtered =>
+        Discovery.GetAll()
+            .Where(c => Category == null || string.Equals(c.Category, Category, System.StringComparison.OrdinalIgnoreCase))
+            .Where(c => string.IsNullOrEmpty(_filter)
+                || c.Name.Contains(_filter, System.StringComparison.OrdinalIgnoreCase)
+                || c.Description.Contains(_filter, System.StringComparison.OrdinalIgnoreCase));
+}

@@ -1,0 +1,13 @@
+﻿@namespace XForge.DesignSystem.AI.Components
+<div class="xf-ai-orchestrator" data-agents="@Agents.Count">
+  <div class="xf-ai-flow">@foreach (var a in Agents) { <div class="xf-ai-agent" data-status="@a.Status">@a.Name (@a.Role)</div> }</div>
+  <div class="xf-ai-trace">@foreach (var t in Traces) { <div class="xf-ai-trace-step" data-step="@t.Step">@t.Timestamp: @t.Agent -> @t.Action</div> }</div>
+</div>
+@code {
+  public record AgentInstance(string Id, string Name, string Role, string Status, string? CurrentTaskId = null);
+  public record AgentTrace(DateTime Timestamp, string Agent, string Action, string Step, IReadOnlyDictionary<string,object>? Result = null);
+  [Parameter] public IReadOnlyList<AgentInstance> Agents { get; set; } = new List<AgentInstance>();
+  [Parameter] public IReadOnlyList<AgentTrace> Traces { get; set; } = new List<AgentTrace>();
+  [Parameter] public string Strategy { get; set; } = "sequential";
+  [Parameter] public EventCallback<string> OnAgentTriggered { get; set; }
+}

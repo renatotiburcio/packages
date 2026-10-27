@@ -1,0 +1,96 @@
+@using XForge.DesignSystem.Components.Utilities.BreakpointObserver
+@inject XFBreakpointService BreakpointService
+@implements IAsyncDisposable
+
+<div class="@ContainerClass" style="@Style" data-breakpoint="@_currentBreakpoint.ToString().ToLower()"
+     @attributes="AdditionalAttributes">
+    @if (ChildContent is not null)
+    {
+        @ChildContent(new XFResponsiveContext(_currentBreakpoint, _isMobile, _isTablet, _isDesktop))
+    }
+</div>
+
+@code {
+    private XFBreakpoint _currentBreakpoint = XFBreakpoint.Xs;
+    private bool _isMobile;
+    private bool _isTablet;
+    private bool _isDesktop;
+
+    [Parameter] public RenderFragment<XFResponsiveContext>? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    [Parameter] public string? Style { get; set; }
+
+    [Parameter] public XFBreakpoint MobileUpTo { get; set; } = XFBreakpoint.Sm;
+
+    [Parameter] public XFBreakpoint TabletFrom { get; set; } = XFBreakpoint.Md;
+
+    [Parameter] public XFBreakpoint TabletUpTo { get; set; } = XFBreakpoint.Lg;
+
+    [Parameter] public XFBreakpoint DesktopFrom { get; set; } = XFBreakpoint.Xl;
+
+    [Parameter] public EventCallback<XFResponsiveContext> OnBreakpointChanged { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string ContainerClass => string.Join(" ", new[]
+    {
+        "xf-responsive-container",
+        _isMobile ? "xf-responsive-mobile" : null,
+        _isTablet ? "xf-responsive-tablet" : null,
+        _isDesktop ? "xf-responsive-desktop" : null,
+        Class
+    }.Where(s => !string.IsNullOrEmpty(s)));
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            BreakpointService.BreakpointChanged += HandleBreakpointChanged;
+            await BreakpointService.InitializeAsync();
+            _currentBreakpoint = BreakpointService.CurrentBreakpoint;
+            UpdateCategories();
+            StateHasChanged();
+        }
+    }
+
+    private void HandleBreakpointChanged(XFBreakpoint breakpoint)
+    {
+        _currentBreakpoint = breakpoint;
+        UpdateCategories();
+        InvokeAsync(async () =>
+        {
+            if (OnBreakpointChanged.HasDelegate)
+            {
+                await OnBreakpointChanged.InvokeAsync(new XFResponsiveContext(_currentBreakpoint, _isMobile, _isTablet, _isDesktop));
+            }
+            StateHasChanged();
+        });
+    }
+
+    private void UpdateCategories()
+    {
+        var order = GetOrder(_currentBreakpoint);
+        _isMobile = order <= GetOrder(MobileUpTo);
+        _isTablet = order >= GetOrder(TabletFrom) && order <= GetOrder(TabletUpTo);
+        _isDesktop = order >= GetOrder(DesktopFrom);
+    }
+
+    private static int GetOrder(XFBreakpoint bp) => bp switch
+    {
+        XFBreakpoint.Xs => 0,
+        XFBreakpoint.Sm => 1,
+        XFBreakpoint.Md => 2,
+        XFBreakpoint.Lg => 3,
+        XFBreakpoint.Xl => 4,
+        XFBreakpoint.Xxl => 5,
+        _ => 0
+    };
+
+    public async ValueTask DisposeAsync()
+    {
+        BreakpointService.BreakpointChanged -= HandleBreakpointChanged;
+        await ValueTask.CompletedTask;
+    }
+}

@@ -1,0 +1,40 @@
+@inherits XForgeComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label class="@LabelClass">
+            @Label
+        </label>
+    }
+
+    <div class="@EditorWrapperClass">
+        @if (Toolbar is not null)
+        {
+            <div id="@ToolbarContainerId">
+                @Toolbar
+            </div>
+        }
+
+        <div id="@EditorContainerId"
+             aria-label="@AriaLabel"
+             aria-invalid="@AriaInvalid"
+             aria-describedby="@DescribedBy"
+             aria-disabled="@Disabled"
+             style="min-height: 12rem;">
+        </div>
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+</div>

@@ -1,0 +1,58 @@
+﻿@inherits XForgeComponentBase
+@typeparam TItem
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@RootClass"
+     style="@Style"
+     role="list"
+     aria-label="@AriaLabel">
+    @foreach (var entry in Items.Select((item, index) => new { item, index }))
+    {
+        var disabled = IsDisabled(entry.item);
+        <div class="@ItemClass(entry.item)"
+             role="listitem"
+             aria-disabled="@disabled.ToString().ToLowerInvariant()"
+             data-index="@entry.index"
+             draggable="@CanDrag(entry.item).ToString().ToLowerInvariant()"
+             @ondragstart="@(() => HandleDragStart(entry.index))"
+             @ondragover="HandleDragOver"
+             @ondragover:preventDefault="true"
+             @ondrop="@(() => DropAsync(entry.index))"
+             @ondragend="HandleDragEnd">
+            @if (ShowOrder)
+            {
+                <span class="@OrderClass" aria-hidden="true">@(entry.index + 1)</span>
+            }
+
+            <div class="@ContentClass">
+                @if (ItemTemplate is not null)
+                {
+                    @ItemTemplate(new XFSortableListItemContext<TItem>(entry.item, entry.index, disabled))
+                }
+                else
+                {
+                    <div class="@TextClass">@GetText(entry.item)</div>
+                }
+            </div>
+
+            <div class="@ControlsClass">
+                <button type="button"
+                        class="@ButtonClass"
+                        disabled="@(disabled || entry.index == 0)"
+                        aria-label="@FormatMoveLabel(MoveUpLabelFormat, MoveUpLabel, entry.item)"
+                        @onclick="@(() => MoveAsync(entry.index, entry.index - 1))">
+                    <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-up")</span>
+                </button>
+                <button type="button"
+                        class="@ButtonClass"
+                        disabled="@(disabled || entry.index == Items.Count - 1)"
+                        aria-label="@FormatMoveLabel(MoveDownLabelFormat, MoveDownLabel, entry.item)"
+                        @onclick="@(() => MoveAsync(entry.index, entry.index + 1))">
+                    <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("chevron-down")</span>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+

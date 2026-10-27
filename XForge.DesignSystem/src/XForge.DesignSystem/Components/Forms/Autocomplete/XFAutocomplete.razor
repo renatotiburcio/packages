@@ -1,0 +1,119 @@
+﻿@typeparam TItem
+@typeparam TValue
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style" @onkeydown="HandleKeyDownAsync">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@ShellWrapClass">
+        <div class="@FieldShellClass">
+            @if (StartIcon is not null)
+            {
+                <div class="@AdornmentClass">@StartIcon</div>
+            }
+
+            <input @ref="InputRef"
+                   @attributes="AdditionalAttributes"
+                   id="@Id"
+                   name="@Name"
+                   class="@InputClass"
+                   type="text"
+                   autocomplete="off"
+                   placeholder="@Placeholder"
+                    disabled="@Disabled"
+                    readonly="@ReadOnly"
+                    required="@Required"
+                    aria-label="@AriaLabel"
+                    aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                    aria-invalid="@AriaInvalid"
+                   aria-required="@Required"
+                   aria-readonly="@ReadOnly"
+                   aria-describedby="@DescribedBy"
+                   aria-autocomplete="list"
+                   aria-expanded="@IsOpen"
+                   aria-controls="@ListboxId"
+                   aria-activedescendant="@ActiveOptionId"
+                   role="combobox"
+                   value="@Search"
+                   @oninput="HandleInputAsync"
+                   @onfocus="HandleFocusAsync"
+                   @onblur="HandleBlurAsync" />
+
+            @if (Loading)
+            {
+                <div class="@AdornmentClass">
+                    <span class="h-4 w-4 animate-spin rounded-full border-2 border-[color-mix(in_oklab,var(--color-primary)_25%,transparent)] border-t-primary" aria-label="@LoadingText"></span>
+                </div>
+            }
+            else if (EndIcon is not null)
+            {
+                <div class="@AdornmentClass">@EndIcon</div>
+            }
+
+            @if (Clearable && HasSearch && !Disabled && !ReadOnly)
+            {
+                <button type="button" class="@ClearButtonClass" aria-label="@ClearLabel" @onclick="ClearAsync">
+                    <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("xmark")</span>
+                </button>
+            }
+        </div>
+
+        @if (IsOpen)
+        {
+            <div id="@ListboxId" class="@ListboxClass" role="listbox" aria-label="@ListboxLabel">
+                @if (Loading)
+                {
+                    <div class="@StateRowClass">@LoadingText</div>
+                }
+                else if (FilteredItems.Count == 0)
+                {
+                    <div class="@StateRowClass">@EmptyText</div>
+                }
+                else
+                {
+                    @foreach (var indexedItem in FilteredItems.Select((item, index) => new { item, index }))
+                    {
+                        <button type="button"
+                                id="@GetOptionId(indexedItem.index)"
+                                class="@GetOptionClass(indexedItem.index)"
+                                role="option"
+                                aria-selected="@((indexedItem.index == HighlightedIndex).ToString().ToLowerInvariant())"
+                                @onclick="@(() => SelectItemAsync(indexedItem.item))">
+                            @if (ItemTemplate is not null)
+                            {
+                                @ItemTemplate(indexedItem.item)
+                            }
+                            else
+                            {
+                                @GetItemText(indexedItem.item)
+                            }
+                        </button>
+                    }
+                }
+            </div>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">@FirstValidationMessage</div>
+    }
+    else if (!string.IsNullOrWhiteSpace(ErrorText))
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">@ErrorText</div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">@HelperText</div>
+    }
+</div>
+

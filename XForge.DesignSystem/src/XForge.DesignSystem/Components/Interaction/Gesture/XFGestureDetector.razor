@@ -1,0 +1,11 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes"
+     @onpointerdown="OnPointerDown"
+     @onpointerup="OnPointerUp"
+     @onpointermove="OnPointerMove"
+     @onpointercancel="OnPointerCancel"
+     @onwheel="OnWheel">
+
+    @ChildContent
+</div>

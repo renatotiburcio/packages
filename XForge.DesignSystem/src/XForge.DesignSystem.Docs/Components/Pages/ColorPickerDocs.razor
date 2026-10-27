@@ -1,0 +1,766 @@
+﻿@page "/forms/color-picker"
+
+@using XForge.DesignSystem.Core.Primitives
+@using Microsoft.AspNetCore.Components.Forms
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="ColorPicker"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFColorPicker" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("HSV Picker", "HSV Picker")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Paleta", "Palette")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Alpha", "Alpha")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Seletor de cor avancado com HSV, paleta, alpha e modelos de cor.", "Advanced color picker with HSV, palette, alpha and color models.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFColorPicker e o componente completo para selecao de cores com picker HSV interativo, paleta de amostras, suporte a alpha e multiplos modelos de cor.", "XFColorPicker is the complete component for color selection with interactive HSV picker, sample palette, alpha support and multiple color models.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts)
+                            {
+                                @Tile(item)
+                            }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section(T("Blazor Server e Blazor WebAssembly", "Blazor Server and Blazor WebAssembly"), @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Popover e sliders indisponiveis durante prerender.", "Renders base HTML. Popover and sliders unavailable during prerender.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-colorpicker.js — gerencia popover positioning, SV picker mouse/touch events e sliders de hue/alpha.", "JS file: xf-colorpicker.js — manages popover positioning, SV picker mouse/touch events and hue/alpha sliders.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: OnAfterRenderAsync.", "When loaded: OnAfterRenderAsync.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Prerender seguro: try/catch para InvalidOperationException e JSDisconnectedException.", "Prerender safe: try/catch for InvalidOperationException and JSDisconnectedException.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor Server", "Blazor Server Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop via SignalR com latencia. Interacoes no SV picker podem ter resposta mais lenta.", "JS interop via SignalR with latency. SV picker interactions may have slower response.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor WebAssembly", "Blazor WebAssembly Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop direto sem latencia de rede. Disponivel apos carregamento do WASM.", "Direct JS interop with no network latency. Available after WASM load.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Basico", "Basic"),
+                T("Seletor de cor com label e binding.", "Color picker with label and binding."),
+                BasicPreview, BasicCode)
+            @Example(T("Com Alpha", "With Alpha"),
+                T("Habilita selecao de opacidade.", "Enables opacity selection."),
+                AlphaPreview, AlphaCode)
+            @Example(T("HSV Picker", "HSV Picker"),
+                T("Picker interativo de saturacao e brilho.", "Interactive saturation and brightness picker."),
+                HsvPreview, HsvCode)
+            @Example(T("Modelos de cor", "Color Models"),
+                T("Exibe RGB e modelos de cor adicionais.", "Shows RGB and additional color models."),
+                ColorModelsPreview, ColorModelsCode)
+            @Example(T("Paleta customizada", "Custom Palette"),
+                T("Paleta de cores predefinidas.", "Predefined color palette."),
+                CustomPalettePreview, CustomPaletteCode)
+            @Example(T("Paleta de tema", "Theme Palette"),
+                T("Paleta com escala de tema em grade.", "Palette with theme color scale grid."),
+                ThemePalettePreview, ThemePaletteCode)
+            @Example(T("Somente leitura", "Read Only"),
+                T("Valor fixo, sem interacao.", "Fixed value, no interaction."),
+                ReadOnlyPreview, ReadOnlyCode)
+            @Example(T("Desabilitado", "Disabled"),
+                T("Campo desabilitado visualmente e funcionalmente.", "Visually and functionally disabled field."),
+                DisabledPreview, DisabledCode)
+            @Example(T("Modo compacto", "Compact Mode"),
+                T("Popover minimalista somente com paleta.", "Minimal popover with palette only."),
+                CompactPreview, CompactCode)
+            @Example(T("Somente paleta", "Palette Only"),
+                T("Popover abre direto na aba de paleta, sem picker HSV.", "Popover opens directly on the palette tab, without HSV picker."),
+                PaletteOnlyPreview, PaletteOnlyCode)
+            @Example(T("Sem aba Picker", "No Picker Tab"),
+                T("Esconde a aba Picker; popover abre na Palette.", "Hides Picker tab; popover opens on Palette."),
+                NoPickerTabPreview, NoPickerTabCode)
+            @Example(T("Texto de ajuda", "With Helper Text"),
+                T("Orientacao adicional abaixo do campo.", "Additional guidance below the field."),
+                HelperTextPreview, HelperTextCode)
+            @Example(T("Labels customizados", "Custom Labels"),
+                T("Todos os textos internos personalizaveis.", "All internal texts customizable."),
+                CustomLabelsPreview, CustomLabelsCode)
+            @Example(T("Editor de tema enterprise", "Enterprise Theme Editor"),
+                T("Exemplo completo com alpha, paleta e tema.", "Full example with alpha, palette and theme."),
+                EnterprisePreview, EnterpriseCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegacao por teclado", "Keyboard Navigation"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Padroes anti", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Seguranca", "Security"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migracao", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Copiar codigo", "Copy code");
+
+    private string? _basicColor = "#3B82F6";
+    private string? _alphaColor = "#3B82F6";
+    private string? _hsvColor = "#EF4444";
+    private string? _colorModelsColor = "#8B5CF6";
+    private string? _customPaletteColor = "#22C55E";
+    private string? _themePaletteColor = "#0EA5E9";
+    private string? _readOnlyColor = "#F59E0B";
+    private string? _disabledColor = "#6366F1";
+    private string? _compactColor = "#EC4899";
+    private string? _helperTextColor = "#06B6D4";
+    private string? _customLabelsColor = "#EF4444";
+    private string? _enterprisePrimary = "#3B82F6";
+    private string? _enterpriseAccent = "#8B5CF6";
+    private string? _paletteOnlyColor = "#22C55E";
+    private string? _noPickerTabColor = "#3B82F6";
+
+    private IReadOnlyList<string> MyPalette => ["#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4", "#3B82F6", "#8B5CF6", "#EC4899"];
+    private IReadOnlyList<IReadOnlyList<string>> MyThemePalette => [
+        ["#FEF2F2", "#FEE2E2", "#FECACA", "#FCA5A5", "#F87171", "#EF4444", "#DC2626", "#B91C1C"],
+        ["#F0F9FF", "#E0F2FE", "#BAE6FD", "#7DD3FC", "#38BDF8", "#0EA5E9", "#0284C7", "#0369A1"]
+    ];
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Cor primaria", "Primary color")" @bind-Value="_basicColor" />
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg border border-border-light" style="background-color:@(_basicColor ?? "#3B82F6")"></div>
+            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Medium">@(_basicColor ?? "#3B82F6")</XFTypography>
+        </div>
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts =>
+    [
+        new(T("HSV interativo", "Interactive HSV"), T("Picker de saturacao, brilho e matiz com sliders.", "Saturation, brightness and hue picker with sliders."), "palette"),
+        new(T("Paleta de cores", "Color palette"), T("Swatches configuraveis e escala de tema.", "Configurable swatches and theme scale."), "swatchbook"),
+        new(T("Alpha e modelos", "Alpha and models"), T("Opacidade, Hex, RGB e mais.", "Opacity, Hex, RGB and more."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows =>
+    [
+        new("Component", "XFColorPicker"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.ColorPicker"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Forms / ColorPicker"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("Labels ARIA, sliders acessiveis e navegacao por teclado.", "ARIA labels, accessible sliders and keyboard navigation."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems =>
+    [
+        new(T("HSV Picker interativo", "Interactive HSV Picker"), T("Area de saturacao/brilho com slider de matiz.", "Saturation/brightness area with hue slider."), "palette"),
+        new(T("Paleta e tema", "Palette and theme"), T("Swatches e escala de cores do tema.", "Swatches and theme color scale."), "swatchbook"),
+        new(T("Modelos de cor", "Color Models"), T("Hex, RGB, HSV e alpha.", "Hex, RGB, HSV and alpha."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems =>
+    [
+        new(T("Antes", "Before"), T("Selecao de cores sem feedback visual rico.", "Color selection without rich visual feedback."), "xmark"),
+        new(T("Depois", "After"), T("Picker completo com preview, sliders e paleta.", "Full picker with preview, sliders and palette."), "check"),
+        new(T("Produtividade", "Productivity"), T("Reduz tempo de configuracao de cores.", "Reduces color configuration time."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems =>
+    [
+        new(T("Editor de tema", "Theme editor"), T("Configurar cores do design system por tenant.", "Configure design system colors per tenant."), "palette"),
+        new(T("Configuracoes avancadas", "Advanced settings"), T("Quando precisa de alpha, HSV ou modelos de cor.", "When you need alpha, HSV or color models."), "sliders"),
+        new(T("Design tools", "Design tools"), T("Ferramentas de design internas.", "Internal design tools."), "paintbrush")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems =>
+    [
+        new(T("Cor simples", "Simple color"), T("Use XFColorInput para hex simples.", "Use XFColorInput for simple hex."), "triangle-exclamation"),
+        new(T("Formulario compacto", "Compact form"), T("Picker ocupa espaco; use input simples.", "Picker takes space; use simple input."), "compress")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems =>
+    [
+        new("Trigger", T("Botao ou campo que abre o popover.", "Button or field that opens the popover."), "hand-pointer"),
+        new("Popover", T("Dialog com tabs: Picker, Palette, Details.", "Dialog with tabs: Picker, Palette, Details."), "square"),
+        new(T("SV Picker", "SV Picker"), T("Area 2D de saturacao e brilho.", "2D saturation and brightness area."), "maximize"),
+        new(T("Sliders", "Sliders"), T("Hue slider e alpha slider.", "Hue slider and alpha slider."), "sliders")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows =>
+    [
+        new("HSV + Alpha", T("Picker completo com sliders de matiz e opacidade.", "Full picker with hue and opacity sliders.")),
+        new("Palette Only", T("Modo compacto com somente swatches.", "Compact mode with swatches only.")),
+        new("Theme Scale", T("Grade de escala de cores do tema.", "Theme color scale grid.")),
+        new("Read Only", T("Exibicao sem interacao.", "Display without interaction.")),
+        new("Disabled", T("Campo desativado.", "Deactivated field."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows =>
+    [
+        new("Default", T("Interativo com hover e focus.", "Interactive with hover and focus.")),
+        new("Disabled", T("Opacidade reduzida, sem interacao.", "Reduced opacity, no interaction.")),
+        new("ReadOnly", T("Valor visivel, sem edicao.", "Value visible, no editing.")),
+        new("Open", T("Popover aberto com tabs ativas.", "Popover open with active tabs."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("Value", "string?", "null", T("Valor hex da cor selecionada.", "Hex value of selected color.")),
+        new("ValueChanged", "EventCallback<string?>", "default", T("Two-way binding.", "Two-way binding.")),
+        new("Change", "EventCallback<string?>", "default", T("Mudanca confirmada.", "Committed change.")),
+        new("Label", "string?", "null", T("Texto do label.", "Label text.")),
+        new("AriaLabel", "string?", "null", T("Label acessivel.", "Accessible label.")),
+        new("HelperText", "string?", "null", T("Texto de ajuda.", "Helper text.")),
+        new("Immediate", "bool", "true", T("Atualiza Value em tempo real.", "Updates Value in real time.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read-only.")),
+        new("Required", "bool", "false", T("Obrigatorio.", "Required.")),
+        new("FullWidth", "bool", "true", T("Ocupa toda a largura.", "Fills width.")),
+        new("ShowRgb", "bool", "true", T("Exibe campo RGB.", "Shows RGB field.")),
+        new("ShowColorModels", "bool", "true", T("Exibe modelos de cor.", "Shows color models.")),
+        new("ShowAlpha", "bool", "false", T("Habilita slider de opacidade.", "Enables opacity slider.")),
+        new("ShowHsvPicker", "bool", "true", T("Exibe area SV e slider de matiz.", "Shows SV area and hue slider.")),
+        new("ShowPickerTab", "bool", "true", T("Exibe aba Picker no popover. Quando false, abre direto na Palette.", "Shows Picker tab in popover. When false, opens directly on Palette.")),
+        new("Palette", "IReadOnlyList<string>", "null", T("Lista de cores hex para swatches.", "List of hex colors for swatches.")),
+        new("ThemePalette", "IReadOnlyList<IReadOnlyList<string>>?", "null", T("Grade de escala de tema.", "Theme color scale grid.")),
+        new("OpenOnFocus", "bool", "false", T("Abre popover ao focar.", "Opens popover on focus.")),
+        new("ToggleLabel", "string", "\"Open color palette\"", T("Label do botao de abrir.", "Toggle button label.")),
+        new("DialogLabel", "string", "\"Color picker\"", T("Label do popover.", "Popover label.")),
+        new("ThemeColorTitle", "string", "\"Theme color\"", T("Titulo da cor do tema.", "Theme color title.")),
+        new("ThemeScaleLabel", "string", "\"Theme color scale\"", T("Label da escala de tema.", "Theme scale label.")),
+        new("CustomColorsTitle", "string", "\"My colors\"", T("Titulo de cores customizadas.", "Custom colors title.")),
+        new("AddColorText", "string", "\"Add\"", T("Texto do botao adicionar.", "Add button text.")),
+        new("HexLabel", "string", "\"Hex\"", T("Label do campo hex.", "Hex field label.")),
+        new("AlphaLabel", "string", "\"Alpha\"", T("Label do campo alpha.", "Alpha field label.")),
+        new("CancelText", "string", "\"Cancel\"", T("Texto do botao cancelar.", "Cancel button text.")),
+        new("ApplyText", "string", "\"Apply\"", T("Texto do botao aplicar.", "Apply button text.")),
+        new("SwatchLabelFormat", "string", "\"Select {0}\"", T("Formato do label de cada swatch.", "Swatch label format.")),
+        new("SvPickerLabel", "string", "\"Saturation and brightness picker\"", T("Label acessivel do SV picker.", "SV picker accessible label.")),
+        new("HueSliderLabel", "string", "\"Hue slider\"", T("Label do slider de matiz.", "Hue slider label.")),
+        new("PickerTabLabel", "string", "\"Picker\"", T("Label da aba Picker.", "Picker tab label.")),
+        new("PaletteTabLabel", "string", "\"Palette\"", T("Label da aba Palette.", "Palette tab label.")),
+        new("DetailsTabLabel", "string", "\"Details\"", T("Label da aba Details.", "Details tab label.")),
+        new("TabBarLabel", "string", "\"Color picker sections\"", T("Label da barra de tabs.", "Tab bar label.")),
+        new("NativePickerTitle", "string", "\"Native picker\"", T("Titulo do picker nativo.", "Native picker title."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows =>
+    [
+        new("ValueChanged", T("A cada mudanca de valor em tempo real.", "On each real-time value change.")),
+        new("Change", T("Mudanca confirmada (Apply ou Enter).", "Committed change (Apply or Enter)."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows =>
+    [
+        new("FocusAsync", T("Foca o trigger do picker.", "Focuses the picker trigger."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems =>
+    [
+        new("ARIA Labels", T("Label, AriaLabel e textos configuraveis.", "Label, AriaLabel and configurable texts."), "universal-access"),
+        new("SV Picker", T("aria-label na area de saturacao/brilho.", "aria-label on saturation/brightness area."), "palette"),
+        new("Sliders", T("Sliders com role e aria-valuenow.", "Sliders with role and aria-valuenow."), "sliders"),
+        new("Tabs", T("Tabs com role=tab e aria-selected.", "Tabs with role=tab and aria-selected."), "folder-tree")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows =>
+    [
+        new("Tab", T("Navega entre trigger e elementos do popover.", "Navigates between trigger and popover elements.")),
+        new("Enter/Space", T("Abre popover ou seleciona swatch.", "Opens popover or selects swatch.")),
+        new("Escape", T("Fecha o popover.", "Closes the popover.")),
+        new("Arrow keys", T("Move cursor no SV picker e sliders.", "Moves cursor in SV picker and sliders."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems =>
+    [
+        new("FullWidth", T("Ocupa largura disponivel em mobile.", "Fills available width on mobile."), "mobile-screen"),
+        new("Popover", T("Popover se adapta ao viewport.", "Popover adapts to viewport."), "maximize")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems =>
+    [
+        new("Lazy popover", T("Conteudo renderizado apenas ao abrir.", "Content rendered only on open."), "bolt"),
+        new("Debounce", T("Atualizacoes de cor com debounce.", "Color updates with debounce."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems =>
+    [
+        new(T("Hex simples", "Simple hex"), T("Nao use XFColorPicker para hex simples. Use XFColorInput.", "Do not use XFColorPicker for simple hex. Use XFColorInput."), "triangle-exclamation"),
+        new(T("Popover sem fechar", "Popover without close"), T("Sempre permita fechar com Escape ou Apply.", "Always allow closing with Escape or Apply."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems =>
+    [
+        new("XFColorInput", T("Input hex simples com preview e paleta.", "Simple hex input with preview and palette."), "droplet"),
+        new("XFSlider", T("Slider generico para valores numericos.", "Generic slider for numeric values."), "sliders"),
+        new("XFTabs", T("Componente de tabs utilizado internamente.", "Tabs component used internally."), "folder-tree")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows =>
+    [
+        new("colors", T("bg-primary, border-surface-200, text-primary.", "bg-primary, border-surface-200, text-primary.")),
+        new("spacing", T("p-4, gap-2, h-10.", "p-4, gap-2, h-10.")),
+        new("border-radius", T("rounded-lg para popover e swatches.", "rounded-lg for popover and swatches."))
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows =>
+    [
+        new(T("Formato do Value?", "Value format?"), T("String hex com 6 ou 8 digitos (com alpha).", "Hex string with 6 or 8 digits (with alpha).")),
+        new(T("Alpha por padrao?", "Alpha by default?"), T("Nao. Defina ShowAlpha=true para habilitar.", "No. Set ShowAlpha=true to enable.")),
+        new(T("Tema personalizado?", "Custom theme?"), T("Use ThemePalette com listas de listas de hex.", "Use ThemePalette with lists of hex lists."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows =>
+    [
+        new("2026-06-01", T("Feat: ShowPickerTab, exemplos Palette-Only e No-Picker-Tab.", "Feat: ShowPickerTab, Palette-Only and No-Picker-Tab examples.")),
+        new("2026-06-01", T("Feat: Popover redesenhado com tabs (Picker, Palette, Details), padrao EN, altura reduzida.", "Feat: Popover redesigned with tabs (Picker, Palette, Details), EN defaults, reduced popover height.")),
+        new("2026-05-26", T("Pagina criada no padrao enterprise.", "Page created in enterprise standard."))
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems =>
+    [
+        new(T("Feedback imediato", "Immediate feedback"), T("Preview de cor atualiza em tempo real enquanto o usuario interage.", "Color preview updates in real time as user interacts."), "eye"),
+        new(T("Organizacao por tabs", "Tab organization"), T("Picker, Palette e Details em abas separadas para clareza.", "Picker, Palette and Details in separate tabs for clarity."), "folder-tree"),
+        new(T("Consistencia", "Consistency"), T("Mesmo padrao de interacao em todos os contextos.", "Same interaction pattern in all contexts."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems =>
+    [
+        new("ERP", T("Editor de tema por tenant com cores primaria, secundaria e destaque.", "Theme editor per tenant with primary, secondary and accent colors."), "briefcase"),
+        new(T("Design System", "Design System"), T("Editor de design tokens de cor com paleta e escala.", "Color design token editor with palette and scale."), "palette"),
+        new("CRM", T("Cores de status de leads e pipeline.", "Lead and pipeline status colors."), "users"),
+        new("Dashboard", T("Configuracao de cores de series de graficos.", "Chart series color configuration."), "chart-line-up"),
+        new(T("Configuracoes", "Settings"), T("Tema claro/escuro e personalizacao visual.", "Light/dark theme and visual customization."), "sliders"),
+        new(T("Fiscal", "Tax"), T("Cores para categorias de impostos e relatorios.", "Colors for tax categories and reports."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems =>
+    [
+        new("XFEditForm", T("Use com EditForm para validacao e two-way binding.", "Use with EditForm for validation and two-way binding."), "file-lines"),
+        new("XFCard", T("Agrupe color pickers em cards de configuracao.", "Group color pickers in settings cards."), "square"),
+        new("XFStack", T("Organize multiplos pickers com Stack.", "Organize multiple pickers with Stack."), "layer-group"),
+        new("XFTabs", T("Aba de tema com picker e preview ao lado.", "Theme tab with picker and preview beside it."), "folder-tree")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems =>
+    [
+        new(T("Labels descritivos", "Descriptive labels"), T("Use Label para descrever a finalidade da cor.", "Use Label to describe the color purpose."), "tag"),
+        new(T("Helper text", "Helper text"), T("Orientacao adicional para cores de marca ou tema.", "Additional guidance for brand or theme colors."), "circle-info"),
+        new(T("Paleta do tema", "Theme palette"), T("ForneÃ§a ThemePalette para escala consistente.", "Provide ThemePalette for consistent scale."), "swatchbook"),
+        new(T("Alpha consciente", "Conscious alpha"), T("Habilite ShowAlpha apenas quando opacidade for necessaria.", "Enable ShowAlpha only when opacity is needed."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems =>
+    [
+        new("data-theme", T("Light e dark via CSS variables.", "Light and dark via CSS variables."), "moon"),
+        new(T("Contraste", "Contrast"), T("WCAG AA em ambos temas com cores semanticas.", "WCAG AA in both themes with semantic colors."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems =>
+    [
+        new(T("Validacao hex", "Hex validation"), T("Apenas strings hex validas sao aceitas.", "Only valid hex strings are accepted."), "shield-check"),
+        new(T("Sem XSS", "No XSS"), T("Valores nao sao renderizados como HTML.", "Values are not rendered as HTML."), "lock")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows =>
+    [
+        new("Unit", T("Render, valor, paleta, theme palette, alpha, disabled, readonly.", "Render, value, palette, theme palette, alpha, disabled, readonly.")),
+        new("Interaction", T("SV picker, hue slider, alpha slider, tab switching.", "SV picker, hue slider, alpha slider, tab switching.")),
+        new("Accessibility", T("ARIA labels, keyboard navigation, focus management.", "ARIA labels, keyboard navigation, focus management.")),
+        new("Snapshot", T("Popover aberto e fechado em ambos temas.", "Popover open and closed in both themes."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows =>
+    [
+        new(T("Popover position", "Popover position"), T("Popover pode colidir em viewports muito pequenos.", "Popover may collide on very small viewports.")),
+        new(T("Sem CMYK", "No CMYK"), T("Somente RGB/HSV/Hex. CMYN nao suportado.", "RGB/HSV/Hex only. CMYK not supported."))
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems =>
+    [
+        new("XFColorInput", T("Troque por XFColorPicker quando precisar de HSV, alpha ou modelos de cor.", "Replace with XFColorPicker when you need HSV, alpha or color models."), "arrow-rotate-left"),
+        new(T("Picker nativo", "Native picker"), T("Migre de input[type=color] para XFColorPicker.", "Migrate from input[type=color] to XFColorPicker."), "arrows-rotate")
+    ];
+
+    private RenderFragment BasicPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Cor primaria", "Primary color")" @bind-Value="_basicColor" />
+    </XFStack>;
+
+    private string BasicCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Cor primaria", "Primary color")}\"\n" +
+        "    @bind-Value=\"_color\" />";
+
+    private RenderFragment AlphaPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Cor com opacidade", "Color with opacity")" @bind-Value="_alphaColor" ShowAlpha="true" />
+    </XFStack>;
+
+    private string AlphaCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Cor com opacidade", "Color with opacity")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        "    ShowAlpha=\"true\" />";
+
+    private RenderFragment HsvPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("HSV interativo", "Interactive HSV")" @bind-Value="_hsvColor" ShowHsvPicker="true" />
+    </XFStack>;
+
+    private string HsvCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("HSV interativo", "Interactive HSV")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        "    ShowHsvPicker=\"true\" />";
+
+    private RenderFragment ColorModelsPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("RGB e modelos", "RGB and models")" @bind-Value="_colorModelsColor" ShowRgb="true" ShowColorModels="true" />
+    </XFStack>;
+
+    private string ColorModelsCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("RGB e modelos", "RGB and models")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        "    ShowRgb=\"true\"\n" +
+        "    ShowColorModels=\"true\" />";
+
+    private RenderFragment CustomPalettePreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Paleta da marca", "Brand palette")" @bind-Value="_customPaletteColor" Palette="@MyPalette" ShowHsvPicker="false" />
+    </XFStack>;
+
+    private string CustomPaletteCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Paleta da marca", "Brand palette")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        "    Palette=\"@MyPalette\"\n" +
+        "    ShowHsvPicker=\"false\" />\n\n" +
+        "@code {\n" +
+        "    private IReadOnlyList<string> MyPalette => [\n" +
+        "        \"#EF4444\", \"#F97316\", \"#EAB308\", \"#22C55E\",\n" +
+        "        \"#06B6D4\", \"#3B82F6\", \"#8B5CF6\", \"#EC4899\"\n" +
+        "    ];\n" +
+        "}";
+
+    private RenderFragment ThemePalettePreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Tema", "Theme")" @bind-Value="_themePaletteColor" ThemePalette="@MyThemePalette" ShowHsvPicker="false" ShowRgb="false" ShowColorModels="false" />
+    </XFStack>;
+
+    private string ThemePaletteCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Tema", "Theme")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        "    ThemePalette=\"@MyThemePalette\"\n" +
+        "    ShowHsvPicker=\"false\"\n" +
+        "    ShowRgb=\"false\"\n" +
+        "    ShowColorModels=\"false\" />\n\n" +
+        "@code {\n" +
+        "    private IReadOnlyList<IReadOnlyList<string>> MyThemePalette => [\n" +
+        "        [\"#FEF2F2\", \"#FEE2E2\", \"#FECACA\", ...],\n" +
+        "        [\"#F0F9FF\", \"#E0F2FE\", \"#BAE6FD\", ...]\n" +
+        "    ];\n" +
+        "}";
+
+    private RenderFragment ReadOnlyPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Somente leitura", "Read only")" Value="@_readOnlyColor" ReadOnly="true" />
+    </XFStack>;
+
+    private string ReadOnlyCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Somente leitura", "Read only")}\"\n" +
+        "    Value=\"#F59E0B\"\n" +
+        "    ReadOnly=\"true\" />";
+
+    private RenderFragment DisabledPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Desabilitado", "Disabled")" Value="@_disabledColor" Disabled="true" />
+    </XFStack>;
+
+    private string DisabledCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Desabilitado", "Disabled")}\"\n" +
+        "    Value=\"#6366F1\"\n" +
+        "    Disabled=\"true\" />";
+
+    private RenderFragment CompactPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Compacto", "Compact")" @bind-Value="_compactColor" ShowHsvPicker="false" ShowRgb="false" ShowColorModels="false" Palette="@MyPalette" />
+    </XFStack>;
+
+    private string CompactCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Compacto", "Compact")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        "    ShowHsvPicker=\"false\"\n" +
+        "    ShowRgb=\"false\"\n" +
+        "    ShowColorModels=\"false\"\n" +
+        "    Palette=\"@MyPalette\" />";
+
+    private RenderFragment HelperTextPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Cor da marca", "Brand color")" @bind-Value="_helperTextColor" HelperText="@T("Escolha a cor principal da sua marca", "Choose your brand color")" />
+    </XFStack>;
+
+    private string HelperTextCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Cor da marca", "Brand color")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        $"    HelperText=\"{T("Escolha a cor principal da sua marca", "Choose your brand color")}\" />";
+
+    private RenderFragment CustomLabelsPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Cor customizada", "Custom color")" @bind-Value="_customLabelsColor"
+            ToggleLabel="@T("Abrir paleta", "Open palette")"
+            DialogLabel="@T("Seletor de cor", "Color selector")"
+            PickerTabLabel="@T("Seletor", "Picker")"
+            PaletteTabLabel="@T("Amostras", "Swatches")"
+            DetailsTabLabel="@T("Detalhes", "Details")"
+            HexLabel="@T("Hexadecimal", "Hexadecimal")"
+            AlphaLabel="@T("Opacidade", "Opacity")"
+            CancelText="@T("Desfazer", "Undo")"
+            ApplyText="@T("Confirmar", "Confirm")"
+            AddColorText="@T("Novo", "New")"
+            CustomColorsTitle="@T("Minhas cores", "My colors")"
+            ThemeColorTitle="@T("Cor do tema", "Theme color")"
+            ThemeScaleLabel="@T("Escala do tema", "Theme scale")" />
+    </XFStack>;
+
+    private string CustomLabelsCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Cor customizada", "Custom color")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        $"    ToggleLabel=\"{T("Abrir paleta", "Open palette")}\"\n" +
+        $"    DialogLabel=\"{T("Seletor de cor", "Color selector")}\"\n" +
+        $"    PickerTabLabel=\"{T("Seletor", "Picker")}\"\n" +
+        $"    PaletteTabLabel=\"{T("Amostras", "Swatches")}\"\n" +
+        $"    DetailsTabLabel=\"{T("Detalhes", "Details")}\"\n" +
+        $"    HexLabel=\"{T("Hexadecimal", "Hexadecimal")}\"\n" +
+        $"    AlphaLabel=\"{T("Opacidade", "Opacity")}\"\n" +
+        $"    CancelText=\"{T("Desfazer", "Undo")}\"\n" +
+        $"    ApplyText=\"{T("Confirmar", "Confirm")}\" />";
+
+    private RenderFragment EnterprisePreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFGrid Cols="1" Md="2" Gap="4">
+            <XFColorPicker Label="@T("Cor primaria", "Primary color")" @bind-Value="_enterprisePrimary"
+                ShowAlpha="true" ShowRgb="true" ShowColorModels="true"
+                Palette="@MyPalette" ThemePalette="@MyThemePalette"
+                HelperText="@T("Cor principal do sistema", "Main system color")" />
+            <XFColorPicker Label="@T("Cor de destaque", "Accent color")" @bind-Value="_enterpriseAccent"
+                ShowAlpha="true" Palette="@MyPalette"
+                HelperText="@T("Cor secundaria para destaques", "Secondary color for highlights")" />
+        </XFGrid>
+    </XFStack>;
+
+    private string EnterpriseCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Cor primaria", "Primary color")}\"\n" +
+        "    @bind-Value=\"_primaryColor\"\n" +
+        "    ShowAlpha=\"true\"\n" +
+        "    ShowRgb=\"true\"\n" +
+        "    ShowColorModels=\"true\"\n" +
+        "    Palette=\"@MyPalette\"\n" +
+        "    ThemePalette=\"@MyThemePalette\"\n" +
+        $"    HelperText=\"{T("Cor principal do sistema", "Main system color")}\" />\n\n" +
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Cor de destaque", "Accent color")}\"\n" +
+        "    @bind-Value=\"_accentColor\"\n" +
+        "    ShowAlpha=\"true\"\n" +
+        "    Palette=\"@MyPalette\"\n" +
+        $"    HelperText=\"{T("Cor secundaria para destaques", "Secondary color for highlights")}\" />";
+
+    private RenderFragment PaletteOnlyPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Cor da marca", "Brand color")" @bind-Value="_paletteOnlyColor"
+            ShowPickerTab="false" ShowRgb="false" ShowColorModels="false"
+            Palette="@MyPalette" />
+    </XFStack>;
+
+    private string PaletteOnlyCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Cor da marca", "Brand color")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        "    ShowPickerTab=\"false\"\n" +
+        "    ShowRgb=\"false\"\n" +
+        "    ShowColorModels=\"false\"\n" +
+        "    Palette=\"@MyPalette\" />";
+
+    private RenderFragment NoPickerTabPreview => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFColorPicker Label="@T("Cor do tema", "Theme color")" @bind-Value="_noPickerTabColor"
+            ShowPickerTab="false"
+            Palette="@MyPalette" ThemePalette="@MyThemePalette"
+            HelperText="@T("Selecione usando a paleta ou escala de tema", "Select using palette or theme scale")" />
+    </XFStack>;
+
+    private string NoPickerTabCode =>
+        "<XFColorPicker\n" +
+        $"    Label=\"{T("Cor do tema", "Theme color")}\"\n" +
+        "    @bind-Value=\"_color\"\n" +
+        "    ShowPickerTab=\"false\"\n" +
+        "    Palette=\"@MyPalette\"\n" +
+        "    ThemePalette=\"@MyThemePalette\"\n" +
+        $"    HelperText=\"{T("Selecione usando a paleta ou escala de tema", "Select using palette or theme scale")}\" />";
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header>
+            <div class="px-6 pt-6">
+                <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+            </div>
+        </Header>
+        <ChildContent>
+            <div class="grid">
+                <div class="border-t border-border-light p-6">@preview</div>
+                <div class="border-t border-border-light bg-surface-50 p-6">
+                    <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+                </div>
+            </div>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+        <ChildContent>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                    <div class="min-w-0">
+                        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                    </div>
+                </div>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">
+        @foreach (var item in items)
+        {
+            @Tile(item)
+        }
+    </XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">
+        @foreach (var item in items)
+        {
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                        <div class="flex items-center gap-4">
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                            <div class="min-w-0">
+                                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography>
+                            </div>
+                        </div>
+                        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+                    </XFStack>
+                </ChildContent>
+            </XFCard>
+        }
+    </XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@nameHeader</XFTableCell>
+                <XFTableCell Header="true">@valueHeader</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Value</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader>
+            <XFTableRow>
+                <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+                <XFTableCell Header="true">Type</XFTableCell>
+                <XFTableCell Header="true">Default</XFTableCell>
+                <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+            </XFTableRow>
+        </XFTableHeader>
+        <XFTableBody>
+            @foreach (var row in rows)
+            {
+                <XFTableRow>
+                    <XFTableCell><XFCode Text="@row.Name" /></XFTableCell>
+                    <XFTableCell>@row.Type</XFTableCell>
+                    <XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell>
+                    <XFTableCell>@row.Description</XFTableCell>
+                </XFTableRow>
+            }
+        </XFTableBody>
+    </XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

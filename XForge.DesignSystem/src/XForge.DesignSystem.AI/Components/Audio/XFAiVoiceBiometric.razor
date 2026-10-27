@@ -1,0 +1,9 @@
+@namespace XForge.DesignSystem.AI.Components
+@inherits XForgeComponentBase
+
+<div class="xf-ai-voice-biometric" data-state="@State">
+  <div class="xf-ai-vb-waveform">@foreach (var s in Samples) { <span style="height:@(Math.Abs(s)*50)px"></span> }</div>
+  <button @onclick="ToggleRecording">@(IsRecording ? "Stop" : "Record")</button>
+  <div class="xf-ai-vb-id">Speaker: @(IdentifiedSpeaker ?? "Unknown")</div>
+  <div class="xf-ai-vb-confidence">Confidence: @(Confidence*100)%</div>
+</div>

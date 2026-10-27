@@ -1,0 +1,29 @@
+﻿@namespace XForge.Components.Lgpd
+<div class="xf-lgpd-anon" data-mode="@Mode">
+  <textarea @bind="Input" placeholder="Cole aqui dados com PII para anonimizar..." />
+  <select @bind="Mode">
+    <option value="mask">Mask (***)</option>
+    <option value="hash">Hash (SHA256)</option>
+    <option value="redact">Redact ([REDACTED])</option>
+  </select>
+  <button @onclick="Anonymize">Anonimizar</button>
+  @if (!string.IsNullOrEmpty(Output)) { <pre class="xf-lgpd-output">@Output</pre> }
+</div>
+@code {
+  [Parameter] public string Input { get; set; } = "";
+  [Parameter] public string Mode { get; set; } = "mask";
+  string Output { get; set; } = "";
+  void Anonymize()
+  {
+    Output = Mode switch {
+      "mask" => System.Text.RegularExpressions.Regex.Replace(Input, @"\d", "*"),
+      "hash" => System.Text.RegularExpressions.Regex.Replace(Input, @"\d+", m => {
+        using var sha = System.Security.Cryptography.SHA256.Create();
+        var bytes = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(m.Value));
+        return Convert.ToHexString(bytes).Substring(0, 8);
+      }),
+      "redact" => System.Text.RegularExpressions.Regex.Replace(Input, @"\d+", "[REDACTED]"),
+      _ => Input
+    };
+  }
+}

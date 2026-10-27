@@ -1,0 +1,117 @@
+﻿{
+  "source": "https://github.com/radzenhq/radzen-blazor",
+  "repo": "radzenhq/radzen-blazor",
+  "version": "10.4.9",
+  "license": "MIT",
+  "filesGenerated": [
+    ".xforge/project/radzen-comparison/BACKLOG.md",
+    ".xforge/project/radzen-comparison/SPRINTS.md",
+    ".xforge/project/radzen-comparison/ROADMAP.md",
+    ".xforge/project/radzen-comparison/ARCHITECTURE.md",
+    ".xforge/project/radzen-comparison/DECISIONS.md",
+    ".xforge/project/radzen-comparison/STATUS.md",
+    ".xforge/project/radzen-comparison/TASKS/T056-radzencomponent-base.md",
+    ".xforge/project/radzen-comparison/TASKS/T057-debouncer-throttle.md",
+    ".xforge/project/radzen-comparison/TASKS/T058-stringbuildercache.md",
+    ".xforge/project/radzen-comparison/TASKS/T059-classlist-struct.md",
+    ".xforge/project/radzen-comparison/TASKS/T060-aichat-service-sse.md",
+    ".xforge/project/radzen-comparison/TASKS/T061-build-time-scss-js.md",
+    ".xforge/project/radzen-comparison/TASKS/T062-api-generator.md",
+    ".xforge/project/radzen-comparison/TASKS/T063-addxforgecomponents.md",
+    ".xforge/project/radzen-comparison/TASKS/T064-themeservice-abstract.md",
+    ".xforge/project/radzen-comparison/TASKS/T065-xforge-mcp-server.md"
+  ],
+  "consolidation": {
+    "totalTasks": 57,
+    "byOrigin": {
+      "mudblazor": 19,
+      "antd-blazor": 12,
+      "blazorise": 16,
+      "radzen": 10
+    },
+    "byPriority": {
+      "P0": 11,
+      "P1": 15,
+      "P2": 13,
+      "P3": 18
+    },
+    "totalEstimatedHours": 1020
+  },
+  "radzenKeyFiles": {
+    "mainLib": "Radzen.Blazor/Radzen.Blazor.csproj",
+    "baseClass": "Radzen.Blazor/RadzenComponent.cs (407 lines)",
+    "formBase": "Radzen.Blazor/FormComponent.cs (FormComponentWithAutoComplete)",
+    "classList": "Radzen.Blazor/Rendering/ClassList.cs (168 lines, struct)",
+    "stringBuilderCache": "Radzen.Blazor/Rendering/StringBuilderCache.cs (58 lines, MIT .NET)",
+    "debouncer": "Radzen.Blazor/Debouncer.cs (79 lines)",
+    "aiService": "Radzen.Blazor/AIChatService.cs (231 lines, primary ctor)",
+    "themeComponent": "Radzen.Blazor/RadzenTheme.razor.cs (141 lines)",
+    "serviceExtensions": "Radzen.Blazor/ServiceCollectionExtensions.cs (27 lines)",
+    "apiGenerator": "Radzen.Blazor.Api.Generator/Program.cs (1704 lines, CLI)",
+    "buildProps": "Directory.Build.props (85 lines, sample)",
+    "testsProject": "Radzen.Blazor.Tests (127 files, 1701 tests)"
+  },
+  "radzenStats": {
+    "totalFiles": 2118,
+    "razor": 1138,
+    "cs": 709,
+    "scss": 122,
+    "csproj": 8,
+    "componentsInMainLib": 254,
+    "typeDeclarations": 311,
+    "demoPages": 843,
+    "testCount": 1701,
+    "testFiles": 127,
+    "themes": 5,
+    "themeVariants": 20,
+    "tfmCount": 4
+  },
+  "netNewInsights": [
+    "RadzenComponent base with OnBecameInvisible cleanup (T056)",
+    "Debouncer/Throttle with System.Timers (T057)",
+    "StringBuilderCache ThreadStatic for perf (T058)",
+    "ClassList struct-based fluent CSS builder (T059, supersedes T010)",
+    "AIChatService SSE streaming with primary ctor C# 12 (T060)",
+    "Radzen.MSBuild build-time SCSS/JS tasks (T061, adapted)",
+    "API Generator auto Razor pages from XML docs (T062)",
+    "AddRadzenComponents() extension idiom (T063)",
+    "ThemeService abstract + Cookie + QueryString impls (T064)",
+    "Cloud-hosted MCP server (T065, adapted to self-hosted)"
+  ],
+  "patternsAdopted": [
+    "CaptureUnmatchedValues Attributes",
+    "OnBecameInvisible cleanup",
+    "Debouncer/Throttle System.Timers",
+    "ClassList struct-based",
+    "StringBuilderCache ThreadStatic",
+    "AddRadzenComponents() extension",
+    "AIChatService SSE streaming",
+    "CookieThemeService/QueryStringThemeService",
+    "PersistentComponentState for SSR theme",
+    "InternalsVisibleTo for tests",
+    "bunit.web 1.36+ (newer than we use)"
+  ],
+  "patternsRejected": [
+    "Radzen.MSBuild 0.0.6 (pre-alpha, use custom Target)",
+    "Radzen.Blazor.Api.Generator as CLI (use Roslyn SG in-process)",
+    "Radzen Blazor Pro features (Studio, Pro MCP, Pro themes)",
+    "Nullable=enable + ImplicitUsings=disable (we prefer enable both)",
+    "4 TFMs (we use 3: net8/9/10)",
+    "Sample Directory.Build.props (we commit enabled)"
+  ],
+  "radzenPremiumFeatures": {
+    "radzenBlazorStudio": "visual IDE (we don't copy)",
+    "radzenBlazorForVS": "VS 2026 integration (we don't copy)",
+    "radzenBlazorMcp": "Pro cloud MCP (we do self-hosted T065)",
+    "premiumThemes": "Material 3, Fluent (we keep Tailwind)"
+  },
+  "aiComponents": {
+    "radzenAIChat": "AIChat with session memory",
+    "radzenChat": "Generic chat",
+    "radzenMarkdown": "Markdown render",
+    "radzenSpeechToTextButton": "Voice input"
+  },
+  "timestamp": "2026-06-13T09:35:00-03:00",
+  "sessionPhase": "Phase 4 of 4-way comparison",
+  "nextPhase": "Phase 5 (optional) — consolidate 4-way into unified XForge v2.0.0 architecture document"
+}

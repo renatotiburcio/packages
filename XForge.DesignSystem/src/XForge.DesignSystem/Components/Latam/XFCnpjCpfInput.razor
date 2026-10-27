@@ -1,0 +1,7 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<div class="xf-cnpjcpf-input">
+  <select @bind="Type" @bind:after="OnTypeChanged"><option value="CPF">CPF</option><option value="CNPJ">CNPJ</option></select>
+  @if (Type == "CPF") { <XFCpfInput Value="@Value" ValueChanged="OnValue" /> } else { <XFCnpjInput Value="@Value" ValueChanged="OnValue" /> }
+</div>

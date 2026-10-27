@@ -1,0 +1,111 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@FieldShellClass">
+        @if (StartIcon is not null || !string.IsNullOrWhiteSpace(PrefixText))
+        {
+            <div class="@AdornmentClass">
+                @if (StartIcon is not null)
+                {
+                    @StartIcon
+                }
+                else
+                {
+                    <span>@PrefixText</span>
+                }
+            </div>
+        }
+
+        <input @ref="InputRef"
+               @attributes="AdditionalAttributes"
+               id="@Id"
+               name="@Name"
+               class="@ColorInputClass"
+               type="color"
+               disabled="@Disabled"
+               readonly="@ReadOnly"
+               required="@Required"
+               aria-label="@AriaLabel"
+               aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+               aria-invalid="@AriaInvalid"
+               aria-required="@Required"
+               aria-readonly="@ReadOnly"
+               aria-describedby="@DescribedBy"
+               value="@NativeValue"
+               style="@NativeInputStyle"
+               @oninput="HandleInputAsync"
+               @onchange="HandleChangeAsync" />
+
+        @if (ShowValue)
+        {
+            <input class="@ValueClass"
+                   type="text"
+                   value="@CurrentValue"
+                   readonly
+                   tabindex="-1"
+                   aria-hidden="true"
+                   disabled="@Disabled" />
+        }
+
+        @if (EndIcon is not null || CanClear || !string.IsNullOrWhiteSpace(SuffixText))
+        {
+            <div class="@AdornmentClass">
+                @if (EndIcon is not null)
+                {
+                    @EndIcon
+                }
+                else if (CanClear)
+                {
+                    <button type="button" class="@ClearButtonClass" aria-label="@ClearLabel" @onclick="ClearAsync">
+                        <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("xmark")</span>
+                    </button>
+                }
+                else
+                {
+                    <span>@SuffixText</span>
+                }
+            </div>
+        }
+    </div>
+
+    @if (HasPalette)
+    {
+        <div id="@PaletteId" class="@SwatchListClass" role="group" aria-label="@PaletteLabel">
+            @foreach (var color in Palette)
+            {
+                <button type="button"
+                        class="@GetSwatchButtonClass(color)"
+                        style="@GetSwatchStyle(color)"
+                        disabled="@Disabled"
+                        aria-label="@GetSwatchLabel(color)"
+                        aria-pressed="@(NormalizeColor(color) == CurrentValue)"
+                        @onclick="() => SelectSwatchAsync(color)">
+                </button>
+            }
+        </div>
+    }
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+</div>

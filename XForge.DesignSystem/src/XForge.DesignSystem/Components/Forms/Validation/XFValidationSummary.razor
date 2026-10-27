@@ -1,0 +1,25 @@
+@inherits XForgeComponentBase
+
+@if (Messages.Count > 0)
+{
+    <div @attributes="AdditionalAttributes" id="@Id" class="@RootClass" style="@Style" role="alert" aria-live="polite">
+        <div class="flex items-start gap-3">
+            @if (ShowIcon)
+            {
+                <span class="@IconClass" aria-hidden="true">@XFSvgIcons.Markup(IconName)</span>
+            }
+            <div class="min-w-0">
+                @if (!string.IsNullOrWhiteSpace(Title))
+                {
+                    <div class="text-sm font-semibold">@Title</div>
+                }
+                <ul class="@ListClass">
+                    @foreach (var message in Messages)
+                    {
+                        <li>@message</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+}

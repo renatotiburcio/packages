@@ -1,0 +1,13 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <div id="@Id"
+         class="@GetComponentClass()"
+         tabindex="-1"
+         data-active="@Active.ToString().ToLowerInvariant()"
+         @onkeydown="HandleKeyDownAsync"
+         @attributes="AdditionalAttributes">
+        @ChildContent
+    </div>
+}

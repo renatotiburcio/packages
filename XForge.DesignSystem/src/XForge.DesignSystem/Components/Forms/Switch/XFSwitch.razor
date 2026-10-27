@@ -1,0 +1,271 @@
+@inherits XForgeComponentBase
+@using XForge.DesignSystem.Components.Icon
+@using XForge.DesignSystem.Core.Primitives
+
+@{
+    var labelBefore = LabelPosition == XFSwitchLabelPosition.Start;
+}
+
+<div class="@RootClass" style="@Style">
+    @if (labelBefore)
+    {
+        @RenderLabelContent
+    }
+
+    <button @attributes="AdditionalAttributes"
+            id="@Id"
+            name="@Name"
+            type="button"
+            role="switch"
+            class="@TrackWrapClass"
+            disabled="@Disabled"
+            aria-label="@AriaLabel"
+            aria-describedby="@DescribedBy"
+            aria-invalid="@AriaInvalid"
+            aria-required="@Required"
+            aria-checked="@AriaChecked"
+            @onclick="ToggleAsync"
+            @onkeydown="OnKeyDownAsync">
+
+        <span class="@TrackClass" aria-hidden="true">
+            @if (ShowStateText)
+            {
+                <span class="@StateTextClass">@StateText</span>
+            }
+            <span class="@ThumbClass">
+                @if (ShowThumbIcon && Value)
+                {
+                    <span class="@ThumbIconClass">@XFSvgIcons.Markup("check")</span>
+                }
+            </span>
+        </span>
+    </button>
+
+    @if (!labelBefore)
+    {
+        @RenderLabelContent
+    }
+</div>
+
+@if (HasValidationError)
+{
+    <div id="@(Id)-error" class="@ErrorClass" role="alert">
+        @FirstValidationMessage
+    </div>
+}
+
+@code {
+    private string AriaChecked => Value ? "true" : "false";
+    private string AriaInvalid => HasValidationError ? "true" : "false";
+    private string? StateText => Value ? CheckedText : UncheckedText;
+
+    private string? FirstValidationMessage => HasValidationError
+        ? CascadedEditContext?.GetValidationMessages(GetFieldIdentifier()).FirstOrDefault()
+        : null;
+
+    private bool HasValidationError =>
+        CascadedEditContext is not null
+        && ValueExpression is not null
+        && GetFieldIdentifier().FieldName != null
+        && CascadedEditContext.GetValidationMessages(GetFieldIdentifier()).Any();
+
+    private FieldIdentifier GetFieldIdentifier() =>
+        ValueExpression != null ? FieldIdentifier.Create(ValueExpression) : default;
+
+    private string? DescribedBy
+    {
+        get
+        {
+            var parts = new System.Collections.Generic.List<string>();
+            if (HasValidationError) parts.Add($"{Id}-error");
+            else if (!string.IsNullOrWhiteSpace(Description)) parts.Add($"{Id}-description");
+            return parts.Count > 0 ? string.Join(" ", parts) : null;
+        }
+    }
+
+    private async Task ToggleAsync()
+    {
+        if (Disabled || ReadOnly) return;
+
+        var newValue = !Value;
+
+        if (ValueChanged.HasDelegate)
+            await ValueChanged.InvokeAsync(newValue);
+
+        if (Change.HasDelegate)
+            await Change.InvokeAsync(newValue);
+
+        if (CascadedEditContext is not null && ValueExpression is not null)
+        {
+            CascadedEditContext.NotifyFieldChanged(GetFieldIdentifier());
+        }
+    }
+
+    private async Task OnKeyDownAsync(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter" || args.Key == " ")
+        {
+            await ToggleAsync();
+        }
+    }
+
+    private RenderFragment RenderLabelContent => __builder =>
+    {
+        <span class="@TextWrapClass">
+            @if (!string.IsNullOrWhiteSpace(Label) || ChildContent is not null)
+            {
+                <span class="@LabelClass">
+                    @if (ChildContent is not null)
+                    {
+                        @ChildContent
+                    }
+                    else
+                    {
+                        @Label
+                    }
+                    @if (Required)
+                    {
+                        <span class="ml-0.5 text-danger" aria-hidden="true">&ast;</span>
+                    }
+                </span>
+            }
+            @if (!string.IsNullOrWhiteSpace(Description) && !HasValidationError)
+            {
+                <span class="text-xs leading-5 text-text-secondary" id="@(Id)-description">@Description</span>
+            }
+        </span>
+    };
+
+    private string RootClass =>
+        Join(
+            "xf-switch group flex gap-3 items-start",
+            LabelPosition == XFSwitchLabelPosition.Start ? "flex-row-reverse justify-end" : string.Empty,
+            FullWidth ? "w-full" : "inline-flex",
+            Disabled ? "cursor-not-allowed opacity-60" : ReadOnly ? "cursor-default" : "cursor-pointer",
+            Class);
+
+    private string TrackWrapClass =>
+        Join(
+            "inline-flex shrink-0 items-center justify-center border-0 bg-transparent p-0",
+            SizeWrapClass,
+            Disabled ? "cursor-not-allowed" : ReadOnly ? "cursor-default" : "cursor-pointer");
+
+    private string TrackClass =>
+        Join(
+            "relative inline-flex shrink-0 items-center rounded-full border transition-all duration-200 ease-out",
+            SizeTrackClass,
+            Disabled ? "border-surface-200 bg-surface-100" : ReadOnly ? "border-surface-200 bg-surface-100" : "focus-visible:ring-4 active:scale-[.98]",
+            HasValidationError ? ErrorTrackClass : ToneTrackClass);
+
+    private string ThumbClass =>
+        Join(
+            "absolute left-0.5 inline-flex items-center justify-center rounded-full bg-bg-surface text-primary shadow-sm transition-all duration-200 ease-out",
+            SizeThumbClass,
+            Value ? ThumbTranslateClass : string.Empty);
+
+    private string TextWrapClass => "grid min-w-0 gap-0.5";
+
+    private string LabelClass =>
+        Join(
+            "inline-flex items-center gap-1 font-medium leading-5 text-text-primary",
+            Size == XFSize.Lg ? "text-base" : "text-sm");
+
+    private string ErrorClass => "ml-12 text-xs font-medium leading-5 text-danger";
+
+    private string StateTextClass =>
+        Join(
+            "pointer-events-none absolute inset-0 flex items-center select-none font-semibold leading-none transition-colors duration-200",
+            StateTextSizeClass,
+            Value ? StateTextCheckedClass : StateTextUncheckedClass);
+
+    private string StateTextSizeClass => Size switch
+    {
+        XFSize.Sm => "text-[0.625rem]",
+        XFSize.Lg => "text-xs",
+        _ => "text-[0.6875rem]"
+    };
+
+    private string StateTextCheckedClass => Size switch
+    {
+        XFSize.Sm => "justify-start pl-1.5 pr-5 text-white/90",
+        XFSize.Lg => "justify-start pl-2 pr-7 text-white/90",
+        _ => "justify-start pl-2 pr-6 text-white/90"
+    };
+
+    private string StateTextUncheckedClass => Size switch
+    {
+        XFSize.Sm => "justify-end pl-5 pr-1.5 text-text-muted",
+        XFSize.Lg => "justify-end pl-7 pr-2 text-text-muted",
+        _ => "justify-end pl-6 pr-2 text-text-muted"
+    };
+
+    private string ThumbIconClass => Size switch
+    {
+        XFSize.Sm => "h-2.5 w-2.5",
+        XFSize.Lg => "h-3.5 w-3.5",
+        _ => "h-3 w-3"
+    };
+
+    private string SizeWrapClass => Size switch
+    {
+        XFSize.Sm => "h-5",
+        XFSize.Lg => "h-7",
+        _ => "h-6"
+    };
+
+    private string SizeTrackClass => Size switch
+    {
+        XFSize.Sm => ShowStateText ? "h-5 w-auto min-w-[3.75rem]" : "h-5 w-9",
+        XFSize.Lg => ShowStateText ? "h-7 w-auto min-w-[5rem]" : "h-7 w-12",
+        _ => ShowStateText ? "h-6 w-auto min-w-[4.5rem]" : "h-6 w-11"
+    };
+
+    private string SizeThumbClass => Size switch
+    {
+        XFSize.Sm => "h-4 w-4",
+        XFSize.Lg => "h-6 w-6",
+        _ => "h-5 w-5"
+    };
+
+    private string ThumbTranslateClass => Size switch
+    {
+        XFSize.Sm => ShowStateText ? "translate-x-[2.75rem]" : "translate-x-4",
+        XFSize.Lg => ShowStateText ? "translate-x-[3.5rem]" : "translate-x-5",
+        _ => ShowStateText ? "translate-x-[3rem]" : "translate-x-5"
+    };
+
+    private string ToneTrackClass
+    {
+        get
+        {
+            if (!Value)
+            {
+                return Tone switch
+                {
+                    XFSemanticColor.Secondary => "border-surface-300 bg-surface-100 group-hover:border-[color-mix(in_oklab,var(--color-secondary)_50%,transparent)] focus-visible:border-[var(--color-secondary)] focus-visible:ring-[color-mix(in_oklab,var(--color-secondary)_16%,transparent)]",
+                    XFSemanticColor.Success => "border-surface-300 bg-surface-100 group-hover:border-[color-mix(in_oklab,var(--color-success)_50%,transparent)] focus-visible:border-[var(--color-success)] focus-visible:ring-[color-mix(in_oklab,var(--color-success)_16%,transparent)]",
+                    XFSemanticColor.Warning => "border-surface-300 bg-surface-100 group-hover:border-[color-mix(in_oklab,var(--color-warning)_55%,transparent)] focus-visible:border-[var(--color-warning)] focus-visible:ring-[color-mix(in_oklab,var(--color-warning)_20%,transparent)]",
+                    XFSemanticColor.Danger => "border-surface-300 bg-surface-100 group-hover:border-[color-mix(in_oklab,var(--color-danger)_50%,transparent)] focus-visible:border-[var(--color-danger)] focus-visible:ring-[color-mix(in_oklab,var(--color-danger)_16%,transparent)]",
+                    _ => "border-surface-300 bg-surface-100 group-hover:border-[color-mix(in_oklab,var(--color-primary)_50%,transparent)] focus-visible:border-[var(--color-primary)] focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_16%,transparent)]"
+                };
+            }
+
+            return Tone switch
+            {
+                XFSemanticColor.Secondary => "border-[var(--color-secondary)] bg-[var(--color-secondary)] ring-1 ring-[color-mix(in_oklab,var(--color-secondary)_18%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-secondary)_24%,transparent)]",
+                XFSemanticColor.Success => "border-[var(--color-success)] bg-[var(--color-success)] ring-1 ring-[color-mix(in_oklab,var(--color-success)_18%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-success)_24%,transparent)]",
+                XFSemanticColor.Warning => "border-[var(--color-warning)] bg-[var(--color-warning)] ring-1 ring-[color-mix(in_oklab,var(--color-warning)_22%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-warning)_28%,transparent)]",
+                XFSemanticColor.Danger => "border-[var(--color-danger)] bg-[var(--color-danger)] ring-1 ring-[color-mix(in_oklab,var(--color-danger)_18%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-danger)_24%,transparent)]",
+                _ => "border-[var(--color-primary)] bg-[var(--color-primary)] ring-1 ring-[color-mix(in_oklab,var(--color-primary)_18%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_24%,transparent)]"
+            };
+        }
+    }
+
+    private string ErrorTrackClass =>
+        "border-[var(--color-danger)] ring-4 ring-[color-mix(in_oklab,var(--color-danger)_14%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-danger)_24%,transparent)]";
+
+    private static string Join(params string?[] values)
+    {
+        return string.Join(" ", values.Where(value => !string.IsNullOrWhiteSpace(value)));
+    }
+}

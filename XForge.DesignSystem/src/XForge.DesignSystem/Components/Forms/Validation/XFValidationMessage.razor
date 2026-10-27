@@ -1,0 +1,17 @@
+@inherits XForgeComponentBase
+
+@if (Messages.Count > 0)
+{
+    <div @attributes="AdditionalAttributes" id="@Id" class="@RootClass" style="@Style" role="alert">
+        @if (ShowIcon)
+        {
+            <span class="@IconClass" aria-hidden="true">@XFSvgIcons.Markup(IconName)</span>
+        }
+        <div class="grid gap-1">
+            @foreach (var message in Messages)
+            {
+                <div>@message</div>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,54 @@
+@inherits XForgeComponentBase
+<footer id="@Id"
+        @attributes="AdditionalAttributes"
+        style="@Style"
+        class="@GetFooterClass()">
+    <div class="flex items-center justify-between w-full gap-4 text-xs text-text-muted">
+        <div class="flex min-w-0 items-center gap-3 overflow-hidden">
+            @if (StartContent != null)
+            {
+                @StartContent
+            }
+            else
+            {
+                <div class="flex items-center gap-1.5 font-medium @StatusClass">
+                    @if (ShowStatusDot)
+                    {
+                        <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                    }
+                    <span>@StatusText</span>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(UserName))
+            {
+                <div class="border-l border-border-light pl-3"></div>
+                <div class="truncate">@UserName</div>
+            }
+            @if (!string.IsNullOrEmpty(Profile))
+            {
+                <div class="border-l border-border-light pl-3"></div>
+                <div class="truncate">@Profile</div>
+            }
+            @if (!string.IsNullOrEmpty(AppName))
+            {
+                <div class="border-l border-border-light pl-3"></div>
+                <div class="truncate text-text-subtle">App: @AppName</div>
+            }
+        </div>
+
+        <div class="flex shrink-0 items-center gap-3">
+            @if (EndContent != null)
+            {
+                @EndContent
+            }
+            else
+            {
+                <div>@Environment</div>
+                <div class="border-l border-border-light pl-3"></div>
+                <div>@Version</div>
+                <div class="border-l border-border-light pl-3"></div>
+                <div>@DateText</div>
+            }
+        </div>
+    </div>
+</footer>

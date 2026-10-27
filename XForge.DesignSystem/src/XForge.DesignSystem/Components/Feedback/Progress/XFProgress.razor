@@ -1,0 +1,58 @@
+@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <div @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@GetComponentClass()"
+         style="@Style"
+         role="progressbar"
+         aria-label="@AriaLabel"
+         aria-valuemin="@Min"
+         aria-valuemax="@Max"
+         aria-valuenow="@AriaValueNow"
+         aria-valuetext="@AriaValueText"
+         data-xf-progress-indeterminate="@Indeterminate"
+         data-xf-progress-paused="@Paused">
+        @if (ShowHeader)
+        {
+            <div class="@HeaderClass">
+                <span>@Label</span>
+                @if (ShowValue && !Indeterminate)
+                {
+                    <span>@ValueText</span>
+                }
+            </div>
+        }
+
+        <div class="@TrackClass">
+            @if (Indeterminate)
+            {
+                <span class="@IndeterminateBarClass"></span>
+            }
+            else
+            {
+                <span class="@BarClass" style="@BarStyle">
+                    @if (ShowInlineValue)
+                    {
+                        <span class="@InlineLabelClass">
+                            @if (ChildContent is not null)
+                            {
+                                @ChildContent
+                            }
+                            else
+                            {
+                                @ValueText
+                            }
+                        </span>
+                    }
+                </span>
+            }
+        </div>
+
+        @if (!ShowHeader && ShowValue && !ShowInlineValue && !Indeterminate)
+        {
+            <div class="@FooterValueClass">@ValueText</div>
+        }
+    </div>
+}

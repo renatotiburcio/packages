@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XForge.DesignSystem.Shared</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>XForge.DesignSystem.Shared</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>XForge Team</Authors>
+    <Company>XForge</Company>
+    <Product>XForge Design System Shared Foundation</Product>
+    <Description>Shared contracts and primitives for the XForge Design System ecosystem.</Description>
+    <PackageTags>blazor;design-system;contracts;tokens;themes;enterprise</PackageTags>
+    <PackageProjectUrl>https://github.com/xforge/designsystem</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/xforge/designsystem</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright (c) 2026 XForge</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+</Project>

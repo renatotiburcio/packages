@@ -1,0 +1,183 @@
+﻿@inherits XForgeComponentBase
+
+@if (Visible)
+{
+    <div class="fixed inset-0 z-50 flex items-start justify-center bg-surface-950/40 pt-[15vh] backdrop-blur-sm"
+         @onclick="HandleOverlayClickAsync"
+         @onclick:stopPropagation="false">
+
+        <section @attributes="AdditionalAttributes"
+                 id="@Id"
+                 class="@Join("w-full max-w-xl rounded-xl border border-border-light bg-bg-surface shadow-[0_24px_70px_rgb(15_23_42/.22)] outline-none ring-1 ring-surface-200/80 overflow-hidden", Class)"
+                 style="@Style"
+                 role="dialog"
+                 aria-label="Paleta de comandos"
+                 aria-modal="true"
+                 @onkeydown="HandleKeyDownAsync"
+                 @onclick:stopPropagation="true"
+                 tabindex="-1">
+
+            <!-- Search Input -->
+            <div class="flex items-center gap-3 border-b border-border-light px-4 py-3">
+                <span class="inline-block h-5 w-5 shrink-0 text-text-muted">@XFSvgIcons.Markup("magnifying-glass")</span>
+                <input @ref="_searchInputRef"
+                       type="text"
+                       class="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none"
+                       placeholder="@Placeholder"
+                       value="@_searchText"
+                       @oninput="HandleSearchInputAsync"
+                       role="combobox"
+                       aria-expanded="@HasResults"
+                       aria-controls="@($"{Id}-listbox")"
+                       aria-activedescendant="@ActiveDescendantId"
+                       aria-autocomplete="list"
+                       autocomplete="off"
+                       spellcheck="false" />
+                @if (!string.IsNullOrWhiteSpace(_searchText))
+                {
+                    <button type="button"
+                            class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-text-muted hover:text-text-primary hover:bg-surface-100 transition-colors"
+                            aria-label="Limpar busca"
+                            @onclick="() => { _searchText = string.Empty; _selectedIndex = 0; StateHasChanged(); }">
+                        <span class="inline-block h-3.5 w-3.5">@XFSvgIcons.Markup("xmark")</span>
+                    </button>
+                }
+            </div>
+
+            <!-- Command List -->
+            <div id="@($"{Id}-listbox")"
+                 role="listbox"
+                 aria-label="Lista de comandos"
+                 class="max-h-80 overflow-y-auto py-1">
+
+                @if (!HasResults && !string.IsNullOrWhiteSpace(_searchText))
+                {
+                    <!-- No Results -->
+                    <div class="px-4 py-8 text-center text-sm text-text-muted">
+                        <span class="mb-2 inline-block h-8 w-8 text-text-subtle">@XFSvgIcons.Markup("magnifying-glass")</span>
+                        <p>@NoResultsText</p>
+                    </div>
+                }
+                else if (!HasResults && EmptySearchContent is not null)
+                {
+                    @EmptySearchContent
+                }
+                else
+                {
+                    <!-- Recent Actions Section -->
+                    var recentItems = VisibleRecentActions;
+                    @if (recentItems.Count > 0)
+                    {
+                        <div class="px-3 py-1.5">
+                            <span class="text-xs font-medium uppercase tracking-wider text-text-muted">@RecentActionsLabel</span>
+                        </div>
+                        @for (var i = 0; i < recentItems.Count; i++)
+                        {
+                            var item = recentItems[i];
+                            var globalIdx = GetGlobalIndex(i, true);
+                            <div id="@GetOptionId(globalIdx)"
+                                 role="option"
+                                 aria-selected="@IsSelected(globalIdx)"
+                                 class="@Join(
+                                     "flex items-center gap-3 px-3 py-2 mx-1 rounded-lg cursor-pointer transition-colors",
+                                     item.Disabled ? "opacity-50 pointer-events-none" : null,
+                                     IsSelected(globalIdx) ? "bg-primary/10 text-primary" : "text-text-secondary hover:bg-surface-100")"
+                                 @onclick="() => ExecuteCommandAsync(item)">
+                                @if (CommandTemplate is not null)
+                                {
+                                    @CommandTemplate(item)
+                                }
+                                else
+                                {
+                                    @RenderCommandItem(item)
+                                }
+                            </div>
+                        }
+                    }
+
+                    <!-- Commands Section -->
+                    var commandItems = FilteredCommands;
+                    @if (commandItems.Count > 0)
+                    {
+                        @if (recentItems.Count > 0)
+                        {
+                            <div class="border-t border-border-light mx-3 my-1"></div>
+                        }
+                        <div class="px-3 py-1.5">
+                            <span class="text-xs font-medium uppercase tracking-wider text-text-muted">@CommandsLabel</span>
+                        </div>
+                        @for (var i = 0; i < commandItems.Count; i++)
+                        {
+                            var item = commandItems[i];
+                            var globalIdx = GetGlobalIndex(i, false);
+                            <div id="@GetOptionId(globalIdx)"
+                                 role="option"
+                                 aria-selected="@IsSelected(globalIdx)"
+                                 class="@Join(
+                                     "flex items-center gap-3 px-3 py-2 mx-1 rounded-lg cursor-pointer transition-colors",
+                                     item.Disabled ? "opacity-50 pointer-events-none" : null,
+                                     IsSelected(globalIdx) ? "bg-primary/10 text-primary" : "text-text-secondary hover:bg-surface-100")"
+                                 @onclick="() => ExecuteCommandAsync(item)">
+                                @if (CommandTemplate is not null)
+                                {
+                                    @CommandTemplate(item)
+                                }
+                                else
+                                {
+                                    @RenderCommandItem(item)
+                                }
+                            </div>
+                        }
+                    }
+                }
+            </div>
+
+            <!-- Footer Hints -->
+            <div class="flex items-center gap-4 border-t border-border-light px-4 py-2 text-xs text-text-muted">
+                <span class="inline-flex items-center gap-1">
+                    <kbd class="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-border-light bg-surface-50 px-1 font-mono text-[10px]">↑↓</kbd>
+                    navegar
+                </span>
+                <span class="inline-flex items-center gap-1">
+                    <kbd class="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-border-light bg-surface-50 px-1 font-mono text-[10px]">↵</kbd>
+                    executar
+                </span>
+                <span class="inline-flex items-center gap-1">
+                    <kbd class="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-border-light bg-surface-50 px-1 font-mono text-[10px]">esc</kbd>
+                    fechar
+                </span>
+            </div>
+        </section>
+    </div>
+}
+
+@code {
+    private RenderFragment RenderCommandItem(XFAiCommandItem item) => __builder =>
+    {
+        @if (!string.IsNullOrEmpty(item.Icon))
+        {
+            <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-current">@XFSvgIcons.Markup(item.Icon)</span>
+        }
+        <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
+                @if (item.IsSlashCommand && !string.IsNullOrEmpty(item.SlashPrefix))
+                {
+                    <span class="inline-flex items-center rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">@item.SlashPrefix</span>
+                }
+                <span class="truncate text-sm font-medium">@item.Label</span>
+            </div>
+            @if (!string.IsNullOrEmpty(item.Description))
+            {
+                <p class="truncate text-xs text-text-muted mt-0.5">@item.Description</p>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(item.Category))
+        {
+            <span class="shrink-0 rounded-full bg-surface-100 px-2 py-0.5 text-[10px] font-medium text-text-muted">@item.Category</span>
+        }
+        @if (!string.IsNullOrEmpty(item.Shortcut))
+        {
+            <kbd class="inline-flex shrink-0 items-center rounded border border-border-light bg-surface-50 px-1.5 py-0.5 font-mono text-[10px] text-text-muted">@item.Shortcut</kbd>
+        }
+    };
+}

@@ -1,0 +1,420 @@
+@page "/ai/providers/openrouter"
+@using XForge.DesignSystem.Services.AI
+@using XForge.DesignSystem.Components.AI.Chat
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="AI Commercial"
+                 Title="OpenRouter Provider"
+                 Status="@L.Text("Estavel","Stable")"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="OpenRouter" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Multi-modelo","Multi-model")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Auto-routing","Auto-routing")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("OpenAI-compatible","OpenAI-compatible")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Provedor OpenRouter — Unifique todos os modelos de IA",
+                               "OpenRouter Provider — Unify All AI Models")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("OpenRouter fornece acesso unificado a centenas de modelos de IA (GPT-4, Claude, Llama, Mistral, etc.) com auto-routing, fallback e comparacao de precos. Um unico endpoint, todos os modelos.",
+                               "OpenRouter provides unified access to hundreds of AI models (GPT-4, Claude, Llama, Mistral, etc.) with auto-routing, fallback, and price comparison. One endpoint, all models.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("HttpClient via DI, chamadas diretas.", "HttpClient via DI, direct calls.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("HttpClient via DI, chamadas diretas.", "HttpClient via DI, direct calls.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Limitado", "Limited")" /></XFTableCell><XFTableCell>@T("Chamadas bloqueadas sem interatividade.", "Calls blocked without interactivity.")</XFTableCell></XFTableRow>
+                </XFTableBody>
+                </XFTable>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Configuracao DI", "1. DI Configuration"), T("Registro do OpenRouter via DI em Program.cs.", "Register OpenRouter via DI in Program.cs."), ExDiConfig(), CodeDiConfig)
+            @Example(T("2. Chat completo", "2. Full Chat"), T("Requisicao unica com CompleteAsync.", "Single request with CompleteAsync."), ExFullChat(), Code1)
+            @Example(T("3. Streaming", "3. Streaming"), T("Resposta em tempo real com StreamAsync.", "Real-time response with StreamAsync."), ExStreaming(), Code2)
+            @Example(T("4. Auto-routing", "4. Auto-routing"), T("Modelo auto escolhido automaticamente.", "Auto model chosen automatically."), ExAutoRouting(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+<XForgeDocsPageStandard ComponentName="OpenRouterProviderDocs" />
+
+@code {
+    private string T(string pt, string en) => L.Text(pt, en);
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text="@HeroPreviewCode" Language="csharp" Variant="XFCodeVariant.Block" Wrap="true" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("300+ modelos", "300+ models"), T("Acesso a GPT-4, Claude, Llama, Mistral e mais.", "Access to GPT-4, Claude, Llama, Mistral and more."), "layers-group"),
+        new(T("Auto-routing", "Auto-routing"), T("Modelo auto escolhe o melhor disponivel.", "Auto model picks the best available."), "route"),
+        new(T("OpenAI-compatible", "OpenAI-compatible"), T("Mesma API do OpenAI, sem mudancas.", "Same OpenAI API, no changes needed."), "plug")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Provider", "OpenRouterProvider"),
+        new("Namespace", "XForge.DesignSystem.Services.AI"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Provider"),
+        new("Status", T("Estavel", "Stable")),
+        new("Base URL", "https://openrouter.ai/api/v1"),
+        new("Auth", T("Bearer token via HTTP-Referer + X-Title headers.", "Bearer token via HTTP-Referer + X-Title headers.")),
+        new("Theme support", T("N/A — provider backend, sem UI propria.", "N/A — backend provider, no own UI."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Unificacao de modelos", "Model unification"), T("300+ modelos de multiplos provedores em um endpoint.", "300+ models from multiple providers in one endpoint."), "layer-group"),
+        new(T("Auto-routing", "Auto-routing"), T("OpenRouter escolhe o melhor modelo para a tarefa.", "OpenRouter picks the best model for the task."), "route"),
+        new(T("Fallback automatico", "Automatic fallback"), T("Se um modelo falha, o proximo e usado.", "If one model fails, the next is used."), "shield")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Multi-modelo", "Multi-model"), T("Acesse GPT-4, Claude, Llama, Mistral com uma API.", "Access GPT-4, Claude, Llama, Mistral with one API."), "layer-group"),
+        new(T("Comparacao de custo", "Cost comparison"), T("Compare precos entre modelos em tempo real.", "Compare prices across models in real time."), "coins"),
+        new(T("Rapid prototyping", "Rapid prototyping"), T("Teste modelos diferentes sem trocar de integracao.", "Test different models without changing integration."), "flask")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Multiplas integracoes para cada provedor de IA.", "Multiple integrations for each AI provider."), "xmark"),
+        new(T("Depois", "After"), T("Um unico provider, 300+ modelos acessiveis.", "One provider, 300+ models accessible."), "check"),
+        new(T("Custo", "Cost"), T("Comparacao de precos em tempo real entre modelos.", "Real-time price comparison across models."), "coins")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Prototipacao rapida", "Rapid prototyping"), T("Teste modelos diferentes sem mudar integracao.", "Test different models without changing integration."), "flask"),
+        new(T("Multi-tenancy", "Multi-tenancy"), T("Roteie clientes para modelos diferentes por plano.", "Route customers to different models by plan."), "building")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Latencia critica", "Critical latency"), T("OpenRouter adiciona hop de rede. Use provedor direto.", "OpenRouter adds a network hop. Use direct provider."), "gauge"),
+        new(T("Modelos privados", "Private models"), T("Modelos on-premise nao estao no OpenRouter.", "On-premise models are not on OpenRouter."), "lock")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("HTTP-Referer", "HTTP-Referer"), T("Header obrigatorio com URL do seu app.", "Required header with your app URL."), "globe"),
+        new(T("X-Title", "X-Title"), T("Header com nome do app para atribuicao.", "Header with app name for attribution."), "tag"),
+        new(T("Bearer Token", "Bearer Token"), T("Chave de API OpenRouter no header Authorization.", "OpenRouter API key in Authorization header."), "key"),
+        new(T("Endpoints", "Endpoints"), T("/chat/completions, /embeddings, /models.", "/chat/completions, /embeddings, /models."), "arrows-left-right")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Unified interface", "Unified interface"), T("Uma API para todos os modelos.", "One API for all models."), "plug"),
+        new(T("Transparencia de custo", "Cost transparency"), T("Precos visiveis antes de cada chamada.", "Prices visible before each call."), "coins"),
+        new(T("Resiliencia", "Resilience"), T("Fallback automatico entre modelos.", "Automatic fallback between models."), "shield")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExDiConfig() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text="@CodeDiConfig" Language="csharp" Variant="XFCodeVariant.Block" Wrap="true" />
+    </XFStack>;
+
+    private RenderFragment ExFullChat() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text="@Code1" Language="csharp" Variant="XFCodeVariant.Block" Wrap="true" />
+    </XFStack>;
+
+    private RenderFragment ExStreaming() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text="@Code2" Language="csharp" Variant="XFCodeVariant.Block" Wrap="true" />
+    </XFStack>;
+
+    private RenderFragment ExAutoRouting() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text="@Code3" Language="csharp" Variant="XFCodeVariant.Block" Wrap="true" />
+    </XFStack>;
+
+    private const string HeroPreviewCode = "var provider = new OpenRouterProvider(http, \"sk-or-key\");\nvar response = await provider.CompleteAsync(new AiChatRequest\n{\n    Model = \"openai/gpt-4o\",\n    Messages = [new(AiRole.User, \"Exemplo\")]\n});";
+
+    private const string CodeDiConfig = @"// Program.cs
+using XForge.DesignSystem.Services.AI;
+
+builder.Services.AddHttpClient&lt;IAiProvider, OpenRouterProvider&gt;((sp, client) =&gt;
+{
+    var apiKey = builder.Configuration[""OpenRouter:ApiKey""]
+        ?? Environment.GetEnvironmentVariable(""OPENROUTER_API_KEY"")!;
+    var siteUrl = builder.Configuration[""OpenRouter:SiteUrl""];
+    var siteName = builder.Configuration[""OpenRouter:SiteName""];
+    return new OpenRouterProvider(client, apiKey, siteUrl, siteName);
+});";
+
+    private const string Code1 = @"var provider = new OpenRouterProvider(http, ""sk-or-key"");
+var response = await provider.CompleteAsync(new AiChatRequest
+{
+    Model = ""openai/gpt-4o"",
+    SystemPrompt = ""Voce e um assistente ERP."",
+    Messages = [new(AiRole.User, ""Quanto fatura o cliente ABC?"")],
+    Temperature = 0.3,
+    MaxTokens = 1024
+});
+Console.WriteLine(response.Message.Content);";
+
+    private const string Code2 = @"await foreach (var chunk in provider.StreamAsync(new AiChatRequest
+{
+    Model = ""anthropic/claude-sonnet-4"",
+    Messages = [new(AiRole.User, ""Explique conciliacao bancaria."")]
+}))
+{
+    Console.Write(chunk.Delta);
+}";
+
+    private const string Code3 = @"var provider = new OpenRouterProvider(http, ""sk-or-key"");
+var response = await provider.CompleteAsync(new AiChatRequest
+{
+    Model = ""auto"",
+    Messages = [new(AiRole.User, ""Classifique este documento fiscal."")]
+});";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("HttpClient", "HttpClient", T("Obrigatorio", "Required"), T("HttpClient injetado via DI.", "HttpClient injected via DI.")),
+        new("apiKey", "string", T("Obrigatorio", "Required"), T("Chave de API OpenRouter (sk-or-...).", "OpenRouter API key (sk-or-...).")),
+        new("httpReferer", "string", T("'https://xforge.designsystem'", "'https://xforge.designsystem'"), T("URL do seu app para HTTP-Referer.", "Your app URL for HTTP-Referer.")),
+        new("appTitle", "string", T("'XForge Design System'", "'XForge Design System'"), T("Nome do app para X-Title header.", "App name for X-Title header.")),
+        new("baseUrl", "string", T("'https://openrouter.ai/api/v1'", "'https://openrouter.ai/api/v1'"), T("URL base da API OpenRouter.", "OpenRouter API base URL.")),
+        new("CompleteAsync", "Task<AiChatResponse>", "—", T("Chat via /api/v1/chat/completions.", "Chat via /api/v1/chat/completions.")),
+        new("StreamAsync", "IAsyncEnumerable<AiStreamChunk>", "—", T("Streaming com SSE.", "Streaming with SSE.")),
+        new("EmbedAsync", "Task<AiEmbeddingResponse>", "—", T("Embeddings via /api/v1/embeddings.", "Embeddings via /api/v1/embeddings.")),
+        new("ListModelsAsync", "Task<IReadOnlyList<string>>", "—", T("Lista 300+ modelos disponiveis.", "Lists 300+ available models."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnResponse", T("Dispara apos CompleteAsync. Recebe AiChatResponse.", "Fires after CompleteAsync. Receives AiChatResponse.")),
+        new("OnStreamChunk", T("Dispara a cada chunk do StreamAsync. Recebe AiStreamChunk.", "Fires on each StreamAsync chunk. Receives AiStreamChunk.")),
+        new("OnError", T("Dispara em erro de rede ou autenticacao. Recebe Exception.", "Fires on network or auth error. Receives Exception."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Screen readers", "Screen readers"), T("Provider backend — sem impacto direto em screen readers.", "Backend provider — no direct screen reader impact."), "universal-access"),
+        new(T("Atribuicao", "Attribution"), T("Headers HTTP-Referer e X-Title identificam o app.", "HTTP-Referer and X-Title headers identify the app."), "tag"),
+        new(T("Rate limiting", "Rate limiting"), T("OpenRouter aplica rate limits por chave de API.", "OpenRouter applies rate limits per API key."), "gauge"),
+        new(T("Erro handling", "Error handling"), T("Trate erros 429 (rate limit) e 401 (auth).", "Handle 429 (rate limit) and 401 (auth) errors."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("N/A", T("Provider backend — sem interface de usuario interativa.", "Backend provider — no interactive UI."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Backend only", "Backend only"), T("Provider opera no servidor. Sem impacto de layout.", "Provider operates server-side. No layout impact."), "server"),
+        new(T("Timeout configuravel", "Configurable timeout"), T("Configure HttpClient.Timeout para chamadas longas.", "Configure HttpClient.Timeout for long calls."), "clock")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Streaming", "Streaming"), T("StreamAsync evita buffers grandes com SSE.", "StreamAsync avoids large buffers with SSE."), "bolt"),
+        new(T("HttpClient pooling", "HttpClient pooling"), T("Reutilize HttpClient via DI para conexoes persistentes.", "Reuse HttpClient via DI for persistent connections."), "arrows-rotate"),
+        new(T("Timeout", "Timeout"), T("Configure timeout adequado por modelo.", "Configure appropriate timeout per model."), "clock")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("ERP assistente", "ERP assistant"), T("Chatbot integrado ao ERP com GPT-4 ou Claude.", "ERP-integrated chatbot with GPT-4 or Claude."), "building"),
+        new(T("Classificacao fiscal", "Fiscal classification"), T("Classificacao automatica de documentos fiscais.", "Automatic fiscal document classification."), "file-invoice"),
+        new(T("Analise de dados", "Data analysis"), T("Consulta NL para dados de vendas e estoque.", "NL query for sales and inventory data."), "chart-bar")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("OpenRouter + Chat", "OpenRouter + Chat"), T("Use com XFAiChat para UI conversacional.", "Use with XFAiChat for conversational UI."), "comments"),
+        new(T("OpenRouter + Workflow", "OpenRouter + Workflow"), T("Integre com XFAiWorkflowExecutor para automacoes.", "Integrate with XFAiWorkflowExecutor for automations."), "diagram-project"),
+        new(T("OpenRouter + PromptBox", "OpenRouter + PromptBox"), T("Use com XFAiPromptBox para input de prompts.", "Use with XFAiPromptBox for prompt input."), "pen")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Headers obrigatorios", "Required headers"), T("Sempre envie HTTP-Referer e X-Title.", "Always send HTTP-Referer and X-Title."), "tag"),
+        new(T("Modelo especifico", "Specific model"), T("Evite 'auto' em producao. Escolha o modelo ideal.", "Avoid 'auto' in production. Pick the ideal model."), "bullseye"),
+        new(T("Fallback configurado", "Fallback configured"), T("Configure timeout e trate erros 429/503.", "Configure timeout and handle 429/503 errors."), "shield"),
+        new(T("Cache de respostas", "Response caching"), T("Cacheie respostas identicas para economizar tokens.", "Cache identical responses to save tokens."), "database")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem headers", "No headers"), T("Chamadas sem HTTP-Referer sao bloqueadas.", "Calls without HTTP-Referer are blocked."), "xmark"),
+        new(T("Chave exposta", "Exposed key"), T("Nunca coloque a chave no client-side.", "Never put the key on client-side."), "triangle-exclamation"),
+        new(T("Sem retry", "No retry"), T("Erros 429/503 sem retry causam falhas.", "Errors 429/503 without retry cause failures."), "ban")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("Authorization", T("Header Bearer com chave sk-or-*.", "Bearer header with sk-or-* key.")),
+        new("HTTP-Referer", T("Header com URL do app.", "Header with app URL.")),
+        new("X-Title", T("Header com nome do app.", "Header with app name.")),
+        new("model", T("Campo no body da requisicao.", "Field in request body."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("N/A", T("Provider backend — sem tokens de UI.", "Backend provider — no UI tokens."), "server"),
+        new("appsettings.json", T("Configuracao via appsettings ou variavel de ambiente.", "Configuration via appsettings or environment variable."), "gear")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Identity, CompleteAsync, StreamAsync, EmbedAsync, ListModelsAsync, CheckHealthAsync.", "Identity, CompleteAsync, StreamAsync, EmbedAsync, ListModelsAsync, CheckHealthAsync.")),
+        new("Integration", T("Chamadas reais ao OpenRouter com chave de API de teste.", "Real calls to OpenRouter with test API key.")),
+        new("Mock", T("HttpMessageHandler mockado para testes isolados.", "Mocked HttpMessageHandler for isolated tests."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Rate limiting", T("OpenRouter aplica 200 req/min por chave padrao.", "OpenRouter applies 200 req/min per default key.")),
+        new("Custo variavel", T("Precos variam por modelo e demanda.", "Prices vary by model and demand.")),
+        new("Latencia", T("Hop adicional de rede vs provedor direto.", "Additional network hop vs direct provider.")),
+        new("Modelos indisponiveis", T("Alguns modelos podem ficar temporariamente offline.", "Some models may be temporarily offline."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiChat", T("Chat conversacional com UI completa.", "Conversational chat with full UI."), "comments"),
+        new("XFAiPromptBox", T("Input de prompts com autocomplete.", "Prompt input with autocomplete."), "pen"),
+        new("IAiProvider", T("Interface base para todos os providers AI.", "Base interface for all AI providers."), "plug")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual a diferenca do OpenAI?", "How does it differ from OpenAI?"), T("OpenRouter agrega 300+ modelos de multiplos provedores com uma API unica.", "OpenRouter aggregates 300+ models from multiple providers with a single API.")),
+        new(T("Preciso de chave OpenAI?", "Do I need an OpenAI key?"), T("Nao. Apenas a chave OpenRouter (sk-or-...).", "No. Only the OpenRouter key (sk-or-...).")),
+        new(T("Modelo 'auto' funciona?", "Does 'auto' model work?"), T("Sim. OpenRouter escolhe o melhor modelo para a sua requisicao.", "Yes. OpenRouter picks the best model for your request.")),
+        new(T("Suporta function calling?", "Supports function calling?"), T("Sim. SupportsToolCalling=true no provider.", "Yes. SupportsToolCalling=true on the provider."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("v1.1.0", T("Novo provedor OpenRouter com auto-routing, reasoning delta e headers HTTP-Referer/X-Title.", "New OpenRouter provider with auto-routing, reasoning delta, and HTTP-Referer/X-Title headers.")),
+        new("2026-06-12", T("Documentacao completa no padrao AppShellDocs com 26 secoes.", "Full documentation in AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="csharp" Title="@T("Codigo copiavel", "Copyable code")" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+
+    // === DATA ===
+    private const string OpenRouterDiCode = "// Program.cs\nusing XForge.DesignSystem.Services.AI;\n\nbuilder.Services.AddHttpClient&lt;IAiProvider, OpenRouterProvider&gt;((sp, client) =&gt;\n{\n    var apiKey = builder.Configuration[\"OpenRouter:ApiKey\"]\n        ?? Environment.GetEnvironmentVariable(\"OPENROUTER_API_KEY\")!;\n    var siteUrl = builder.Configuration[\"OpenRouter:SiteUrl\"];\n    var siteName = builder.Configuration[\"OpenRouter:SiteName\"];\n    return new OpenRouterProvider(client, apiKey, siteUrl, siteName);\n});";
+
+    private const string OpenRouterConfigCode = "{\n  \"OpenRouter\": {\n    \"ApiKey\": \"sk-or-v1-...\",\n    \"SiteUrl\": \"https://yourapp.com\",\n    \"SiteName\": \"Your App Name\"\n  }\n}";
+}

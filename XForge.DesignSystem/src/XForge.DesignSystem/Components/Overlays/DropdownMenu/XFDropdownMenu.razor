@@ -1,0 +1,172 @@
+@inherits XForgeComponentBase
+@using XForge.DesignSystem.Components.Overlays.Popover
+@using XForge.DesignSystem.Components.Forms.Checkbox
+@using XForge.DesignSystem.Components.Forms.Radio
+@using XForge.DesignSystem.Core.Primitives
+
+<XFPopover Open="@Open"
+           OpenChanged="HandleOpenChangedAsync"
+           Placement="@Placement"
+           Alignment="@Alignment"
+           Size="@PopoverSize"
+           Role="presentation"
+           CloseOnOutsideClick="@CloseOnOutsideClick"
+           CloseOnEscape="@CloseOnEscape">
+    <Trigger Context="trigger">
+        @if (Trigger is not null)
+        {
+            @Trigger(trigger)
+        }
+        else
+        {
+            <button type="button" class="@ButtonClass" aria-haspopup="menu" aria-expanded="@Open.ToString().ToLowerInvariant()" aria-controls="@MenuId">
+                @ButtonText
+                <span class="inline-flex h-3 w-3 items-center justify-center @DropdownChevronClass">@XFSvgIcons.MarkupWithSize("chevron-down", 12)</span>
+            </button>
+        }
+    </Trigger>
+    <ChildContent>
+        <div id="@MenuId" class="@MenuClass" role="menu" aria-label="@EffectiveMenuAriaLabel" aria-orientation="vertical" aria-activedescendant="@ActiveDescendantId" tabindex="-1" @onkeydown="HandleKeyDownAsync">
+            @{ }
+            @foreach (var indexedItem in Items.Select((item, index) => new { item, index }))
+            {
+                if (indexedItem.item.Kind == XFDropdownMenuItemKind.Separator)
+                {
+                    <div class="my-1 h-px bg-border-light" role="separator"></div>
+                }
+                else if (indexedItem.item.Kind == XFDropdownMenuItemKind.Header)
+                {
+                    <div class="px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted">@indexedItem.item.Text</div>
+                }
+                else if (indexedItem.item.Kind == XFDropdownMenuItemKind.XFCheckbox)
+                {
+                    <div class="flex items-center px-2 py-1.5">
+                        <XFCheckbox Value="@indexedItem.item.Checked"
+                                    ValueChanged="@((bool? v) => HandleCheckboxChanged(indexedItem.item, v))"
+                                    Label="@indexedItem.item.Text"
+                                    Size="XFSize.Sm"
+                                    Disabled="@indexedItem.item.Disabled"
+                                    Description="@indexedItem.item.Description" />
+                    </div>
+                }
+                else if (indexedItem.item.Kind == XFDropdownMenuItemKind.XFRadio)
+                {
+                    @if (IsFirstInRadioGroup(indexedItem.item, indexedItem.index))
+                    {
+                        var groupItems = Items.Where(i => i.Kind == XFDropdownMenuItemKind.XFRadio && i.Group == indexedItem.item.Group).ToList();
+                        var checkedItem = groupItems.FirstOrDefault(i => i.Checked);
+                        <XFRadioGroup Value="@checkedItem?.Id"
+                                      ValueChanged="@((string? v) => HandleRadioGroupChanged(indexedItem.item.Group, v))"
+                                      Size="XFSize.Sm"
+                                      AriaLabel="@indexedItem.item.Group">
+                            @foreach (var radioItem in groupItems)
+                            {
+                                <XFRadio Value="@radioItem.Id"
+                                         Label="@radioItem.Text"
+                                         Disabled="@radioItem.Disabled" />
+                            }
+                        </XFRadioGroup>
+                    }
+                }
+                else
+                {
+                    var itemRole = GetItemRole(indexedItem.item);
+                    var hasChildren = HasChildren(indexedItem.item);
+                    <div class="relative">
+                        <button type="button"
+                                id="@GetItemId(indexedItem.index)"
+                                class="@GetItemClass(indexedItem.index)"
+                                role="@itemRole"
+                                aria-haspopup="@(hasChildren ? "menu" : null)"
+                                aria-expanded="@(hasChildren ? IsExpanded(indexedItem.item).ToString().ToLowerInvariant() : null)"
+                                aria-checked="@GetAriaChecked(indexedItem.item)"
+                                aria-disabled="@(indexedItem.item.Disabled ? "true" : null)"
+                                disabled="@indexedItem.item.Disabled"
+                                @onclick="@(() => ActivateItemAsync(indexedItem.item))">
+                            @if (indexedItem.item.Icon is not null)
+                            {
+                                <span class="@IndicatorClass(indexedItem.item)">@indexedItem.item.Icon</span>
+                            }
+                            <span class="min-w-0 flex-1 text-left">
+                                <span class="block truncate">@indexedItem.item.Text</span>
+                                @if (!string.IsNullOrWhiteSpace(indexedItem.item.Description))
+                                {
+                                    <span class="block truncate text-xs text-text-muted">@indexedItem.item.Description</span>
+                                }
+                            </span>
+                            @if (!string.IsNullOrWhiteSpace(indexedItem.item.Badge))
+                            {
+                                <span class="@GetBadgeClass(indexedItem.item)">@indexedItem.item.Badge</span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(indexedItem.item.Shortcut))
+                            {
+                                <kbd class="ml-3 rounded bg-surface-100 px-1.5 py-0.5 text-[0.6875rem] font-semibold text-text-muted">@indexedItem.item.Shortcut</kbd>
+                            }
+                            @if (hasChildren)
+                            {
+                                <span class="ml-2 inline-flex h-3 w-3 shrink-0 items-center justify-center text-text-muted" aria-hidden="true">@XFSvgIcons.MarkupWithSize("chevron-right", 12)</span>
+                            }
+                        </button>
+
+                        @if (hasChildren && IsExpanded(indexedItem.item))
+                        {
+                            <div class="absolute left-full top-0 z-40 ml-2 min-w-56 rounded-lg border border-border-light bg-bg-surface p-2 shadow-[0_18px_45px_rgb(15_23_42/.14)]" role="menu" aria-label="@GetSubmenuAriaLabel(indexedItem.item)" aria-orientation="vertical">
+                                @foreach (var child in indexedItem.item.Children)
+                                {
+                                    if (child.Kind == XFDropdownMenuItemKind.Separator)
+                                    {
+                                        <div class="my-1 h-px bg-border-light" role="separator"></div>
+                                    }
+                                    else if (child.Kind == XFDropdownMenuItemKind.Header)
+                                    {
+                                        <div class="px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted">@child.Text</div>
+                                    }
+                                    else if (child.Kind == XFDropdownMenuItemKind.XFCheckbox)
+                                    {
+                                        <div class="flex items-center px-2 py-1.5">
+                                            <XFCheckbox Value="@child.Checked"
+                                                        ValueChanged="@((bool? v) => HandleCheckboxChanged(child, v))"
+                                                        Label="@child.Text"
+                                                        Size="XFSize.Sm"
+                                                        Disabled="@child.Disabled"
+                                                        Description="@child.Description" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="@GetSubmenuItemClass(child)"
+                                                role="@GetItemRole(child)"
+                                                aria-checked="@GetAriaChecked(child)"
+                                                disabled="@child.Disabled"
+                                                @onclick="@(() => ActivateItemAsync(child))">
+                                            @if (child.Icon is not null)
+                                            {
+                                                <span class="@IndicatorClass(child)">@child.Icon</span>
+                                            }
+                                            <span class="min-w-0 flex-1 text-left">
+                                                <span class="block truncate">@child.Text</span>
+                                                @if (!string.IsNullOrWhiteSpace(child.Description))
+                                                {
+                                                    <span class="block truncate text-xs text-text-muted">@child.Description</span>
+                                                }
+                                            </span>
+                                            @if (!string.IsNullOrWhiteSpace(child.Badge))
+                                            {
+                                                <span class="@GetBadgeClass(child)">@child.Badge</span>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(child.Shortcut))
+                                            {
+                                                <kbd class="ml-3 rounded bg-surface-100 px-1.5 py-0.5 text-[0.6875rem] font-semibold text-text-muted">@child.Shortcut</kbd>
+                                            }
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </ChildContent>
+</XFPopover>

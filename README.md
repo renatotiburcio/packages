@@ -15,6 +15,7 @@ e pode ser consumido de forma independente ou em conjunto.
 | [`XForge.Validation`](XForge.Validation/) | 0.1.0 | Validação fluente (`Validator<T>`, `Ensure`, RuleSet, cascade) — mental model do FluentValidation, `ValueTask` async, códigos padronizados | 32/32 (net8.0 + net10.0) |
 | [`XForge.Validation.TestHelper`](XForge.Validation.TestHelper/) | 0.1.0 | Assertions de teste para o Validation (`ShouldHaveValidationErrorFor`, `ShouldHaveValidationErrorWithCode`, `TestValidationResult`) — estilo FluentValidation.TestHelper | 15/15 (net8.0 + net10.0) |
 | [`XForge.Mediator.Behaviors`](XForge.Mediator.Behaviors/) | 0.1.0 | Integração dos 3 pacotes: `ValidationBehavior` + `LoggingBehavior` para o pipeline do Mediator | 2/2 (net8.0) |
+| [`XForge.DesignSystem`](XForge.DesignSystem/) | migrado em 2026-10-26 | Biblioteca de componentes Blazor/Razor (297 componentes no núcleo) + docs, analisador Roslyn, geradores e servidor MCP — ver [`MIGRACAO.md`](XForge.DesignSystem/MIGRACAO.md) | — |
 
 ## Princípios
 

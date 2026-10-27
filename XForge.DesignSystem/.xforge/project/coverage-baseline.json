@@ -1,0 +1,47 @@
+﻿{
+  "version": "1.0.0",
+  "measureDate": "2026-06-26",
+  "testFilter": "XFButton, XFAlert, XFTransferList, XFAccordionItem, XFToastProvider, XFMultiSplitter",
+  "testsRun": 61,
+  "overallLineCoverage": 15.6,
+  "overallLines": {
+    "total": 28214,
+    "covered": 4415
+  },
+  "byPackage": {
+    "XForge.DesignSystem": "15.6%",
+    "XForge.DesignSystem.AI": "0%",
+    "XForge.DesignSystem.Shared": "0%"
+  },
+  "topUncoveredByLineCount": [
+    {"name": "XFDatePicker", "lines": 1335, "coverage": "0%"},
+    {"name": "XFDataGrid", "lines": 709, "coverage": "0%"},
+    {"name": "XFChart", "lines": 586, "coverage": "0%"},
+    {"name": "XFScheduler", "lines": 359, "coverage": "0%"},
+    {"name": "XFTreeView", "lines": 353, "coverage": "0%"},
+    {"name": "XFColorPicker", "lines": 326, "coverage": "0%"},
+    {"name": "XFMenu", "lines": 304, "coverage": "0%"},
+    {"name": "XFSankey", "lines": 427, "coverage": "0%"},
+    {"name": "XFEditForm", "lines": 246, "coverage": "0%"},
+    {"name": "XFPagination", "lines": 231, "coverage": "0%"},
+    {"name": "XFNumberInput", "lines": 231, "coverage": "0%"},
+    {"name": "XFBarcode", "lines": 224, "coverage": "0%"},
+    {"name": "XFCheckbox", "lines": 214, "coverage": "0%"},
+    {"name": "XFSwitch", "lines": 209, "coverage": "0%"},
+    {"name": "XFMarkdown", "lines": 203, "coverage": "0%"},
+    {"name": "XFMultiSelect", "lines": 160, "coverage": "0%"},
+    {"name": "XFColorInput", "lines": 157, "coverage": "0%"},
+    {"name": "XFFileInput", "lines": 157, "coverage": "0%"},
+    {"name": "XFPasswordStrength", "lines": 151, "coverage": "0%"},
+    {"name": "XFAvatar", "lines": 150, "coverage": "0%"}
+  ],
+  "wellCovered": [
+    {"name": "XFSvgIcons", "lines": 3906, "coverage": "99.8%"}
+  ],
+  "target": {
+    "lineCoverage": "85%",
+    "linesNeeded": 23982,
+    "linesGap": 19567,
+    "estimatedEffort": "25-30h"
+  }
+}

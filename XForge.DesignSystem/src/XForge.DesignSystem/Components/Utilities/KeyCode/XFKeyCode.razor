@@ -1,0 +1,29 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@RootClass"
+     tabindex="@TabIndex"
+     role="@Role"
+     aria-label="@AriaLabel"
+     @onkeydown="HandleKeyDownAsync"
+     @onkeydown:preventDefault="PreventDefault"
+     @onkeydown:stopPropagation="StopPropagation">
+    @ChildContent
+
+    @if (ShowHints && EnabledShortcuts.Count > 0)
+    {
+        <div class="@HintsClass" aria-label="@HintsLabel">
+            @foreach (var shortcut in EnabledShortcuts)
+            {
+                <span class="inline-flex items-center gap-1 rounded-md bg-surface-100 px-2 py-1 text-xs font-medium text-text-secondary">
+                    <kbd class="font-semibold text-text-primary">@GetShortcutText(shortcut)</kbd>
+                    @if (!string.IsNullOrWhiteSpace(shortcut.Label))
+                    {
+                        <span>@shortcut.Label</span>
+                    }
+                </span>
+            }
+        </div>
+    }
+</div>

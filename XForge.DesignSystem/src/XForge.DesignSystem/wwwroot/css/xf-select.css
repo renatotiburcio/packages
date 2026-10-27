@@ -1,0 +1,168 @@
+﻿/* ============================================================================
+ * XForge Select — Custom dropdown
+ * Fully custom: button + popup div (no native select)
+ * ============================================================================ */
+
+.xf-select {
+  position: relative;
+  --select-radius: 0.625rem;
+}
+
+/* ---- Dropdown Popup ---- */
+.xf-select-dropdown {
+  position: fixed;
+  z-index: 99999;
+  width: auto;
+  max-height: 18rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface, #fff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0.625rem;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,.08), 0 4px 10px -6px rgba(0,0,0,.04);
+  animation: xfSelectFadeIn 0.15s ease-out;
+}
+
+@keyframes xfSelectFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Search ---- */
+.xf-select-search {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.xf-select-search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0.5rem;
+  background: var(--color-bg-surface, #fff);
+  color: var(--color-text-primary, #0f172a);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.xf-select-search-input:focus {
+  border-color: var(--color-primary, #6366f1);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary, #6366f1) 18%, transparent);
+}
+
+/* ---- Options Container ---- */
+.xf-select-options {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.xf-select-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.xf-select-options::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.xf-select-options::-webkit-scrollbar-thumb {
+  background: var(--color-border, #e2e8f0);
+  border-radius: 3px;
+}
+
+/* ---- Option ---- */
+.xf-select-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-text-primary, #0f172a);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.xf-select-option:hover {
+  background: color-mix(in oklab, var(--color-primary, #6366f1) 8%, transparent);
+}
+
+.xf-select-option.selected {
+  background: color-mix(in oklab, var(--color-primary, #6366f1) 12%, transparent);
+  color: var(--color-primary, #6366f1);
+  font-weight: 600;
+}
+
+.xf-select-option.disabled {
+  color: var(--color-text-muted, #94a3b8);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.xf-select-option.disabled:hover {
+  background: transparent;
+}
+
+.xf-select-option-check {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--color-primary, #6366f1);
+}
+
+/* ---- Option Group Heading ---- */
+.xf-select-group-heading {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #64748b);
+  cursor: default;
+  user-select: none;
+}
+
+/* ---- Dark mode ---- */
+:root[data-theme="dark"] .xf-select-dropdown {
+  background: var(--color-bg-surface, #0f172a);
+  border-color: var(--color-border, #334155);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,.3), 0 4px 10px -6px rgba(0,0,0,.2);
+}
+
+:root[data-theme="dark"] .xf-select-search-input {
+  background: var(--color-bg-surface, #0f172a);
+  border-color: var(--color-border, #334155);
+  color: var(--color-text-primary, #f1f5f9);
+}
+
+:root[data-theme="dark"] .xf-select-option {
+  color: var(--color-text-primary, #f1f5f9);
+}
+
+:root[data-theme="dark"] .xf-select-option:hover {
+  background: color-mix(in oklab, var(--color-primary, #818cf8) 12%, transparent);
+}
+
+:root[data-theme="dark"] .xf-select-option.selected {
+  background: color-mix(in oklab, var(--color-primary, #818cf8) 18%, transparent);
+  color: #818cf8;
+}
+
+:root[data-theme="dark"] .xf-select-option.disabled {
+  color: #475569;
+}
+
+:root[data-theme="dark"] .xf-select-group-heading {
+  color: #64748b;
+}

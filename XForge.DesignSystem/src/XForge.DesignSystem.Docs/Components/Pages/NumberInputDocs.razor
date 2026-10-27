@@ -1,0 +1,613 @@
+@page "/forms/number-input"
+@using Microsoft.AspNetCore.Components.Forms
+@using XForge.DesignSystem.Components.Forms.NumberInput
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFNumberInput" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Steppers", "Steppers")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("FormatStyle", "FormatStyle")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Entrada numerica tipada com steppers, formatacao, cultura e limites.",
+                               "Typed numeric input with steppers, formatting, culture and limits.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFNumberInput e o componente base para valores numericos. Suporta Min/Max/Step/Clamp, FormatStyle (Number/Currency/Percent), Scale/Precision, AutoDecimalSeparator, 3 layouts de stepper (Stacked/Split/Auto) e integracao completa com EditForm.",
+                               "XFNumberInput is the base component for numeric values. Supports Min/Max/Step/Clamp, FormatStyle (Number/Currency/Percent), Scale/Precision, AutoDecimalSeparator, 3 stepper layouts (Stacked/Split/Auto) and full EditForm integration.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 10 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("XFNumberInput com steppers, Min, Max e Step.", "XFNumberInput with steppers, Min, Max and Step."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Min/Max/Clamp", "2. Min/Max/Clamp"),
+                T("Limites com Clamp=true e Clamp=false.", "Limits with Clamp=true and Clamp=false."),
+                ExMinMax(), CodeMinMax)
+
+            @Example(T("3. Stepper Layout", "3. Stepper Layout"),
+                T("Stacked (padrao), Split (sandwich) e Auto (responsivo).", "Stacked (default), Split (sandwich) and Auto (responsive)."),
+                ExStepperLayout(), CodeStepperLayout)
+
+            @Example(T("4. FormatStyle", "4. FormatStyle"),
+                T("Number, Currency e Percent.", "Number, Currency and Percent."),
+                ExFormatStyle(), CodeFormatStyle)
+
+            @Example(T("5. Tamanhos", "5. Sizes"),
+                T("Sm, Md e Lg.", "Sm, Md and Lg."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("6. Variantes", "6. Variants"),
+                T("Outline, Filled, Soft e Ghost.", "Outline, Filled, Soft and Ghost."),
+                ExVariants(), CodeVariants)
+
+            @Example(T("7. Scale + AutoDecimalSeparator", "7. Scale + AutoDecimalSeparator"),
+                T("Scale=2 com digitacao rapida: '98765' vira 987.65.", "Scale=2 with fast typing: '98765' becomes 987.65."),
+                ExScale(), CodeScale)
+
+            @Example(T("8. Estados", "8. States"),
+                T("Disabled, ReadOnly e Required.", "Disabled, ReadOnly and Required."),
+                ExStates(), CodeStates)
+
+            @Example(T("9. Validacao EditForm", "9. EditForm Validation"),
+                T("Integracao com DataAnnotations: Required, Range.", "Integration with DataAnnotations: Required, Range."),
+                ExValidation(), CodeValidation)
+
+            @Example(T("10. Enterprise", "10. Enterprise"),
+                T("Formulario de precificacao com quantidade, desconto e total.", "Pricing form with quantity, discount and total."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Forms", "Forms");
+    private string PageTitleText => T("Number Input", "Number Input");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // --- State for interactive examples ---
+    private decimal? _basicValue = 2500m;
+    private decimal? _clampValue = 5000m;
+    private decimal? _noclampValue = -100m;
+    private decimal? _stepperLayoutValue = 250m;
+    private decimal? _numberValue = 1234.56m;
+    private decimal? _currencyValue = 4999.99m;
+    private decimal? _percentValue = 18.5m;
+    private decimal? _sizeValue = 7500m;
+    private decimal? _variantValue = 10000m;
+    private decimal? _autoDecimalValue;
+    private decimal? _disabledValue = 3000m;
+    private decimal? _readonlyValue = 8500m;
+    private bool _formSubmitted;
+    private decimal? _qtyValue = 100m;
+    private decimal? _discountValue = 10m;
+
+    // --- Validation model ---
+    private NumberFormModel _formModel = new();
+    private EditContext? _editContext;
+
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(_formModel);
+    }
+
+    private void HandleValidSubmit()
+    {
+        _formSubmitted = true;
+    }
+
+    private string TotalFormatted => ((_qtyValue ?? 0m) * 49.90m * (1m - (_discountValue ?? 0m) / 100m)).ToString("N2");
+
+    // --- Helpers ---
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== HERO ====================
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFNumberInput Label="@T("Quantidade", "Quantity")"
+                       @bind-Value="_basicValue"
+                       Min="0" Step="1m"
+                       HelperText="@T("Usado em pedidos e inventario.", "Used in orders and inventory.")" />
+    </XFStack>;
+
+    // ==================== 1. BASIC ====================
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFNumberInput Label="@T("Quantidade", "Quantity")"
+                       @bind-Value="_basicValue"
+                       Min="0" Max="10000" Step="1m"
+                       HelperText="@T("Valor entre 0 e 10.000.", "Value between 0 and 10,000.")" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Valor atual: ", "Current value: ") @_basicValue?.ToString("N0")
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 2. MIN/MAX/CLAMP ====================
+    private RenderFragment ExMinMax() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="Clamp=true" />
+            <div class="mt-2">
+                <XFNumberInput Label="@T("Valor orcamentario (0 - 100.000)", "Budget amount (0 - 100,000)")"
+                               @bind-Value="_clampValue"
+                               Min="0" Max="100000m" Clamp="true"
+                               HelperText="@T("Valor e limitado automaticamente.", "Value is automatically clamped.")" />
+            </div>
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Text="Clamp=false" />
+            <div class="mt-2">
+                <XFNumberInput Label="@T("Valor livre (sem clamp)", "Free amount (no clamp)")"
+                               @bind-Value="_noclampValue"
+                               Min="0" Max="100000m" Clamp="false"
+                               HelperText="@T("Permite valores fora do intervalo.", "Allows values outside the range.")" />
+            </div>
+        </div>
+    </XFStack>;
+
+    // ==================== 3. STEPPER LAYOUT ====================
+    private RenderFragment ExStepperLayout() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFNumberInput Label="Stacked (default)" @bind-Value="_stepperLayoutValue" StepperLayout="XFStepperLayout.Stacked" />
+        <XFNumberInput Label="Split (sandwich)" @bind-Value="_stepperLayoutValue" StepperLayout="XFStepperLayout.Split" />
+        <XFNumberInput Label="Auto (mobile=Split, desktop=Stacked)" @bind-Value="_stepperLayoutValue" StepperLayout="XFStepperLayout.Auto" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Redimensione a janela para ver o Auto alternar entre Split (mobile) e Stacked (desktop).", "Resize the window to see Auto switch between Split (mobile) and Stacked (desktop).")
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 4. FORMAT STYLE ====================
+    private RenderFragment ExFormatStyle() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFNumberInput Label="Number (default)" @bind-Value="_numberValue" FormatStyle="XFNumberInputFormatStyle.Number" />
+        <XFNumberInput Label="Currency" @bind-Value="_currencyValue" FormatStyle="XFNumberInputFormatStyle.Currency" CultureName="pt-BR" />
+        <XFNumberInput Label="Percent" @bind-Value="_percentValue" FormatStyle="XFNumberInputFormatStyle.Percent" SuffixText="%" />
+    </XFStack>;
+
+    // ==================== 5. SIZES ====================
+    private RenderFragment ExSizes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFNumberInput Size="XFSize.Sm" Label="Small" Value="@_sizeValue" />
+        <XFNumberInput Size="XFSize.Md" Label="Medium (default)" Value="@_sizeValue" />
+        <XFNumberInput Size="XFSize.Lg" Label="Large" Value="@_sizeValue" />
+    </XFStack>;
+
+    // ==================== 6. VARIANTS ====================
+    private RenderFragment ExVariants() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFNumberInput Variant="XFFormVariant.Outline" Label="Outline (default)" Value="@_variantValue" />
+        <XFNumberInput Variant="XFFormVariant.Filled" Label="Filled" Value="@_variantValue" />
+        <XFNumberInput Variant="XFFormVariant.Soft" Label="Soft" Value="@_variantValue" />
+        <XFNumberInput Variant="XFFormVariant.Ghost" Label="Ghost" Value="@_variantValue" />
+    </XFStack>;
+
+    // ==================== 7. SCALE + AUTO DECIMAL ====================
+    private RenderFragment ExScale() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFNumberInput Label="@T("Digite '98765' e saia do campo", "Type '98765' and blur")"
+                        @bind-Value="_autoDecimalValue"
+                        Scale="2" AutoDecimalSeparator="true"
+                       HelperText="@T("'98765' vira 987.65 automaticamente.", "'98765' becomes 987.65 automatically.")" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Valor atual: ", "Current value: ") @_autoDecimalValue?.ToString("N2")
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 8. STATES ====================
+    private RenderFragment ExStates() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFNumberInput Label="@T("Desabilitado", "Disabled")" Value="@_disabledValue" Disabled="true" />
+        <XFNumberInput Label="@T("Somente leitura", "Read only")" Value="@_readonlyValue" ReadOnly="true" />
+        <XFNumberInput Label="@T("Obrigatorio", "Required")" Value="@_basicValue" Required="true" />
+    </XFStack>;
+
+    // ==================== 9. VALIDATION ====================
+    private RenderFragment ExValidation() => @<div>
+        <EditForm EditContext="@_editContext" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFNumberInput Label="@T("Quantidade", "Quantity")" @bind-Value="_formModel.Quantity" Min="1" />
+                 <XFNumberInput Label="@T("Preco unitario", "Unit price")" @bind-Value="_formModel.UnitPrice" Min="0.01m" FormatStyle="XFNumberInputFormatStyle.Currency" />
+                <XFButton Type="XFButtonType.Submit" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary">@T("Enviar", "Submit")</XFButton>
+                @if (_formSubmitted)
+                {
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="@T("Formulario valido!", "Form valid!")" />
+                }
+            </XFStack>
+        </EditForm>
+    </div>;
+
+    // ==================== 10. ENTERPRISE ====================
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Precificacao de produto", "Product pricing")</XFTypography>
+        <div class="grid gap-4 md:grid-cols-2">
+            <XFNumberInput Label="@T("Quantidade", "Quantity")" @bind-Value="_qtyValue" Min="1" Step="1m" Variant="XFFormVariant.Soft" Tone="XFSemanticColor.Primary" />
+            <XFNumberInput Label="@T("Desconto (%)", "Discount (%)")" @bind-Value="_discountValue" Min="0" Max="50" Step="0.5m" SuffixText="%" Variant="XFFormVariant.Soft" Tone="XFSemanticColor.Warning" />
+            <div class="flex items-center rounded-lg border border-border-light bg-surface-50 p-4 md:col-span-2">
+                <XFStack Orientation="XFOrientation.Vertical" Gap="1" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Total estimado (R$ 49,90/un)", "Estimated total (R$ 49.90/unit)")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.H3" Weight="XFTypographyWeight.Bold">R$ @TotalFormatted</XFTypography>
+                </XFStack>
+            </div>
+        </div>
+    </XFStack>;
+
+    // ==================== QUICK FACTS ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("3 layouts de stepper", "3 stepper layouts"), T("Stacked, Split (sandwich), Auto (responsivo).", "Stacked, Split (sandwich), Auto (responsive)."), "arrow-up"),
+        new(T("FormatStyle", "FormatStyle"), T("Number, Currency, Percent com adornos automaticos.", "Number, Currency, Percent with automatic adornments."), "percent"),
+        new(T("WCAG AAA", "WCAG AAA"), T("aria-valuetext, touch 44px, focus 40%.", "aria-valuetext, 44px touch, 40% focus."), "universal-access")
+    ];
+
+    // ==================== METADATA ====================
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFNumberInput"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.NumberInput"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", T("Forms / Number Input", "Forms / Number Input")),
+        new("Base class", "XFInputComponentBase"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("aria-valuetext, aria-valuenow, touch 44px AAA, focus 40%.", "aria-valuetext, aria-valuenow, 44px AAA touch, 40% focus.")),
+        new("Theme support", T("Light, dark via tokens.", "Light, dark via tokens."))
+    ];
+
+    // ==================== STATIC DATA ====================
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Entrada numerica tipada", "Typed numeric entry"), T("Input numerico com TValue generico e formatacao.", "Numeric input with generic TValue and formatting."), "hashtag"),
+        new(T("Steppers integrados", "Integrated steppers"), T("Botoes +/- com press-and-hold e aceleracao.", "+/- buttons with press-and-hold and acceleration."), "arrow-up"),
+        new(T("FormatStyle", "FormatStyle"), T("Number, Currency, Percent com adornos automaticos.", "Number, Currency, Percent with automatic adornments."), "percent")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Quantidades", "Quantities"), T("Estoque, pedidos, inventario.", "Stock, orders, inventory."), "boxes-stacked"),
+        new(T("Percentuais", "Percentages"), T("Descontos, margens, comissoes.", "Discounts, margins, commissions."), "percent"),
+        new(T("Valores calculados", "Calculated values"), T("Totais, medias, limites.", "Totals, averages, limits."), "calculator")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Input type='number' nativo sem formatacao, sem steppers, sem cultura.", "Native type='number' input without formatting, steppers or culture."), "xmark"),
+        new(T("Depois", "After"), T("XFNumberInput com FormatStyle, Scale, Precision, steppers, Clamp.", "XFNumberInput with FormatStyle, Scale, Precision, steppers, Clamp."), "check"),
+        new(T("Menos erros", "Fewer errors"), T("Clamp, validacao, cultura, acessibilidade.", "Clamp, validation, culture, accessibility."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Quantidades", "Quantities"), T("Estoque, pedidos, inventario.", "Stock, orders, inventory."), "boxes-stacked"),
+        new(T("Percentuais", "Percentages"), T("Descontos, margens, comissoes, impostos.", "Discounts, margins, commissions, taxes."), "percent"),
+        new(T("Limites e ranges", "Limits and ranges"), T("Min, Max, Clamp para valores controlados.", "Min, Max, Clamp for controlled values."), "sliders"),
+        new(T("ERP", "ERP"), T("Financeiro, Fiscal, Estoque, Comercial.", "Financial, Tax, Inventory, Sales."), "building")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Valores monetarios", "Monetary values"), T("Use XFCurrencyInput para moeda.", "Use XFCurrencyInput for currency."), "triangle-exclamation"),
+        new(T("Texto livre", "Free text"), T("Use XFTextInput para texto.", "Use XFTextInput for text."), "triangle-exclamation"),
+        new(T("Selecao de opcao", "Option selection"), T("Use XFSelect para escolher opcoes.", "Use XFSelect to choose options."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("div com flex flex-col gap-1.5.", "div with flex flex-col gap-1.5."), "code"),
+        new("Label", T("span com flex items-center gap-1, Required asterisco.", "span with flex items-center gap-1, Required asterisk."), "font"),
+        new("FieldShell", T("div com border, steppers (Split/Stacked), input.", "div with border, steppers (Split/Stacked), input."), "square"),
+        new("Input", T("input type='text' com inputmode, aria-*.", "input type='text' with inputmode, aria-*."), "i-cursor"),
+        new("Helper/Error", T("span com text-xs helper ou error message.", "span with text-xs helper or error message."), "info")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Texto alinhado a direita", "Right-aligned text"), T("Padrao TextAlign.Right para numeros.", "Default TextAlign.Right for numbers."), "align-right"),
+        new(T("Steppers contextuais", "Contextual steppers"), T("Stacked (direita), Split (sandwich), Auto (responsivo).", "Stacked (right), Split (sandwich), Auto (responsive)."), "arrow-up"),
+        new(T("Tons semanticos", "Semantic tones"), T("Focus ring por Tone: Primary, Success, Warning, Danger.", "Focus ring per Tone: Primary, Success, Warning, Danger."), "palette")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Touch target 44px", "44px touch target"), T("Area clicavel minima em todos os tamanhos.", "Minimum click area on all sizes."), "hand-pointer"),
+        new(T("Press-and-hold", "Press-and-hold"), T("Stepper com aceleracao: 200ms -> 60ms apos 2s.", "Stepper with acceleration: 200ms -> 60ms after 2s."), "hand-pointer"),
+        new(T("Cultura nativa", "Native culture"), T("Culture/CultureName para formatacao regional.", "Culture/CultureName for regional formatting."), "globe")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Outline", T("Borda visivel (padrao). Para formularios padrao.", "Visible border (default). For standard forms.")),
+        new("Filled", T("Fundo preenchido, sem borda. Para areas compactas.", "Filled background, no border. For compact areas.")),
+        new("Soft", T("Fundo e borda suaves com cor do Tone. Para destaque.", "Soft background and border with Tone color. For emphasis.")),
+        new("Ghost", T("Transparente, aparece no hover. Para toolbars.", "Transparent, appears on hover. For toolbars."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Habilitado, editavel, borda normal.", "Enabled, editable, normal border.")),
+        new("Disabled", T("opacity-60, cursor-not-allowed, sem interacao.", "opacity-60, cursor-not-allowed, no interaction.")),
+        new("ReadOnly", T("cursor-default, visual mas nao editavel.", "cursor-default, visual but not editable.")),
+        new("Required", T("asterisco vermelho *, aria-required.", "Red asterisk *, aria-required.")),
+        new("Validation error", T("Borda danger, ring danger, aria-invalid=true.", "Danger border, danger ring, aria-invalid=true."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "TValue?", "default", T("Valor numerico atual.", "Current numeric value.")),
+        new("ValueChanged", "EventCallback<TValue?>", "default", T("Two-way binding callback.", "Two-way binding callback.")),
+        new("ValueExpression", "Expression<Func<TValue?>>?", "null", T("Expressao para validacao EditForm.", "Expression for EditForm validation.")),
+        new("Change", "EventCallback<TValue?>", "default", T("Disparado ao mudar valor.", "Fired on value change.")),
+        new("Min", "decimal?", "null", T("Valor minimo permitido.", "Minimum allowed value.")),
+        new("Max", "decimal?", "null", T("Valor maximo permitido.", "Maximum allowed value.")),
+        new("Step", "decimal?", "null", T("Incremento/decremento. Derivado de Scale se nulo.", "Increment/decrement. Derived from Scale if null.")),
+        new("Clamp", "bool", "true", T("Limita valor entre Min e Max.", "Clamps value between Min and Max.")),
+        new("Format", "string?", "null", T("Formato .NET (auto-gerado de Scale).", ".NET format string (auto-generated from Scale).")),
+        new("FormatStyle", "XFNumberInputFormatStyle", "Number", T("Number, Currency, Percent.", "Number, Currency, Percent.")),
+        new("Scale", "int?", "null", T("Casas decimais para arredondamento.", "Decimal places for rounding.")),
+        new("Precision", "int?", "null", T("Total de digitos significativos.", "Total significant digits.")),
+        new("AutoDecimalSeparator", "bool", "false", T("Insere separador decimal automaticamente.", "Inserts decimal separator automatically.")),
+        new("Culture", "CultureInfo", "InvariantCulture", T("Cultura para formatacao.", "Culture for formatting.")),
+        new("CultureName", "string?", "null", T("Nome da cultura (pt-BR).", "Culture name (pt-BR).")),
+        new("CurrencySymbol", "string?", "null", T("Simbolo de moeda.", "Currency symbol.")),
+        new("TextAlign", "XFNumberInputTextAlign", "Right", T("Alinhamento: Left, Center, Right.", "Alignment: Left, Center, Right.")),
+        new("ShowSteppers", "bool", "true", T("Exibe botoes +/-.", "Shows +/- buttons.")),
+        new("StepperLayout", "XFStepperLayout", "Stacked", T("Stacked, Split, Auto.", "Stacked, Split, Auto.")),
+        new("IncrementLabel", "string", "Increase value", T("Label acessivel do botao +.", "Accessible label for + button.")),
+        new("DecrementLabel", "string", "Decrease value", T("Label acessivel do botao -.", "Accessible label for - button.")),
+        new("Label", "string?", "null", T("Texto do label.", "Label text.")),
+        new("Placeholder", "string?", "null", T("Texto placeholder.", "Placeholder text.")),
+        new("HelperText", "string?", "null", T("Texto de ajuda.", "Helper text.")),
+        new("AriaLabel", "string?", "null", T("Nome acessivel alternativo.", "Alternative accessible name.")),
+        new("AriaValueTextFormat", "string?", "null", T("Formato do texto acessivel do valor.", "Format of accessible value text.")),
+        new("PrefixText", "string?", "null", T("Texto adorno antes do input.", "Adornment text before input.")),
+        new("SuffixText", "string?", "null", T("Texto adorno depois do input.", "Adornment text after input.")),
+        new("StartIcon", "RenderFragment?", "null", T("Icone customizado antes do input.", "Custom icon before input.")),
+        new("Variant", "XFFormVariant", "Outline", T("Variante visual.", "Visual variant.")),
+        new("Size", "XFSize", "Md", T("Tamanho: Sm, Md, Lg.", "Size: Sm, Md, Lg.")),
+        new("Tone", "XFSemanticColor", "Default", T("Tom semantico.", "Semantic tone.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read only.")),
+        new("Required", "bool", "false", T("Obrigatorio.", "Required.")),
+        new("Disabled", "bool", "false", T("Desabilitado.", "Disabled.")),
+        new("FullWidth", "bool", "true", T("Largura total.", "Full width.")),
+        new("Immediate", "bool", "false", T("Notifica a cada tecla.", "Notifies on every keystroke.")),
+        new("Class", "string?", "null", T("CSS classes adicionais.", "Additional CSS classes.")),
+        new("Style", "string?", "null", T("Inline CSS styles.", "Inline CSS styles."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ValueChanged", T("Two-way binding. Disparado ao mudar Value.", "Two-way binding. Fired when Value changes.")),
+        new("Change", T("Disparado ao mudar valor. TValue? como payload.", "Fired on value change. TValue? as payload."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("FocusAsync()", T("Foca o input programaticamente.", "Focuses the input programmatically.")),
+        new("SelectAsync()", T("Seleciona todo o texto do input.", "Selects all input text.")),
+        new("BlurAsync()", T("Remove foco do input.", "Removes focus from the input."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("aria-valuenow", T("Valor numerico atual.", "Current numeric value."), "tag"),
+        new("aria-valuetext", T("Valor formatado com cultura.", "Formatted value with culture."), "tag"),
+        new("aria-invalid", T("Quando ha erro de validacao.", "When validation error exists."), "check"),
+        new("aria-required", T("Quando Required=true.", "When Required=true."), "check"),
+        new(T("Touch target 44px", "44px touch target"), T("Area clicavel minima (WCAG 2.5.8 AAA).", "Minimum click area (WCAG 2.5.8 AAA)."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("ArrowUp", T("Incrementa valor em Step.", "Increments value by Step.")),
+        new("ArrowDown", T("Decrementa valor em Step.", "Decrements value by Step.")),
+        new("Tab", T("Move foco para o proximo elemento.", "Moves focus to the next element.")),
+        new("Enter", T("Submete formulario (se dentro de EditForm).", "Submits form (if inside EditForm)."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new("Auto Layout", T("Split no mobile, Stacked no desktop.", "Split on mobile, Stacked on desktop."), "mobile-screen"),
+        new(T("FullWidth", "FullWidth"), T("Ocupa largura total por padrao.", "Fills full width by default."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Timer eficiente", "Efficient timer"), T("System.Threading.Timer com aceleracao.", "System.Threading.Timer with acceleration."), "bolt"),
+        new(T("Sem JS interop", "No JS interop"), T("Puramente Blazor, exceto Focus/Select/Blur.", "Purely Blazor, except Focus/Select/Blur."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Estoque", "Inventory"), T("Quantidades, minimo, maximo.", "Quantities, minimum, maximum."), "boxes-stacked"),
+        new(T("Precificacao", "Pricing"), T("Precos, descontos, margens.", "Prices, discounts, margins."), "tags"),
+        new(T("Comissoes", "Commissions"), T("Percentuais, metas, faixas.", "Percentages, targets, tiers."), "percent"),
+        new(T("Impostos", "Taxes"), T("ICMS, ISS, IPI, CBS.", "ICMS, ISS, IPI, CBS."), "receipt")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("EditForm", T("Use @bind-Value para validacao automatica.", "Use @bind-Value for automatic validation."), "file-lines"),
+        new("XFStack", T("Alinhe campos verticalmente.", "Align fields vertically."), "layer-group"),
+        new("XFGrid", T("Multi-campos lado a lado.", "Side-by-side multi-fields."), "grid"),
+        new("XFCard", T("Agrupe em cards por secao.", "Group in cards by section."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Step logico", "Logical step"), T("1 para unidades, 100 para centenas, 0.01 para decimais.", "1 for units, 100 for hundreds, 0.01 for decimals."), "circle-check"),
+        new(T("Clamp para limites", "Clamp for limits"), T("Use Clamp=true com Min/Max para evitar valores invalidos.", "Use Clamp=true with Min/Max to prevent invalid values."), "circle-check"),
+        new(T("Scale adequada", "Adequate scale"), T("2 para BRL, 0 para JPY, 4 para crypto.", "2 for BRL, 0 for JPY, 4 for crypto."), "circle-check"),
+        new(T("TextAlign.Right", "TextAlign.Right"), T("Mantenha alinhamento a direita para numeros.", "Keep right alignment for numbers."), "circle-check")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem Clamp", "No Clamp"), T("Sem Clamp, valores fora do intervalo passam sem aviso.", "Without Clamp, out-of-range values pass without warning."), "triangle-exclamation"),
+        new(T("Step incompativel", "Incompatible step"), T("Step=1 para valores com decimaus causa frustracao.", "Step=1 for decimal values causes frustration."), "triangle-exclamation"),
+        new(T("Scale errada", "Wrong scale"), T("Scale=0 para BRL perde centavos.", "Scale=0 for BRL loses cents."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("border-surface-200, bg-bg-surface, text-text-primary.", "border-surface-200, bg-bg-surface, text-text-primary.")),
+        new("typography", T("text-sm (Sm/Md), text-base (Lg).", "text-sm (Sm/Md), text-base (Lg).")),
+        new("radius", T("rounded-lg em todos os tamanhos.", "rounded-lg on all sizes.")),
+        new("spacing", T("h-9/h-10/h-12 por Size.", "h-9/h-10/h-12 per Size.")),
+        new("focus", T("focus-visible ring-2 40% primary.", "focus-visible ring-2 40% primary."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFCurrencyInput", T("Entrada monetaria (wrapper).", "Monetary input (wrapper)."), "dollar-sign"),
+        new("XFPercentageInput", T("Entrada percentual.", "Percentage input."), "percent"),
+        new("XFSlider", T("Valor com slider.", "Value with slider."), "sliders"),
+        new("XFTextInput", T("Entrada de texto.", "Text input."), "font")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("StepperLayout Auto?", "StepperLayout Auto?"), T("Renderiza ambos no DOM, CSS controla visibilidade.", "Renders both in DOM, CSS controls visibility.")),
+        new(T("Scale vs Precision?", "Scale vs Precision?"), T("Scale = casas decimais. Precision = total de digitos.", "Scale = decimal places. Precision = total digits.")),
+        new(T("AutoDecimalSeparator?", "AutoDecimalSeparator?"), T("'12345' vira 123.45 com Scale=2 ao sair do campo.", "'12345' becomes 123.45 with Scale=2 on blur.")),
+        new(T("Press-and-hold?", "Press-and-hold?"), T("500ms delay, 200ms repeat, acelera para 60ms apos 2s.", "500ms delay, 200ms repeat, accelerates to 60ms after 2s."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina refeita no padrao enterprise com 10 exemplos renderizados.", "Page rebuilt in enterprise standard with 10 rendered examples.")),
+        new("2026-06-01", T("D-092: Adicionado StepperLayout (Stacked, Split, Auto).", "D-092: Added StepperLayout (Stacked, Split, Auto).")),
+        new("2026-06-01", T("D-091: Adicionado press-and-hold com aceleracao.", "D-091: Added press-and-hold with acceleration."))
+    ];
+
+    // ==================== CODE STRINGS ====================
+    private string CodeBasic =>
+        "<XFNumberInput Label=\"Quantidade\"\n" +
+        "    Value=\"@qty\" ValueChanged=\"@OnQtyChanged\"\n" +
+        "    Min=\"0\" Max=\"10000\" Step=\"1\" />";
+
+    private string CodeMinMax =>
+        "<XFNumberInput Min=\"0\" Max=\"100000\" Clamp=\"true\" />\n" +
+        "<XFNumberInput Min=\"0\" Max=\"100000\" Clamp=\"false\" />";
+
+    private string CodeStepperLayout =>
+        "<XFNumberInput StepperLayout=\"XFStepperLayout.Stacked\" />\n" +
+        "<XFNumberInput StepperLayout=\"XFStepperLayout.Split\" />\n" +
+        "<XFNumberInput StepperLayout=\"XFStepperLayout.Auto\" />";
+
+    private string CodeFormatStyle =>
+        "<XFNumberInput FormatStyle=\"XFNumberInputFormatStyle.Number\" />\n" +
+        "<XFNumberInput FormatStyle=\"XFNumberInputFormatStyle.Currency\" />\n" +
+        "<XFNumberInput FormatStyle=\"XFNumberInputFormatStyle.Percent\" SuffixText=\"%\" />";
+
+    private string CodeSizes =>
+        "<XFNumberInput Size=\"XFSize.Sm\" Label=\"Small\" />\n" +
+        "<XFNumberInput Size=\"XFSize.Md\" Label=\"Medium\" />\n" +
+        "<XFNumberInput Size=\"XFSize.Lg\" Label=\"Large\" />";
+
+    private string CodeVariants =>
+        "<XFNumberInput Variant=\"XFFormVariant.Outline\" Label=\"Outline\" />\n" +
+        "<XFNumberInput Variant=\"XFFormVariant.Filled\" Label=\"Filled\" />\n" +
+        "<XFNumberInput Variant=\"XFFormVariant.Soft\" Label=\"Soft\" />\n" +
+        "<XFNumberInput Variant=\"XFFormVariant.Ghost\" Label=\"Ghost\" />";
+
+    private string CodeScale =>
+        "<XFNumberInput Scale=\"2\" AutoDecimalSeparator=\"true\"\n" +
+        "    Label=\"Digite 98765\" />";
+
+    private string CodeStates =>
+        "<XFNumberInput Disabled=\"true\" Label=\"Desabilitado\" />\n" +
+        "<XFNumberInput ReadOnly=\"true\" Label=\"Somente leitura\" />\n" +
+        "<XFNumberInput Required=\"true\" Label=\"Obrigatorio\" />";
+
+    private string CodeValidation =>
+        "<EditForm EditContext=\"@ctx\" OnValidSubmit=\"@OnSubmit\">\n" +
+        "  <DataAnnotationsValidator />\n" +
+        "  <XFNumberInput Label=\"Quantidade\" @bind-Value=\"model.Qty\" Min=\"1\" />\n" +
+        "  <XFButton Type=\"XFButtonType.Submit\">Enviar</XFButton>\n" +
+        "</EditForm>";
+
+    private string CodeEnterprise =>
+        "<XFNumberInput Label=\"Quantidade\" Min=\"1\" Step=\"1\"\n" +
+        "    Variant=\"Soft\" Tone=\"Primary\" />\n" +
+        "<XFNumberInput Label=\"Desconto (%)\" Min=\"0\" Max=\"50\" Step=\"0.5\"\n" +
+        "    SuffixText=\"%\" Variant=\"Soft\" Tone=\"Warning\" />";
+
+    // ==================== RECORDS ====================
+    internal sealed record DocTile(string Title, string Description, string Icon);
+    internal sealed record NameValueRow(string Name, string Value);
+    internal sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+
+    // ==================== VALIDATION MODEL ====================
+    internal sealed class NumberFormModel
+    {
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Obrigatorio")]
+        [System.ComponentModel.DataAnnotations.Range(1, 100000, ErrorMessage = "Minimo 1")]
+        public decimal? Quantity { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Obrigatorio")]
+        [System.ComponentModel.DataAnnotations.Range(0.01, 999999999, ErrorMessage = "Valor deve ser positivo")]
+        public decimal? UnitPrice { get; set; }
+    }
+}

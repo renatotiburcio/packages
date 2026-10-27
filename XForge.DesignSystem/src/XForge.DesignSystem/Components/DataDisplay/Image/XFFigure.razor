@@ -1,0 +1,27 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <figure id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes">
+        @ChildContent
+
+        @if (HasCaption)
+        {
+            <figcaption class="@CaptionClass">
+                @if (CaptionContent is not null)
+                {
+                    @CaptionContent
+                }
+                else
+                {
+                    @Caption
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Credit))
+                {
+                    <span class="block text-xs text-text-muted">@Credit</span>
+                }
+            </figcaption>
+        }
+    </figure>
+}

@@ -1,0 +1,189 @@
+@typeparam TValue
+@inherits XForgeComponentBase
+@using System.Globalization
+@using System.Linq.Expressions
+@using XForge.DesignSystem.Core.Primitives
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <div id="@LabelId" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </div>
+    }
+
+    <div @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@GroupClass"
+         role="radiogroup"
+         aria-labelledby="@AriaLabelledBy"
+         aria-label="@AriaLabel"
+         aria-describedby="@DescribedBy"
+         aria-invalid="@AriaInvalid"
+         aria-required="@Required.ToString().ToLowerInvariant()"
+         aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+         @onkeydown="HandleKeyDownAsync">
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(Description))
+    {
+        <div id="@DescriptionId" class="@DescriptionClass">
+            @Description
+        </div>
+    }
+</div>
+
+@code {
+    private TValue? _value;
+    private readonly List<XFRadio<TValue>> _radios = new();
+    internal event Action? SelectionChanged;
+
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public TValue? Value { get; set; }
+    [Parameter] public EventCallback<TValue?> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<TValue?>>? ValueExpression { get; set; }
+    [Parameter] public EventCallback<TValue?> Change { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Required { get; set; }
+    [Parameter] public bool FullWidth { get; set; } = true;
+    [Parameter] public XFSize Size { get; set; } = XFSize.Md;
+    [Parameter] public XFSemanticColor Tone { get; set; } = XFSemanticColor.Primary;
+    [Parameter] public XFRadioVariant Variant { get; set; } = XFRadioVariant.Default;
+    [Parameter] public XFRadioOrientation Orientation { get; set; } = XFRadioOrientation.Vertical;
+    [Parameter] public CultureInfo ValueFormatCulture { get; set; } = CultureInfo.InvariantCulture;
+
+    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+
+    private FieldIdentifier? FieldIdentifierValue { get; set; }
+
+    internal string GroupName => !string.IsNullOrWhiteSpace(Name) ? Name! : Id;
+    internal bool IsGroupDisabled => Disabled;
+    internal XFSize GroupSize => Size;
+    internal XFSemanticColor GroupTone => Tone;
+    internal XFRadioVariant GroupVariant => Variant;
+    internal CultureInfo GroupValueFormatCulture => ValueFormatCulture;
+
+    private string LabelId => $"{Id}-label";
+    private string DescriptionId => $"{Id}-description";
+    private string ErrorId => $"{Id}-error";
+    private string? AriaLabelledBy => !string.IsNullOrWhiteSpace(Label) ? LabelId : null;
+    private string AriaInvalid => HasValidationError ? "true" : "false";
+
+    private string? FirstValidationMessage => HasValidationError
+        ? CascadedEditContext!.GetValidationMessages(FieldIdentifierValue!.Value).FirstOrDefault()
+        : null;
+
+    private bool HasValidationError =>
+        CascadedEditContext is not null
+        && ValueExpression is not null
+        && FieldIdentifierValue.HasValue
+        && CascadedEditContext.GetValidationMessages(FieldIdentifierValue.Value).Any();
+
+    private string? DescribedBy => HasValidationError
+        ? ErrorId
+        : !string.IsNullOrWhiteSpace(Description) ? DescriptionId : null;
+
+    private string RootClass =>
+        Join("xf-radio-group grid gap-2", FullWidth ? "w-full" : "inline-grid", Class);
+
+    private string LabelClass => "text-sm font-semibold leading-5 text-text-primary";
+
+    private string GroupClass =>
+        Join(
+            "grid",
+            Orientation == XFRadioOrientation.Horizontal ? "gap-3 sm:flex sm:flex-wrap" : "gap-3",
+            Disabled ? "opacity-60" : string.Empty);
+
+    private string DescriptionClass => "text-xs leading-5 text-text-secondary";
+
+    private string ErrorClass => "text-xs font-medium leading-5 text-danger";
+
+    protected override void OnParametersSet()
+    {
+        _value = Value;
+
+        if (ValueExpression is not null)
+        {
+            FieldIdentifierValue = FieldIdentifier.Create(ValueExpression);
+        }
+    }
+
+    internal bool IsSelected(TValue? optionValue)
+    {
+        return EqualityComparer<TValue?>.Default.Equals(_value, optionValue);
+    }
+
+    internal async Task SelectRadioAsync(TValue? optionValue)
+    {
+        if (Disabled)
+            return;
+
+        _value = optionValue;
+
+        if (ValueChanged.HasDelegate)
+            await ValueChanged.InvokeAsync(_value);
+
+        if (Change.HasDelegate)
+            await Change.InvokeAsync(_value);
+
+        if (CascadedEditContext is not null && FieldIdentifierValue.HasValue)
+            CascadedEditContext.NotifyFieldChanged(FieldIdentifierValue.Value);
+
+        SelectionChanged?.Invoke();
+        StateHasChanged();
+    }
+
+    internal void Register(XFRadio<TValue> radio)
+    {
+        if (!_radios.Contains(radio))
+            _radios.Add(radio);
+    }
+
+    internal void Unregister(XFRadio<TValue> radio)
+    {
+        _radios.Remove(radio);
+    }
+
+    private async Task HandleKeyDownAsync(KeyboardEventArgs args)
+    {
+        var key = args.Key;
+        if (key is not ("ArrowRight" or "ArrowDown" or "ArrowLeft" or "ArrowUp" or "Home" or "End"))
+            return;
+
+        var enabledRadios = _radios.Where(r => !r.IsRadioDisabled).ToList();
+        if (enabledRadios.Count == 0)
+            return;
+
+        var currentIndex = enabledRadios.FindIndex(r => IsSelected(r.OptionValue));
+        var nextIndex = key switch
+        {
+            "Home" => 0,
+            "End" => enabledRadios.Count - 1,
+            "ArrowLeft" or "ArrowUp" => currentIndex <= 0 ? enabledRadios.Count - 1 : currentIndex - 1,
+            _ => currentIndex < 0 || currentIndex == enabledRadios.Count - 1 ? 0 : currentIndex + 1
+        };
+
+        await SelectRadioAsync(enabledRadios[nextIndex].OptionValue);
+    }
+
+    private static string Join(params string?[] values)
+    {
+        return string.Join(" ", values.Where(value => !string.IsNullOrWhiteSpace(value)));
+    }
+}

@@ -1,0 +1,149 @@
+@using XForge.DesignSystem.Services.AI
+@inherits XForgeComponentBase
+
+<section @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@RootClass"
+         style="@Style"
+         role="region"
+         aria-label="@Title">
+
+    @* ── Header ─────────────────────────────────────────────────────────── *@
+    @if (ShowHeader)
+    {
+        <div class="@HeaderClass">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex h-4 w-4 items-center justify-center text-text-muted" aria-hidden="true">
+                    @XFSvgIcons.Markup("brain")
+                </span>
+                <span class="text-sm font-semibold text-text-primary">@Title</span>
+            </div>
+            @if (Memories.Count > 0)
+            {
+                <div class="flex items-center gap-1.5">
+                    @foreach (var type in AvailableTypes)
+                    {
+                        <button type="button"
+                                class="@FilterChipClass(IsTypeActive(type))"
+                                aria-label="@($"Filtrar: {GetTypeLabel(type)}")"
+                                aria-pressed="@IsTypeActive(type)"
+                                @onclick="() => ToggleTypeFilter(type)">
+                            @GetTypeLabel(type)
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    @* ── Stats Bar *@
+    @if (ShowStats && Memories.Count > 0)
+    {
+        <div class="@StatsClass">
+            <div class="flex items-center gap-4">
+                <span class="text-xs text-text-muted">
+                    Total: <span class="font-semibold text-text-primary">@Memories.Count</span>
+                </span>
+                <span class="text-xs text-text-muted">
+                    Relevancia media: <span class="font-semibold text-text-primary">@AverageRelevance.ToString("P0")</span>
+                </span>
+                <span class="text-xs text-text-muted">
+                    Acessos: <span class="font-semibold text-text-primary">@TotalAccesses</span>
+                </span>
+            </div>
+        </div>
+    }
+
+    @* ── Memory List ────────────────────────────────────────────────────── *@
+    @if (FilteredMemories.Count > 0)
+    {
+        <ul class="@ListClass" role="list" aria-label="Memorias da IA">
+            @foreach (var memory in FilteredMemories)
+            {
+                <li class="@ItemClass" role="listitem"
+                    aria-label="@($"{GetTypeLabel(memory.Type)}: {memory.Content}")">
+
+                    @if (MemoryTemplate is not null)
+                    {
+                        @MemoryTemplate(memory)
+                    }
+                    else
+                    {
+                        @* -- Type Icon *@
+                        <div class="@IconContainerClass(memory.Type)" aria-hidden="true">
+                            <span class="@IconClass(memory.Type)">
+                                @XFSvgIcons.Markup(GetTypeIcon(memory.Type))
+                            </span>
+                        </div>
+
+                        @* -- Content *@
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm text-text-primary leading-5">@memory.Content</p>
+
+                            @* -- Metadata *@
+                            <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-text-muted">
+                                <span class="@TypeBadgeClass(memory.Type)">@GetTypeLabel(memory.Type)</span>
+                                <span>@memory.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                                @if (memory.AccessCount > 0)
+                                {
+                                    <span>@memory.AccessCount acessos</span>
+                                }
+                                @if (memory.LastAccessedAt.HasValue)
+                                {
+                                    <span>Ultimo: @memory.LastAccessedAt.Value.ToString("dd/MM HH:mm")</span>
+                                }
+                            </div>
+
+                            @* -- Tags *@
+                            @if (memory.Tags.Count > 0)
+                            {
+                                <div class="mt-1.5 flex flex-wrap gap-1">
+                                    @foreach (var tag in memory.Tags)
+                                    {
+                                        <span class="inline-flex items-center rounded bg-surface-100 px-1.5 py-0.5 text-[10px] text-text-muted">#@tag</span>
+                                    }
+                                </div>
+                            }
+
+                            @* -- Relevance Bar *@
+                            @if (ShowRelevance)
+                            {
+                                <div class="mt-1.5 flex items-center gap-2">
+                                    <span class="text-[10px] text-text-muted">Relevancia:</span>
+                                    <div class="@RelevanceTrackClass" role="progressbar"
+                                         aria-valuenow="@((int)(memory.Relevance * 100))" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="@RelevanceFillClass(memory.Type)" style="width: @((int)(memory.Relevance * 100))%"></div>
+                                    </div>
+                                    <span class="text-[10px] font-medium tabular-nums text-text-muted">@((int)(memory.Relevance * 100))%</span>
+                                </div>
+                            }
+
+                            @* -- Context *@
+                            @if (!string.IsNullOrWhiteSpace(memory.Context))
+                            {
+                                <p class="mt-1 text-[11px] text-text-muted italic">@memory.Context</p>
+                            }
+                        </div>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        @* ── Empty State *@
+        <div class="@EmptyClass">
+            @if (EmptyContent is not null)
+            {
+                @EmptyContent
+            }
+            else
+            {
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-surface-100 text-text-muted" aria-hidden="true">
+                    @XFSvgIcons.Markup("brain")
+                </span>
+                <p class="@EmptyTextClass">@EmptyText</p>
+            }
+        </div>
+    }
+</section>

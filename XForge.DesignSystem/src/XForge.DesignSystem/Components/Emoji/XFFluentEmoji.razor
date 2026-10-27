@@ -1,0 +1,21 @@
+﻿@namespace XForge.DesignSystem.Components.Emoji
+@typeparam TEmoji where TEmoji : class
+<span class="xf-emoji" data-style="@Style" data-size="@Size" data-skintone="@Skintone"
+      title="@Title" aria-label="@Name">
+  @if (Svg != null) { @((MarkupString)Svg) }
+  else { <span class="xf-emoji-missing" aria-hidden="true">@Name</span> }
+</span>
+@code {
+    [Parameter] public TEmoji? Value { get; set; }
+    [Parameter] public XFEmojiSize Size { get; set; } = XFEmojiSize.Size32;
+    [Parameter] public XFEmojiStyle Style { get; set; } = XFEmojiStyle.Color;
+    [Parameter] public XFEmojiSkintone Skintone { get; set; } = XFEmojiSkintone.Default;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private string Name => Value?.GetType().Name ?? "missing";
+
+    private string? Svg => XFEmojiCatalog.Get(Name, Style, Size) is { Data.Length: > 0 } info
+        ? XFEmojiCompress.Unzip(info.Data)
+        : null;
+}

@@ -1,0 +1,37 @@
+@* XFMapPolyline — Adds a polyline path to the parent XFMap *@
+
+@code {
+    [CascadingParameter] private XFMap ParentMap { get; set; } = default!;
+
+    /// <summary>
+    /// Ordered coordinates for the polyline path. Required.
+    /// </summary>
+    [Parameter, EditorRequired] public IReadOnlyList<XFMapCoordinate> Path { get; set; } = Array.Empty<XFMapCoordinate>();
+
+    /// <summary>
+    /// Shape styling (stroke).
+    /// </summary>
+    [Parameter] public XFMapShapeStyle Style { get; set; } = new();
+
+    private int _layerIndex = -1;
+    private bool _added;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ParentMap.IsReady && !_added && Path.Count > 0)
+        {
+            _layerIndex = await ParentMap.AddPolylineAsync(Path, Style);
+            _added = true;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_layerIndex >= 0 && ParentMap != null)
+        {
+            try { await ParentMap.RemoveLayerAsync(_layerIndex); }
+            catch (Microsoft.JSInterop.JSDisconnectedException) { }
+            catch (InvalidOperationException) { }
+        }
+    }
+}

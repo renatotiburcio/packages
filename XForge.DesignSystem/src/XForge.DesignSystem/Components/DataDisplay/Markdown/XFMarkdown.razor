@@ -1,0 +1,84 @@
+@inherits XForgeComponentBase
+
+<article class="@RootClass" style="@Style" aria-label="@AriaLabel">
+    @if (Blocks.Count == 0)
+    {
+        <div class="@EmptyClass">@EmptyText</div>
+    }
+    else
+    {
+        @foreach (var block in Blocks)
+        {
+            switch (block.Kind)
+            {
+                case XFMarkdownBlockKind.Heading:
+                    @switch (block.Level)
+                    {
+                        case 1:
+                            <h1 class="@HeadingClass(1)">@RenderInline(block.Text)</h1>
+                            break;
+                        case 2:
+                            <h2 class="@HeadingClass(2)">@RenderInline(block.Text)</h2>
+                            break;
+                        case 3:
+                            <h3 class="@HeadingClass(3)">@RenderInline(block.Text)</h3>
+                            break;
+                        case 4:
+                            <h4 class="@HeadingClass(4)">@RenderInline(block.Text)</h4>
+                            break;
+                        case 5:
+                            <h5 class="@HeadingClass(5)">@RenderInline(block.Text)</h5>
+                            break;
+                        default:
+                            <h6 class="@HeadingClass(6)">@RenderInline(block.Text)</h6>
+                            break;
+                    }
+                    break;
+                case XFMarkdownBlockKind.Paragraph:
+                    <p class="my-3 text-text-secondary">@RenderInline(block.Text)</p>
+                    break;
+                case XFMarkdownBlockKind.Blockquote:
+                    <blockquote class="my-4 border-l-4 border-[color-mix(in_oklab,var(--color-primary)_35%,transparent)] bg-[color-mix(in_oklab,var(--color-primary)_6%,transparent)] py-2 pl-4 pr-3 text-text-secondary">
+                        @RenderInline(block.Text)
+                    </blockquote>
+                    break;
+                case XFMarkdownBlockKind.UnorderedList:
+                    <ul class="my-3 list-disc space-y-1 pl-6 text-text-secondary">
+                        @foreach (var item in block.Items ?? Array.Empty<string>())
+                        {
+                            <li>@RenderInline(item)</li>
+                        }
+                    </ul>
+                    break;
+                case XFMarkdownBlockKind.OrderedList:
+                    <ol class="my-3 list-decimal space-y-1 pl-6 text-text-secondary">
+                        @foreach (var item in block.Items ?? Array.Empty<string>())
+                        {
+                            <li>@RenderInline(item)</li>
+                        }
+                    </ol>
+                    break;
+                case XFMarkdownBlockKind.Code:
+                    <div class="my-4 overflow-hidden rounded-lg border border-border-light bg-surface-950 text-white">
+                        @if ((ShowCodeLanguage && !string.IsNullOrWhiteSpace(block.Language)) || ShowCodeCopy)
+                        {
+                            <div class="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2 text-xs font-medium text-white/70">
+                                <span>@(ShowCodeLanguage && !string.IsNullOrWhiteSpace(block.Language) ? block.Language : "code")</span>
+                                @if (ShowCodeCopy)
+                                {
+                                    <button type="button"
+                                            class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-white/75 outline-none ring-1 ring-white/15 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/30"
+                                            @onclick="() => CopyCodeAsync(block)">
+                                        <span class="inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">@XFSvgIcons.Markup("copy")</span>
+                                        <span>@GetCodeButtonText(block)</span>
+                                    </button>
+                                }
+                            </div>
+                        }
+                        <pre class="overflow-x-auto p-4 text-sm leading-6"><code>@block.Text</code></pre>
+                    </div>
+                    break;
+            }
+        }
+    }
+</article>

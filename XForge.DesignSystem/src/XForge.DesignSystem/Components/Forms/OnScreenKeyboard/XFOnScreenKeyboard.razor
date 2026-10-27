@@ -1,0 +1,63 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes"
+     role="region" aria-label="@AriaLabel">
+
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <div class="text-sm font-semibold text-text-primary mb-2">@Label</div>
+    }
+
+    <!-- Keyboard layout -->
+    <div class="@KeyboardContainerClass">
+        @foreach (var row in CurrentLayout.Rows)
+        {
+            <div class="flex justify-center gap-1 mb-1">
+                @foreach (var key in row.Keys)
+                {
+                    @if (key.IsSpacer)
+                    {
+                        <div style="width: @(key.SpacerWidth)px;"></div>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="@KeyClass(key)"
+                                style="min-width: @(key.Width)px; height: @(KeyHeight)px;"
+                                disabled="@Disabled"
+                                aria-label="@key.AriaLabel"
+                                data-key="@key.Value"
+                                @onclick="() => OnKeyPressAsync(key)">
+                            @if (key.Icon != null)
+                            {
+                                <span class="inline-block h-4 w-4">@((MarkupString)key.Icon)</span>
+                            }
+                            else
+                            {
+                                <span class="@(key.IsWide ? "text-xs" : "text-sm")">@key.Label</span>
+                            }
+                        </button>
+                    }
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Status bar -->
+    @if (ShowStatusBar)
+    {
+        <div class="flex items-center justify-between mt-2 px-1">
+            <div class="flex items-center gap-2">
+                @if (_isCapsLock)
+                {
+                    <span class="text-xs font-bold text-primary">@CapsLockText</span>
+                }
+                @if (_isShift)
+                {
+                    <span class="text-xs font-bold text-primary">@ShiftText</span>
+                }
+            </div>
+            <div class="text-xs text-text-muted">@CurrentLayout.Name</div>
+        </div>
+    }
+</div>

@@ -29,3 +29,5 @@ Thumbs.db
 
 # BenchmarkDotNet outputs
 **/BenchmarkDotNet.Artifacts/
+# area de trabalho temporaria (design system migrado para XForge.DesignSystem)
+temp/

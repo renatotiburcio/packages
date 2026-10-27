@@ -1,0 +1,65 @@
+﻿@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    @if (Variant == XFCodeVariant.Inline)
+    {
+        <code id="@Id"
+              class="@GetComponentClass()"
+              style="@Style"
+              tabindex="0"
+              role="code"
+              @attributes="AdditionalAttributes">@DisplayText</code>
+    }
+    else
+    {
+        <div id="@Id" class="@GetComponentClass()" style="@Style" @attributes="AdditionalAttributes">
+            @if (ShowHeader)
+            {
+                <div class="@HeaderClass">
+                    <div class="flex min-w-0 items-center gap-2">
+                        @if (!string.IsNullOrWhiteSpace(Language))
+                        {
+                            <span class="@LanguageClass" aria-label="@($"Language: {Language}")">@Language</span>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(Title))
+                        {
+                            <span class="truncate text-sm font-semibold text-text-primary">@Title</span>
+                        }
+                    </div>
+
+                    @if (Copyable)
+                    {
+                        <div class="flex items-center gap-2">
+                            <span aria-live="polite" class="sr-only">@(WasCopied ? CopiedText : "")</span>
+                            <button type="button"
+                                    class="@CopyButtonClass"
+                                    aria-label="@(WasCopied ? CopiedText : CopyLabel)"
+                                    title="@(WasCopied ? CopiedText : CopyLabel)"
+                                    disabled="@Disabled"
+                                    @onclick="CopyAsync">
+                                @if (WasCopied)
+                                {
+                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
+                                }
+                                else
+                                {
+                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                }
+                                <span>@CopyButtonText</span>
+                            </button>
+                        </div>
+                    }
+                </div>
+            }
+
+            <pre class="@PreClass" tabindex="0" role="region" aria-label="@(!string.IsNullOrWhiteSpace(Title) ? Title : Language ?? "Code")"><code class="@CodeClass">@DisplayText</code></pre>
+        </div>
+    }
+}

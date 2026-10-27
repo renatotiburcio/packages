@@ -1,0 +1,117 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+<div class="@RootClass" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+     role="region" aria-label="@AriaLabel" aria-busy="@AriaBusyValue">
+
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between gap-3 border-b border-border-light px-4 py-3">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-text-primary">@Title</span>
+                <span class="rounded-full bg-surface-100 px-2 py-0.5 text-xs text-text-muted">@_entries.Count</span>
+            </div>
+            <div class="flex items-center gap-1">
+                @if (HeaderContent is not null)
+                {
+                    @HeaderContent
+                }
+                <button type="button"
+                        class="inline-flex h-7 items-center gap-1 rounded-md px-2 text-xs text-text-muted hover:bg-surface-100 hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus"
+                        @onclick="ClearAllAsync" disabled="@(_entries.Count == 0)">
+                    @ClearLabel
+                </button>
+            </div>
+        </div>
+    }
+
+    @* Type filter chips *@
+    @if (ShowFilters && _entries.Count > 0)
+    {
+        <div class="flex flex-wrap gap-1.5 border-b border-border-light px-4 py-2">
+            <button type="button"
+                    class="@GetFilterChipClass(null)"
+                    @onclick="() => _filterType = null">
+                Todos
+            </button>
+            @foreach (var type in _entries.Select(e => e.Type).Distinct())
+            {
+                <button type="button"
+                        class="@GetFilterChipClass(type)"
+                        @onclick="() => _filterType = type">
+                    @GetTypeLabel(type)
+                </button>
+            }
+        </div>
+    }
+
+    @* Context entries list *@
+    <div class="max-h-80 overflow-y-auto">
+        @if (FilteredEntries.Count == 0)
+        {
+            <div class="flex flex-col items-center gap-2 px-4 py-8 text-center">
+                <span class="text-sm text-text-muted">@EmptyText</span>
+            </div>
+        }
+        else
+        {
+            @foreach (var entry in FilteredEntries)
+            {
+                <div class="flex items-start gap-3 border-b border-surface-100 px-4 py-3 last:border-b-0 hover:bg-surface-50 transition-colors">
+                    <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full @GetTypeColorClass(entry.Type) text-xs">
+                        @GetTypeIcon(entry.Type)
+                    </span>
+                    <div class="min-w-0 flex-1">
+                        <div class="text-sm text-text-primary">@entry.Content</div>
+                        <div class="mt-1 flex items-center gap-2 text-xs text-text-muted">
+                            <span>@entry.Source</span>
+                            <span>·</span>
+                            <span>@FormatTimestamp(entry.Timestamp)</span>
+                            @if (entry.Tags is { Count: > 0 })
+                            {
+                                <span>·</span>
+                                @foreach (var tag in entry.Tags)
+                                {
+                                    <span class="rounded bg-surface-100 px-1 py-0.5 text-[10px]">@tag</span>
+                                }
+                            }
+                        </div>
+                    </div>
+                    @if (ShowRelevance)
+                    {
+                        <div class="flex items-center gap-1" title="Relevância: @((entry.Relevance * 100).ToString("F0"))%">
+                            <div class="h-1.5 w-12 overflow-hidden rounded-full bg-surface-200">
+                                <div class="h-full rounded-full @GetRelevanceColor(entry.Relevance)" style="width:@((entry.Relevance * 100).ToString("F0"))%"></div>
+                            </div>
+                        </div>
+                    }
+                    @if (entry.IsPinned)
+                    {
+                        <span class="text-xs text-primary" title="Fixado">📌</span>
+                    }
+                    <button type="button"
+                            class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-text-muted hover:bg-danger-50 hover:text-danger focus-visible:ring-2 focus-visible:ring-border-focus"
+                            @onclick="() => RemoveEntryAsync(entry.Id)" aria-label="Remover contexto">
+                        ×
+                    </button>
+                </div>
+            }
+        }
+    </div>
+
+    @* Summary footer *@
+    @if (ShowSummary && _entries.Count > 0)
+    {
+        <div class="flex items-center justify-between gap-3 border-t border-border-light px-4 py-2 text-xs text-text-muted">
+            <span>@_entries.Count contexto(s)</span>
+            <span>@_entries.Count(e => e.IsPinned) fixado(s)</span>
+        </div>
+    }
+
+    @* Custom content *@
+    @if (ChildContent is not null)
+    {
+        <div class="border-t border-border-light px-4 py-3">
+            @ChildContent
+        </div>
+    }
+</div>

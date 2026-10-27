@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-06-10T01:00:00Z",
+  "totalFeedbacks": 0,
+  "byResult": {
+    "SUCCESS": 0,
+    "FAIL": 0,
+    "PARTIAL": 0
+  },
+  "byType": {},
+  "byComplexity": {
+    "S": 0,
+    "M": 0,
+    "L": 0,
+    "CRITICA": 0
+  },
+  "recurringErrors": [],
+  "topErrors": []
+}

@@ -1,0 +1,143 @@
+﻿@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="complementary"
+     aria-label="@Title"
+     aria-busy="@((Loading ? "true" : "false"))"
+     aria-live="polite">
+
+    @* ── Header ─────────────────────────────────────────────────────────── *@
+    @if (HeaderContent is not null)
+    {
+        <div class="@HeaderClass">
+            @HeaderContent
+        </div>
+    }
+    else if (ShowTitle)
+    {
+        <div class="@HeaderClass">
+            <h3 class="@TitleClass">@Title</h3>
+        </div>
+    }
+
+    @* ── Loading State ──────────────────────────────────────────────────── *@
+    @if (Loading)
+    {
+        <div class="@LoadingSkeletonClass" role="status" aria-label="@LoadingText">
+            <span class="sr-only">@LoadingText</span>
+            @for (var i = 0; i < Math.Min(3, MaxSuggestions); i++)
+            {
+                <div class="@SkeletonItemClass">
+                    <div class="@SkeletonCircleClass"></div>
+                    <div class="flex-1 space-y-2 py-0.5">
+                        <div class="@SkeletonLineClass(0) w-3/4"></div>
+                        <div class="@SkeletonLineClass(0) w-1/2"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (!HasSuggestions)
+    {
+        @* ── Empty State ─────────────────────────────────────────────────── *@
+        @if (EmptyContent is not null)
+        {
+            <div class="@EmptyClass">
+                @EmptyContent
+            </div>
+        }
+        else
+        {
+            <div class="@EmptyClass">
+                <svg class="@EmptyIconClass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                <p class="@EmptyTextClass">@EmptyText</p>
+            </div>
+        }
+    }
+    else
+    {
+        @* ── Suggestion List ─────────────────────────────────────────────── *@
+        <ul class="@ListClass" role="list">
+            @foreach (var suggestion in VisibleSuggestions)
+            {
+                <li role="listitem"
+                    class="@($"{SuggestionBaseClass} {SuggestionDisabledClass} {TypeBorderClass(suggestion.Type)}")"
+                    tabindex="0"
+                    aria-label="@($"{suggestion.Title}{(suggestion.Confidence.HasValue ? $", confianca {ConfidencePercent(suggestion.Confidence)}" : "")}")"
+                    @onclick="@(() => HandleSuggestionClickAsync(suggestion))"
+                    @onkeydown="@((KeyboardEventArgs args) => HandleSuggestionKeyDownAsync(args, suggestion))">
+
+                    @if (SuggestionTemplate is not null)
+                    {
+                        @SuggestionTemplate(suggestion)
+                    }
+                    else
+                    {
+                        @* ── Icon *@
+                        @if (ShowIcons)
+                        {
+                            <div class="@IconContainerClass(suggestion.Type)" aria-hidden="true">
+                                <span class="@IconClass(suggestion.Type)">
+                                    @XFSvgIcons.Markup(!string.IsNullOrEmpty(suggestion.Icon) ? suggestion.Icon : DefaultIconForType(suggestion.Type))
+                                </span>
+                            </div>
+                        }
+
+                        @* ── Content *@
+                        <div class="min-w-0 flex-1">
+                            <p class="@SuggestionTitleClass">@suggestion.Title</p>
+
+                            @if (!string.IsNullOrWhiteSpace(suggestion.Description))
+                            {
+                                <p class="@SuggestionDescriptionClass">@suggestion.Description</p>
+                            }
+
+                            @if (ShowConfidence && suggestion.Confidence.HasValue)
+                            {
+                                <div class="@ConfidenceBarContainerClass">
+                                    <div class="@ConfidenceBarTrackClass"
+                                         role="progressbar"
+                                         aria-valuenow="@((int)(suggestion.Confidence.Value * 100))"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100"
+                                         aria-label="Confianca">
+                                        <div class="@ConfidenceBarFillClass(suggestion.Type)"
+                                             style="width: @ConfidenceWidth(suggestion.Confidence)%"></div>
+                                    </div>
+                                    <span class="@ConfidenceLabelClass">@ConfidencePercent(suggestion.Confidence)</span>
+                                </div>
+                            }
+                        </div>
+
+                        @* ── Dismiss Button *@
+                        @if (ShowDismiss)
+                        {
+                            <button type="button"
+                                    class="@DismissButtonClass"
+                                    aria-label="@($"Dispensar sugestao: {suggestion.Title}")"
+                                    @onclick="@((MouseEventArgs e) => HandleDismissAsync(suggestion, e))"
+                                    @onclick:stopPropagation="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round"
+                                     class="h-3.5 w-3.5" aria-hidden="true">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            </button>
+                        }
+                    }
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+

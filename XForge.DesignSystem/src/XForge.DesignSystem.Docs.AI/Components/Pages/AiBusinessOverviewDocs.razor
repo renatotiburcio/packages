@@ -1,0 +1,400 @@
+@page "/ai/business/overview"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Business AI" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Domain Intelligence" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="Brazilian Enterprise" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Inteligencia de dominio empresarial brasileira: NF-e, estoque, metas, conciliacao e contabilidade.",
+                               "Brazilian enterprise domain intelligence: NF-e, stock, sales goals, financial reconciliation and accounting.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componentes AI especializados para obrigatoriedades fiscais, gestao financeira e automacao contabil do mercado brasileiro.",
+                               "AI components specialized for fiscal obligations, financial management and accounting automation in the Brazilian market.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderizacao estatica. JS interop requer modo interativo.", "Static rendering. JS interop requires interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral da categoria", "Category Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Componentes da categoria", "Category Components"), @<div>@TileGrid(ComponentListItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. NF-e Analyzer", "1. NF-e Analyzer"), T("Analise fiscal de documentos eletronicos.", "Electronic document fiscal analysis."), ExNFeAnalyzer(), CodeNFe)
+            @Example(T("2. Stock Advisor", "2. Stock Advisor"), T("Previsao de estoque com IA.", "AI-powered stock forecasting."), ExStockAdvisor(), CodeStock)
+            @Example(T("3. Sales Goal Advisor", "3. Sales Goal Advisor"), T("Orientacao de metas de vendas.", "Sales goal guidance."), ExSalesGoal(), CodeSales)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Componentes", "Components"), @<div>@NameValueTable(ComponentTableRows, T("Componente", "Component"), T("Descricao", "Description"))</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Commercial AI", "Commercial AI");
+    private string PageTitleText => T("Business AI Overview", "Business AI Overview");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+            <XFStack Orientation="XFOrientation.Horizontal" Gap="3" FullWidth="true">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("file-invoice", 18))</span>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="1" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">XFAiNFeAnalyzer</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">Analise fiscal de NF-e</XFTypography>
+                </XFStack>
+            </XFStack>
+        </ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+            <XFStack Orientation="XFOrientation.Horizontal" Gap="3" FullWidth="true">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-success/10 bg-success/10 text-success" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("chart-line", 18))</span>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="1" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">XFAiStockAdvisor</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">Previsao de estoque</XFTypography>
+                </XFStack>
+            </XFStack>
+        </ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+            <XFStack Orientation="XFOrientation.Horizontal" Gap="3" FullWidth="true">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-info/10 bg-info/10 text-info" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("bullseye", 18))</span>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="1" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">XFAiSalesGoalAdvisor</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">Metas de vendas</XFTypography>
+                </XFStack>
+            </XFStack>
+        </ChildContent></XFCard>
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("5 componentes", "5 components"), T("NFeAnalyzer, StockAdvisor, SalesGoalAdvisor, FinancialConciliator, AccountingAssistant.", "NFeAnalyzer, StockAdvisor, SalesGoalAdvisor, FinancialConciliator, AccountingAssistant."), "cubes"),
+        new(T("Dominio brasileiro", "Brazilian domain"), T("Fiscal, contabil e financeiro do mercado BR.", "Fiscal, accounting and financial in the BR market."), "brazil"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Category", "Business AI / Domain Intelligence"),
+        new("Package", "XForge.DesignSystem"),
+        new("Components", "5 (XFAiNFeAnalyzer, XFAiStockAdvisor, XFAiSalesGoalAdvisor, XFAiFinancialConciliator, XFAiAccountingAssistant)"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("WCAG AAA, aria-label, aria-describedby, touch 44px, focus 40%.", "WCAG AAA, aria-label, aria-describedby, touch 44px, focus 40%.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("NF-e Analyzer", "NF-e Analyzer"), T("Analise e validacao de notas fiscais eletronicas.", "Analysis and validation of electronic invoices."), "file-invoice"),
+        new(T("Stock Advisor", "Stock Advisor"), T("Previsao e otimizacao de estoque com IA.", "AI-powered stock forecasting and optimization."), "chart-line"),
+        new(T("Sales Goal Advisor", "Sales Goal Advisor"), T("Orientacao inteligente de metas de vendas.", "Intelligent sales goal guidance."), "bullseye"),
+        new(T("Financial Conciliator", "Financial Conciliator"), T("Conciliacao financeira automatizada.", "Automated financial reconciliation."), "scale-balanced"),
+        new(T("Accounting Assistant", "Accounting Assistant"), T("Automacao e assistencia contabil.", "Accounting automation and assistance."), "calculator")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Compliance fiscal", "Fiscal compliance"), T("Validacao automatica de NF-e contra regras da SEFAZ.", "Automatic NF-e validation against SEFAZ rules."), "shield-check"),
+        new(T("Gestao de estoque", "Stock management"), T("Previsao de demanda e ponto de reposicao.", "Demand forecasting and reorder points."), "boxes-stacked"),
+        new(T("Metas de vendas", "Sales goals"), T("Definicao e acompanhamento de metas.", "Goal setting and tracking."), "flag")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Validacao manual de NF-e, sem previsao de estoque.", "Manual NF-e validation, no stock forecasting."), "xmark"),
+        new(T("Depois", "After"), T("Automacao AI com analise inteligente e sugestoes.", "AI automation with intelligent analysis and suggestions."), "check"),
+        new(T("ROI", "ROI"), T("Reducao de erros fiscais e otimizacao de capital de giro.", "Reduced fiscal errors and working capital optimization."), "chart-mixed")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Empresas BR", "BR companies"), T("Obrigacoes fiscais e contabeis brasileiras.", "Brazilian fiscal and accounting obligations."), "building"),
+        new(T("E-commerce", "E-commerce"), T("Gestao de estoque e metas de vendas.", "Stock management and sales goals."), "cart-shopping")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Mercado international", "International market"), T("Componentes sao especificos para BR.", "Components are specific to BR."), "globe"),
+        new(T("Uso generico", "Generic use"), T("Use componentes core para necessidades genericas.", "Use core components for generic needs."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> ComponentListItems => [
+        new("XFAiNFeAnalyzer", T("Analise fiscal de NF-e.", "NF-e fiscal analysis."), "file-invoice"),
+        new("XFAiStockAdvisor", T("Previsao de estoque.", "Stock forecasting."), "chart-line"),
+        new("XFAiSalesGoalAdvisor", T("Metas de vendas.", "Sales goals."), "bullseye"),
+        new("XFAiFinancialConciliator", T("Conciliacao financeira.", "Financial reconciliation."), "scale-balanced"),
+        new("XFAiAccountingAssistant", T("Assistencia contabil.", "Accounting assistance."), "calculator")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Dominio-first", "Domain-first"), T("Cada componente resolve um problema de dominio especifico.", "Each component solves a specific domain problem."), "bullseye"),
+        new(T("Automacao", "Automation"), T("Reducao de tarefas manuais repetitivas.", "Reduction of repetitive manual tasks."), "robot"),
+        new(T("Conformidade", "Compliance"), T("Seguimento de regras fiscais e contabeis.", "Adherence to fiscal and accounting rules."), "shield-check")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExNFeAnalyzer() => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiNFeAnalyzer" />
+            <XFTypography Variant="XFTypographyVariant.Body1">Analise automatica de XML de NF-e com validacao de campos obrigatorios.</XFTypography>
+            <XFCode Text="Exemplo de uso do XFAiNFeAnalyzer para analise de notas fiscais." Language="razor" />
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment ExStockAdvisor() => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="XFAiStockAdvisor" />
+            <XFTypography Variant="XFTypographyVariant.Body1">Previsao de demanda com historico de vendas e sazonalidade.</XFTypography>
+            <XFCode Text="Exemplo de uso do XFAiStockAdvisor para previsao de estoque." Language="razor" />
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment ExSalesGoal() => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Info" Text="XFAiSalesGoalAdvisor" />
+            <XFTypography Variant="XFTypographyVariant.Body1">Definicao de metas baseada em historico e tendencias de mercado.</XFTypography>
+            <XFCode Text="Exemplo de uso do XFAiSalesGoalAdvisor para metas de vendas." Language="razor" />
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private const string CodeNFe = @"<XFAiNFeAnalyzer XmlContent=""@nfeXml"" OnValidated=""@HandleValidation"" />";
+    private const string CodeStock = @"<XFAiStockAdvisor ProductId=""@productId"" HistoryDays=""90"" OnForecastReady=""@HandleForecast"" />";
+    private const string CodeSales = @"<XFAiSalesGoalAdvisor TeamId=""@teamId"" Period=""Quarterly"" OnGoalSuggested=""@HandleGoal"" />";
+
+    // === COMPONENTS TABLE ===
+    private IReadOnlyList<NameValueRow> ComponentTableRows => [
+        new("XFAiNFeAnalyzer", T("Analise e validacao de NF-e com regras SEFAZ.", "NF-e analysis and validation with SEFAZ rules.")),
+        new("XFAiStockAdvisor", T("Previsao de demanda e otimizacao de estoque.", "Demand forecasting and stock optimization.")),
+        new("XFAiSalesGoalAdvisor", T("Definicao inteligente de metas de vendas.", "Intelligent sales goal definition.")),
+        new("XFAiFinancialConciliator", T("Conciliacao financeira entre sistemas.", "Financial reconciliation between systems.")),
+        new("XFAiAccountingAssistant", T("Automacao de tarefas contabeis.", "Accounting task automation."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnValidated", T("Callback apos validacao de NF-e.", "Callback after NF-e validation.")),
+        new("OnForecastReady", T("Callback quando previsao esta disponivel.", "Callback when forecast is ready.")),
+        new("OnGoalSuggested", T("Callback quando meta e sugerida.", "Callback when goal is suggested.")),
+        new("OnReconciled", T("Callback apos conciliacao financeira.", "Callback after financial reconciliation."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("aria-label", "aria-label"), T("Labels descritivos em todos os componentes.", "Descriptive labels on all components."), "tag"),
+        new(T("aria-describedby", "aria-describedby"), T("Descrices detalhadas para leitores de tela.", "Detailed descriptions for screen readers."), "universal-access"),
+        new(T("Touch 44px", "Touch 44px"), T("Area minima de toque para dispositivos moveis.", "Minimum touch area for mobile devices."), "mobile-screen"),
+        new(T("Focus 40%", "Focus 40%"), T("Indicador de foco com contraste alto.", "High contrast focus indicator."), "circle-dot")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre componentes.", "Navigate between components.")),
+        new("Enter", T("Ativa acao principal.", "Activates primary action.")),
+        new("Escape", T("Cancela operacao atual.", "Cancels current operation."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Mobile-first", "Mobile-first"), T("Layout responsivo para todos os tamanhos.", "Responsive layout for all sizes."), "mobile-screen"),
+        new(T("Tablet", "Tablet"), T("Otimizado para tablets.", "Optimized for tablets."), "tablet")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Render leve", "Light render"), T("Tag div nativa sem wrappers.", "Native div tag without wrappers."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("NFe fiscal", "NFe fiscal"), T("Validacao automatica de notas fiscais.", "Automatic invoice validation."), "file-invoice"),
+        new(T("Estoque", "Stock"), T("Previsao de demanda e reposicao.", "Demand forecasting and restocking."), "boxes-stacked"),
+        new(T("Vendas", "Sales"), T("Metas e acompanhamento de equipe.", "Goals and team tracking."), "chart-line")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Analyzer + Card", "Analyzer + Card"), T("NF-e dentro de XFCard para contexto.", "NF-e inside XFCard for context."), "square"),
+        new(T("Advisor + Dashboard", "Advisor + Dashboard"), T("Advisor integrado ao painel.", "Advisor integrated into dashboard."), "gauge"),
+        new(T("Conciliator + Table", "Conciliator + Table"), T("Conciliacao com dados tabulares.", "Reconciliation with tabular data."), "table")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Labels descritivos", "Descriptive labels"), T("Sempre descreva a operacao AI.", "Always describe the AI operation."), "align-left"),
+        new(T("Feedback visual", "Visual feedback"), T("Use badges e cores semanticas.", "Use badges and semantic colors."), "palette"),
+        new(T("Erro claro", "Clear error"), T("Mensagens de erro em portugues.", "Error messages in Portuguese."), "triangle-exclamation"),
+        new(T("Loading states", "Loading states"), T("Indique processamento AI.", "Indicate AI processing."), "spinner")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem feedback", "No feedback"), T("Componente sem indicacao de processamento.", "Component without processing indication."), "xmark"),
+        new(T("Texto generico", "Generic text"), T("Mensagens sem contexto do dominio.", "Messages without domain context."), "ban"),
+        new(T("Cor sem significado", "Color without meaning"), T("Nao use cores aleatorias.", "Do not use random colors."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("bg-primary/10", T("Fundo do badge de categoria.", "Category badge background.")),
+        new("text-primary", T("Texto do badge de categoria.", "Category badge text.")),
+        new("border-border-light", T("Borda dos cards de preview.", "Preview card border."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props e eventos de cada componente.", "Render, props and event tests for each component.")),
+        new("Integration", T("Testes de integracao entre componentes AI.", "Integration tests between AI components.")),
+        new("Accessibility", T("aria-label, aria-describedby, focus management.", "aria-label, aria-describedby, focus management."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Mercado", T("Componentes especificos para Brasil.", "Components specific to Brazil.")),
+        new("Idioma", T("Mensagens padrao em portugues.", "Default messages in Portuguese.")),
+        new("API externa", T("Alguns componentes dependem de APIs externas.", "Some components depend on external APIs."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiFormAssistant", T("Assistencia de formularios.", "Form assistance."), "file-lines"),
+        new("XFAiDataGridAssistant", T("Assistencia de grade de dados.", "Data grid assistance."), "table"),
+        new("XFAiReportBuilder", T("Construtor de relatorios.", "Report builder."), "file-chart-column")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Componentes funcionam offline?", "Do components work offline?"), T("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop.")),
+        new(T("Precisa de API externa?", "Need external API?"), T("Depende do componente. NFeAnalyzer usa APIs da SEFAZ.", "Depends on the component. NFeAnalyzer uses SEFAZ APIs.")),
+        new(T("Suporta dark mode?", "Supports dark mode?"), T("Sim. via data-theme e CSS variables.", "Yes. via data-theme and CSS variables."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", T("Pagina criada no padrao AppShellDocs com 26 secoes.", "Page created in AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+}

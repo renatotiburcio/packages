@@ -1,0 +1,32 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes" id="@Id" class="@RootClass">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label class="text-sm font-medium text-text-primary" for="@CanvasId">@Label</label>
+    }
+
+    <div class="@SurfaceClass">
+        <canvas id="@CanvasId"
+                class="@CanvasClass"
+                width="@Width"
+                height="@Height"
+                aria-label="@AriaLabel"></canvas>
+    </div>
+
+    @if (ShowToolbar)
+    {
+        <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="text-xs text-text-secondary">@HelperText</div>
+            <div class="flex items-center gap-2">
+                <button class="@ToolButtonClass" type="button" disabled="@DisabledOrReadOnly" @onclick="UndoAsync">@UndoLabel</button>
+                <button class="@ToolButtonClass" type="button" disabled="@DisabledOrReadOnly" @onclick="ClearAsync">@ClearLabel</button>
+            </div>
+        </div>
+    }
+
+    @if (Required && string.IsNullOrWhiteSpace(Value))
+    {
+        <div class="text-xs font-medium text-danger">@RequiredText</div>
+    }
+</div>

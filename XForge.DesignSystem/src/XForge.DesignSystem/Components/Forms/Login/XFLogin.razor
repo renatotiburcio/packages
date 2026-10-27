@@ -1,0 +1,81 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style">
+    <form @onsubmit="HandleLoginAsync" aria-label="@AriaLabel">
+        <div class="flex flex-col gap-5">
+            <div class="flex flex-col gap-1.5">
+                <label for="@(Id)-username" class="text-sm font-medium leading-5 text-text-primary">
+                    Usuário
+                </label>
+                <input id="@(Id)-username"
+                       type="text"
+                       class="h-10 rounded-lg border border-surface-200 bg-bg-surface px-3.5 py-2 text-sm text-text-primary outline-none transition-all duration-200 ease-out placeholder:text-text-muted focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--color-primary)_18%,transparent)]"
+                       autocomplete="username"
+                       disabled="@Disabled"
+                       @bind="Username" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+                <label for="@(Id)-password" class="text-sm font-medium leading-5 text-text-primary">
+                    Senha
+                </label>
+                <input id="@(Id)-password"
+                       type="password"
+                       class="h-10 rounded-lg border border-surface-200 bg-bg-surface px-3.5 py-2 text-sm text-text-primary outline-none transition-all duration-200 ease-out placeholder:text-text-muted focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--color-primary)_18%,transparent)]"
+                       autocomplete="current-password"
+                       disabled="@Disabled"
+                       @bind="Password" />
+            </div>
+
+            @if (AllowRememberMe)
+            {
+                <div class="flex items-center gap-2">
+                    <input id="@(Id)-remember"
+                           type="checkbox"
+                           class="h-4 w-4 rounded border-surface-300 text-primary accent-primary"
+                           disabled="@Disabled"
+                           @bind="RememberMe" />
+                    <label for="@(Id)-remember" class="cursor-pointer text-sm text-text-secondary">
+                        Lembrar de mim
+                    </label>
+                </div>
+            }
+
+            @if (ShowLoginButton)
+            {
+                <button type="submit"
+                        disabled="@Disabled"
+                        class="inline-flex h-10 items-center justify-center rounded-lg border border-primary bg-primary px-4 text-sm font-semibold text-primary-contrast shadow-sm transition-all duration-200 ease-out hover:bg-primary-hover focus-visible:ring-2 focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_40%,transparent)] focus-visible:ring-offset-2 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60">
+                    @LoginText
+                </button>
+            }
+
+            @if (ShowRegister || ShowResetPassword)
+            {
+                <div class="flex flex-col gap-2 text-center">
+                    @if (ShowResetPassword)
+                    {
+                        <button type="button"
+                                class="text-sm font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+                                @onclick="HandleResetPasswordAsync"
+                                disabled="@Disabled">
+                            Esqueceu a senha?
+                        </button>
+                    }
+                    @if (ShowRegister)
+                    {
+                        <button type="button"
+                                class="text-sm font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+                                @onclick="HandleRegisterAsync"
+                                disabled="@Disabled">
+                            Criar conta
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    </form>
+</div>

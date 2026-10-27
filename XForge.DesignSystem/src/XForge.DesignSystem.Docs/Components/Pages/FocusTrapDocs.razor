@@ -1,0 +1,586 @@
+@page "/components/focus-trap"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFFocusTrap" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Acessibilidade para overlays", "Accessibility for overlays")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Utilitario de foco para dialogs, drawers e overlays com trap, restore e escape.",
+                               "Focus utility for dialogs, drawers and overlays with trap, restore and escape.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Mantem o foco do teclado dentro de um container modal, prevenindo que o usuario tabule para fora. Suporta restauracao de foco, foco inicial customizado e liberacao por Escape.",
+                               "Keeps keyboard focus within a modal container, preventing the user from tabbing out. Supports focus restoration, custom initial focus and Escape release.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("JS interop via SignalR. Pode haver latencia.", "JS interop via SignalR. May have latency.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("JS interop direto, sem latencia de rede.", "Direct JS interop, no network latency.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Depende do modo ativo no momento.", "Depends on the active mode at the time.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Text="@T("Nao", "No")" /></XFTableCell><XFTableCell>@T("JS interop nao disponivel em modo estatico.", "JS interop not available in static mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente utiliza JavaScript interop para gerenciar foco. As funcoes JS xfFocusTrap.activate, xfFocusTrap.focusInitial e xfFocusTrap.release sao chamadas via IJSRuntime.", "This component uses JavaScript interop to manage focus. The JS functions xfFocusTrap.activate, xfFocusTrap.focusInitial and xfFocusTrap.release are called via IJSRuntime.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Dialog basico", "1. Basic Dialog"), T("Trap de foco em dialog de confirmacao com botao primario.", "Focus trap in confirmation dialog with primary button."), ExBasicDialog(), Code1)
+            @Example(T("2. Escape libera foco", "2. Escape Releases Focus"), T("Escape tecla libera o trap e restaura foco ao elemento anterior.", "Escape key releases the trap and restores focus to the previous element."), ExEscapeRelease(), Code2)
+            @Example(T("3. Foco inicial customizado", "3. Custom Initial Focus"), T("Foco inicial direcionado para um campo especifico via selector.", "Initial focus directed to a specific field via selector."), ExCustomInitialFocus(), Code3)
+            @Example(T("4. Drawer com trap", "4. Drawer with Trap"), T("Trap de foco em drawer lateral com conteudo de formulario.", "Focus trap in side drawer with form content."), ExDrawerTrap(), Code4)
+            @Example(T("5. Dialog de confirmacao", "5. Confirmation Dialog"), T("Dialog com dois botoes e trap de foco completo.", "Dialog with two buttons and complete focus trap."), ExConfirmDialog(), Code5)
+            @Example(T("6. Ativacao programatica", "6. Programmatic Activation"), T("Ativacao e desativacao do trap via metodos C#.", "Trap activation and deactivation via C# methods."), ExProgrammatic(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFFocusTrap", "XFFocusTrap");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-100 p-4">
+            <div class="text-sm font-medium text-text-primary mb-2">@T("Dialog de exemplo", "Example dialog")</div>
+            <div class="flex gap-2">
+                <button class="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white">OK</button>
+                <button class="inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary">Cancel</button>
+            </div>
+        </div>
+        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Tab cicla entre OK e Cancel dentro do trap.", "Tab cycles between OK and Cancel inside the trap.")</XFTypography>
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Trap de foco", "Focus trap"), T("Mantem tab dentro do container modal.", "Keeps tab inside modal container."), "lock"),
+        new(T("Restore focus", "Restore focus"), T("Restaura foco ao elemento original ao liberar.", "Restores focus to original element on release."), "lock-open"),
+        new(T("Escape release", "Escape release"), T("Libera trap com tecla Escape opcional.", "Releases trap with optional Escape key."), "arrow-right-from-bracket")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFFocusTrap"),
+        new("Namespace", "XForge.DesignSystem.Components.Utilities.FocusTrap"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Utilities / Focus Trap"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("Tab trap, Escape key, focus restore, InitialFocusSelector.", "Tab trap, Escape key, focus restore, InitialFocusSelector.")),
+        new("Theme support", T("Neutro. Sem tokens visuais proprios.", "Neutral. No visual tokens of its own."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Container de foco", "Focus container"), T("Div wrapper com tabindex=-1 que captura foco.", "Div wrapper with tabindex=-1 that captures focus."), "lock"),
+        new(T("JS interop", "JS interop"), T("Usa xfFocusTrap JS para gerenciar Tab cycle.", "Uses xfFocusTrap JS to manage Tab cycle."), "bolt"),
+        new(T("Programatico", "Programmatic"), T("Metodos C# publicos para controle externo.", "Public C# methods for external control."), "gear")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Dialogs", "Dialogs"), T("Manter foco dentro de modais de confirmacao.", "Keep focus inside confirmation modals."), "window-maximize"),
+        new(T("Drawers", "Drawers"), T("Trap de foco em paineis laterais.", "Focus trap in side panels."), "arrows-left-right"),
+        new(T("Overlays", "Overlays"), T("Qualquer camada que bloqueia interacao com o fundo.", "Any layer that blocks interaction with the background."), "layer-group")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Tab navega para fora do modal, quebrando acessibilidade.", "Tab navigates outside the modal, breaking accessibility."), "xmark"),
+        new(T("Depois", "After"), T("Tab cicla dentro do container, mantendo foco.", "Tab cycles inside the container, maintaining focus."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("WCAG 2.1 requiremenet para modais acessiveis.", "WCAG 2.1 requirement for accessible modals."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Dialogs modais", "Modal dialogs"), T("Confirmacao, alerta, selecao.", "Confirmation, alert, selection."), "window-maximize"),
+        new(T("Drawers", "Drawers"), T("Paineis laterais de formulario.", "Side form panels."), "arrows-left-right")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Inline content", "Inline content"), T("Nao use para conteudo que nao bloqueia a pagina.", "Do not use for content that does not block the page."), "xmark"),
+        new(T("Dropdowns", "Dropdowns"), T("Use XFDropdownMenu para menus suspensos.", "Use XFDropdownMenu for dropdown menus."), "ban")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Container", T("Div com tabindex=-1 e data-active.", "Div with tabindex=-1 and data-active."), "square"),
+        new("Tab cycle", T("Tab e Shift+Tab capturados pelo JS.", "Tab and Shift+Tab captured by JS."), "arrows-left-right"),
+        new("Escape", T("Tecla Escape opcional para liberar.", "Optional Escape key to release."), "arrow-right-from-bracket"),
+        new("Focus restore", T("Foco restaurado ao elemento anterior.", "Focus restored to previous element."), "rotate-left")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Acessibilidade primeiro", "Accessibility first"), T("WCAG 2.1 modais requerem trap de foco.", "WCAG 2.1 modals require focus trap."), "universal-access"),
+        new(T("Intrusao minima", "Minimal intrusion"), T("Nao afeta layout ou estilo dos filhos.", "Does not affect layout or style of children."), "minimize"),
+        new(T("Controle programatico", "Programmatic control"), T("Metodos publicos para ativacao externa.", "Public methods for external activation."), "gear")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasicDialog() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-100 p-6">
+            <XFFocusTrap Active="true" EscapeReleases="true">
+                <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Confirmar exclusao", "Confirm deletion")</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("Tem certeza que deseja excluir este item? Esta acao nao pode ser desfeita.", "Are you sure you want to delete this item? This action cannot be undone.")</XFTypography>
+                            <XFStack Orientation="XFOrientation.Horizontal" Gap="3">
+                                <button class="inline-flex items-center rounded-md bg-danger px-3 py-1.5 text-sm font-medium text-white">@T("Excluir", "Delete")</button>
+                                <button class="inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary">@T("Cancelar", "Cancel")</button>
+                            </XFStack>
+                        </XFStack>
+                    </ChildContent>
+                </XFCard>
+            </XFFocusTrap>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExEscapeRelease() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-100 p-6">
+            <XFFocusTrap Active="true" EscapeReleases="true" RestoreFocus="true">
+                <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Notificacao", "Notification")</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("Pressione Escape para fechar. O foco voltara ao elemento anterior.", "Press Escape to close. Focus will return to the previous element.")</XFTypography>
+                            <button class="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white w-fit">OK</button>
+                        </XFStack>
+                    </ChildContent>
+                </XFCard>
+            </XFFocusTrap>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExCustomInitialFocus() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-100 p-6">
+            <XFFocusTrap Active="true" InitialFocusSelector="[data-autofocus]">
+                <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Pesquisar", "Search")</XFTypography>
+                            <input data-autofocus="true" class="rounded-md border border-border-light px-3 py-1.5 text-sm w-full" placeholder="@T("Digite sua busca...", "Type your search...")" />
+                            <button class="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white w-fit">@T("Buscar", "Search")</button>
+                        </XFStack>
+                    </ChildContent>
+                </XFCard>
+            </XFFocusTrap>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExDrawerTrap() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-100 p-6">
+            <XFFocusTrap Active="true" EscapeReleases="true">
+                <div class="flex">
+                    <div class="w-72 border-r border-border-light bg-surface-50 p-4">
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Configuracoes", "Settings")</XFTypography>
+                            <input class="rounded-md border border-border-light px-3 py-1.5 text-sm w-full" placeholder="@T("Nome", "Name")" />
+                            <input class="rounded-md border border-border-light px-3 py-1.5 text-sm w-full" placeholder="@T("Email", "Email")" />
+                            <XFStack Orientation="XFOrientation.Horizontal" Gap="3">
+                                <button class="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white">@T("Salvar", "Save")</button>
+                                <button class="inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary">@T("Cancelar", "Cancel")</button>
+                            </XFStack>
+                        </XFStack>
+                    </div>
+                    <div class="flex-1 p-4">
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("Conteudo principal da pagina atras do drawer.", "Main page content behind the drawer.")</XFTypography>
+                    </div>
+                </div>
+            </XFFocusTrap>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExConfirmDialog() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-100 p-6">
+            <XFFocusTrap Active="true" EscapeReleases="true" RestoreFocus="true" InitialFocusSelector="[data-autofocus]">
+                <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+                    <ChildContent>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("Salvar alteracoes?", "Save changes?")</XFTypography>
+                            <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("Existem alteracoes nao salvas. Deseja salvar antes de sair?", "There are unsaved changes. Do you want to save before leaving?")</XFTypography>
+                            <XFStack Orientation="XFOrientation.Horizontal" Gap="3">
+                                <button data-autofocus="true" class="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white">@T("Salvar", "Save")</button>
+                                <button class="inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary">@T("Nao salvar", "Don't save")</button>
+                                <button class="inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary">@T("Cancelar", "Cancel")</button>
+                            </XFStack>
+                        </XFStack>
+                    </ChildContent>
+                </XFCard>
+            </XFFocusTrap>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExProgrammatic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="rounded-lg border border-border-light bg-surface-100 p-6" @ref="_programmaticRef">
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFStack Orientation="XFOrientation.Horizontal" Gap="2">
+                    <button class="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white" @onclick="() => _programmaticActive = true">@T("Ativar trap", "Activate trap")</button>
+                    <button class="inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary" @onclick="() => _programmaticActive = false">@T("Liberar trap", "Release trap")</button>
+                </XFStack>
+                <XFFocusTrap @ref="_programmaticTrap" Active="_programmaticActive" EscapeReleases="true">
+                    <div class="rounded-md border border-primary/20 bg-primary/5 p-4">
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Conteudo com trap controlado por C#", "Content with C# controlled trap")</XFTypography>
+                            <button class="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white w-fit">Action</button>
+                        </XFStack>
+                    </div>
+                </XFFocusTrap>
+            </XFStack>
+        </div>
+    </XFStack>;
+
+    private const string Code1 = @"<XFFocusTrap Active=""true"" EscapeReleases=""true"">
+    <XFCard Variant=""XFCardVariant.Outlined"" Padding=""XFPadding.Lg"">
+        <ChildContent>
+            <XFStack Orientation=""XFOrientation.Vertical"" Gap=""4"" FullWidth=""true"">
+                <XFTypography Variant=""XFTypographyVariant.H4"" Weight=""XFTypographyWeight.Semibold"">Confirmar exclusao</XFTypography>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Color=""XFTypographyColor.Secondary"">Tem certeza que deseja excluir?</XFTypography>
+                <XFStack Orientation=""XFOrientation.Horizontal"" Gap=""3"">
+                    <button class=""inline-flex items-center rounded-md bg-danger px-3 py-1.5 text-sm font-medium text-white"">Excluir</button>
+                    <button class=""inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary"">Cancelar</button>
+                </XFStack>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+</XFFocusTrap>";
+
+    private const string Code2 = @"<XFFocusTrap Active=""true"" EscapeReleases=""true"" RestoreFocus=""true"">
+    <XFCard Variant=""XFCardVariant.Outlined"" Padding=""XFPadding.Lg"">
+        <ChildContent>
+            <XFStack Orientation=""XFOrientation.Vertical"" Gap=""4"" FullWidth=""true"">
+                <XFTypography Variant=""XFTypographyVariant.H4"" Weight=""XFTypographyWeight.Semibold"">Notificacao</XFTypography>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Color=""XFTypographyColor.Secondary"">Pressione Escape para fechar.</XFTypography>
+                <button class=""inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white w-fit"">OK</button>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+</XFFocusTrap>";
+
+    private const string Code3 = @"<XFFocusTrap Active=""true"" InitialFocusSelector=""[data-autofocus]"">
+    <XFCard Variant=""XFCardVariant.Outlined"" Padding=""XFPadding.Lg"">
+        <ChildContent>
+            <XFStack Orientation=""XFOrientation.Vertical"" Gap=""4"" FullWidth=""true"">
+                <XFTypography Variant=""XFTypographyVariant.H4"" Weight=""XFTypographyWeight.Semibold"">Pesquisar</XFTypography>
+                <input data-autofocus=""true"" class=""rounded-md border border-border-light px-3 py-1.5 text-sm w-full"" placeholder=""Digite sua busca..."" />
+                <button class=""inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white w-fit"">Buscar</button>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+</XFFocusTrap>";
+
+    private const string Code4 = @"<XFFocusTrap Active=""true"" EscapeReleases=""true"">
+    <div class=""flex"">
+        <div class=""w-72 border-r border-border-light bg-surface-50 p-4"">
+            <XFStack Orientation=""XFOrientation.Vertical"" Gap=""4"" FullWidth=""true"">
+                <XFTypography Variant=""XFTypographyVariant.H4"" Weight=""XFTypographyWeight.Semibold"">Configuracoes</XFTypography>
+                <input class=""rounded-md border border-border-light px-3 py-1.5 text-sm w-full"" placeholder=""Nome"" />
+                <input class=""rounded-md border border-border-light px-3 py-1.5 text-sm w-full"" placeholder=""Email"" />
+                <XFStack Orientation=""XFOrientation.Horizontal"" Gap=""3"">
+                    <button class=""inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white"">Salvar</button>
+                    <button class=""inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary"">Cancelar</button>
+                </XFStack>
+            </XFStack>
+        </div>
+    </div>
+</XFFocusTrap>";
+
+    private const string Code5 = @"<XFFocusTrap Active=""true"" EscapeReleases=""true"" RestoreFocus=""true"" InitialFocusSelector=""[data-autofocus]"">
+    <XFCard Variant=""XFCardVariant.Outlined"" Padding=""XFPadding.Lg"">
+        <ChildContent>
+            <XFStack Orientation=""XFOrientation.Vertical"" Gap=""4"" FullWidth=""true"">
+                <XFTypography Variant=""XFTypographyVariant.H4"" Weight=""XFTypographyWeight.Semibold"">Salvar alteracoes?</XFTypography>
+                <XFTypography Variant=""XFTypographyVariant.Body1"" Color=""XFTypographyColor.Secondary"">Existem alteracoes nao salvas.</XFTypography>
+                <XFStack Orientation=""XFOrientation.Horizontal"" Gap=""3"">
+                    <button data-autofocus=""true"" class=""inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white"">Salvar</button>
+                    <button class=""inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary"">Nao salvar</button>
+                    <button class=""inline-flex items-center rounded-md border border-border-light px-3 py-1.5 text-sm font-medium text-text-secondary"">Cancelar</button>
+                </XFStack>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+</XFFocusTrap>";
+
+    private const string Code6 = @"@* Bind Active to a bool field and toggle via C# *@
+<XFFocusTrap @ref=""_trap"" Active=""@_isActive"" EscapeReleases=""true"">
+    <div class=""rounded-md border border-primary/20 bg-primary/5 p-4"">
+        <p>Conteudo com trap controlado por C#</p>
+        <button>Action</button>
+    </div>
+</XFFocusTrap>
+
+@code {
+    private XFFocusTrap? _trap;
+    private bool _isActive;
+
+    private async Task ActivateTrapAsync()
+    {
+        _isActive = true;
+        StateHasChanged();
+        if (_trap is not null) await _trap.ActivateAsync();
+    }
+
+    private async Task ReleaseTrapAsync()
+    {
+        if (_trap is not null) await _trap.ReleaseAsync();
+        _isActive = false;
+    }
+}";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Active", "bool", "true", T("Ativa ou desativa o trap de foco.", "Activates or deactivates the focus trap.")),
+        new("Visible", "bool", "true", T("Controla visibilidade do container.", "Controls container visibility.")),
+        new("RestoreFocus", "bool", "true", T("Restaura foco ao elemento anterior ao liberar.", "Restores focus to previous element on release.")),
+        new("FocusOnActivate", "bool", "true", T("Foca no container ao ativar.", "Focuses the container on activation.")),
+        new("EscapeReleases", "bool", "false", T("Libera trap com tecla Escape.", "Releases trap with Escape key.")),
+        new("InitialFocusSelector", "string?", "null", T("Selector CSS para foco inicial.", "CSS selector for initial focus.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo dentro do trap.", "Content inside the trap."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnEscape", T("Disparado quando Escape e pressionado.", "Fired when Escape is pressed.")),
+        new("ActiveChanged", T("Disparado quando Active muda. EventCallback<bool>.", "Fired when Active changes. EventCallback<bool>."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("ActivateAsync()", T("Ativa o trap de foco programaticamente.", "Activates the focus trap programmatically.")),
+        new("FocusInitialAsync()", T("Foca no elemento do InitialFocusSelector.", "Focuses the InitialFocusSelector element.")),
+        new("ReleaseAsync(bool restoreFocus)", T("Libera o trap e opcionalmente restaura foco.", "Releases the trap and optionally restores focus.")),
+        new("DisposeAsync()", T("Libera o trap ao destruir o componente.", "Releases the trap on component disposal."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Tab trap", "Tab trap"), T("Tab e Shift+Tab circulam dentro do container.", "Tab and Shift+Tab cycle within the container."), "arrows-left-right"),
+        new(T("Focus restore", "Focus restore"), T("Foco restaurado ao elemento que ativou o trap.", "Focus restored to the element that activated the trap."), "rotate-left"),
+        new(T("Escape key", "Escape key"), T("Libera trap e restaura foco (opcional).", "Releases trap and restores focus (optional)."), "arrow-right-from-bracket"),
+        new(T("InitialFocusSelector", "InitialFocusSelector"), T("Foco automatico no elemento correto ao abrir.", "Automatic focus on the correct element on open."), "crosshairs")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Move foco para o proxo elemento dentro do trap.", "Moves focus to next element inside the trap.")),
+        new("Shift+Tab", T("Move foco para o elemento anterior dentro do trap.", "Moves focus to previous element inside the trap.")),
+        new("Escape", T("Libera o trap e restaura foco (quando EscapeReleases=true).", "Releases the trap and restores focus (when EscapeReleases=true)."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("Container ocupa 100% do pai.", "Container occupies 100% of parent."), "maximize"),
+        new(T("Sem efeitos visuais", "No visual effects"), T("Neutro. Afeta apenas comportamento de foco.", "Neutral. Affects only focus behavior."), "eye")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Leve", "Light"), T("Div wrapper minimo com tabindex.", "Minimal div wrapper with tabindex."), "feather"),
+        new(T("JS interop", "JS interop"), T("Uma chamada JS por ativacao/liberacao.", "One JS call per activation/release."), "bolt"),
+        new(T("IAsyncDisposable", "IAsyncDisposable"), T("Libera recursos automaticamente ao descartar.", "Releases resources automatically on dispose."), "recycle")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Dialog de confirmacao", "Confirmation dialog"), T("Excluir registro com trap de foco.", "Delete record with focus trap."), "window-maximize"),
+        new(T("Drawer de edicao", "Edit drawer"), T("Formulario lateral com trap.", "Side form with trap."), "arrows-left-right"),
+        new(T("Modal de pagamento", "Payment modal"), T("Checkout com foco em campo de cartao.", "Checkout with focus on card field."), "credit-card")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("FocusTrap + XFCard", "FocusTrap + XFCard"), T("Trap dentro de XFCard para dialog.", "Trap inside XFCard for dialog."), "square"),
+        new(T("FocusTrap + XFStack", "FocusTrap + XFStack"), T("Trap com layout vertical/horizontal.", "Trap with vertical/horizontal layout."), "table-cells"),
+        new(T("FocusTrap + XFDrawer", "FocusTrap + XFDrawer"), T("Trap integrado ao drawer lateral.", "Trap integrated with side drawer."), "arrows-left-right")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Sempre ative RestoreFocus", "Always enable RestoreFocus"), T("Restaura foco ao usuario naturalmente.", "Restores focus to user naturally."), "rotate-left"),
+        new(T("Use InitialFocusSelector", "Use InitialFocusSelector"), T("Direcione foco para o elemento mais relevante.", "Direct focus to the most relevant element."), "crosshairs"),
+        new(T("EscapeReleases=true em modais", "EscapeReleases=true in modais"), T("Permita fechar com Escape em modais.", "Allow closing with Escape in modals."), "arrow-right-from-bracket"),
+        new(T("DisposeAsync no IAsyncDisposable", "DisposeAsync on IAsyncDisposable"), T("Libere trap automaticamente ao descartar componente.", "Release trap automatically on component dispose."), "recycle")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem RestoreFocus", "Without RestoreFocus"), T("Usuario perde posicao de foco apos fechar modal.", "User loses focus position after closing modal."), "xmark"),
+        new(T("Trap em conteudo inline", "Trap in inline content"), T("Nao bloqueie navegacao em conteudo que nao e modal.", "Do not block navigation in content that is not modal."), "ban"),
+        new(T("Sem EscapeReleases", "Without EscapeReleases"), T("Usuario fica preso sem forma de sair.", "User is stuck with no way to exit."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("xf-focus-trap", T("Classe base do container. Sem tokens visuais.", "Base class of the container. No visual tokens.")),
+        new("data-active", T("Atributo data que indica estado ativo/inativo.", "Data attribute indicating active/inactive state."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Neutro. Sem tokens visuais proprios.", "Neutral. No visual tokens of its own."), "moon"),
+        new("data-brand", T("Neutro. Comportamento identico em qualquer tema.", "Neutral. Identical behavior in any theme."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render com Active/Visible, Escape callback, ActivateAsync, ReleaseAsync.", "Render with Active/Visible, Escape callback, ActivateAsync, ReleaseAsync.")),
+        new("JS interop", T("xfFocusTrap.activate, xfFocusTrap.release invocados corretamente.", "xfFocusTrap.activate, xfFocusTrap.release invoked correctly.")),
+        new("Accessibility", T("Tab trap, Escape key, focus restore, InitialFocusSelector.", "Tab trap, Escape key, focus restore, InitialFocusSelector."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("JS interop obrigatorio", "JS interop required"), T("Nao funciona em Static SSR sem JS.", "Does not work in Static SSR without JS.")),
+        new(T("Tab dentro do trap", "Tab inside trap"), T("Nao previne tab para browser chrome (address bar, etc).", "Does not prevent tab to browser chrome (address bar, etc).")),
+        new(T("Iframes", "Iframes"), T("Foco pode vazar para iframes aninhados.", "Focus may leak into nested iframes."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFDialog", T("Dialog modal com provider.", "Modal dialog with provider."), "window-maximize"),
+        new("XFDrawer", T("Drawer lateral com provider.", "Side drawer with provider."), "arrows-left-right"),
+        new("XFDropdownMenu", T("Menu suspenso com trap proprio.", "Dropdown menu with own trap."), "caret-down")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("FocusTrap vs Dialog?", "FocusTrap vs Dialog?"), T("FocusTrap e utilitario. Dialog ja integra trap internamente.", "FocusTrap is a utility. Dialog already integrates trap internally.")),
+        new(T("Preciso de JS interop?", "Do I need JS interop?"), T("Sim. xfFocusTrap JS e obrigatorio para gerenciar Tab cycle.", "Yes. xfFocusTrap JS is required to manage Tab cycle.")),
+        new(T("Funciona em SSR?", "Works in SSR?"), T("Nao. JS interop nao disponivel em Static SSR.", "No. JS interop not available in Static SSR.")),
+        new(T("Como liberar programaticamente?", "How to release programmatically?"), T("Chame ReleaseAsync() ou defina Active=false.", "Call ReleaseAsync() or set Active=false."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina migrada com dados basicos.", "Page migrated with basic data.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes e 6 exemplos.", "Refactored to AppShellDocs pattern with 26 sections and 6 examples."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === FIELDS ===
+    private ElementReference _programmaticRef;
+    private XFFocusTrap? _programmaticTrap;
+    private bool _programmaticActive = false;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

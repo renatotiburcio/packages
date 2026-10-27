@@ -1,0 +1,26 @@
+@inherits XForgeComponentBase
+
+<fieldset @attributes="AdditionalAttributes" id="@Id" class="@RootClass" style="@Style" disabled="@Disabled">
+    @if (!string.IsNullOrWhiteSpace(Legend) || LegendContent is not null || !string.IsNullOrWhiteSpace(Description))
+    {
+        <div class="grid gap-1">
+            @if (LegendContent is not null)
+            {
+                <legend class="@LegendClass">@LegendContent</legend>
+            }
+            else if (!string.IsNullOrWhiteSpace(Legend))
+            {
+                <legend class="@LegendClass">@Legend</legend>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Description))
+            {
+                <p class="@DescriptionClass">@Description</p>
+            }
+        </div>
+    }
+
+    <div class="@ContentClass">
+        @ChildContent
+    </div>
+</fieldset>

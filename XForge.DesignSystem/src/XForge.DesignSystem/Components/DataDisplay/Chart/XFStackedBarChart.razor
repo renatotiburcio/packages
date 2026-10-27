@@ -1,0 +1,72 @@
+@using XForge.DesignSystem.Components.DataDisplay.Chart
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="img"
+     aria-label="@(AriaLabel ?? "Stacked bar chart")">
+
+    <svg class="h-full w-full" viewBox="0 0 @(SvgWidth) @(SvgHeight)" aria-hidden="true">
+        @* ── Grid Lines *@
+        @if (ShowGrid)
+        {
+            @for (var i = 0; i <= GridLines; i++)
+            {
+                var y = MarginTop + ChartHeight - (ChartHeight * i / GridLines);
+                var val = MinY + (YRange * i / GridLines);
+                <line x1="@MarginLeft" y1="@y" x2="@(MarginLeft + ChartWidth)" y2="@y"
+                      stroke-width="0.5" class="stroke-surface-200" />
+                @((MarkupString)$"<text x=\"{MarginLeft - 5}\" y=\"{y}\" text-anchor=\"end\" dominant-baseline=\"middle\" class=\"fill-text-muted text-[9px]\">{FormatValue(val)}</text>")
+            }
+        }
+
+        @* ── Stacked Bars *@
+        @if (Labels is { Count: > 0 } && Series is { Count: > 0 })
+        {
+            var barWidth = ChartWidth / Labels.Count * 0.6;
+            var barGap = ChartWidth / Labels.Count * 0.4;
+
+            @for (var i = 0; i < Labels.Count; i++)
+            {
+                var x = MarginLeft + (ChartWidth * i / Labels.Count) + barGap / 2;
+                var cumY = 0.0;
+                var total = GetStackTotal(i);
+
+                @for (var s = 0; s < Series.Count; s++)
+                {
+                    var value = GetSeriesValue(s, i);
+                    var stackHeight = StackMode == XFChartStackMode.FullStacked && total > 0
+                        ? ChartHeight * (value / total)
+                        : ChartHeight * (value / YMax);
+                    var stackY = MarginTop + ChartHeight - cumY - stackHeight;
+                    cumY += stackHeight;
+
+                    <rect x="@x" y="@stackY" width="@barWidth" height="@stackHeight"
+                          rx="2" fill="@GetSeriesColor(s)" class="transition-all duration-200" />
+                }
+
+                @* ── X Label *@
+                var labelX = x + barWidth / 2;
+                var labelY = MarginTop + ChartHeight + 14;
+                @((MarkupString)$"<text x=\"{labelX}\" y=\"{labelY}\" text-anchor=\"middle\" class=\"fill-text-muted text-[9px]\">{GetLabel(i)}</text>")
+            }
+        }
+    </svg>
+
+    @* ── Legend *@
+    @if (ShowLegend)
+    {
+        <div class="mt-2 flex flex-wrap justify-center gap-3">
+            @for (var s = 0; s < Series.Count; s++)
+            {
+                var idx = s;
+                <div class="flex items-center gap-1.5 text-xs text-text-secondary">
+                    <span class="inline-block h-2.5 w-2.5 rounded-sm" style="background-color: @GetSeriesColor(idx)"></span>
+                    @Series[idx].Name
+                </div>
+            }
+        </div>
+    }
+</div>

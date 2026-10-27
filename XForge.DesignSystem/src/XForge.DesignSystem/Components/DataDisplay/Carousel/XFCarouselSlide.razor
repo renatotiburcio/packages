@@ -1,0 +1,11 @@
+@inherits XForgeComponentBase
+
+<article id="@(Index >= 0 ? ParentCarousel?.GetSlideDomId(Index) : Id)"
+         class="@SlideClass"
+         style="@Style"
+         role="group"
+         aria-roledescription="slide"
+         aria-label="@Label"
+         aria-hidden="@(!IsActive)">
+    @ChildContent
+</article>

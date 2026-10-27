@@ -1,0 +1,9 @@
+﻿@namespace XForge.DesignSystem.Components.Icon
+@code {
+    [Parameter] public string Brand { get; set; } = "";
+    [Parameter] public int Size { get; set; } = 32;
+}
+<span class="xf-badge-icon" style="width:@(Size)px; height:@(Size)px"
+      data-brand="@Brand" role="img" aria-label="@Brand logo">
+  @if (BrandIcons.Catalog.TryGetValue(Brand, out var svg)) { @((MarkupString)svg) }
+</span>

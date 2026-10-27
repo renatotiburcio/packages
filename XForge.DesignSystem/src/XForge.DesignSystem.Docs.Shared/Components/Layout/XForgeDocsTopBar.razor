@@ -1,0 +1,231 @@
+﻿@using XForge.DesignSystem.Core.Primitives
+@inject NavigationManager NavigationManager
+@inject XForgeDocsLanguageService LanguageService
+@implements IDisposable
+
+<XFAppBar InnerClass="flex w-full flex-wrap items-center justify-between gap-3 px-4 md:px-6">
+    <div class="min-w-0">
+        <div class="truncate text-sm font-semibold text-text-primary">@ProductTitle</div>
+        <div class="truncate text-xs text-text-muted">@ProductSubtitle</div>
+    </div>
+
+    <div class="flex min-w-0 flex-1 items-center justify-end gap-2">
+        <div class="relative hidden min-w-48 max-w-xs flex-1 md:block">
+            <XFTextInput Value="@_searchTerm"
+                         ValueChanged="OnSearchTermChanged"
+                         Type="XFTextInputType.Search"
+                         Size="XFSize.Sm"
+                         Variant="XFFormVariant.Outline"
+                         Placeholder="@SearchPlaceholder"
+                         AriaLabel="@SearchPlaceholder"
+                         FullWidth="true"
+                         Clearable="true"
+                         Immediate="true"
+                         DebounceMilliseconds="0"
+                         AutoComplete="off"
+                         @onkeydown="HandleSearchKeyDown"
+                         @onfocus="HandleSearchFocus">
+                <StartIcon>
+                    <span class="inline-flex h-4 w-4 shrink-0" aria-hidden="true">@((MarkupString)XFSvgIcons.Get("magnifying-glass"))</span>
+                </StartIcon>
+            </XFTextInput>
+
+            @if (_searchFocused && !string.IsNullOrWhiteSpace(_searchTerm))
+            {
+                <div class="absolute right-0 top-[calc(100%+0.5rem)] z-[80] w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-xl">
+                    @if (SearchResults.Count > 0)
+                    {
+                        <div class="max-h-80 overflow-y-auto py-2">
+                            @foreach (var item in SearchResults)
+                            {
+                                <a href="@item.Href"
+                                   class="grid gap-0.5 px-4 py-2.5 text-left transition hover:bg-surface-50 focus-visible:bg-surface-50 focus-visible:outline-none"
+                                   @onclick="() => CloseSearch()">
+                                    <span class="text-sm font-semibold text-text-primary">@item.Label</span>
+                                    <span class="text-xs text-text-muted">@item.Group · @item.ComponentName</span>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="px-4 py-3 text-sm text-text-muted">@SearchEmptyLabel</div>
+                    }
+                </div>
+            }
+        </div>
+
+
+        <div class="w-fit min-w-[7rem] shrink-0">
+            <XFSelect TValue="string"
+                      Value="@LanguageService.CultureName"
+                      ValueChanged="HandleLanguageChanged"
+                      Size="XFSize.Sm"
+                      Variant="XFFormVariant.Outline"
+                      AriaLabel="@LanguageSelectLabel"
+                      FullWidth="false">
+                <SelectedTemplate Context="value">
+                    @{
+                        var opt = LanguageService.Options.FirstOrDefault(o => o.CultureName == value);
+                    }
+                    @if (opt is not null)
+                    {
+                        <span class="inline-flex items-center gap-2">
+                            <span class="inline-flex h-4 w-4 shrink-0" aria-hidden="true">@((MarkupString)XFSvgIcons.Get("book-atlas"))</span>
+                            <span class="text-sm font-medium">@opt.ShortLabel</span>
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-sm">@value</span>
+                    }
+                </SelectedTemplate>
+                <ChildContent>
+                    @foreach (var option in LanguageService.Options)
+                    {
+                        <XFSelectOption TValue="string" Value="@option.CultureName">
+                            <ChildContent>
+                                <span class="inline-flex items-center gap-2 whitespace-nowrap">
+                                    <span class="inline-flex h-4 w-4 shrink-0" aria-hidden="true">@((MarkupString)XFSvgIcons.Get("book-atlas"))</span>
+                                    <span class="text-sm font-medium">@option.ShortLabel</span>
+                                </span>
+                            </ChildContent>
+                        </XFSelectOption>
+                    }
+                </ChildContent>
+            </XFSelect>
+        </div>
+        <XFButton Variant="XFButtonVariant.Outline"
+                  Color="XFButtonColor.Secondary"
+                  Size="XFExtendedSize.Sm"
+                  Shape="XFButtonShape.Square"
+                  AriaLabel="@ThemeToggleLabel"
+                  Title="@ThemeToggleLabel"
+                  OnClick="HandleToggleTheme">
+            <StartIcon>
+                @((MarkupString)XFSvgIcons.Get(IsDark ? "sun" : "moon"))
+            </StartIcon>
+        </XFButton>
+    </div>
+</XFAppBar>
+
+@code {
+    [Parameter] public XForgeDocsProduct Product { get; set; } = XForgeDocsProduct.Core;
+    [Parameter] public bool IsDark { get; set; }
+    [Parameter] public EventCallback OnToggleTheme { get; set; }
+
+    private string _searchTerm = string.Empty;
+    private bool _searchFocused;
+
+    private string ProductTitle => XForgeDocsNavigation.GetProductName(Product);
+
+    private string ProductSubtitle => Product switch
+    {
+        XForgeDocsProduct.AI => LanguageService.Text("Superficies comerciais de AI, agentes e automacao", "Commercial AI surfaces, agents and automation"),
+        _ => LanguageService.Text("Componentes open-source, guidelines e playground", "Open-source components, guidelines and playground")
+    };
+
+    private string SearchScope => LanguageService.Text("documentacao", "documentation");
+
+    private string SearchPlaceholder => LanguageService.Text($"Buscar {SearchScope}", $"Search {SearchScope}");
+
+    private string SearchEmptyLabel => LanguageService.Text("Nenhum resultado encontrado.", "No results found.");
+
+    private string ThemeToggleLabel => LanguageService.Text("Alternar tema", "Toggle theme");
+
+    private string LanguageSelectLabel => LanguageService.Text("Selecionar idioma", "Select language");
+
+    private IReadOnlyList<XForgeDocsNavItem> SearchItems => Product switch
+    {
+        XForgeDocsProduct.AI => XForgeDocsCatalog.AiItems,
+        _ => XForgeDocsCatalog.CoreItems
+    };
+
+    private IReadOnlyList<XForgeDocsNavItem> SearchResults
+    {
+        get
+        {
+            var term = _searchTerm.Trim();
+            if (term.Length == 0)
+            {
+                return [];
+            }
+
+            return SearchItems
+                .Where(item =>
+                    item.Label.Contains(term, StringComparison.OrdinalIgnoreCase)
+                    || item.ComponentName.Contains(term, StringComparison.OrdinalIgnoreCase)
+                    || item.Group.Contains(term, StringComparison.OrdinalIgnoreCase)
+                    || item.Href.Contains(term, StringComparison.OrdinalIgnoreCase))
+                .Take(8)
+                .ToArray();
+        }
+    }
+
+    private Task OnSearchTermChanged(string? value)
+    {
+        _searchTerm = value ?? string.Empty;
+        _searchFocused = true;
+        return Task.CompletedTask;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        LanguageService.LanguageChanged += OnLanguageChanged;
+        await LanguageService.InitializeAsync();
+        StateHasChanged();
+    }
+
+    private void HandleSearchFocus()
+    {
+        _searchFocused = true;
+    }
+
+    private void HandleSearchKeyDown(KeyboardEventArgs args)
+    {
+        if (!string.Equals(args.Key, "Enter", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var target = SearchResults.FirstOrDefault();
+        if (target is null)
+        {
+            return;
+        }
+
+        CloseSearch();
+        NavigationManager.NavigateTo(target.Href);
+    }
+
+    private void CloseSearch()
+    {
+        _searchFocused = false;
+    }
+
+    private Task HandleToggleTheme(MouseEventArgs args)
+    {
+        return OnToggleTheme.InvokeAsync();
+    }
+
+    private Task HandleLanguageChanged(string? cultureName)
+    {
+        return LanguageService.SetLanguageAsync(cultureName);
+    }
+
+    private void OnLanguageChanged(object? sender, EventArgs args)
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        LanguageService.LanguageChanged -= OnLanguageChanged;
+        GC.SuppressFinalize(this);
+    }
+}

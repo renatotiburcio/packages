@@ -1,0 +1,444 @@
+@page "/display/sparkline"
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.DataDisplay.Sparkline
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSparkline" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Linha, Area e Barra", "Line, Area and Bar")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Micrografico inline para tendencias compactas em tabelas e cards.",
+                               "Inline micro-chart for compact trends in tables and cards.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Grafico miniaturizado para exibir tendencias de dados em espacos reduzidos, com 3 tipos, tooltips interativos, pontos e formatacao personalizavel.",
+                               "Miniaturized chart for displaying data trends in reduced spaces, with 3 types, interactive tooltips, dots and customizable formatting.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== SECTION 1: METADATA ===== -->
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        <!-- ===== SECTION 2: COMPATIBILITY ===== -->
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <!-- ===== SECTION 3: OVERVIEW ===== -->
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            <!-- ===== SECTION 4: PURPOSE ===== -->
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            <!-- ===== SECTION 5: PROBLEM SOLVED ===== -->
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            <!-- ===== SECTION 6: WHEN TO USE ===== -->
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            <!-- ===== SECTION 7: WHEN NOT TO USE ===== -->
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            <!-- ===== SECTION 8: ANATOMY ===== -->
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            <!-- ===== SECTION 9: DESIGN PRINCIPLES ===== -->
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Linha basica", "1. Basic Line"), T("Linha simples conectando pontos de dados.", "Simple line connecting data points."), ExLineBasic(), CodeLineBasic)
+            @Example(T("2. Area com gradiente", "2. Area with Gradient"), T("Area preenchida com gradiente suave.", "Filled area with smooth gradient."), ExAreaGradient(), CodeAreaGradient)
+            @Example(T("3. Barras verticais", "3. Vertical Bars"), T("Barras verticais para cada ponto de dados.", "Vertical bars for each data point."), ExBarChart(), CodeBarChart)
+            @Example(T("4. Pontos e tooltip", "4. Dots and Tooltip"), T("Dots visiveis nos pontos com tooltip ao passar o mouse.", "Visible dots on points with hover tooltip."), ExDotsTooltip(), CodeDotsTooltip)
+            @Example(T("5. Cores e formatacao", "5. Colors and Formatting"), T("Cores personalizadas e formato de valor customizado.", "Custom colors and custom value format."), ExColorFormat(), CodeColorFormat)
+            @Example(T("6. Altura e tracos", "6. Height and Stroke"), T("Altura e espessura de traco customizados.", "Custom height and stroke width."), ExHeightStroke(), CodeHeightStroke)
+        </XFStack>
+
+        <!-- ===== SECTION 10-11: API + EVENTS ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <!-- ===== SECTION 12: ACCESSIBILITY ===== -->
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            <!-- ===== SECTION 13: KEYBOARD SUPPORT ===== -->
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            <!-- ===== SECTION 14: RESPONSIVENESS ===== -->
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            <!-- ===== SECTION 15: PERFORMANCE ===== -->
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <!-- ===== SECTION 16: ENTERPRISE SCENARIOS ===== -->
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            <!-- ===== SECTION 17: COMPOSITION PATTERNS ===== -->
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            <!-- ===== SECTION 18: UX BEST PRACTICES ===== -->
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            <!-- ===== SECTION 19: ANTI-PATTERNS ===== -->
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <!-- ===== SECTION 20: DESIGN TOKENS ===== -->
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            <!-- ===== SECTION 21: THEMING ===== -->
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            <!-- ===== SECTION 22: TESTING ===== -->
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            <!-- ===== SECTION 23: KNOWN LIMITATIONS ===== -->
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            <!-- ===== SECTION 24: RELATED COMPONENTS ===== -->
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            <!-- ===== SECTION 25: FAQ ===== -->
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            <!-- ===== SECTION 26: CHANGELOG ===== -->
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFSparkline", "XFSparkline");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private sealed record SalesData(string Label, double Value);
+
+    private readonly List<SalesData> _basicData = new()
+    {
+        new("Jan", 40), new("Fev", 65), new("Mar", 45), new("Abr", 80),
+        new("Mai", 55), new("Jun", 70), new("Jul", 90), new("Ago", 60)
+    };
+
+    private readonly List<SalesData> _areaData = new()
+    {
+        new("Jan", 20), new("Fev", 35), new("Mar", 15), new("Abr", 50),
+        new("Mai", 40), new("Jun", 60), new("Jul", 45), new("Ago", 55)
+    };
+
+    private readonly List<SalesData> _barData = new()
+    {
+        new("Jan", 30), new("Fev", 50), new("Mar", 25), new("Abr", 65),
+        new("Mai", 40), new("Jun", 55)
+    };
+
+    private readonly List<SalesData> _dotData = new()
+    {
+        new("Jan", 10), new("Fev", 25), new("Mar", 15), new("Abr", 40),
+        new("Mai", 30), new("Jun", 50), new("Jul", 35)
+    };
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFSparkline Data="@_basicData" ValueSelector="@(d => d.Value)" Type="XFSparklineType.Line" Color="#22c55e" Height="2.5rem" StrokeWidth="2" AriaLabel="Tendencia de vendas" />
+        <XFSparkline Data="@_areaData" ValueSelector="@(d => d.Value)" Type="XFSparklineType.Area" Color="#3b82f6" Height="2.5rem" AriaLabel="Tendencia de custos" />
+        <XFSparkline Data="@_barData" ValueSelector="@(d => d.Value)" Type="XFSparklineType.Bar" Color="#f59e0b" Height="2.5rem" AriaLabel="Producao mensal" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Linha, Area e Barra", "Line, Area and Bar"), T("3 tipos de micrografico inline.", "3 types of inline micro-charts."), "chart-line"),
+        new(T("Tooltip interativo", "Interactive tooltip"), T("Mostra valor e label ao passar o mouse.", "Shows value and label on hover."), "comment"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === SECTION 1: METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFSparkline<TItem>"),
+        new("Namespace", "XForge.DesignSystem.Components.DataDisplay.Sparkline"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", T("Exibicao de dados / Sparkline", "Data Display / Sparkline")),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=img, aria-label.", "role=img, aria-label.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === SECTION 3: OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Micrografico", "Micro-chart"), T("Grafico compacto para tendencias.", "Compact chart for trends."), "chart-line"),
+        new(T("3 tipos", "3 types"), T("Line, Area e Bar.", "Line, Area and Bar."), "bars"),
+        new(T("Tooltip interativo", "Interactive tooltip"), T("Valor e label ao hover.", "Value and label on hover."), "comment")
+    ];
+
+    // === SECTION 4: PURPOSE ===
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Tendencias", "Trends"), T("Mostrar tendencia de dados em tabelas.", "Show data trends in tables."), "chart-line"),
+        new(T("KPIs", "KPIs"), T("Indicadores visuais em cards de dashboard.", "Visual indicators in dashboard cards."), "gauge"),
+        new(T("Comparacao", "Comparison"), T("Comparar series de dados lado a lado.", "Compare data series side by side."), "scale-balanced")
+    ];
+
+    // === SECTION 5: PROBLEM SOLVED ===
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Sem indicador visual de tendencia.", "No visual trend indicator."), "xmark"),
+        new(T("Depois", "After"), T("Micrografico inline com 3 tipos e tooltip.", "Inline micro-chart with 3 types and tooltip."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=img com aria-label descritivo.", "role=img with descriptive aria-label."), "universal-access")
+    ];
+
+    // === SECTION 6: WHEN TO USE ===
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Tabelas", "Tables"), T("Coluna de tendencia em tabelas de dados.", "Trend column in data tables."), "table"),
+        new(T("Cards de dashboard", "Dashboard cards"), T("Indicadores visuais de KPI.", "Visual KPI indicators."), "square")
+    ];
+
+    // === SECTION 7: WHEN NOT TO USE ===
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Dados detalhados", "Detailed data"), T("Use graficos maiores para analise detalhada.", "Use larger charts for detailed analysis."), "chart-bar"),
+        new(T("Interacao complexa", "Complex interaction"), T("Use charting libraries para interacao.", "Use charting libraries for interaction."), "mouse-pointer")
+    ];
+
+    // === SECTION 8: ANATOMY ===
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("SVG", T("Grafico renderizado em SVG inline.", "Chart rendered in inline SVG."), "image"),
+        new("Path / Rect / Circle", T("Elementos SVG conforme tipo.", "SVG elements depending on type."), "vector-square"),
+        new("Tooltip", T("Overlay flutuante com valor e label.", "Floating overlay with value and label."), "comment")
+    ];
+
+    // === SECTION 9: DESIGN PRINCIPLES ===
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Minimalismo", "Minimalism"), T("Apenas dados essenciais. Sem eixos, grades ou legendas.", "Only essential data. No axes, grids or legends."), "minimize"),
+        new(T("Compactness", "Compactness"), T("Ocupa espaco minimo em layouts densos.", "Occupies minimal space in dense layouts."), "compress"),
+        new(T("Progressive disclosure", "Progressive disclosure"), T("Tooltip mostra detalhes apenas ao hover.", "Tooltip shows details only on hover."), "eye")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExLineBasic() => @<div class="w-full">
+        <XFSparkline Data="@_basicData" ValueSelector="@(d => d.Value)" Type="XFSparklineType.Line" Height="2rem" AriaLabel="Vendas mensais" />
+    </div>;
+
+    private RenderFragment ExAreaGradient() => @<div class="w-full">
+        <XFSparkline Data="@_areaData" ValueSelector="@(d => d.Value)" Type="XFSparklineType.Area" Color="#3b82f6" Height="2.5rem" AriaLabel="Custos mensais" />
+    </div>;
+
+    private RenderFragment ExBarChart() => @<div class="w-full">
+        <XFSparkline Data="@_barData" ValueSelector="@(d => d.Value)" Type="XFSparklineType.Bar" Color="#f59e0b" Height="2rem" AriaLabel="Producao mensal" />
+    </div>;
+
+    private RenderFragment ExDotsTooltip() => @<div class="w-full">
+        <XFSparkline Data="@_dotData" ValueSelector="@(d => d.Value)" LabelSelector="@(d => d.Label)" Type="XFSparklineType.Line" Color="#22c55e" ShowDots="true" DotRadius="3" Height="2.5rem" AriaLabel="Metricas com pontos" />
+    </div>;
+
+    private RenderFragment ExColorFormat() => @<div class="w-full">
+        <XFSparkline Data="@_basicData" ValueSelector="@(d => d.Value)" LabelSelector="@(d => d.Label)" Type="XFSparklineType.Area" Color="#8b5cf6" Height="2rem" ValueFormat="N0" TooltipFormat="{1}: R$ {0}" AriaLabel="Receita formatada" />
+    </div>;
+
+    private RenderFragment ExHeightStroke() => @<div class="w-full">
+        <XFSparkline Data="@_basicData" ValueSelector="@(d => d.Value)" Type="XFSparklineType.Line" Color="#ef4444" Height="3rem" StrokeWidth="2.5" AriaLabel="Linha grossa" />
+    </div>;
+
+    private const string CodeLineBasic = @"<XFSparkline Data=""@_data"" ValueSelector=""@(d => d.Value)"" Type=""XFSparklineType.Line"" Height=""2rem"" AriaLabel=""Vendas mensais"" />";
+    private const string CodeAreaGradient = @"<XFSparkline Data=""@_data"" ValueSelector=""@(d => d.Value)"" Type=""XFSparklineType.Area"" Color=""#3b82f6"" Height=""2.5rem"" AriaLabel=""Custos mensais"" />";
+    private const string CodeBarChart = @"<XFSparkline Data=""@_data"" ValueSelector=""@(d => d.Value)"" Type=""XFSparklineType.Bar"" Color=""#f59e0b"" Height=""2rem"" AriaLabel=""Producao mensal"" />";
+    private const string CodeDotsTooltip = @"<XFSparkline Data=""@_data"" ValueSelector=""@(d => d.Value)"" LabelSelector=""@(d => d.Label)"" Type=""XFSparklineType.Line"" Color=""#22c55e"" ShowDots=""true"" DotRadius=""3"" Height=""2.5rem"" AriaLabel=""Metricas com pontos"" />";
+    private const string CodeColorFormat = @"<XFSparkline Data=""@_data"" ValueSelector=""@(d => d.Value)"" LabelSelector=""@(d => d.Label)"" Type=""XFSparklineType.Area"" Color=""#8b5cf6"" Height=""2rem"" ValueFormat=""N0"" TooltipFormat=""{1}: R$ {0}"" AriaLabel=""Receita formatada"" />";
+    private const string CodeHeightStroke = @"<XFSparkline Data=""@_data"" ValueSelector=""@(d => d.Value)"" Type=""XFSparklineType.Line"" Color=""#ef4444"" Height=""3rem"" StrokeWidth=""2.5"" AriaLabel=""Linha grossa"" />";
+
+    // === SECTION 10: API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Data", "IEnumerable<TItem>?", "null", T("Itens de dados para renderizar.", "Data items to render.")),
+        new("ValueSelector", "Func<TItem, double>?", "null", T("Seletor do valor numerico.", "Selector for the numeric value.")),
+        new("LabelSelector", "Func<TItem, string>?", "null", T("Seletor do label para tooltip.", "Selector for tooltip label text.")),
+        new("Type", "XFSparklineType", "Line", T("Line, Area ou Bar.", "Line, Area or Bar.")),
+        new("Color", "string?", "var(--color-primary)", T("Cor do grafico (CSS color).", "Chart color (CSS color).")),
+        new("StrokeWidth", "double", "1.5", T("Espessura do traco para Line/Area.", "Stroke width for Line/Area.")),
+        new("ShowDots", "bool", "false", T("Mostra pontos nos dados.", "Shows dots at data points.")),
+        new("DotRadius", "double", "2", T("Raio dos pontos.", "Radius of dots.")),
+        new("Height", "string", "2rem", T("Altura do container.", "Height of the container.")),
+        new("ValueFormat", "string?", "null", T("Formato do valor no tooltip.", "Value format string for tooltip.")),
+        new("Culture", "CultureInfo", "InvariantCulture", T("Cultura para formatacao.", "Culture for value formatting.")),
+        new("AriaLabel", "string?", "Grafico sparkline", T("Label acessivel.", "Accessible label for the chart.")),
+        new("TooltipFormat", "string?", "null", T("Template do tooltip. {{0}}=valor, {{1}}=label.", "Tooltip template. {{0}}=value, {{1}}=label.")),
+        new("Visible", "bool", "true", T("Controla visibilidade.", "Controls visibility."))
+    ];
+
+    // === SECTION 11: EVENTS ===
+    private IReadOnlyList<NameValueRow> EventRows => [];
+
+    // === SECTION 12: ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=img", "role=img"), T("Container usa role=img para leitores de tela.", "Container uses role=img for screen readers."), "universal-access"),
+        new(T("aria-label", "aria-label"), T("Label descritivo do grafico.", "Descriptive chart label."), "tag"),
+        new(T("Tooltips", "Tooltips"), T("Tooltips visuais apenas. Sem dependencia de ARIA.", "Visual tooltips only. No ARIA dependency."), "comment"),
+        new(T("Hover interativo", "Interactive hover"), T("Mouse move encontra ponto mais proximo.", "Mouse move finds closest point."), "mouse-pointer")
+    ];
+
+    // === SECTION 13: KEYBOARD SUPPORT ===
+    private IReadOnlyList<NameValueRow> KeyboardRows => [];
+
+    // === SECTION 14: RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("SVG ocupa 100% do container via w-full.", "SVG occupies 100% of container via w-full."), "maximize"),
+        new(T("Altura flexivel", "Flexible height"), T("Altura configuravel via parametro Height.", "Height configurable via Height parameter."), "arrows-up-down")
+    ];
+
+    // === SECTION 15: PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("SVG leve", "Light SVG"), T("Renderizado inline sem bibliotecas externas.", "Inline rendering without external libraries."), "feather")
+    ];
+
+    // === SECTION 16: ENTERPRISE SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Tabelas ERP", "ERP Tables"), T("Coluna de tendencia em listagens de NF-e.", "Trend column in NF-e listings."), "table"),
+        new(T("Dashboard KPI", "Dashboard KPI"), T("Sparkline em cards de indicadores.", "Sparkline in indicator cards."), "gauge"),
+        new(T("Relatorios", "Reports"), T("Mini graficos em relatorios gerenciais.", "Mini charts in management reports."), "file-lines")
+    ];
+
+    // === SECTION 17: COMPOSITION PATTERNS ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("Sparkline + Table", T("Dentro de XFTable para coluna de tendencia.", "Inside XFTable for trend column."), "table"),
+        new("Sparkline + Card", T("Dentro de XFCard para contexto KPI.", "Inside XFCard for KPI context."), "square"),
+        new("Sparkline + Badge", T("Com XFBadge para status e tendencia.", "With XFBadge for status and trend."), "tag")
+    ];
+
+    // === SECTION 18: UX BEST PRACTICES =====
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("AriaLabel descritivo", "Descriptive AriaLabel"), T("Sempre descreva o que o grafico representa.", "Always describe what the chart represents."), "align-left"),
+        new(T("Cor consistente", "Consistent color"), T("Use a mesma cor para a mesma metrica.", "Use the same color for the same metric."), "palette"),
+        new(T("Height adequado", "Adequate height"), T("2rem para tabelas, 3rem para cards.", "2rem for tables, 3rem for cards."), "arrows-up-down"),
+        new(T("LabelSelector para tooltips", "LabelSelector for tooltips"), T("Forneca labels para tooltips uteis.", "Provide labels for useful tooltips."), "comment")
+    ];
+
+    // === SECTION 19: ANTI-PATTERNS =====
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem AriaLabel", "No AriaLabel"), T("Grafico sem label acessivel.", "Chart without accessible label."), "xmark"),
+        new(T("Dados vazios", "Empty data"), T("Nao renderiza com dados nulos ou vazios.", "Does not render with null or empty data."), "ban"),
+        new(T("Muitos pontos", "Too many points"), T("Evite mais de 50 pontos para performance.", "Avoid more than 50 points for performance."), "triangle-exclamation")
+    ];
+
+    // === SECTION 20: DESIGN TOKENS =====
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("--color-primary", T("Cor padrao do sparkline.", "Default sparkline color.")),
+        new("stroke-width", T("Espessura do traco (default 1.5).", "Stroke thickness (default 1.5).")),
+        new("opacity", T("Opacidade do gradiente area (0.02-0.3).", "Area gradient opacity (0.02-0.3)."))
+    ];
+
+    // === SECTION 21: THEMING =====
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === SECTION 22: TESTING =====
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, types, dots, tooltip, formatacao.", "Render, props, types, dots, tooltip, formatting tests.")),
+        new("Accessibility", T("role=img, aria-label.", "role=img, aria-label."))
+    ];
+
+    // === SECTION 23: KNOWN LIMITATIONS =====
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Tooltip", T("Tooltip usa posicao absoluta. Pode ser cortado por overflow:hidden.", "Tooltip uses absolute position. May be clipped by overflow:hidden.")),
+        new("Performance", T("Mais de 100 pontos pode degradar performance de renderizacao.", "More than 100 points may degrade rendering performance."))
+    ];
+
+    // === SECTION 24: RELATED =====
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFProgress", T("Barra de progresso.", "Progress bar."), "bars"),
+        new("XFProgressRing", T("Progresso circular.", "Circular progress."), "circle-notch"),
+        new("XFBadge", T("Badge de status.", "Status badge."), "tag")
+    ];
+
+    // === SECTION 25: FAQ =====
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Sparkline vs Progress?", "Sparkline vs Progress?"), T("Sparkline = mini grafico de tendencia. Progress = barra de progresso.", "Sparkline = mini trend chart. Progress = progress bar.")),
+        new(T("Tipos suportados?", "Supported types?"), T("Line, Area e Bar.", "Line, Area and Bar.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop."))
+    ];
+
+    // === SECTION 26: CHANGELOG =====
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", T("Pagina refeita no padrao enterprise com 26 secoes e 6 exemplos renderizados.", "Page rewritten in enterprise standard with 26 sections and 6 rendered examples."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

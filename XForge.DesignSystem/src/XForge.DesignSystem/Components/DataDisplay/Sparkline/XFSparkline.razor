@@ -1,0 +1,60 @@
+@typeparam TItem
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible && HasData)
+{
+    <div id="@Id" class="@RootClass" style="@Style" @attributes="AdditionalAttributes"
+         role="img"
+         aria-label="@AriaLabel"
+         @onmouseenter="() => _showTooltip = true"
+         @onmouseleave="() => { _showTooltip = false; _hoverIndex = -1; }"
+         @onmousemove="HandleMouseMoveAsync">
+        <svg class="w-full h-full" viewBox="0 0 @ViewBoxWidth @ViewBoxHeight" preserveAspectRatio="none">
+            @if (Type == XFSparklineType.Area)
+            {
+                <defs>
+                    <linearGradient id="@GradientId" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="@EffectiveColor" stop-opacity="0.3" />
+                        <stop offset="100%" stop-color="@EffectiveColor" stop-opacity="0.02" />
+                    </linearGradient>
+                </defs>
+                <path d="@AreaPath" fill="url(#@GradientId)" />
+            }
+            @if (Type == XFSparklineType.Bar)
+            {
+                @foreach (var bar in BarRects)
+                {
+                    <rect x="@bar.X" y="@bar.Y" width="@bar.Width" height="@bar.Height"
+                          fill="@EffectiveColor" opacity="0.8" rx="1" />
+                }
+            }
+            @if (Type == XFSparklineType.Line || Type == XFSparklineType.Area)
+            {
+                <polyline points="@LinePoints" fill="none" stroke="@EffectiveColor"
+                          stroke-width="@StrokeWidthFmt" stroke-linecap="round" stroke-linejoin="round" />
+            }
+            @if (ShowDots && Type != XFSparklineType.Bar)
+            {
+                @foreach (var dot in DotPositions)
+                {
+                    <circle cx="@dot.X" cy="@dot.Y" r="@DotRadiusFmt" fill="@EffectiveColor" />
+                }
+            }
+            @if (_hoverIndex >= 0 && _hoverIndex < ComputedPoints.Count)
+            {
+                var pt = ComputedPoints[_hoverIndex];
+                <circle cx="@pt.X" cy="@pt.Y" r="@DotRadiusPlusOneFmt" fill="@EffectiveColor" stroke="white" stroke-width="1.5" />
+            }
+        </svg>
+        @if (_showTooltip && _hoverIndex >= 0 && _hoverIndex < DataPoints.Count)
+        {
+            var item = GetHoveredItem();
+            if (item is not null)
+            {
+                <div class="@TooltipClass" style="left: @(_tooltipX)px; top: @(_tooltipY)px;">
+                    @FormatTooltipValue(item)
+                </div>
+            }
+        }
+    </div>
+}

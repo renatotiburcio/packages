@@ -1,0 +1,248 @@
+@inherits XForgeComponentBase
+
+<section @attributes="AdditionalAttributes"
+         id="@Id"
+         class="@RootClass"
+         style="@Style"
+         role="region"
+         aria-label="@Title">
+
+    @if (ShowHeader)
+    {
+        <div class="@HeaderClass">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex h-4 w-4 items-center justify-center text-text-muted" aria-hidden="true">
+                    @XFSvgIcons.Markup("network-wired")
+                </span>
+                <span class="text-sm font-semibold text-text-primary">@Title</span>
+                @if (TotalAgents > 0)
+                {
+                    <span class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-surface-100 px-1.5 text-[10px] font-bold text-text-secondary">@TotalAgents</span>
+                }
+            </div>
+            <div class="flex items-center gap-3">
+                @if (RunningAgents > 0)
+                {
+                    <span class="inline-flex items-center gap-1 text-xs text-emerald-600">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        @RunningAgents ativo@(RunningAgents > 1 ? "s" : "")
+                    </span>
+                }
+                @if (ErrorAgents > 0)
+                {
+                    <span class="inline-flex items-center gap-1 text-xs text-red-600">
+                        <span class="h-2 w-2 rounded-full bg-red-500"></span>
+                        @ErrorAgents com erro
+                    </span>
+                }
+            </div>
+        </div>
+    }
+
+    @if (ShowCostSummary && TotalAgents > 0)
+    {
+        <div class="@SummaryGridClass">
+            @RenderSummaryTile("coins", "Custo Total", "$" + TotalCost.ToString("F2"), "text-amber-600")
+            @RenderSummaryTile("hashtag", "Tokens", FormatTokens(TotalTokens), "text-blue-600")
+            @RenderSummaryTile("wrench", "Tool Calls", TotalToolCalls.ToString(), "text-purple-600")
+            @RenderSummaryTile("database", "Memorias", TotalMemoryEntries.ToString(), "text-emerald-600")
+            @RenderSummaryTile("layer-group", "Fila", TotalQueueDepth.ToString(), "text-orange-600")
+            @RenderSummaryTile("chart-line", "Agentes", TotalAgents.ToString(), "text-text-secondary")
+        </div>
+    }
+
+    <div class="grid min-h-[200px] lg:grid-cols-[minmax(240px,1fr)_2fr]">
+        @if (ShowAgents)
+        {
+            <div class="@PanelClass max-h-[400px] border-r border-border-light p-3">
+                @if (HierarchyAgents.Count > 0)
+                {
+                    <div class="grid gap-2">
+                        @foreach (var agent in HierarchyAgents)
+                        {
+                            @if (AgentTemplate is not null)
+                            {
+                                @AgentTemplate(agent)
+                            }
+                            else
+                            {
+                                var agentClass = AgentCardClass(agent);
+                                <div class="@agentClass"
+                                     role="button"
+                                     tabindex="0"
+                                     aria-label="@($"{agent.Name} — {GetRoleLabel(agent.Role)} — {GetStatusText(agent.Status)}")"
+                                     @onclick="() => SelectAgent(agent)">
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-flex h-5 w-5 items-center justify-center text-text-muted" aria-hidden="true">
+                                            @XFSvgIcons.Markup(GetRoleIcon(agent.Role))
+                                        </span>
+                                        <span class="truncate text-sm font-medium text-text-primary">@agent.Name</span>
+                                        <span class="ml-auto h-2.5 w-2.5 shrink-0 rounded-full @GetStatusColor(agent.Status)" title="@GetStatusText(agent.Status)"></span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-text-muted">
+                                        <span class="inline-flex items-center rounded-full bg-surface-100 px-1.5 py-0.5 font-semibold">@GetRoleLabel(agent.Role)</span>
+                                        @if (agent.Model is not null)
+                                        {
+                                            <span class="font-mono">@agent.Model</span>
+                                        }
+                                        @if (agent.QueueDepth > 0)
+                                        {
+                                            <span class="text-orange-600">@agent.QueueDepth na fila</span>
+                                        }
+                                    </div>
+                                    @if (agent.Status == XFAiAgentStatus.Running && agent.CurrentTask is not null)
+                                    {
+                                        <p class="truncate text-[11px] text-text-secondary">@agent.CurrentTask</p>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="@EmptyClass">
+                        @if (EmptyAgentsContent is not null)
+                        {
+                            @EmptyAgentsContent
+                        }
+                        else
+                        {
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-surface-100 text-text-muted" aria-hidden="true">
+                                @XFSvgIcons.Markup("network-wired")
+                            </span>
+                            <p class="@EmptyTextClass">@EmptyAgentsText</p>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        @if (ShowLogs)
+        {
+            <div class="flex flex-col">
+                <div class="flex items-center gap-2 border-b border-border-light px-3 py-2">
+                    <select class="@FilterClass"
+                            aria-label="Filtrar por nivel"
+                            @onchange="HandleLogLevelChange">
+                        <option value="">Todos os niveis</option>
+                        <option value="Debug">Debug</option>
+                        <option value="Info">Info</option>
+                        <option value="Warning">Warning</option>
+                        <option value="Error">Error</option>
+                        <option value="Tool">Tool</option>
+                        <option value="Memory">Memory</option>
+                    </select>
+                    <input type="text"
+                           class="@FilterClass flex-1"
+                           placeholder="Buscar logs..."
+                           aria-label="Buscar logs"
+                           @oninput="HandleLogSearch" />
+                    @if (_selectedAgentId is not null)
+                    {
+                        var selectedName = SelectedAgent?.Name ?? "";
+                        <button class="inline-flex items-center gap-1 rounded-md bg-surface-100 px-2 py-1 text-[10px] font-semibold text-text-secondary transition-colors hover:bg-surface-200"
+                                @onclick="() => _selectedAgentId = null"
+                                aria-label="Limpar filtro de agente">
+                            @selectedName
+                            @XFSvgIcons.MarkupWithSize("xmark", 10)
+                        </button>
+                    }
+                </div>
+
+                <div class="@PanelClass max-h-[360px] flex-1 px-3 py-2">
+                    @if (FilteredLogs.Count > 0)
+                    {
+                        <div class="grid gap-0.5" role="log" aria-label="Logs de agentes" aria-live="polite">
+                            @foreach (var entry in FilteredLogs)
+                            {
+                                @if (LogTemplate is not null)
+                                {
+                                    @LogTemplate(entry)
+                                }
+                                else
+                                {
+                                    var logClass = LogEntryClass(entry);
+                                    <div class="@logClass"
+                                         role="button"
+                                         tabindex="0"
+                                         aria-label="@($"[{entry.Level}] {entry.AgentName}: {entry.Message}")"
+                                         @onclick="() => OnLogEntryClick.InvokeAsync(entry)">
+                                        <span class="mt-0.5 inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center @GetLogLevelColor(entry.Level)" aria-hidden="true">
+                                            @XFSvgIcons.Markup(GetLogLevelIcon(entry.Level))
+                                        </span>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-center gap-1.5">
+                                                <span class="font-semibold text-text-primary">@entry.AgentName</span>
+                                                @if (entry.ToolName is not null)
+                                                {
+                                                    <span class="rounded bg-purple-100 px-1 py-0.5 text-[10px] font-mono text-purple-700">@entry.ToolName</span>
+                                                }
+                                                <span class="ml-auto shrink-0 text-[10px] text-text-muted">@entry.Timestamp.ToString("HH:mm:ss")</span>
+                                            </div>
+                                            <p class="truncate text-text-secondary">@entry.Message</p>
+                                            @if (entry.TokensUsed is not null || entry.DurationMs is not null)
+                                            {
+                                                <div class="mt-0.5 flex items-center gap-2 text-[10px] text-text-muted">
+                                                    @if (entry.TokensUsed is not null)
+                                                    {
+                                                        <span>@entry.TokensUsed tokens</span>
+                                                    }
+                                                    @if (entry.DurationMs is not null)
+                                                    {
+                                                        <span>@entry.DurationMs ms</span>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="@EmptyClass">
+                            @if (EmptyLogsContent is not null)
+                            {
+                                @EmptyLogsContent
+                            }
+                            else
+                            {
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-surface-100 text-text-muted" aria-hidden="true">
+                                    @XFSvgIcons.Markup("list")
+                                </span>
+                                <p class="@EmptyTextClass">@EmptyLogsText</p>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private RenderFragment RenderSummaryTile(string icon, string label, string value, string color) => __builder =>
+    {
+        __builder.OpenElement(0, "div");
+        __builder.AddAttribute(1, "class", "flex items-center gap-2 rounded-md bg-surface-50 px-3 py-2");
+        __builder.OpenElement(2, "span");
+        __builder.AddAttribute(3, "class", "inline-flex h-4 w-4 items-center justify-center " + color);
+        __builder.AddAttribute(4, "aria-hidden", "true");
+        __builder.AddContent(5, XFSvgIcons.Markup(icon));
+        __builder.CloseElement();
+        __builder.OpenElement(6, "div");
+        __builder.AddAttribute(7, "class", "min-w-0");
+        __builder.OpenElement(8, "p");
+        __builder.AddAttribute(9, "class", "text-sm font-bold " + color);
+        __builder.AddContent(10, value);
+        __builder.CloseElement();
+        __builder.OpenElement(11, "p");
+        __builder.AddAttribute(12, "class", "text-[10px] text-text-muted");
+        __builder.AddContent(13, label);
+        __builder.CloseElement();
+        __builder.CloseElement();
+        __builder.CloseElement();
+    };
+}

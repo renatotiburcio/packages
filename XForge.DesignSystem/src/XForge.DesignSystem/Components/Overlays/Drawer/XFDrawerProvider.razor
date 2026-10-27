@@ -1,0 +1,74 @@
+@implements IDisposable
+@inject XFDrawerService DrawerService
+
+@if (CurrentRequest is not null)
+{
+    <XFDrawer Open="@Open"
+              OpenChanged="HandleOpenChangedAsync"
+              AriaLabel="@CurrentRequest.Options.AriaLabel"
+              AriaLabelledBy="@CurrentRequest.Options.AriaLabelledBy"
+              Title="@CurrentRequest.Options.Title"
+              Description="@CurrentRequest.Options.Description"
+              Placement="@CurrentRequest.Options.Placement"
+              Size="@CurrentRequest.Options.Size"
+              Tone="@CurrentRequest.Options.Tone"
+              Modal="@CurrentRequest.Options.Modal"
+              TrapFocus="@CurrentRequest.Options.TrapFocus"
+              CloseOnEscape="@CurrentRequest.Options.CloseOnEscape"
+              CloseOnOverlayClick="@CurrentRequest.Options.CloseOnOverlayClick"
+              ShowCloseButton="@CurrentRequest.Options.ShowCloseButton"
+              CloseLabel="@CurrentRequest.Options.CloseLabel">
+        <ChildContent>
+            @if (CurrentRequest.ChildContent is not null)
+            {
+                @CurrentRequest.ChildContent(CurrentRequest.Controller)
+            }
+        </ChildContent>
+        <Footer>
+            @if (CurrentRequest.Footer is not null)
+            {
+                @CurrentRequest.Footer(CurrentRequest.Controller)
+            }
+        </Footer>
+    </XFDrawer>
+}
+
+@code {
+    private XFDrawerRequest? CurrentRequest { get; set; }
+    private bool Open { get; set; }
+
+    protected override void OnInitialized()
+    {
+        DrawerService.Requested += ShowAsync;
+    }
+
+    private Task ShowAsync(XFDrawerRequest request)
+    {
+        request.Closed = CloseCurrentAsync;
+        CurrentRequest = request;
+        Open = true;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    private async Task HandleOpenChangedAsync(bool open)
+    {
+        Open = open;
+
+        if (!open && CurrentRequest is not null)
+        {
+            await CurrentRequest.Controller.CloseAsync();
+        }
+    }
+
+    private Task CloseCurrentAsync()
+    {
+        Open = false;
+        CurrentRequest = null;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        DrawerService.Requested -= ShowAsync;
+    }
+}

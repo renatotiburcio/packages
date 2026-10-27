@@ -1,0 +1,424 @@
+@page "/ai/storybook"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFStorybook" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("4 status de componente", "4 component statuses")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Explorador de componentes com lista, filtros, controles de propriedades e preview.",
+                               "Component explorer with list, filters, property controls and preview.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Storybook comercial para catalogacao e visualizacao de componentes. Inclui busca, filtro por categoria, controles interativos, preview renderizado e status de maturidade.",
+                               "Commercial storybook for component cataloging and viewing. Includes search, category filter, interactive controls, rendered preview and maturity status.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza lista mas sem preview dinamico.", "Renders list but no dynamic preview.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Storybook com lista de componentes e busca.", "Storybook with component list and search."), ExBasic(), Code1)
+            @Example(T("2. Sem header", "2. No header"), T("Apenas o layout de lista e painel de detalhes.", "List layout and detail panel only."), ExNoHeader(), Code2)
+            @Example(T("3. Sem filtro de categoria", "3. No category filter"), T("Lista agrupada por categoria mas sem dropdown de filtro.", "List grouped by category but without filter dropdown."), ExNoFilter(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+        <XForgeDocsPageStandard ComponentName="StorybookDocs" />
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("AI Commercial", "AI Commercial");
+    private string PageTitleText => T("XFStorybook", "XFStorybook");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<div class="overflow-hidden rounded-lg border border-border-light bg-bg-surface">
+        <div class="grid grid-cols-1 gap-0 lg:grid-cols-4">
+            <div class="border-r border-border-light lg:col-span-1 p-3">
+                <div class="mb-2 text-xs font-semibold uppercase text-text-muted">Components</div>
+                @foreach (var comp in _sampleComponents)
+                {
+                    <div class="flex w-full items-center gap-2 rounded px-2 py-1 text-xs text-text-secondary hover:bg-surface-50">
+                        <span class="flex-1">@comp.Name</span>
+                        @if (comp.Status != XFStorybookComponentStatus.Stable)
+                        {
+                            <span class="rounded px-1 py-0.5 text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">@comp.Status</span>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="lg:col-span-3 p-4">
+                <div class="mb-2 text-lg font-bold text-text-primary">XFButton</div>
+                <div class="mb-2 text-sm text-text-secondary">Botao interativo com variantes, cores e tamanhos.</div>
+                <div class="rounded border border-border-light p-3 bg-surface-50">
+                    <XFButton Text="Acao primaria" Color="XFButtonColor.Primary" />
+                </div>
+            </div>
+        </div>
+    </div>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("4 status", "4 statuses"), T("Stable, Beta, Deprecated e Experimental.", "Stable, Beta, Deprecated and Experimental."), "circle-check"),
+        new(T("Controles interativos", "Interactive controls"), T("Propriedades editaveis com preview em tempo real.", "Editable properties with real-time preview."), "sliders"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFStorybook"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Tooling"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Tooling"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=region, aria-label, aria-activedescendant.", "role=region, aria-label, aria-activedescendant.")),
+        new("Theme support", T("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Explorador de componentes", "Component explorer"), T("Visualize e interaja com componentes do design system.", "View and interact with design system components."), "cubes"),
+        new(T("Controles de props", "Prop controls"), T("Edite propriedades em tempo real.", "Edit properties in real time."), "sliders"),
+        new(T("Status de maturidade", "Maturity status"), T("4 status: Stable, Beta, Deprecated, Experimental.", "4 statuses: Stable, Beta, Deprecated, Experimental."), "circle-check")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Catalogacao", "Cataloging"), T("Listar todos os componentes do design system.", "List all design system components."), "list"),
+        new(T("Documentacao visual", "Visual documentation"), T("Preview ao vivo de cada componente.", "Live preview of each component."), "eye"),
+        new(T("Teste interativo", "Interactive testing"), T("Alterar props e ver resultado imediatamente.", "Change props and see result immediately."), "flask")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Componentes dificeis de descobrir e testar.", "Components hard to discover and test."), "xmark"),
+        new(T("Depois", "After"), T("Explorador centralizado com busca e filtros.", "Centralized explorer with search and filters."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=region, aria-label, aria-activedescendant.", "role=region, aria-label, aria-activedescendant."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Discoverability", "Discoverability"), T("Encontrar componentes rapidamente.", "Find components quickly."), "magnifying-glass"),
+        new(T("Onboarding", "Onboarding"), T("Novos desenvolvedores exploram o design system.", "New developers explore the design system."), "rocket")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Producao", "Production"), T("Nao inclua em apps de producao.", "Do not include in production apps."), "ban"),
+        new(T("Muitos componentes", "Too many components"), T("Milhares de componentes podem causar lentidao.", "Thousands of components may cause slowness."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Sidebar", T("Lista de componentes agrupados por categoria.", "Component list grouped by category."), "list"),
+        new("DetailPanel", T("Painel de detalhes com descricao e links.", "Detail panel with description and links."), "square"),
+        new("Controls", T("Controles interativos de propriedades.", "Interactive property controls."), "sliders"),
+        new("Preview", T("Preview renderizado com abas Render/Code.", "Rendered preview with Render/Code tabs."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Discoverability", "Discoverability"), T("Componentes organizados por categoria.", "Components organized by category."), "magnifying-glass"),
+        new(T("Interatividade", "Interactivity"), T("Controles editam props em tempo real.", "Controls edit props in real time."), "sliders"),
+        new(T("Status visivel", "Visible status"), T("Badges de status em cada componente.", "Status badges on each component."), "circle-check")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStorybook Title="XForge Storybook"
+                                                       ShowHeader="true"
+                                                       ShowSearch="true"
+                                                       ShowCategoryFilter="true"
+                                                       ShowPreview="true"
+                                                       Components="_sampleComponents" />;
+
+    private RenderFragment ExNoHeader() => @<XFStorybook ShowHeader="false"
+                                                          ShowSearch="false"
+                                                          ShowCategoryFilter="false"
+                                                          ShowPreview="true"
+                                                          Components="_sampleComponents" />;
+
+    private RenderFragment ExNoFilter() => @<XFStorybook Title="Components"
+                                                          ShowHeader="true"
+                                                          ShowSearch="true"
+                                                          ShowCategoryFilter="false"
+                                                          ShowPreview="true"
+                                                          Components="_sampleComponents" />;
+
+    private const string Code1 = @"<XFStorybook Title=""XForge Storybook""
+                ShowHeader=""true""
+                ShowSearch=""true""
+                ShowCategoryFilter=""true""
+                ShowPreview=""true""
+                Components=""_sampleComponents"" />";
+    private const string Code2 = @"<XFStorybook ShowHeader=""false""
+                ShowSearch=""false""
+                ShowCategoryFilter=""false""
+                ShowPreview=""true""
+                Components=""_sampleComponents"" />";
+    private const string Code3 = @"<XFStorybook Title=""Components""
+                ShowHeader=""true""
+                ShowSearch=""true""
+                ShowCategoryFilter=""false""
+                ShowPreview=""true""
+                Components=""_sampleComponents"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Title", "string", "\"XForge Storybook\"", T("Titulo do explorador.", "Explorer title.")),
+        new("AriaLabel", "string", "\"Explorador de componentes\"", T("Label de acessibilidade.", "Accessibility label.")),
+        new("ShowHeader", "bool", "true", T("Exibe barra de cabecalho.", "Shows header bar.")),
+        new("ShowSearch", "bool", "true", T("Exibe campo de busca.", "Shows search input.")),
+        new("ShowCategoryFilter", "bool", "true", T("Exibe filtro por categoria.", "Shows category filter.")),
+        new("ShowPreview", "bool", "true", T("Exibe painel de preview.", "Shows preview panel.")),
+        new("Components", "IReadOnlyList<XFStorybookComponent>", "[]", T("Lista de componentes.", "List of components.")),
+        new("ComponentControls", "IReadOnlyList<XFStorybookControl>?", "null", T("Controles do componente selecionado.", "Controls for the selected component.")),
+        new("OnComponentSelected", "EventCallback<XFStorybookComponent>", "-", T("Disparado quando um componente e selecionado.", "Fired when a component is selected.")),
+        new("OnControlChanged", "EventCallback<(string, string?)>", "-", T("Disparado quando um controle muda.", "Fired when a control changes."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnComponentSelected", T("Disparado quando o usuario seleciona um componente na lista.", "Fired when user selects a component from the list.")),
+        new("OnControlChanged", T("Disparado quando o usuario altera uma propriedade no painel de controles.", "Fired when user changes a property in the controls panel."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=region", "role=region"), T("Componente usa role=region com aria-label.", "Component uses role=region with aria-label."), "universal-access"),
+        new(T("aria-activedescendant", "aria-activedescendant"), T("Lista usa aria-activedescendant para selecao.", "List uses aria-activedescendant for selection."), "list"),
+        new(T("aria-label busca", "aria-label search"), T("Campo de busca com aria-label descritivo.", "Search input with descriptive aria-label."), "tag"),
+        new(T("Status badges", "Status badges"), T("Badges de status com cores semanticas.", "Status badges with semantic colors."), "circle-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre sidebar, controles e preview.", "Navigates between sidebar, controls and preview.")),
+        new("ArrowDown/Up", T("Navega na lista de componentes.", "Navigates the component list.")),
+        new("Enter", T("Seleciona componente focado.", "Selects focused component.")),
+        new("Escape", T("Desfaz selecao.", "Deselects component."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Layout responsivo", "Responsive layout"), T("Sidebar colapsa em mobile, painel ocupa 100%.", "Sidebar collapses on mobile, panel takes 100%."), "mobile-screen"),
+        new(T("Controles responsivos", "Responsive controls"), T("Controles fazem wrap em telas estreitas.", "Controls wrap on narrow screens."), "maximize")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Lazy preview", "Lazy preview"), T("Preview so renderiza apos selecao do componente.", "Preview only renders after component selection."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Onboarding", "Onboarding"), T("Novos desenvolvedores exploram o design system.", "New developers explore the design system."), "rocket"),
+        new(T("Documentacao interna", "Internal documentation"), T("Catalogo de componentes para a equipe.", "Component catalog for the team."), "book"),
+        new(T("Teste visual", "Visual testing"), T("Verificar variantes e estados de componentes.", "Verify component variants and states."), "eye")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Storybook + ThemeEditor", "Storybook + ThemeEditor"), T("Explorar componentes e editar tokens.", "Explore components and edit tokens."), "pen-to-square"),
+        new(T("Storybook + Docs", "Storybook + Docs"), T("Storybook complementa a documentacao.", "Storybook complements documentation."), "book"),
+        new(T("Storybook + Generator", "Storybook + Generator"), T("Gerar componentes e visualizar no Storybook.", "Generate components and view in Storybook."), "wand-magic-sparkles")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Categorias claras", "Clear categories"), T("Organize componentes por dominio.", "Organize components by domain."), "layer-group"),
+        new(T("Status atualizado", "Updated status"), T("Mantenha status de maturidade atualizado.", "Keep maturity status updated."), "circle-check"),
+        new(T("Controles uteis", "Useful controls"), T("Exiba apenas propriedades relevantes para preview.", "Show only properties relevant to preview."), "sliders"),
+        new(T("Preview funcional", "Functional preview"), T("Preview deve refletir mudancas de props.", "Preview should reflect prop changes."), "eye")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Em producao", "In production"), T("Nao inclua Storybook em apps de producao.", "Do not include Storybook in production apps."), "xmark"),
+        new(T("Sem categorias", "Without categories"), T("Lista sem agrupamento e confusa.", "List without grouping is confusing."), "ban"),
+        new(T("Controles irreais", "Unrealistic controls"), T("Nao exiba propriedades internas.", "Do not show internal properties."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", T("overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-sm.", "Overflow-hidden rounded-lg border border-border-light bg-bg-surface shadow-sm.")),
+        new("sidebar", T("border-r border-border-light lg:col-span-1.", "Border-r border-border-light lg:col-span-1.")),
+        new("selectedItem", T("bg-primary/10 text-primary font-medium.", "Bg-primary/10 text-primary font-medium.")),
+        new("statusBadge", T("rounded px-1 py-0.5 text-xs.", "Rounded px-1 py-0.5 text-xs."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Status colors", T("Badges com cores semanticas por status.", "Badges with semantic colors per status."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, busca, filtro, selecao, controles, status.", "Render, search, filter, selection, controls, status tests.")),
+        new("Accessibility", T("role=region, aria-label, aria-activedescendant.", "role=region, aria-label, aria-activedescendant."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Preview limitado", T("Preview so renderiza com componentes registrados no runtime.", "Preview only renders with components registered at runtime.")),
+        new("Performance", T("Muitos componentes podem causar lentidao na busca.", "Many components may cause search slowness."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFThemeEditor", T("Edicao de temas e tokens.", "Theme and token editing."), "pen-to-square"),
+        new("XFDesignTokenExplorer", T("Explorador de design tokens.", "Design token explorer."), "magnifying-glass"),
+        new("XFComponentGenerator", T("Geracao de componentes.", "Component generation."), "wand-magic-sparkles")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Storybook vs Docs?", "Storybook vs Docs?"), T("Storybook = interativo. Docs = referencia estatica.", "Storybook = interactive. Docs = static reference.")),
+        new(T("Como adicionar componentes?", "How to add components?"), T("Passe a lista via parametro Components.", "Pass the list via Components parameter.")),
+        new(T("Funciona sem componentes?", "Works without components?"), T("Sim. Mostra lista vazia com mensagem.", "Yes. Shows empty list with message."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina seed criada com preview e API inicial.", "Seed page created with preview and initial API.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+
+    // === SAMPLE DATA ===
+    private static readonly IReadOnlyList<XFStorybookComponent> _sampleComponents = [
+        new() { Name = "XFButton", Category = "Components", Description = "Botao interativo com variantes, cores e tamanhos.", Status = XFStorybookComponentStatus.Stable, ParameterCount = 18, TestCount = 42, DocsRoute = "/components/button" },
+        new() { Name = "XFTextInput", Category = "Forms", Description = "Campo de texto com label, placeholder e validacao.", Status = XFStorybookComponentStatus.Stable, ParameterCount = 22, TestCount = 38, DocsRoute = "/forms/text-input" },
+        new() { Name = "XFSelect", Category = "Forms", Description = "Select com filtro, multi-selecao e templates.", Status = XFStorybookComponentStatus.Stable, ParameterCount = 20, TestCount = 35, DocsRoute = "/forms/select" },
+        new() { Name = "XFCard", Category = "Display", Description = "Container com variantes Outlined, Filled e Soft.", Status = XFStorybookComponentStatus.Stable, ParameterCount = 8, TestCount = 15, DocsRoute = "/display/card" },
+        new() { Name = "XFAiAgentConsole", Category = "Orchestration", Description = "Console para observar agentes AI.", Status = XFStorybookComponentStatus.Beta, ParameterCount = 12, TestCount = 8, DocsRoute = "/ai/agent-console" }
+    ];
+}

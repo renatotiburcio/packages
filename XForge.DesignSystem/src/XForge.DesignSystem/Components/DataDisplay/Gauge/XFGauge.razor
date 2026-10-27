@@ -1,0 +1,121 @@
+@inherits XForgeComponentBase
+@using System.Globalization
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="meter"
+     aria-label="@(AriaLabel ?? "Medidor")"
+     aria-valuemin="@Min"
+     aria-valuemax="@Max"
+     aria-valuenow="@AriaValueNow"
+     aria-valuetext="@AriaValueText">
+
+    <svg class="h-full w-full"
+         viewBox="0 0 @ViewBoxSize @ViewBoxSize"
+         aria-hidden="true">
+
+        @* ── Range Bands *@
+        @if (Ranges is { Count: > 0 })
+        {
+            @foreach (var range in Ranges)
+            {
+                var fromPct = Math.Clamp((range.From - Min) / Range, 0, 1);
+                var toPct = Math.Clamp((range.To - Min) / Range, 0, 1);
+                var fromAngle = StartAngle + SweepAngle * fromPct;
+                var toAngle = StartAngle + SweepAngle * toPct;
+                <path d="@DescribeArc(fromAngle, toAngle)"
+                      fill="none"
+                      stroke-width="@(Thickness + 2)"
+                      stroke-linecap="round"
+                      class="@RangeStrokeClass(range.Color)"
+                      style="@RangeStrokeStyle(range.Color)" />
+            }
+        }
+
+        @* ── Track Arc *@
+        <path d="@DescribeArc(StartAngle, EndAngle)"
+              fill="none"
+              stroke-width="@Thickness"
+              stroke-linecap="round"
+              class="@TrackStroke"
+              style="@TrackStrokeStyle" />
+
+        @* ── Value Arc *@
+        @if (Percent > 0)
+        {
+            <path d="@DescribeArc(StartAngle, ValueAngle)"
+                  fill="none"
+                  stroke-width="@Thickness"
+                  stroke-linecap="round"
+                  class="transition-[stroke-dashoffset] duration-300 ease-out @ValueStroke"
+                  style="@ValueStrokeStyle" />
+        }
+
+        @* ── Tick Marks *@
+        @if (ShowTicks)
+        {
+            @foreach (var (tickValue, angle) in GetTicks())
+            {
+                var isMajor = Math.Abs(tickValue - Min) < 0.001
+                    || Math.Abs(tickValue - Max) < 0.001
+                    || Math.Abs(tickValue % (EffectiveTickStep * 5)) < EffectiveTickStep * 0.001;
+                var (x1, y1, x2, y2) = GetTickLine(angle, isMajor);
+                <line x1="@x1.ToString("0.###", CultureInfo.InvariantCulture)"
+                      y1="@y1.ToString("0.###", CultureInfo.InvariantCulture)"
+                      x2="@x2.ToString("0.###", CultureInfo.InvariantCulture)"
+                      y2="@y2.ToString("0.###", CultureInfo.InvariantCulture)"
+                      stroke-width="@(isMajor ? 1.5 : 0.75)"
+                      class="stroke-surface-500 dark:stroke-surface-400" />
+            }
+        }
+
+        @* ── Tick Labels *@
+        @if (ShowLabels)
+        {
+            @foreach (var (tickValue, angle) in GetTicks())
+            {
+                var (lx, ly) = GetLabelPosition(angle);
+                @((MarkupString)RenderSvgText(lx, ly, FormatTickLabel(tickValue), $"fill-text-secondary {TickLabelSizeClass}"))
+            }
+        }
+
+        @* ── Min/Max Labels *@
+        @if (ShowMinMaxLabels && !ShowLabels)
+        {
+            var (minX, minY) = GetLabelPosition(StartAngle);
+            var (maxX, maxY) = GetLabelPosition(EndAngle);
+            @((MarkupString)RenderSvgText(minX, minY, FormatTickLabel(Min), $"fill-text-muted {TickLabelSizeClass}"))
+            @((MarkupString)RenderSvgText(maxX, maxY, FormatTickLabel(Max), $"fill-text-muted {TickLabelSizeClass}"))
+        }
+    </svg>
+
+    @* ── Center Value *@
+    @if (ShowValue || ValueTemplate is not null)
+    {
+        <div class="absolute inset-0 grid place-items-center pointer-events-none">
+            @if (ValueTemplate is not null)
+            {
+                @ValueTemplate(new XFGaugeValueContext
+                {
+                    Value = ClampedValue,
+                    Percent = Percent,
+                    FormattedValue = ValueText
+                })
+            }
+            else
+            {
+                <div class="flex flex-col items-center">
+                    <span class="font-semibold text-text-primary @ValueTextSizeClass">
+                        @ValueText
+                    </span>
+                    @if (Unit is not null && string.IsNullOrWhiteSpace(ValueFormat))
+                    {
+                        <span class="text-text-muted @UnitTextSizeClass">@Unit</span>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

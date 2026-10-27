@@ -1,0 +1,538 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2026-06-11T00:00:00Z",
+  "description": "Error Pattern Learning graph — registra erros, causas raiz, soluções aplicadas e regras de prevenção. Usado pelo agente para prevenir recorrência de erros.",
+  "metadata": {
+    "totalErrors": 20,
+    "totalSolutions": 20,
+    "totalPreventionRules": 20,
+    "lastExtraction": "2026-06-11T00:00:00Z",
+    "sourceFiles": [
+      ".xforge/learning/feedback-log.jsonl",
+      ".xforge/knowledge/errors-solutions-graph.json"
+    ]
+  },
+  "errorPatterns": [
+    {
+      "id": "ERR-001",
+      "category": "build",
+      "pattern": "CS0246: The type or namespace name could not be found",
+      "description": "Namespace ou tipo não encontrado — geralmente falta de using ou referência de projeto",
+      "frequency": "alta",
+      "causes": [
+        "Falta de <PackageReference> no .csproj",
+        "Falta de <ProjectReference> entre projetos",
+        "Namespace incorreto no using",
+        "Versão incompatível de pacote"
+      ],
+      "preventionRule": "PR-001",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Sugerir adição de using/referência baseado no tipo encontrado"
+      }
+    },
+    {
+      "id": "ERR-002",
+      "category": "build",
+      "pattern": "CS8600: Converting null literal or possible null value to non-nullable type",
+      "description": "Atribuição de valor possivelmente null para tipo non-nullable",
+      "frequency": "muito-alta",
+      "causes": [
+        "Retorno de método que pode ser null sem tratamento",
+        "Query LINQFirstOrDefault() sem null check",
+        "Dictionary.TryGetValue() sem validação"
+      ],
+      "preventionRule": "PR-002",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Adicionar operador ? ou null check automático"
+      }
+    },
+    {
+      "id": "ERR-003",
+      "category": "build",
+      "pattern": "CS1998: This async method lacks 'await' operators",
+      "description": "Método marcado como async mas não usa await",
+      "frequency": "media",
+      "causes": [
+        "Método foi simplificado e await removido",
+        "Copy-paste de template async",
+        "Retorno síncrono em método async"
+      ],
+      "preventionRule": "PR-003",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Remover async ou adicionar Task.FromResult/Task.CompletedTask"
+      }
+    },
+    {
+      "id": "ERR-004",
+      "category": "runtime",
+      "pattern": "NullReferenceException",
+      "description": "Exceção de referência nula em runtime",
+      "frequency": "muito-alta",
+      "causes": [
+        "Property access sem null check",
+        "Serviço injetado não registrado",
+        "Retorno de API externa null",
+        "EF Core entity navigation property null"
+      ],
+      "preventionRule": "PR-004",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Adicionar ?. (null-conditional) ou ?? (null-coalescing)"
+      }
+    },
+    {
+      "id": "ERR-005",
+      "category": "runtime",
+      "pattern": "InvalidOperationException: Sequence contains no elements",
+      "description": "FirstOrDefault/Single retornou null mas código trata como existente",
+      "frequency": "alta",
+      "causes": [
+        "Uso de .First() sem verificação prévia",
+        "Dados não migrados/semeados",
+        "Query incorreta com filtros muito restritivos"
+      ],
+      "preventionRule": "PR-005",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Usar .FirstOrDefault() + null check, ou .SingleOrDefault() com tratamento"
+      }
+    },
+    {
+      "id": "ERR-006",
+      "category": "database",
+      "pattern": "NpgsqlException: 42P01: relation does not exist",
+      "description": "Tabela não existe no banco — migration não aplicada",
+      "frequency": "media",
+      "causes": [
+        "Migration não rodou",
+        "Nome de tabela incorreto no Entity",
+        "Schema incorreto no EF Core",
+        "Banco de dados errado na connection string"
+      ],
+      "preventionRule": "PR-006",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Rodar dotnet ef database update antes de executar"
+      }
+    },
+    {
+      "id": "ERR-007",
+      "category": "database",
+      "pattern": "NpgsqlException: 23505: duplicate key value violates unique constraint",
+      "description": "Violação de constraint de unicidade ao inserir/atualizar",
+      "frequency": "alta",
+      "causes": [
+        "Inserção duplicada sem verificação prévia",
+        "Race condition em concorrência",
+        "Migration com seed duplicado",
+        "Constraint unique em coluna que deveria permitir duplicatas"
+      ],
+      "preventionRule": "PR-007",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Usar Upsert (INSERT ON CONFLICT) ou verificar existência antes"
+      }
+    },
+    {
+      "id": "ERR-008",
+      "category": "auth",
+      "pattern": "401 Unauthorized / 403 Forbidden",
+      "description": "Falha de autenticação ou autorização",
+      "frequency": "alta",
+      "causes": [
+        "Token JWT expirado",
+        "Claims insuficientes para a role",
+        "Policy de autorização não configurada",
+        "CORS bloqueando requisição"
+      ],
+      "preventionRule": "PR-008",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Validar token antes da requisição, verificar roles"
+      }
+    },
+    {
+      "id": "ERR-009",
+      "category": "fiscal",
+      "pattern": "Cálculo ICMS incorreto — valor zero ou negativo",
+      "description": "Base de cálculo ICMS retornando R$ 0 ou valor negativo",
+      "frequency": "media",
+      "causes": [
+        "CFOP não mapeado para regime tributário",
+        "Base de cálculo não descontada corretamente",
+        "Alíquota ICMS não configurada para UF destino",
+        "ST (Substituição Tributária) não aplicada"
+      ],
+      "preventionRule": "PR-009",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Validar CFOP × UF × Regime antes do cálculo"
+      }
+    },
+    {
+      "id": "ERR-010",
+      "category": "fiscal",
+      "pattern": "DCTFWeb rejeitada — erro no layout XML",
+      "description": "XML da DCTFWeb rejeitado pela SEFAZ por erro de schema",
+      "frequency": "media",
+      "causes": [
+        "Tag obrigatória ausente no XML",
+        "Tipo de dado incorreto (ex: CNPJ com 14 dígitos em vez de 18 alfanumérico)",
+        "Versão do schema desatualizada",
+        "Eventos vinculados incorretamente"
+      ],
+      "preventionRule": "PR-010",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Validar XML contra XSD antes do envio"
+      }
+    },
+    {
+      "id": "ERR-011",
+      "category": "payroll",
+      "pattern": "INSS progressivo calculado incorretamente",
+      "description": "Cálculo de INSS não aplicando faixas progressivas corretamente",
+      "frequency": "media",
+      "causes": [
+        "Tabela desatualizada (usando tabela do ano anterior)",
+        "Cálculo por alíquota efetiva em vez de progressivo",
+        "Teto do INSS não considerado",
+        "Base de cálculo incluindo verbas não tributáveis"
+      ],
+      "preventionRule": "PR-011",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Validar tabela INSS do ano corrente antes do cálculo"
+      }
+    },
+    {
+      "id": "ERR-012",
+      "category": "payroll",
+      "pattern": "IRRF com isenção incorreta",
+      "description": "IRRF aplicado quando deveria ser isento, ou vice-versa",
+      "frequency": "media",
+      "causes": [
+        "Limite de isenção desatualizado",
+        "Dependentes não descontados na base",
+        "Pensão alimentícia não deduzida",
+        "Proventos isentos incluídos na base de cálculo"
+      ],
+      "preventionRule": "PR-012",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Validar tabela IRRF 2025 (isenção até R$2.259,20)"
+      }
+    },
+    {
+      "id": "ERR-013",
+      "category": "performance",
+      "pattern": "N+1 query — múltiplas queries sequenciais",
+      "description": "EF Core executando queries N+1 por falta de Include",
+      "frequency": "alta",
+      "causes": [
+        "Falta de .Include() em navigation properties",
+        "Lazzy loading habilitado em produção",
+        "Loop com query interna",
+        "Select projection incorreta"
+      ],
+      "preventionRule": "PR-013",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Detectar queries em loop e sugerir Include/ThenInclude"
+      }
+    },
+    {
+      "id": "ERR-014",
+      "category": "performance",
+      "pattern": "Memory leak — objetos não descartados",
+      "description": "Consumo de memória crescente por falta de Dispose/using",
+      "frequency": "media",
+      "causes": [
+        "HttpClient instanciado sem using/IHttpClientFactory",
+        "StreamReader/StreamWriter sem using",
+        "DbContext compartilhado entre requests",
+        "Timer/Event handler não removido"
+      ],
+      "preventionRule": "PR-014",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Adicionar using/await using ou sugerir IHttpClientFactory"
+      }
+    },
+    {
+      "id": "ERR-015",
+      "category": "performance",
+      "pattern": "Synchronous I/O em contexto async",
+      "description": "Chamada síncrona bloqueando thread em contexto async",
+      "frequency": "media",
+      "causes": [
+        ".Result ou .Wait() em vez de await",
+        "ExecuteSqlRaw em vez de ExecuteSqlRawAsync",
+        "Read() em vez de ReadAsync()",
+        "SaveChanges em vez de SaveChangesAsync"
+      ],
+      "preventionRule": "PR-015",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Substituir chamadas síncronas por variantes Async"
+      }
+    },
+    {
+      "id": "ERR-016",
+      "category": "test",
+      "pattern": "Teste flaky — passa às vezes, falha outras",
+      "description": "Teste com resultado não determinístico",
+      "frequency": "media",
+      "causes": [
+        "Dependência de dados externos (API, banco)",
+        "Race condition em async tests",
+        "Timer ou delay não mockado",
+        "Ordem de execução dos testes variável"
+      ],
+      "preventionRule": "PR-016",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Usar Testcontainers, mocks, e Arrange-Act-Assert isolados"
+      }
+    },
+    {
+      "id": "ERR-017",
+      "category": "security",
+      "pattern": "Secret hardcoded no código",
+      "description": "Chave de API, senha ou token encontrada no código fonte",
+      "frequency": "baixa",
+      "causes": [
+        "Desenvolvedor adicionou chave para teste",
+        "Copy-paste de exemplo de documentação",
+        "Variável de ambiente não configurada"
+      ],
+      "preventionRule": "PR-017",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Detectar padrões de secrets e mover para .env"
+      }
+    },
+    {
+      "id": "ERR-018",
+      "category": "security",
+      "pattern": "SQL Injection — query com interpolação de string",
+      "description": "Query SQL construída com string interpolation em vez de parameterized query",
+      "frequency": "baixa",
+      "causes": [
+        "FromSqlRaw com interpolação",
+        "ExecuteSqlRaw com string concatenada",
+        "Dapper com query dinâmica não parameterizada"
+      ],
+      "preventionRule": "PR-018",
+      "autoFix": {
+        "enabled": true,
+        "strategy": "Converter interpolação para parâmetros"
+      }
+    },
+    {
+      "id": "ERR-019",
+      "category": "deploy",
+      "pattern": "Docker build falha — dependência não encontrada",
+      "description": "Build de Docker image falha por pacote ausente",
+      "frequency": "baixa",
+      "causes": [
+        "Dockerfile não restore antes de build",
+        "Multi-stage build com stage incorreto",
+        "PacoteNuGet privado sem credenciais",
+        ".dockerignore excluindo arquivos necessários"
+      ],
+      "preventionRule": "PR-019",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Validar Dockerfile antes do build"
+      }
+    },
+    {
+      "id": "ERR-020",
+      "category": "deploy",
+      "pattern": "CI/CD pipeline falha no stage de segurança",
+      "description": "Pipeline rejeitado por vulnerabilidade detectada",
+      "frequency": "media",
+      "causes": [
+        "CVE crítico em dependência",
+        "Secret exposto no log do pipeline",
+        "Permissões excessivas no service account",
+        "Container rodando como root"
+      ],
+      "preventionRule": "PR-020",
+      "autoFix": {
+        "enabled": false,
+        "strategy": "Atualizar dependência ou adicionar exception temporária"
+      }
+    }
+  ],
+  "preventionRules": [
+    {
+      "id": "PR-001",
+      "trigger": "Qualquer código C# sendo editado",
+      "action": "Verificar se todos os tipos usados têm using/referência",
+      "autoApply": true,
+      "severity": "build"
+    },
+    {
+      "id": "PR-002",
+      "trigger": "Uso de FirstOrDefault(), SingleOrDefault(), TryGetValue()",
+      "action": "Adicionar null check antes do uso",
+      "autoApply": true,
+      "severity": "build"
+    },
+    {
+      "id": "PR-003",
+      "trigger": "Método marcado como async",
+      "action": "Verificar se contém pelo menos um await ou usar Task.FromResult",
+      "autoApply": true,
+      "severity": "build"
+    },
+    {
+      "id": "PR-004",
+      "trigger": "Property access em variável que pode ser null",
+      "action": "Adicionar ?. ou ?? com default value",
+      "autoApply": true,
+      "severity": "runtime"
+    },
+    {
+      "id": "PR-005",
+      "trigger": "Uso de .First() ou .Single() sem Where prévio",
+      "action": "Substituir por .FirstOrDefault() + null check ou usar .ElementAtOrDefault()",
+      "autoApply": true,
+      "severity": "runtime"
+    },
+    {
+      "id": "PR-006",
+      "trigger": "EF Core query sem migration correspondente",
+      "action": "Rodar dotnet ef migrations add antes de dotnet ef database update",
+      "autoApply": false,
+      "severity": "database"
+    },
+    {
+      "id": "PR-007",
+      "trigger": "Insert em tabela com unique constraint",
+      "action": "Verificar existência ou usar Upsert (INSERT ON CONFLICT)",
+      "autoApply": true,
+      "severity": "database"
+    },
+    {
+      "id": "PR-008",
+      "trigger": "Endpoint com [Authorize] mas policy não definida",
+      "action": "Definir policy de autorização ou usar [AllowAnonymous] explicitamente",
+      "autoApply": false,
+      "severity": "auth"
+    },
+    {
+      "id": "PR-009",
+      "trigger": "Cálculo de ICMS/PIS/COFINS",
+      "action": "Validar CFOP × UF × Regime tributário antes do cálculo",
+      "autoApply": false,
+      "severity": "fiscal"
+    },
+    {
+      "id": "PR-010",
+      "trigger": "Geração de XML fiscal (NF-e, DCTFWeb, EFD)",
+      "action": "Validar XML contra XSD antes do envio",
+      "autoApply": false,
+      "severity": "fiscal"
+    },
+    {
+      "id": "PR-011",
+      "trigger": "Cálculo de INSS em folha de pagamento",
+      "action": "Verificar tabela INSS do ano corrente (progressivo até 14%)",
+      "autoApply": false,
+      "severity": "payroll"
+    },
+    {
+      "id": "PR-012",
+      "trigger": "Cálculo de IRRF em folha de pagamento",
+      "action": "Verificar tabela IRRF 2025 (isenção até R$2.259,20)",
+      "autoApply": false,
+      "severity": "payroll"
+    },
+    {
+      "id": "PR-013",
+      "trigger": "EF Core query com navigation property",
+      "action": "Usar .Include() ou .ThenInclude() para eager loading",
+      "autoApply": true,
+      "severity": "performance"
+    },
+    {
+      "id": "PR-014",
+      "trigger": "Instanciação de HttpClient, StreamReader, DbContext",
+      "action": "Envolver em using/await using ou usar factory pattern",
+      "autoApply": true,
+      "severity": "performance"
+    },
+    {
+      "id": "PR-015",
+      "trigger": "Chamada síncrona em contexto async (.Result, .Wait(), SaveChanges())",
+      "action": "Substituir por variante Async (await, SaveChangesAsync)",
+      "autoApply": true,
+      "severity": "performance"
+    },
+    {
+      "id": "PR-016",
+      "trigger": "Teste que depende de estado externo",
+      "action": "Usar Testcontainers, mocks, e isolar Arrange-Act-Assert",
+      "autoApply": false,
+      "severity": "test"
+    },
+    {
+      "id": "PR-017",
+      "trigger": "String contendo padrão de secret (API key, password, token)",
+      "action": "Mover para variável de ambiente ou appsettings.json (nunca no código)",
+      "autoApply": true,
+      "severity": "security"
+    },
+    {
+      "id": "PR-018",
+      "trigger": "Query SQL com interpolação de string ($\"...\")",
+      "action": "Converter para parameterized query com @0, @1",
+      "autoApply": true,
+      "severity": "security"
+    },
+    {
+      "id": "PR-019",
+      "trigger": "Dockerfile sem restore antes de build",
+      "action": "Adicionar RUN dotnet restore antes de RUN dotnet publish",
+      "autoApply": false,
+      "severity": "deploy"
+    },
+    {
+      "id": "PR-020",
+      "trigger": "Dependência com CVE conhecido",
+      "action": "Atualizar para versão corrigida ou adicionar exception documentada",
+      "autoApply": false,
+      "severity": "security"
+    }
+  ],
+  "indexes": {
+    "byCategory": {
+      "build": ["ERR-001", "ERR-002", "ERR-003"],
+      "runtime": ["ERR-004", "ERR-005"],
+      "database": ["ERR-006", "ERR-007"],
+      "auth": ["ERR-008"],
+      "fiscal": ["ERR-009", "ERR-010"],
+      "payroll": ["ERR-011", "ERR-012"],
+      "performance": ["ERR-013", "ERR-014", "ERR-015"],
+      "test": ["ERR-016"],
+      "security": ["ERR-017", "ERR-018"],
+      "deploy": ["ERR-019", "ERR-020"]
+    },
+    "byFrequency": {
+      "muito-alta": ["ERR-002", "ERR-004"],
+      "alta": ["ERR-001", "ERR-005", "ERR-007", "ERR-008", "ERR-013"],
+      "media": ["ERR-003", "ERR-006", "ERR-009", "ERR-010", "ERR-011", "ERR-012", "ERR-014", "ERR-015", "ERR-016", "ERR-020"],
+      "baixa": ["ERR-017", "ERR-018", "ERR-019"]
+    },
+    "byAutoFix": {
+      "enabled": ["ERR-001", "ERR-002", "ERR-003", "ERR-004", "ERR-005", "ERR-007", "ERR-013", "ERR-014", "ERR-015", "ERR-017", "ERR-018"],
+      "disabled": ["ERR-006", "ERR-008", "ERR-009", "ERR-010", "ERR-011", "ERR-012", "ERR-016", "ERR-019", "ERR-020"]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+﻿<Project>
+  <!--
+    XForge.targets - Build targets shipped to consumers.
+    Inspired by AntDesign.targets (antd-blazor).
+    Provides zero-config setup for:
+      - Localized Intellisense files (T005)
+      - Static asset copying
+      - Razor component discovery
+  -->
+
+  <PropertyGroup>
+    <XForgeDesignSystemAssetsDir>$(MSBuildThisFileDirectory)wwwroot\</XForgeDesignSystemAssetsDir>
+    <XForgeDesignSystemJsDir>$(XForgeDesignSystemAssetsDir)dist\</XForgeDesignSystemJsDir>
+    <XForgeDesignSystemCssDir>$(XForgeDesignSystemAssetsDir)dist\</XForgeDesignSystemCssDir>
+  </PropertyGroup>
+
+  <Target Name="CopyXForgeAssets" BeforeTargets="Build">
+    <ItemGroup>
+      <_XForgeJs Include="$(XForgeDesignSystemJsDir)**\*.js" />
+      <_XForgeCss Include="$(XForgeDesignSystemCssDir)**\*.css" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_XForgeJs)" DestinationFolder="$(OutDir)wwwroot\dist\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_XForgeCss)" DestinationFolder="$(OutDir)wwwroot\dist\%(RecursiveDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="CopyLocalizedIntellisense" AfterTargets="Build">
+    <ItemGroup>
+      <_LocalizedDoc Include="$(MSBuildThisFileDirectory)LocalizedIntellisenseFiles\**\*.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_LocalizedDoc)" DestinationFolder="$(OutDir)LocalizedIntellisenseFiles\%(RecursiveDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="PrintXForgeInfo" BeforeTargets="Build" Condition="'$(XForgeVerbose)' == 'true'">
+    <Message Importance="high" Text="XForge.DesignSystem: Copying assets from $(XForgeDesignSystemAssetsDir)" />
+    <Message Importance="high" Text="XForge.DesignSystem: Localized intellisense in 6 cultures" />
+  </Target>
+
+</Project>

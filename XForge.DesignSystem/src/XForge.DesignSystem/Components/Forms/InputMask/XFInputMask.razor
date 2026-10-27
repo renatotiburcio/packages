@@ -1,0 +1,94 @@
+﻿@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="@LabelClass">
+            @Label
+            @if (Required)
+            {
+                <span class="text-danger" aria-hidden="true">*</span>
+            }
+        </label>
+    }
+
+    <div class="@FieldShellClass">
+        @if (StartIcon is not null || !string.IsNullOrWhiteSpace(PrefixText))
+        {
+            <div class="@AdornmentClass">
+                @if (StartIcon is not null)
+                {
+                    @StartIcon
+                }
+                else
+                {
+                    <span>@PrefixText</span>
+                }
+            </div>
+        }
+
+        <input @ref="InputRef"
+               @attributes="AdditionalAttributes"
+               id="@Id"
+               name="@Name"
+               class="@InputClass"
+               type="text"
+               inputmode="@InputMode"
+               autocomplete="@AutoComplete"
+               placeholder="@ResolvedPlaceholder"
+               maxlength="@MaxLength"
+               disabled="@Disabled"
+               readonly="@ReadOnly"
+               required="@Required"
+               aria-label="@AriaLabel"
+               aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+               aria-invalid="@AriaInvalid"
+               aria-required="@Required.ToString().ToLowerInvariant()"
+               aria-readonly="@ReadOnly.ToString().ToLowerInvariant()"
+               aria-describedby="@DescribedBy"
+               value="@CurrentText"
+               @oninput="HandleInputAsync"
+               @onchange="HandleChangeAsync"
+               @onblur="HandleBlurAsync" />
+
+        @if (HasEndAdornment)
+        {
+            <div class="@AdornmentClass">
+                @if (EndIcon is not null)
+                {
+                    @EndIcon
+                }
+                else if (Clearable && !string.IsNullOrEmpty(CurrentText) && !ReadOnly && !Disabled)
+                {
+                    <button type="button" class="@ClearButtonClass" aria-label="@ClearLabel" @onclick="ClearAsync">
+                        <span class="inline-block h-3 w-3">@XFSvgIcons.Markup("xmark")</span>
+                    </button>
+                }
+                else
+                {
+                    <span>@SuffixText</span>
+                }
+            </div>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">
+            @FirstValidationMessage
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">
+            @HelperText
+        </div>
+    }
+
+    @if (MaskDescription is not null)
+    {
+        <div id="@MaskDescriptionId" class="sr-only">
+            @MaskDescription
+        </div>
+    }
+</div>

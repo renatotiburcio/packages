@@ -1,0 +1,11 @@
+@namespace XForge.Components.Latam
+@inherits XForgeComponentBase
+
+<select class="xf-cfop-select" @bind="Value" @bind:after="() => ValueChanged.InvokeAsync(Value)">
+  <option value="">--</option>
+  @foreach (var c in Cfops) { <option value="@c.Code">@c.Code - @c.Description</option> }
+</select>
+
+@code {
+  public record CfopItem(string Code, string Description);
+}

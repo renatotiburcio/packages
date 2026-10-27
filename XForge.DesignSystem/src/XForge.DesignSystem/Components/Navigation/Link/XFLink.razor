@@ -1,0 +1,24 @@
+@inherits XForgeComponentBase
+
+<a @attributes="AdditionalAttributes"
+   id="@Id"
+   href="@Href"
+   target="@Target"
+   class="@GetComponentClass()"
+   style="@Style"
+   aria-label="@AriaLabel"
+   aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+   tabindex="@(Disabled ? -1 : null)">
+    @if (Icon is not null)
+    {
+        <span class="inline-flex shrink-0 items-center justify-center" aria-hidden="true">@Icon</span>
+    }
+    @if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        @Text
+    }
+</a>

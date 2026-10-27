@@ -1,0 +1,88 @@
+﻿<div class="@GetContainerClass()">
+    @if (ShowHeader)
+    {
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-2">
+                @if (HeaderContent is not null)
+                {
+                    @HeaderContent
+                }
+                else
+                {
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">@Title</h3>
+                }
+            </div>
+            @if (ShowStatus)
+            {
+                <span class="@GetStatusBadgeClass()">
+                    @GetStatusText()
+                </span>
+            }
+        </div>
+    }
+
+    <div class="p-4 space-y-4">
+        @* Provider Selector *@
+        <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">@ProviderLabel</label>
+            <select @bind="_selectedProviderId" @bind:after="OnProviderChangedAsync"
+                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    aria-label="@ProviderLabel">
+                @foreach (var provider in AvailableProviders)
+                {
+                    <option value="@provider.ProviderId">@provider.DisplayName</option>
+                }
+            </select>
+        </div>
+
+        @* Model Selector *@
+        @if (_availableModels.Count > 0)
+        {
+            <div>
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">@ModelLabel</label>
+                <select @bind="_selectedModel" @bind:after="OnModelChangedAsync"
+                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        aria-label="@ModelLabel">
+                    @foreach (var model in _availableModels)
+                    {
+                        <option value="@model">@model</option>
+                    }
+                </select>
+            </div>
+        }
+
+        @* Provider Capabilities *@
+        @if (ShowCapabilities && _activeProvider is not null)
+        {
+            <div class="flex flex-wrap gap-2">
+                @if (_activeProvider.SupportsStreaming)
+                {
+                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        Streaming
+                    </span>
+                }
+                @if (_activeProvider.SupportsToolCalling)
+                {
+                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        Tool Calling
+                    </span>
+                }
+                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                    ID: @_activeProvider.ProviderId
+                </span>
+            </div>
+        }
+
+        @* Custom content *@
+        @if (ChildContent is not null)
+        {
+            @ChildContent
+        }
+    </div>
+</div>

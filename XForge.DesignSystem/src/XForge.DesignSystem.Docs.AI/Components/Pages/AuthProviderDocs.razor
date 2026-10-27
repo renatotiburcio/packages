@@ -1,0 +1,385 @@
+@page "/ai/auth-provider"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAuthProvider" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("6 estados, 6 providers", "6 states, 6 providers")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Superficie de autenticacao enterprise para experiencias AI comerciais.",
+                                   "Enterprise authentication surface for commercial AI experiences.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Gerencia estado de autenticacao SSO/OIDC/OAuth2 com usuario, sessao, login/logout e 6 estados visuais para integracao enterprise.",
+                                   "Manages SSO/OIDC/OAuth2 authentication state with user, session, login/logout and 6 visual states for enterprise integration.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Autenticado", "1. Authenticated"), L.Text("Estado autenticado com usuario, avatar, roles e sessao.", "Authenticated state with user, avatar, roles and session."), ExAuthenticated(), Code1)
+            @Example(L.Text("2. Nao autenticado", "2. Anonymous"), L.Text("Estado anonimo com botao de login.", "Anonymous state with login button."), ExAnonymous(), Code2)
+            @Example(L.Text("3. Erro e expirado", "3. Error and Expired"), L.Text(" Estados de erro e sessao expirada com retry.", "Error and session expired states with retry."), ExErrorExpired(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+
+        <XForgeDocsPageStandard ComponentName="AuthProviderDocs" />
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => L.Text("AI Commercial", "AI Commercial");
+    private string PageTitleText => L.Text("XFAuthProvider", "XFAuthProvider");
+    private string PageStatusText => L.Text("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFAuthProvider State="XFAuthState.Authenticated"
+                                                              Provider="XFAuthProviderType.OIDC"
+                                                              CurrentUser="@(new XFAuthUser { DisplayName = "Joao Silva", Email = "joao@empresa.com", Roles = new[] { "Admin", "Editor" } })"
+                                                              CurrentSession="@(new XFAuthSession { ExpiresAt = DateTimeOffset.UtcNow.AddHours(2) })"
+                                                              ShowLoginButton="true"
+                                                              ShowLogoutButton="true" />;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("6 estados visuais", "6 visual states"), L.Text("Anonymous, Authenticating, Authenticated, Expired, Locked, Error.", "Anonymous, Authenticating, Authenticated, Expired, Locked, Error."), "signal"),
+        new(L.Text("6 providers SSO", "6 SSO providers"), L.Text("OIDC, OAuth2, SAML, LDAP, APIKey e Custom.", "OIDC, OAuth2, SAML, LDAP, APIKey and Custom."), "key"),
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAuthProvider"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Enterprise"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Enterprise"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-live=polite.", "role=region, aria-label, aria-live=polite.")),
+        new("Theme support", L.Text("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Autenticacao enterprise", "Enterprise auth"), L.Text("Superficie SSO/OIDC/OAuth2 para integracao AI.", "SSO/OIDC/OAuth2 surface for AI integration."), "shield-halved"),
+        new(L.Text("6 estados visuais", "6 visual states"), L.Text("Anonymous, Authenticating, Authenticated, Expired, Locked, Error.", "Anonymous, Authenticating, Authenticated, Expired, Locked, Error."), "signal"),
+        new(L.Text("Gestao de sessao", "Session management"), L.Text("Expiracao, usuario, roles e provider.", "Expiration, user, roles and provider."), "clock")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("SSO corporativo", "Corporate SSO"), L.Text("Integracao com OIDC/OAuth2/SAML corporativos.", "Integration with corporate OIDC/OAuth2/SAML."), "building"),
+        new(L.Text("Controle de acesso AI", "AI access control"), L.Text("Autenticacao antes de chamadas AI autorizadas.", "Authentication before authorized AI calls."), "robot"),
+        new(L.Text("Gestao de sessoes", "Session management"), L.Text("Expiracao automatica e renovacao de sessoes.", "Automatic expiration and session renewal."), "clock")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Sem autenticacao padronizada para modulos AI.", "No standardized authentication for AI modules."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Componente unico com 6 estados e 6 providers.", "Single component with 6 states and 6 providers."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=region, aria-label, aria-live=polite.", "role=region, aria-label, aria-live=polite."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Apps enterprise", "Enterprise apps"), L.Text("Integracao com SSO corporativo OIDC/OAuth2.", "Integration with corporate OIDC/OAuth2 SSO."), "building"),
+        new(L.Text("Modulos AI", "AI modules"), L.Text("Autenticacao antes de chamadas AI.", "Authentication before AI calls."), "robot")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Auth client-side", "Client-side auth"), L.Text("Use Identity nativo para auth no browser.", "Use native Identity for browser auth."), "user-shield"),
+        new(L.Text("MFA", "MFA"), L.Text("Use servico externo para MFA.", "Use external service for MFA."), "lock")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Avatar", L.Text("Foto ou iniciais do usuario.", "User photo or initials."), "user"),
+        new("User Info", L.Text("Nome, email e roles do usuario.", "User name, email and roles."), "id-card"),
+        new("Provider Badge", L.Text("Badge do provider SSO ativo.", "Active SSO provider badge."), "shield-halved"),
+        new("Session Timer", L.Text("Tempo restante da sessao.", "Remaining session time."), "clock"),
+        new("Login/Logout", L.Text("Botoes de acao de sessao.", "Session action buttons."), "right-to-bracket"),
+        new("Status Indicator", L.Text("Indicador visual do estado.", "Visual state indicator."), "signal")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Estado claro", "Clear state"), L.Text("6 estados visuais distintos para cada situacao.", "6 distinct visual states for each situation."), "eye"),
+        new(L.Text("Provider flexivel", "Flexible provider"), L.Text("Suporta 6 tipos de provider SSO.", "Supports 6 SSO provider types."), "puzzle-piece"),
+        new(L.Text("Acessivel", "Accessible"), L.Text("role=region, aria-label, aria-live para leitores de tela.", "role=region, aria-label, aria-live for screen readers."), "universal-access")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExAuthenticated() => @<XFAuthProvider State="XFAuthState.Authenticated"
+                                                                  Provider="XFAuthProviderType.OIDC"
+                                                                  CurrentUser="@(new XFAuthUser { DisplayName = "Joao Silva", Email = "joao@empresa.com", Roles = new[] { "Admin", "Editor" } })"
+                                                                  CurrentSession="@(new XFAuthSession { ExpiresAt = DateTimeOffset.UtcNow.AddHours(2) })"
+                                                                  ShowLoginButton="true"
+                                                                  ShowLogoutButton="true" />;
+
+    private RenderFragment ExAnonymous() => @<XFAuthProvider State="XFAuthState.Anonymous"
+                                                             ShowLoginButton="true" />;
+
+    private RenderFragment ExErrorExpired() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAuthProvider State="XFAuthState.Expired" ShowLoginButton="true" />
+        <XFAuthProvider State="XFAuthState.Error" ErrorMessage="Token invalido. Faca login novamente." ShowLoginButton="true" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFAuthProvider State=""XFAuthState.Authenticated""
+                     Provider=""XFAuthProviderType.OIDC""
+                     CurrentUser=""@(new XFAuthUser { DisplayName = ""Joao Silva"", Email = ""joao@empresa.com"", Roles = new[] { ""Admin"", ""Editor"" } })""
+                     CurrentSession=""@(new XFAuthSession { ExpiresAt = DateTimeOffset.UtcNow.AddHours(2) })""
+                     ShowLoginButton=""true""
+                     ShowLogoutButton=""true"" />";
+    private const string Code2 = @"<XFAuthProvider State=""XFAuthState.Anonymous""
+                     ShowLoginButton=""true"" />";
+    private const string Code3 = @"<XFAuthProvider State=""XFAuthState.Expired"" ShowLoginButton=""true"" />
+<XFAuthProvider State=""XFAuthState.Error""
+                ErrorMessage=""Token invalido. Faca login novamente.""
+                ShowLoginButton=""true"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("State", "XFAuthState", "Anonymous", L.Text("Estado atual: Anonymous, Authenticating, Authenticated, Expired, Locked, Error.", "Current state: Anonymous, Authenticating, Authenticated, Expired, Locked, Error.")),
+        new("Provider", "XFAuthProviderType", "OIDC", L.Text("Tipo do provider: OIDC, OAuth2, SAML, LDAP, APIKey, Custom.", "Provider type: OIDC, OAuth2, SAML, LDAP, APIKey, Custom.")),
+        new("CurrentUser", "XFAuthUser?", "null", L.Text("Informacoes do usuario autenticado.", "Authenticated user information.")),
+        new("CurrentSession", "XFAuthSession?", "null", L.Text("Informacoes da sessao ativa.", "Active session information.")),
+        new("ShowLoginButton", "bool", "true", L.Text("Exibe botao de login quando nao autenticado.", "Shows login button when not authenticated.")),
+        new("ShowLogoutButton", "bool", "true", L.Text("Exibe botao de logout quando autenticado.", "Shows logout button when authenticated.")),
+        new("ErrorMessage", "string?", "null", L.Text("Mensagem de erro no estado Error.", "Error message in Error state.")),
+        new("LoginLabel", "string", "\"Entrar\"", L.Text("Label do botao de login.", "Login button label.")),
+        new("LogoutLabel", "string", "\"Sair\"", L.Text("Label do botao de logout.", "Logout button label."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnLogin", L.Text("Disparado quando o usuario clica em login.", "Fired when user clicks login.")),
+        new("OnLogout", L.Text("Disparado quando o usuario clica em logout.", "Fired when user clicks logout.")),
+        new("OnSessionExpired", L.Text("Disparado quando a sessao expira.", "Fired when session expires."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Componente usa role=region para leitores de tela.", "Component uses role=region for screen readers."), "universal-access"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Label descritivo Authentication Provider.", "Descriptive label Authentication Provider."), "tag"),
+        new(L.Text("aria-live=polite", "aria-live=polite"), L.Text("Notifica mudancas de estado autenticacao.", "Notifies authentication state changes."), "volume-high"),
+        new(L.Text("Botoes acessiveis", "Accessible buttons"), L.Text("Login e logout com aria-label descritivo.", "Login and logout with descriptive aria-label."), "right-to-bracket")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega entre botoes de login/logout.", "Navigates between login/logout buttons.")),
+        new("Enter / Space", L.Text("Ativa a acao de login ou logout.", "Activates login or logout action."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Largura total", "Full width"), L.Text("Componente ocupa 100% do container.", "Component occupies 100% of container."), "maximize"),
+        new(L.Text("Truncamento", "Truncation"), L.Text("Nome e email truncados com truncate para nao quebrar layout.", "Name and email truncated to avoid layout break."), "text-width")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Render leve", "Light render"), L.Text("Tags div nativas sem wrappers.", "Native div tags without wrappers."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("SSO corporativo", "Corporate SSO"), L.Text("Integracao OIDC com Azure AD ou Keycloak.", "OIDC integration with Azure AD or Keycloak."), "building"),
+        new(L.Text("Multi-tenant AI", "Multi-tenant AI"), L.Text("Autenticacao por tenant antes de chamadas AI.", "Per-tenant authentication before AI calls."), "robot"),
+        new(L.Text("Session guard", "Session guard"), L.Text("Expiracao automatica de sessoes inativas.", "Automatic expiration of inactive sessions."), "clock")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("AuthProvider + RBAC", "AuthProvider + RBAC"), L.Text("Autenticacao seguida de controle de acesso.", "Authentication followed by access control."), "shield-halved"),
+        new(L.Text("AuthProvider + Card", "AuthProvider + Card"), L.Text("Dentro de XFCard para contexto de cabecalho.", "Inside XFCard for header context."), "square"),
+        new(L.Text("AuthProvider + Chat", "AuthProvider + Chat"), L.Text("Sessao autenticada para chat AI.", "Authenticated session for AI chat."), "comments")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("Sempre definir State", "Always set State"), L.Text("State controla todo o comportamento visual.", "State controls all visual behavior."), "sliders"),
+        new(L.Text("Provider correto", "Correct provider"), L.Text("Use o provider que corresponde ao SSO do seu sistema.", "Use the provider matching your system SSO."), "key"),
+        new(L.Text("Labels i18n", "i18n labels"), L.Text("Use LoginLabel, LogoutLabel para personalizar textos.", "Use LoginLabel, LogoutLabel to customize texts."), "language")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Sem CurrentUser", "No CurrentUser"), L.Text("Estado Authenticated sem dados de usuario.", "Authenticated state without user data."), "xmark"),
+        new(L.Text("Muitos botoes", "Too many buttons"), L.Text("Nao exiba login e logout simultaneamente.", "Do not display login and logout simultaneously."), "ban"),
+        new(L.Text("Provider errado", "Wrong provider"), L.Text("Nao use OIDC quando o sistema usa SAML.", "Do not use OIDC when system uses SAML."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("container", L.Text("flex items-center gap-3 p-3 rounded-lg border.", "Flex items-center gap-3 p-3 rounded-lg border.")),
+        new("avatar", L.Text("w-10 h-10 rounded-full object-cover ring-2.", "W-10 h-10 rounded-full object-cover ring-2.")),
+        new("user-info", L.Text("flex-1 min-w-0 truncate.", "Flex-1 min-w-0 truncate.")),
+        new("provider-badge", L.Text("w-2 h-2 rounded-full animate-pulse.", "W-2 h-2 rounded-full animate-pulse."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("State colors", L.Text("Authenticated=green, Error=red, Expired=amber, Anonymous=gray.", "Authenticated=green, Error=red, Expired=amber, Anonymous=gray."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Testes de render, estados, providers, labels, eventos.", "Render, states, providers, labels, events tests.")),
+        new("Accessibility", L.Text("role=region, aria-label, aria-live, aria-label botoes.", "role=region, aria-label, aria-live, buttons aria-label."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Session", L.Text("CurrentSession opcional. Sem sessao, timer nao exibido.", "CurrentSession optional. Without session, timer not shown.")),
+        new("SSR", L.Text("Renderiza HTML estatico. Eventos so funcionam interativo.", "Renders static HTML. Events only work interactive."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFRbacComponent", L.Text("Controle de acesso baseado em papeis.", "Role-based access control."), "shield-halved"),
+        new("XFAuditLogger", L.Text("Log de auditoria de acoes.", "Action audit logging."), "clipboard-list"),
+        new("XFAiChat", L.Text("Chat AI com sessao autenticada.", "AI chat with authenticated session."), "comments")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Qual provider usar?", "Which provider to use?"), L.Text("OIDC para Azure AD/Keycloak. OAuth2 para Google/GitHub. SAML para enterprise legado.", "OIDC for Azure AD/Keycloak. OAuth2 for Google/GitHub. SAML for legacy enterprise.")),
+        new(L.Text("Como renovar a sessao?", "How to renew session?"), L.Text("Escute OnSessionExpired e chame OnLogin para renovar.", "Listen to OnSessionExpired and call OnLogin to renew.")),
+        new(L.Text("Funciona sem JS?", "Works without JS?"), L.Text("Sim. Eventos usam Blazor EventCallback, nao JavaScript.", "Yes. Events use Blazor EventCallback, not JavaScript."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", L.Text("Pagina seed criada com card basico.", "Seed page created with basic card.")),
+        new("2026-06-12", L.Text("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

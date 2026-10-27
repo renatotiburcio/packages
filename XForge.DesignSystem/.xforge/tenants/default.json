@@ -1,0 +1,19 @@
+{
+  "id": "default",
+  "name": "Default Tenant",
+  "description": "Default configuration for single-tenant projects",
+  "provider": {
+    "active": "openrouter",
+    "model": "anthropic/claude-sonnet-4-20250514"
+  },
+  "knowledge": {
+    "paths": [
+      ".xforge/knowledge"
+    ],
+    "excludePatterns": []
+  },
+  "rag": {
+    "indexDir": ".xforge/rag/indexes",
+    "shared": true
+  }
+}

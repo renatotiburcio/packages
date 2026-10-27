@@ -1,0 +1,435 @@
+@page "/ai/automation-rule"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiAutomationRule" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@L.Text("Regras e automacao", "Rules and automation")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @L.Text("Editor visual de regras automatizadas com construtor de condicoes/acoes, suporte a IA e exibicao visual de regras para agentes e workflows.",
+                                   "Visual editor for automated rules with condition/action builder, AI support and visual rule display for agents and workflows.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @L.Text("Componente de automacao com operadores condicionais, acoes tipadas, prioridade, habilitacao/desabilitacao e prompts de melhoria por IA. Puro Blazor, sem JavaScript interop.",
+                                   "Automation component with conditional operators, typed actions, priority, enable/disable and AI enhancement prompts. Pure Blazor, no JavaScript interop.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(L.Text("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, L.Text("Campo", "Field"), L.Text("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@L.Text("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@L.Text("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes. Renderizacao reativa.", "Works without restrictions. Reactive rendering.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@L.Text("Sim", "Yes")" /></XFTableCell><XFTableCell>@L.Text("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@L.Text("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@L.Text("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(L.Text("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(L.Text("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(L.Text("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(L.Text("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(L.Text("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(L.Text("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(L.Text("1. Regras ativas", "1. Active rules"), L.Text("Editor com regras ativas e condicoes complexas.", "Editor with active rules and complex conditions."), ExActiveRules(), Code1)
+            @Example(L.Text("2. Sem regras", "2. No rules"), L.Text("Estado vazio com mensagem de orientacao.", "Empty state with guidance message."), ExEmpty(), Code2)
+            @Example(L.Text("3. Regras com IA", "3. Rules with AI"), L.Text("Regras com prompts de melhoria por IA.", "Rules with AI enhancement prompts."), ExAiRules(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(L.Text("Eventos", "Events"), @<div>@NameValueTable(EventRows, L.Text("Evento", "Event"), L.Text("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(L.Text("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, L.Text("Tecla", "Key"), L.Text("Comportamento", "Behavior"))</div>)
+            @Section(L.Text("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(L.Text("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(L.Text("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(L.Text("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(L.Text("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(L.Text("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", L.Text("Proposito", "Purpose"))</div>)
+            @Section(L.Text("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(L.Text("Testes", "Testing"), @<div>@NameValueTable(TestingRows, L.Text("Cobertura", "Coverage"), L.Text("Evidencia", "Evidence"))</div>)
+            @Section(L.Text("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, L.Text("Limitacao", "Limitation"), L.Text("Status", "Status"))</div>)
+            @Section(L.Text("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, L.Text("Pergunta", "Question"), L.Text("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, L.Text("Versao", "Version"), L.Text("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => L.Text("AI Commercial", "AI Commercial");
+    private string PageTitleText => L.Text("XFAiAutomationRule", "XFAiAutomationRule");
+    private string PageStatusText => L.Text("Documentacao completa", "Complete docs");
+    private string CopyableCodeTitle => L.Text("Codigo copiavel", "Copyable code");
+
+    private static readonly IReadOnlyList<XFAiAutomationRuleItem> MockRules = new List<XFAiAutomationRuleItem>
+    {
+        new()
+        {
+            Name = "Alerta de estoque baixo",
+            Description = "Notificar quando estoque estiver abaixo do minimo",
+            Enabled = true,
+            Priority = 1,
+            Conditions = [new() { Field = "estoque_atual", Operator = XFAiConditionOperator.LessThan, Value = "10" }],
+            LogicalOperator = XFAiLogicalOperator.And,
+            Actions = [new() { Type = XFAiAutomationActionType.SendNotification, Description = "Enviar alerta para estoquista" }],
+            ExecutionCount = 47
+        },
+        new()
+        {
+            Name = "Aprovacao de compras acima de R$5.000",
+            Description = "Enviar para aprovacao gerencial compras de alto valor",
+            Enabled = true,
+            Priority = 2,
+            Conditions = [
+                new() { Field = "valor_total", Operator = XFAiConditionOperator.GreaterThan, Value = "5000" },
+                new() { Field = "categoria", Operator = XFAiConditionOperator.Equals, Value = "compra" }
+            ],
+            LogicalOperator = XFAiLogicalOperator.And,
+            Actions = [
+                new() { Type = XFAiAutomationActionType.WaitForApproval, Description = "Aguardar aprovacao gerencial" },
+                new() { Type = XFAiAutomationActionType.SendEmail, Description = "Notificar gerente por email" }
+            ],
+            ExecutionCount = 23
+        },
+        new()
+        {
+            Name = "Backup automatico",
+            Description = "Executar backup a cada 6 horas",
+            Enabled = false,
+            Priority = 3,
+            Conditions = [new() { Field = "hora", Operator = XFAiConditionOperator.Equals, Value = "0,6,12,18" }],
+            Actions = [new() { Type = XFAiAutomationActionType.ExecuteWorkflow, Description = "Executar workflow de backup" }],
+            ExecutionCount = 120,
+            AiEnhancementPrompt = "Considerar intervalos adaptativos baseados em carga do sistema"
+        }
+    };
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAutomationRule Rules="MockRules" Title="Regras de Automacao" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(L.Text("SE/ENTAO visual", "SE/ENTAO visual"), L.Text("Construtor visual de condicoes e acoes.", "Visual condition and action builder."), "scale-balanced"),
+        new(L.Text("11 operadores", "11 operators"), L.Text("Equals, NotEquals, Contains, GreaterThan, etc.", "Equals, NotEquals, Contains, GreaterThan, etc."), "code-branch"),
+        new(L.Text("IA assistida", "AI-assisted"), L.Text("Prompts de melhoria por IA em regras.", "AI enhancement prompts in rules."), "sparkles")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiAutomationRule"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Workflow"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Workflow"),
+        new("Status", L.Text("Estavel", "Stable")),
+        new("Accessibility", L.Text("role=region, aria-label, botoes com aria-label.", "role=region, aria-label, buttons with aria-label.")),
+        new("Theme support", L.Text("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(L.Text("Regras de automacao", "Automation rules"), L.Text("Editor visual de condicoes SE/ENTAO.", "Visual SE/THEN condition editor."), "scale-balanced"),
+        new(L.Text("Construtor condicional", "Conditional builder"), L.Text("Operadores logicos e comparacao.", "Logical and comparison operators."), "code-branch"),
+        new(L.Text("Acoes tipadas", "Typed actions"), L.Text("8 tipos de acoes: notificacao, workflow, IA, etc.", "8 action types: notification, workflow, AI, etc."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(L.Text("Automacoes", "Automations"), L.Text("Criar regras para automatizar processos.", "Create rules to automate processes."), "robot"),
+        new(L.Text("Validacoes", "Validations"), L.Text("Validar dados antes de processar.", "Validate data before processing."), "shield-check"),
+        new(L.Text("Integracoes", "Integrations"), L.Text("Conectar sistemas via webhooks e emails.", "Connect systems via webhooks and emails."), "globe")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(L.Text("Antes", "Before"), L.Text("Logica de automacao hardcoded no codigo.", "Automation logic hardcoded in code."), "xmark"),
+        new(L.Text("Depois", "After"), L.Text("Editor visual com condicoes e acoes configuraveis.", "Visual editor with configurable conditions and actions."), "check"),
+        new(L.Text("Acessibilidade", "Accessibility"), L.Text("role=region, aria-label, estrutura semantica.", "role=region, aria-label, semantic structure."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(L.Text("Regras de negocio", "Business rules"), L.Text("Automacoes baseadas em condicoes de dados.", "Data-condition-based automations."), "scale-balanced"),
+        new(L.Text("Integracoes", "Integrations"), L.Text("Conectar com sistemas externos.", "Connect with external systems."), "globe")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(L.Text("Logica complexa", "Complex logic"), L.Text("Para logica complexa, use workflows no backend.", "For complex logic, use backend workflows."), "server"),
+        new(L.Text("Tempo real", "Real-time"), L.Text("Para eventos em tempo real, use SignalR.", "For real-time events, use SignalR."), "tower-broadcast")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(L.Text("Header", "Header"), L.Text("Barra com titulo, contador de regras e botao Nova.", "Bar with title, rule count and New button."), "bars"),
+        new(L.Text("Rule card", "Rule card"), L.Text("Cartao com nome, status, prioridade e badges IA.", "Card with name, status, priority and AI badges."), "square"),
+        new(L.Text("Conditions", "Conditions"), L.Text("Visualizacao SE com operadores e valores.", "SE visualization with operators and values."), "code-branch"),
+        new(L.Text("Actions", "Actions"), L.Text("Visualizacao ENTAO com icones e descricoes.", "THEN visualization with icons and descriptions."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(L.Text("Visual = claro", "Visual = clear"), L.Text("Condicoes e acoes visuais entendiveis.", "Conditions and actions visually understandable."), "eye"),
+        new(L.Text("Prioridade", "Priority"), L.Text("Regras ordenadas por prioridade numerica.", "Rules ordered by numeric priority."), "arrow-down-wide-short"),
+        new(L.Text("Flexibilidade", "Flexibility"), L.Text("11 operadores e 8 tipos de acoes.", "11 operators and 8 action types."), "sliders")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExActiveRules() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAutomationRule Rules="MockRules" Title="Regras de Automacao" />
+    </XFStack>;
+
+    private RenderFragment ExEmpty() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAutomationRule Title="Novo editor" />
+    </XFStack>;
+
+    private RenderFragment ExAiRules() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFAiAutomationRule Rules="AiRules" Title="Regras com IA" />
+    </XFStack>;
+
+    private static readonly IReadOnlyList<XFAiAutomationRuleItem> AiRules = new List<XFAiAutomationRuleItem>
+    {
+        new()
+        {
+            Name = "Classificacao inteligente de tickets",
+            Description = "Usar IA para classificar tickets automaticamente",
+            Enabled = true,
+            Priority = 1,
+            Conditions = [new() { Field = "tipo", Operator = XFAiConditionOperator.Equals, Value = "ticket" }],
+            Actions = [new() { Type = XFAiAutomationActionType.CallAiProvider, Description = "Classificar com IA" }],
+            AiEnhancementPrompt = "Usar modelo treinado com tickets historicos"
+        },
+        new()
+        {
+            Name = "Roteamento inteligente",
+            Description = "Rotear para equipe correta baseado no conteudo",
+            Enabled = true,
+            Priority = 2,
+            Conditions = [
+                new() { Field = "departamento", Operator = XFAiConditionOperator.IsEmpty, Value = "" }
+            ],
+            Actions = [
+                new() { Type = XFAiAutomationActionType.CallAiProvider, Description = "Detectar departamento" },
+                new() { Type = XFAiAutomationActionType.UpdateField, Description = "Atualizar departamento" }
+            ],
+            AiEnhancementPrompt = "Incluir analise de sentimento para priorizacao"
+        }
+    };
+
+    private const string Code1 = @"<XFAiAutomationRule Rules=""@_rules"" Title=""Regras de Automacao"" />";
+    private const string Code2 = @"<XFAiAutomationRule Title=""Novo editor"" />";
+    private const string Code3 = @"<XFAiAutomationRule Rules=""@_rules"" Title=""Regras com IA"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Rules", "IReadOnlyList<XFAiAutomationRuleItem>", "[]", L.Text("Lista de regras de automacao para exibir.", "List of automation rules to display.")),
+        new("Title", "string", "\"Regras de Automacao\"", L.Text("Titulo do componente.", "Component title.")),
+        new("AriaLabel", "string", "\"Regras de automacao\"", L.Text("Rotulo ARIA para acessibilidade.", "ARIA label for accessibility.")),
+        new("ShowHeader", "bool", "true", L.Text("Exibe a barra de cabecalho.", "Shows the header bar.")),
+        new("EmptyText", "string", "\"Nenhuma regra...\"", L.Text("Texto do estado vazio.", "Empty state text.")),
+        new("EmptyContent", "RenderFragment?", "null", L.Text("Conteudo customizado para estado vazio.", "Custom empty state content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnAddRule", L.Text("Disparado quando o usuario clica em Nova Regra.", "Fired when user clicks New Rule.")),
+        new("OnRuleToggle", L.Text("Disparado quando uma regra e habilitada/desabilitada. Retorna XFAiAutomationRuleItem.", "Fired when a rule is enabled/disabled. Returns XFAiAutomationRuleItem.")),
+        new("OnRuleEdit", L.Text("Disparado quando uma regra e selecionada para edicao. Retorna XFAiAutomationRuleItem.", "Fired when a rule is selected for editing. Returns XFAiAutomationRuleItem."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(L.Text("role=region", "role=region"), L.Text("Componente usa role=region para leitores de tela.", "Component uses role=region for screen readers."), "universal-access"),
+        new(L.Text("aria-label", "aria-label"), L.Text("Labels descritivos em botoes e areas.", "Descriptive labels on buttons and areas."), "tag"),
+        new(L.Text("Estrutura semantica", "Semantic structure"), L.Text("SE/ENTAO com labels visuais para leitores.", "SE/THEN with visual labels for readers."), "font"),
+        new(L.Text("Botoes com aria-label", "Buttons with aria-label"), L.Text("Nova Regra com label descritivo.", "New Rule with descriptive label."), "keyboard")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", L.Text("Navega entre regras, condicoes, acoes e botoes.", "Navigates between rules, conditions, actions and buttons.")),
+        new("Enter", L.Text("Ativa o botao focado ou seleciona regra.", "Activates focused button or selects rule.")),
+        new("Space", L.Text("Ativa botoes de acao.", "Activates action buttons."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(L.Text("Largura total", "Full width"), L.Text("Editor ocupa 100% do container.", "Editor occupies 100% of container."), "maximize"),
+        new(L.Text("Condicoes flexiveis", "Flexible conditions"), L.Text("Tags de condicoes se wrapping em mobile.", "Condition tags wrap on mobile."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(L.Text("Zero JS", "Zero JS"), L.Text("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(L.Text("Render leve", "Light render"), L.Text("Atualizacoes parciais via StateHasChanged.", "Partial updates via StateHasChanged."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(L.Text("Estoque automatico", "Automatic stock"), L.Text("Alertas de estoque baixo e reposicao automatica.", "Low stock alerts and automatic replenishment."), "boxes-stacked"),
+        new(L.Text("Aprovacoes", "Approvals"), L.Text("Regras de aprovacao baseadas em valor e categoria.", "Approval rules based on value and category."), "user-check"),
+        new(L.Text("Integracao IA", "AI integration"), L.Text("Regras que chamam provedores de IA para decisao.", "Rules that call AI providers for decision."), "sparkles")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(L.Text("Rule + XFCard", "Rule + XFCard"), L.Text("Editor dentro de um card para contexto.", "Editor inside a card for context."), "square"),
+        new(L.Text("Rule + Workflow", "Rule + Workflow"), L.Text("Regras que acionam workflows de automacao.", "Rules that trigger automation workflows."), "play"),
+        new(L.Text("Rule + Toast", "Rule + Toast"), L.Text("Notificacoes via toast quando regra e executada.", "Notifications via toast when rule is executed."), "bell")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(L.Text("Prioridade clara", "Clear priority"), L.Text("Numeros de prioridade bajudam na ordem de execucao.", "Priority numbers help execution order."), "arrow-down-wide-short"),
+        new(L.Text("Descricao detalhada", "Detailed description"), L.Text("Sempre descreva o proposito da regra.", "Always describe the rule's purpose."), "align-left"),
+        new(L.Text("Habilitar/desabilitar", "Enable/disable"), L.Text("Use toggle para desabilitar sem deletar.", "Use toggle to disable without deleting."), "toggle-on"),
+        new(L.Text("IA para regras complexas", "AI for complex rules"), L.Text("Use prompts de IA para regras que se beneficiam de analise inteligente.", "Use AI prompts for rules that benefit from intelligent analysis."), "sparkles")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(L.Text("Sem descricao", "No description"), L.Text("Regra sem descricao e dificil de manter.", "Rule without description is hard to maintain."), "xmark"),
+        new(L.Text("Muitas condicoes", "Too many conditions"), L.Text("Mais de 5 condicoes por regra dificulta manutencao.", "More than 5 conditions per rule complicates maintenance."), "ban"),
+        new(L.Text("Acoes sem target", "Actions without target"), L.Text("Acoes sem target claro podem falhar silenciosamente.", "Actions without clear target may fail silently."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("rule-card", L.Text("border-l-4 px-4 py-3.", "border-l-4 px-4 py-3.")),
+        new("condition-tag", L.Text("inline-flex items-center gap-1 rounded-md border px-2 py-0.5.", "inline-flex items-center gap-1 rounded-md border px-2 py-0.5.")),
+        new("action-tag", L.Text("inline-flex items-center gap-1 rounded-md border px-2 py-0.5.", "inline-flex items-center gap-1 rounded-md border px-2 py-0.5."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", L.Text("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Cores de status", L.Text("Ativa=verde, Inativa=cinza, IA=roxo.", "Active=green, Inactive=gray, AI=purple."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", L.Text("Testes de render, props, eventos, condicoes, acoes.", "Render, props, events, conditions, actions tests.")),
+        new("Accessibility", L.Text("role=region, aria-label, estrutura semantica.", "role=region, aria-label, semantic structure."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Execucao", L.Text("Componente apenas exibe regras. Execucao deve ser implementada no backend.", "Component only displays rules. Execution must be implemented in backend.")),
+        new("Operadores", L.Text("11 operadores suportados. Operadores personalizados nao sao suportados.", "11 operators supported. Custom operators are not supported."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiWorkflowExecutor", L.Text("Execucao de workflows.", "Workflow execution."), "play"),
+        new("XFAiScheduler", L.Text("Agendamento de tarefas.", "Task scheduling."), "clock"),
+        new("XFAiBatchProcessor", L.Text("Processamento em lote.", "Batch processing."), "layer-group")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(L.Text("Como executar uma regra?", "How to execute a rule?"), L.Text("Implemente OnRuleToggle e chame o backend para executar.", "Implement OnRuleToggle and call the backend to execute.")),
+        new(L.Text("Posso usar IA nas regras?", "Can I use AI in rules?"), L.Text("Sim, use AiEnhancementPrompt para sugestoes de IA.", "Yes, use AiEnhancementPrompt for AI suggestions.")),
+        new(L.Text("Funciona sem JS?", "Works without JS?"), L.Text("Sim. Nenhum JavaScript interop necessario.", "Yes. No JavaScript interop required."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", L.Text("Pagina refeita no padrao AppShellDocs com 26 secoes.", "Page rewritten in AppShellDocs standard with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@L.Text("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@L.Text("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,0 +1,65 @@
+@namespace XForge.DesignSystem.Components.Feedback.Toast
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Item is not null)
+{
+    <article id="@Id"
+             class="@GetComponentClass()"
+             style="@StackStyle"
+             role="@Role"
+             aria-live="@AriaLive"
+             aria-atomic="true"
+             aria-labelledby="@AriaLabelledBy"
+             aria-describedby="@AriaDescribedBy"
+             @attributes="AdditionalAttributes">
+        <div class="@IconClass">
+            @if (Item.Icon is not null)
+            {
+                @Item.Icon(Item)
+            }
+            else
+            {
+                <span class="inline-block h-4 w-4">@XFSvgIcons.Markup(DefaultIcon)</span>
+            }
+        </div>
+
+        <div class="min-w-0 flex-1">
+            @if (Item.Content is not null)
+            {
+                @Item.Content(Item)
+            }
+            else
+            {
+                @if (!string.IsNullOrWhiteSpace(Item.Title))
+                {
+                    <div id="@TitleId" class="@TitleClass">@Item.Title</div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Item.Message))
+                {
+                    <div id="@MessageId" class="@MessageClass">@Item.Message</div>
+                }
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Item.ActionText) && Item.Action is not null)
+            {
+                <button type="button"
+                        class="@ActionClass"
+                        aria-label="@GetActionLabel()"
+                        @onclick="InvokeActionAsync">
+                    @Item.ActionText
+                </button>
+            }
+        </div>
+
+        @if (Item.Dismissible || CloseButton)
+        {
+            <button type="button"
+                    class="@DismissClass"
+                    aria-label="@DismissLabel"
+                    @onclick="DismissAsync">
+                <span aria-hidden="true" class="inline-block h-3.5 w-3.5">@XFSvgIcons.Markup("xmark")</span>
+            </button>
+        }
+    </article>
+}

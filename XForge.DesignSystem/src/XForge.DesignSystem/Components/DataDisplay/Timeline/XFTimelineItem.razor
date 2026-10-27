@@ -1,0 +1,112 @@
+@inherits XForgeComponentBase
+
+<div class="@ItemClass" style="@Style" role="listitem" aria-label="@ResolvedAriaLabel">
+    @if (IsHorizontal)
+    {
+        <div class="@OppositeClass">
+            @if (OppositeContent is not null)
+            {
+                @OppositeContent
+            }
+            else
+            {
+                @Timestamp
+            }
+        </div>
+        <div class="@AxisClass">
+            @if (HasConnector)
+            {
+                <span class="@ConnectorClass" aria-hidden="true"></span>
+            }
+            <span class="@PointClass" aria-hidden="true">
+                @if (Icon is not null)
+                {
+                    @Icon
+                }
+                else
+                {
+                    @(Index + 1)
+                }
+            </span>
+        </div>
+        <div class="@ContentClass">
+            @Content()
+        </div>
+    }
+    else if (IsOpposite)
+    {
+        <div class="@ContentClass">
+            @Content()
+        </div>
+        <div class="@AxisClass @AxisPlacementClass">
+            @if (HasConnector)
+            {
+                <span class="@ConnectorClass" aria-hidden="true"></span>
+            }
+            <span class="@PointClass" aria-hidden="true">
+                @if (Icon is not null)
+                {
+                    @Icon
+                }
+                else
+                {
+                    @(Index + 1)
+                }
+            </span>
+        </div>
+        <div class="@OppositeClass">
+            @if (OppositeContent is not null)
+            {
+                @OppositeContent
+            }
+            else
+            {
+                @Timestamp
+            }
+        </div>
+    }
+    else
+    {
+        <div class="@AxisClass">
+            @if (HasConnector)
+            {
+                <span class="@ConnectorClass" aria-hidden="true"></span>
+            }
+            <span class="@PointClass" aria-hidden="true">
+                @if (Icon is not null)
+                {
+                    @Icon
+                }
+                else
+                {
+                    @(Index + 1)
+                }
+            </span>
+        </div>
+        <div class="@ContentClass">
+            @Content()
+        </div>
+    }
+</div>
+
+@code {
+    private RenderFragment Content() => @<div class="space-y-1">
+        @if (OppositeContent is not null && !IsHorizontal && !IsOpposite)
+        {
+            <div class="@TimestampClass">@OppositeContent</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(Timestamp) && !IsHorizontal && !IsOpposite)
+        {
+            <div class="@TimestampClass">@Timestamp</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Title))
+        {
+            <div class="@TitleClass">@Title</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Text))
+        {
+            <div class="@TextClass">@Text</div>
+        }
+        @ChildContent
+    </div>;
+}

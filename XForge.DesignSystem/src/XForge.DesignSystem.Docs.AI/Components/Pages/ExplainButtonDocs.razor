@@ -1,0 +1,391 @@
+@page "/ai/explain-button"
+@inject XForgeDocsLanguageService L
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.AiItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAiExplainButton" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Icon, Ghost, Solid", "Icon, Ghost, Solid")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Botao de explicacao IA com resposta estruturada e painel expansivel.",
+                               "AI explain button with structured response and expandable panel.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Acao contextual para explicar campos, erros e metricas usando provider de IA. Exibe explicacao, detalhes, confianca e custom template.",
+                               "Contextual action to explain fields, errors and metrics using AI provider. Displays explanation, details, confidence and custom template.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Requer IAiProvider para chamadas AI.", "Requires IAiProvider for AI calls.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Requer IAiProvider para chamadas AI.", "Requires IAiProvider for AI calls.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza botao mas sem chamada AI.", "Renders button but no AI call.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Dependencias", "Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Requer IAiProvider injetado. Renderizado com C# e Tailwind CSS. Sem JavaScript interop.", "Requires injected IAiProvider. Rendered with C# and Tailwind CSS. No JavaScript interop.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 3 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Icone", "1. Icon"), T("Botao apenas com icone, variante Icon (padrao).", "Button with icon only, Icon variant (default)."), ExIcon(), Code1)
+            @Example(T("2. Solid", "2. Solid"), T("Botao com label, variante Solid com fundo colorido tintado.", "Button with label, Solid variant with tinted background."), ExSolid(), Code2)
+            @Example(T("3. Ghost", "3. Ghost"), T("Botao com label, variante Ghost sem fundo.", "Button with label, Ghost variant without background."), ExGhost(), Code3)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+        <XForgeDocsPageStandard ComponentName="ExplainButtonDocs" />
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("AI Commercial", "AI Commercial");
+    private string PageTitleText => T("XFAiExplainButton", "XFAiExplainButton");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => L.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<div class="flex items-center gap-3">
+        <span class="text-sm text-text-secondary">Aliquota efetiva</span>
+        <XFAiExplainButton ElementContext="Aliquota efetiva do imposto no fechamento fiscal"
+                           Variant="XFAiExplainVariant.Solid"
+                           ShowLabel="true" />
+    </div>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("3 variantes", "3 variants"), T("Icon, Ghost e Solid para diferentes contextos.", "Icon, Ghost and Solid for different contexts."), "wand-magic-sparkles"),
+        new(T("Painel expansivel", "Expandable panel"), T("Resposta estruturada com explicacao, detalhes e confianca.", "Structured response with explanation, details and confidence."), "chevron-down"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAiExplainButton"),
+        new("Namespace", "XForge.DesignSystem.Components.AI.Utility"),
+        new("Package", "XForge.DesignSystem.AI"),
+        new("Category", "AI / Utility"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=region, aria-label, aria-busy, aria-live=polite.", "role=region, aria-label, aria-busy, aria-live=polite.")),
+        new("Theme support", T("Light, dark e data-theme via tokens.", "Light, dark and data-theme via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Botao IA", "AI button"), T("Acao contextual para explicar campos e metricas.", "Contextual action to explain fields and metrics."), "circle-question"),
+        new(T("Painel expansivel", "Expandable panel"), T("Resposta com explicacao, detalhes e confianca.", "Response with explanation, details and confidence."), "chevron-down"),
+        new(T("3 variantes", "3 variants"), T("Icon, Ghost e Solid para diferentes contextos UI.", "Icon, Ghost and Solid for different UI contexts."), "wand-magic-sparkles")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Grids ERP", "ERP grids"), T("Explicar campos e colunas em tabelas de dados.", "Explain fields and columns in data tables."), "table-cells"),
+        new(T("Formularios", "Forms"), T("Explicar validacoes e campos obrigatorios.", "Explain validations and required fields."), "pen-to-square"),
+        new(T("Dashboards", "Dashboards"), T("Explicar metricas e indicadores de KPI.", "Explain KPI metrics and indicators."), "chart-line")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Usuario nao entende campos do ERP.", "User does not understand ERP fields."), "xmark"),
+        new(T("Depois", "After"), T("Explicacao IA contextual instantanea.", "Instant contextual AI explanation."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("aria-live, aria-busy, role=region.", "aria-live, aria-busy, role=region."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Campos complexos", "Complex fields"), T("Aliquotas, impostos, regras fiscais.", "Rates, taxes, fiscal rules."), "circle-question"),
+        new(T("Erros e alertas", "Errors and alerts"), T("Explicar motivos de erros e validacoes.", "Explain error reasons and validations."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Acoes destrutivas", "Destructive actions"), T("Nao use para confirmar exclusoes.", "Do not use to confirm deletions."), "trash"),
+        new(T("Navegacao", "Navigation"), T("Use XFNav ou XFSteps para navegacao.", "Use XFNav or XFSteps for navigation."), "route")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Trigger", T("Botao de ativacao com icone.", "Activation button with icon."), "hand-pointer"),
+        new("Panel", T("Painel expansivel com explicacao.", "Expandable panel with explanation."), "chevron-down"),
+        new("Header", T("Cabecalho com titulo e botao fechar.", "Header with title and close button."), "heading"),
+        new("Content", T("Corpo com explicacao e detalhes.", "Body with explanation and details."), "align-left"),
+        new("Confidence", T("Barra de confianca da IA.", "AI confidence bar."), "percent"),
+        new("Error", T("Mensagem de erro com role=alert.", "Error message with role=alert."), "circle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Contextual", "Contextual"), T("Explica exatamente o que o usuario precisa.", "Explains exactly what the user needs."), "bullseye"),
+        new(T("Estruturado", "Structured"), T("Resposta JSON com explicacao, detalhes e fontes.", "JSON response with explanation, details and sources."), "code"),
+        new(T("Acessivel", "Accessible"), T("aria-live para leitores de tela, loading skeleton.", "aria-live for screen readers, loading skeleton."), "universal-access")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExIcon() => @<div class="flex items-center gap-3">
+        <span class="text-sm text-text-secondary">Aliquota efetiva</span>
+        <XFAiExplainButton ElementContext="Aliquota efetiva do imposto no fechamento fiscal"
+                           Variant="XFAiExplainVariant.Icon" />
+    </div>;
+
+    private RenderFragment ExSolid() => @<div class="flex items-center gap-3">
+        <span class="text-sm text-text-secondary">Regra de crédito</span>
+        <XFAiExplainButton ElementContext="Regra de credito tributario"
+                           Variant="XFAiExplainVariant.Solid"
+                           ShowLabel="true" />
+    </div>;
+
+    private RenderFragment ExGhost() => @<div class="flex items-center gap-3">
+        <span class="text-sm text-text-secondary">Indice de cobertura</span>
+        <XFAiExplainButton ElementContext="Indice de cobertura de divida"
+                           Variant="XFAiExplainVariant.Ghost"
+                           ShowLabel="true" />
+    </div>;
+
+    private const string Code1 = @"<XFAiExplainButton ElementContext=""Aliquota efetiva do imposto no fechamento fiscal""
+                     Variant=""XFAiExplainVariant.Icon"" />";
+    private const string Code2 = @"<XFAiExplainButton ElementContext=""Regra de credito tributario""
+                     Variant=""XFAiExplainVariant.Solid""
+                     ShowLabel=""true"" />";
+    private const string Code3 = @"<XFAiExplainButton ElementContext=""Indice de cobertura de divida""
+                     Variant=""XFAiExplainVariant.Ghost""
+                     ShowLabel=""true"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Provider", "IAiProvider?", "null", T("Provider de IA para gerar explicacoes.", "AI provider for generating explanations.")),
+        new("ElementContext", "string", "\"\"", T("Contexto do elemento a explicar.", "Context of the element to explain.")),
+        new("ButtonLabel", "string", "\"Explicar\"", T("Texto do botao.", "Button text.")),
+        new("Title", "string", "\"Explicacao\"", T("Titulo do painel.", "Panel title.")),
+        new("ShowLabel", "bool", "true", T("Exibe texto no botao.", "Shows text on button.")),
+        new("AriaLabel", "string", "\"Explicar com IA\"", T("Label de acessibilidade.", "Accessibility label.")),
+        new("SystemPrompt", "string?", "null", T("Override do prompt do sistema.", "System prompt override.")),
+        new("Loading", "bool", "false", T("Estado de loading externo.", "External loading state.")),
+        new("Variant", "XFAiExplainVariant", "Icon", T("Icon, Ghost, Solid.", "Icon, Ghost, Solid.")),
+        new("ExplainTemplate", "RenderFragment<XFAiExplainResult>?", "null", T("Template customizado da explicacao.", "Custom explanation template."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnExplained", T("Disparado quando a explicacao e concluida.", "Fired when explanation completes.")),
+        new("OnError", T("Disparado quando ocorre um erro.", "Fired when an error occurs."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=region", "role=region"), T("Componente usa role=region para leitores de tela.", "Component uses role=region for screen readers."), "universal-access"),
+        new(T("aria-label", "aria-label"), T("Label descritivo do contexto do elemento.", "Descriptive label of the element context."), "tag"),
+        new(T("aria-busy", "aria-busy"), T("Indica estado de carregamento AI.", "Indicates AI loading state."), "spinner"),
+        new(T("aria-live=polite", "aria-live=polite"), T("Painel notifica mudancas de conteudo.", "Panel notifies content changes."), "volume-high")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega para o botao de explicacao.", "Navigates to the explain button.")),
+        new("Enter / Space", T("Ativa a explicacao AI.", "Activates the AI explanation.")),
+        new("Escape", T("Fecha o painel de explicacao.", "Closes the explanation panel."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Inline", "Inline"), T("Botao ocupa apenas o tamanho do conteudo.", "Button occupies only content size."), "minimize"),
+        new(T("Painel responsivo", "Responsive panel"), T("Painel expansivel se adapta ao container.", "Expandable panel adapts to container."), "maximize")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Lazy loading", "Lazy loading"), T("Chamada AI so apos clique do usuario.", "AI call only after user click."), "bolt"),
+        new(T("CancellationToken", "CancellationToken"), T("Cancela chamadas anteriores automaticamente.", "Automatically cancels previous calls."), "ban"),
+        new(T("Render leve", "Light render"), T("Skeleton loading sem layout shift.", "Skeleton loading without layout shift."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Grid fiscal", "Fiscal grid"), T("Explicar colunas de aliquota e base de calculo.", "Explain rate and calculation base columns."), "table-cells"),
+        new(T("Formulario cadastro", "Registration form"), T("Explicar campos obrigatorios e validacoes.", "Explain required fields and validations."), "pen-to-square"),
+        new(T("Dashboard KPI", "Dashboard KPI"), T("Explicar metricas de receita e margem.", "Explain revenue and margin metrics."), "chart-line")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("ExplainButton + Tooltip", "ExplainButton + Tooltip"), T("Dica contextual antes do clique.", "Contextual hint before click."), "comment"),
+        new(T("ExplainButton + Card", "ExplainButton + Card"), T("Explicacao dentro de XFCard.", "Explanation inside XFCard."), "square"),
+        new(T("ExplainButton + Grid", "ExplainButton + Grid"), T("Botao em cada coluna do XFGrid.", "Button in each XFGrid column."), "table-cells")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Contexto claro", "Clear context"), T("ElementContext deve ser descritivo.", "ElementContext should be descriptive."), "align-left"),
+        new(T("Provider obrigatorio", "Required provider"), T("Sem IAiProvider, botao fica desabilitado.", "Without IAiProvider, button is disabled."), "key"),
+        new(T("Template customizado", "Custom template"), T("Use ExplainTemplate para layout especifico.", "Use ExplainTemplate for specific layout."), "paint-brush"),
+        new(T("AriaLabel descritivo", "Descriptive aria-label"), T("Facilite o acesso por leitor de tela.", "Facilitate screen reader access."), "universal-access")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem Provider", "No Provider"), T("Botao desabilitado sem beneficio.", "Button disabled without benefit."), "xmark"),
+        new(T("Contexto vazio", "Empty context"), T("ElementContext vazio gera erro.", "Empty ElementContext generates error."), "ban"),
+        new(T("Muitos botoes", "Too many buttons"), T("Evite mais de 3 explain buttons por tela.", "Avoid more than 3 explain buttons per screen."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("button", T("inline-flex h-7 w-7 items-center justify-center rounded-md.", "Inline-flex h-7 w-7 items-center justify-center rounded-md.")),
+        new("panel", T("overflow-hidden rounded-lg border border-border-light bg-bg-surface.", "Overflow-hidden rounded-lg border border-border-light bg-bg-surface.")),
+        new("header", T("flex items-center justify-between gap-2 border-b border-border-light.", "Flex items-center justify-between gap-2 border-b border-border-light.")),
+        new("confidence", T("h-1.5 w-20 overflow-hidden rounded-full bg-surface-200.", "H-1.5 w-20 overflow-hidden rounded-full bg-surface-200."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("Variant colors", T("Solid=primary/10, Ghost=surface, Icon=transparent.", "Solid=primary/10, Ghost=surface, Icon=transparent."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, variantes, loading, erro, template.", "Render, props, variants, loading, error, template tests.")),
+        new("Accessibility", T("role=region, aria-label, aria-busy, aria-live.", "role=region, aria-label, aria-busy, aria-live."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Provider", T("Requer IAiProvider injetado. Sem provider, botao desabilitado.", "Requires injected IAiProvider. Without provider, button disabled.")),
+        new("ElementContext", T("ElementContext obrigatorio. Vazio impede chamada AI.", "ElementContext required. Empty prevents AI call.")),
+        new("Static SSR", T("Botao renderiza mas nao faz chamada AI.", "Button renders but does not make AI call."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAiRewriteButton", T("Reescrita de textos com IA.", "AI text rewriting."), "wand-magic-sparkles"),
+        new("XFAiRiskBadge", T("Badge de risco com IA.", "AI risk badge."), "shield-halved"),
+        new("XFAiChatPanel", T("Painel de chat AI.", "AI chat panel."), "comments")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("ExplainButton vs RewriteButton?", "ExplainButton vs RewriteButton?"), T("Explain = explica conceitos. Rewrite = reescreve textos.", "Explain = explains concepts. Rewrite = rewrites texts.")),
+        new(T("Como customizar a resposta?", "How to customize response?"), T("Use ExplainTemplate para layout personalizado.", "Use ExplainTemplate for custom layout.")),
+        new(T("Funciona sem Provider?", "Works without Provider?"), T("Nao. Botao fica desabilitado sem IAiProvider.", "No. Button is disabled without IAiProvider."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina seed criada com preview e API inicial.", "Seed page created with preview and initial API.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

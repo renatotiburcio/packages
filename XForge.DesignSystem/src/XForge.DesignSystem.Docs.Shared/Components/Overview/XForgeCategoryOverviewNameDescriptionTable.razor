@@ -1,0 +1,59 @@
+﻿@using XForge.DesignSystem.Core.Primitives
+<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" AreaRestricted="false">
+    <Header>
+        <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@Title</XFTypography>
+    </Header>
+    <ChildContent>
+        @if (Description is not null)
+        {
+            <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Muted">@Description</XFTypography>
+        }
+
+        <XFTable Size="XFSize.Sm" Striped="true">
+            <XFTableHeader>
+                <XFTableRow>
+                    <XFTableCell Header="true">@NameHeader</XFTableCell>
+                    <XFTableCell Header="true">@DescriptionHeader</XFTableCell>
+                </XFTableRow>
+            </XFTableHeader>
+            <XFTableBody>
+                @foreach (var row in Rows)
+                {
+                    <XFTableRow>
+                        <XFTableCell>
+                            @if (CodeName)
+                            {
+                                <XFCode Text="@row.Name" />
+                            }
+                            else
+                            {
+                                @row.Name
+                            }
+                        </XFTableCell>
+                        <XFTableCell>@row.Description</XFTableCell>
+                    </XFTableRow>
+                }
+            </XFTableBody>
+        </XFTable>
+    </ChildContent>
+</XFCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Description { get; set; }
+
+    [Parameter]
+    public string NameHeader { get; set; } = "Name";
+
+    [Parameter]
+    public string DescriptionHeader { get; set; } = "Description";
+
+    [Parameter]
+    public bool CodeName { get; set; }
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<XForgeCategoryOverviewNameDescription> Rows { get; set; } = [];
+}

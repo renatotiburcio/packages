@@ -1,0 +1,18 @@
+@inherits XForge.DesignSystem.Core.Base.XForgeComponentBase
+
+@if (Visible)
+{
+    <div id="@Id" class="@GetComponentClass()" role="tree" aria-multiselectable="@IsMultiSelectString" tabindex="0" @onkeydown="HandleKeyDownAsync" @attributes="AdditionalAttributes">
+        @if (DisplayItems.Count == 0)
+        {
+            <div class="@EmptyClass">@EmptyText</div>
+        }
+        else
+        {
+            @foreach (var node in DisplayItems)
+            {
+                @RenderNode(node, 1)
+            }
+        }
+    </div>
+}

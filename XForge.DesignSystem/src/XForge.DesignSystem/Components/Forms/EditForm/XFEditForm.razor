@@ -1,0 +1,211 @@
+@using XForge.DesignSystem.Core.Primitives;
+@inherits XForgeComponentBase
+
+@if (OnSubmit.HasDelegate)
+{
+    <EditForm @attributes="FormAttributes"
+              EditContext="@ResolvedEditContext"
+              FormName="@FormName"
+              Enhance="@Enhance"
+              OnSubmit="HandleSubmitAsync"
+              class="@RootClass"
+              aria-label="@AriaLabel"
+              style="@Style">
+        <ChildContent Context="editContext">
+            @RenderInnerContent(editContext)
+        </ChildContent>
+    </EditForm>
+}
+else
+{
+    <EditForm @attributes="FormAttributes"
+              EditContext="@ResolvedEditContext"
+              FormName="@FormName"
+              Enhance="@Enhance"
+              OnValidSubmit="HandleValidSubmitAsync"
+              OnInvalidSubmit="HandleInvalidSubmitAsync"
+              class="@RootClass"
+              aria-label="@AriaLabel"
+              style="@Style">
+        <ChildContent Context="editContext">
+            @RenderInnerContent(editContext)
+        </ChildContent>
+    </EditForm>
+}
+
+<XFDialog Open="@validationReviewOpen"
+          OpenChanged="HandleValidationReviewOpenChangedAsync"
+          Title="@ValidationReviewTitle"
+          Description="@ValidationReviewDescription"
+          Size="XFOverlaySize.Md"
+          Tone="XFSemanticColor.Danger">
+    <ChildContent>
+        <div class="grid gap-4">
+            <div class="rounded-lg border border-[color-mix(in_oklab,var(--color-danger)_22%,var(--color-border))] bg-[color-mix(in_oklab,var(--color-danger)_5%,transparent)] p-4">
+                <div class="flex gap-3">
+                    <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[color-mix(in_oklab,var(--color-danger)_12%,transparent)] text-danger" aria-hidden="true">
+                        @XFSvgIcons.MarkupWithSize("circle-info", 18)
+                    </span>
+                    <div class="grid gap-1">
+                        <div class="text-sm font-semibold text-text-primary">@ValidationReviewLead</div>
+                        <div class="text-sm leading-6 text-text-secondary">@ValidationReviewHint</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid gap-2">
+                @foreach (var message in ValidationMessages)
+                {
+                    <div class="flex gap-3 rounded-lg border border-border-light bg-bg-surface p-3">
+                        <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center text-danger" aria-hidden="true">
+                            @XFSvgIcons.MarkupWithSize("xmark", 14)
+                        </span>
+                        <span class="text-sm leading-6 text-text-secondary">@message</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </ChildContent>
+    <Footer>
+        <button type="button" class="@ValidationDialogButtonClass" @onclick="CloseValidationReviewAsync">
+            @ValidationReviewCloseText
+        </button>
+    </Footer>
+</XFDialog>
+
+<XFDialog Open="@unsavedChangesOpen"
+          OpenChanged="HandleUnsavedChangesOpenChangedAsync"
+          Title="@UnsavedChangesTitle"
+          Description="@UnsavedChangesDescription"
+          Size="XFOverlaySize.Md"
+          Tone="XFSemanticColor.Warning">
+    <ChildContent>
+        <div class="grid gap-4">
+            <div class="rounded-lg border border-[color-mix(in_oklab,var(--color-warning)_28%,var(--color-border))] bg-[color-mix(in_oklab,var(--color-warning)_8%,transparent)] p-4">
+                <div class="flex gap-3">
+                    <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[color-mix(in_oklab,var(--color-warning)_14%,transparent)] text-warning" aria-hidden="true">
+                        @XFSvgIcons.MarkupWithSize("circle-info", 18)
+                    </span>
+                    <div class="grid gap-1">
+                        <div class="text-sm font-semibold text-text-primary">@UnsavedChangesLead</div>
+                        <div class="text-sm leading-6 text-text-secondary">@UnsavedChangesHint</div>
+                    </div>
+                </div>
+            </div>
+
+            @if (HasValidationMessages)
+            {
+                <div class="grid gap-2">
+                    @foreach (var message in ValidationMessages)
+                    {
+                        <div class="flex gap-3 rounded-lg border border-border-light bg-bg-surface p-3">
+                            <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center text-danger" aria-hidden="true">
+                                @XFSvgIcons.MarkupWithSize("xmark", 14)
+                            </span>
+                            <span class="text-sm leading-6 text-text-secondary">@message</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </ChildContent>
+    <Footer>
+        <div class="flex flex-wrap justify-end gap-2">
+            <button type="button" class="@UnsavedDialogSecondaryButtonClass" @onclick="ContinueEditingAsync">
+                @UnsavedChangesContinueText
+            </button>
+            <button type="button" class="@UnsavedDialogDangerButtonClass" @onclick="DiscardChangesAsync">
+                @UnsavedChangesDiscardText
+            </button>
+            <button type="button" class="@UnsavedDialogPrimaryButtonClass" @onclick="SaveAndCloseAsync">
+                @UnsavedChangesSaveText
+            </button>
+        </div>
+    </Footer>
+</XFDialog>
+
+@code {
+    private RenderFragment RenderInnerContent(EditContext editContext) => builder =>
+    {
+        var formContext = CreateContext(editContext);
+
+        builder.OpenComponent<CascadingValue<XFEditFormContext>>(0);
+        builder.AddAttribute(1, nameof(CascadingValue<XFEditFormContext>.Value), formContext);
+        builder.AddAttribute(2, nameof(CascadingValue<XFEditFormContext>.IsFixed), false);
+        builder.AddAttribute(3, nameof(CascadingValue<XFEditFormContext>.ChildContent), (RenderFragment)(contentBuilder =>
+        {
+            var sequence = 0;
+
+            if (ValidationMode == XFEditFormValidationMode.DataAnnotations)
+            {
+                contentBuilder.OpenComponent<DataAnnotationsValidator>(sequence++);
+                contentBuilder.CloseComponent();
+            }
+
+            if (Validator is not null)
+            {
+                contentBuilder.AddContent(sequence++, Validator);
+            }
+
+            if (Header is not null)
+            {
+                contentBuilder.OpenElement(sequence++, "div");
+                contentBuilder.AddAttribute(sequence++, "class", HeaderClass);
+                contentBuilder.AddContent(sequence++, Header(formContext));
+                contentBuilder.CloseElement();
+            }
+
+            if (ShowValidationSummary)
+            {
+                contentBuilder.OpenComponent<XForge.DesignSystem.Components.Forms.Validation.XFValidationSummary>(sequence++);
+                contentBuilder.AddAttribute(sequence++, "Class", ValidationSummaryClass);
+                contentBuilder.CloseComponent();
+            }
+
+            if (ShouldShowValidationReview)
+            {
+                contentBuilder.AddContent(sequence++, RenderValidationReview());
+            }
+
+            contentBuilder.OpenElement(sequence++, "fieldset");
+            contentBuilder.AddAttribute(sequence++, "class", FieldsetClass);
+            if (Disabled || IsSubmitting)
+            {
+                contentBuilder.AddAttribute(sequence++, "disabled", true);
+            }
+
+            if (ReadOnly)
+            {
+                contentBuilder.AddAttribute(sequence++, "data-readonly", "true");
+            }
+
+            if (ChildContent is not null)
+            {
+                contentBuilder.AddContent(sequence++, ChildContent(formContext));
+            }
+
+            contentBuilder.CloseElement();
+
+            if (Actions is not null)
+            {
+                contentBuilder.OpenElement(sequence++, "div");
+                contentBuilder.AddAttribute(sequence++, "class", ActionsClass);
+                if (ShouldBlockActions)
+                {
+                    contentBuilder.AddAttribute(sequence++, "aria-disabled", "true");
+                }
+                contentBuilder.AddContent(sequence++, Actions(formContext));
+                contentBuilder.CloseElement();
+            }
+
+            if (Footer is not null)
+            {
+                contentBuilder.OpenElement(sequence++, "div");
+                contentBuilder.AddAttribute(sequence++, "class", FooterClass);
+                contentBuilder.AddContent(sequence++, Footer(formContext));
+                contentBuilder.CloseElement();
+            }
+        }));
+        builder.CloseComponent();
+    };
+}

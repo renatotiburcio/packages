@@ -1,0 +1,16 @@
+@namespace XForge.Components.Editors
+@inherits XForgeComponentBase
+
+<div class="xf-spreadsheet" data-rows="@Rows" data-cols="@Cols">
+  <table>
+    @for (int r = 0; r < Rows; r++)
+    {
+      <tr>
+        @for (int c = 0; c < Cols; c++)
+        {
+          <td contenteditable="true" data-row="@r" data-col="@c" @onblur="(e) => OnCellChanged.InvokeAsync((r,c,GetCell(r,c)))">@GetCell(r,c)</td>
+        }
+      </tr>
+    }
+  </table>
+</div>

@@ -1,0 +1,80 @@
+@typeparam T
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="img"
+     aria-label="@(AriaLabel ?? "Donut chart")">
+
+    <div class="flex @GetLayoutClass()">
+        <svg class="shrink-0" width="@Size" height="@Size" viewBox="0 0 200 200" aria-hidden="true">
+            @if (Data is { Count: > 0 })
+            {
+                var total = Data.Sum(p => ValueSelector(p));
+                if (total > 0)
+                {
+                    var cx = 100.0;
+                    var cy = 100.0;
+                    var outerR = 80.0;
+                    var innerR = InnerRadius;
+                    var startAngle = -90.0;
+
+                    @for (var i = 0; i < Data.Count; i++)
+                    {
+                        var pct = ValueSelector(Data[i]) / total;
+                        var angle = 360.0 * pct;
+                        var endAngle = startAngle + angle;
+
+                        var color = (Colors is { Length: > 0 })
+                            ? Colors[i % Colors.Length]
+                            : DefaultColors[i % DefaultColors.Length];
+
+                        var path = DescribeArc(cx, cy, outerR, innerR, startAngle, endAngle);
+                        <path d="@path" fill="@color" stroke="white" stroke-width="2" />
+
+                        @* ── Label on slice *@
+                        @if (ShowLabels && pct > 0.05)
+                        {
+                            var midAngle = startAngle + angle / 2;
+                            var labelR = (outerR + innerR) / 2;
+                            var rad = midAngle * Math.PI / 180;
+                            var lx = cx + labelR * Math.Cos(rad);
+                            var ly = cy + labelR * Math.Sin(rad);
+                            <svg:text x="@lx" y="@ly" text-anchor="middle" dominant-baseline="middle"
+                                  class="fill-white text-[10px] font-semibold">
+                                @($"{pct:P0}")
+                            </svg:text>
+                        }
+
+                        startAngle = endAngle;
+                    }
+                }
+
+                @* ── Center Label *@
+                <svg:text x="100" y="100" text-anchor="middle" dominant-baseline="middle"
+                      class="fill-text-primary text-lg font-bold">
+                    @($"{total:0.##}")
+                </svg:text>
+            }
+        </svg>
+
+        @* ── Legend *@
+        @if (ShowLegend && Data is { Count: > 0 })
+        {
+            <div class="flex @GetLegendFlexDirection() gap-2 text-xs text-text-secondary">
+                @for (var i = 0; i < Data.Count; i++)
+                {
+                    var color = (Colors is { Length: > 0 })
+                        ? Colors[i % Colors.Length]
+                        : DefaultColors[i % DefaultColors.Length];
+                    <div class="flex items-center gap-1.5">
+                        <span class="inline-block h-2.5 w-2.5 rounded-full" style="background-color: @color"></span>
+                        @LabelSelector(Data[i])
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

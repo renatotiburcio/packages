@@ -1,0 +1,122 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@GetComponentClass()"
+     style="@Style"
+     role="meter"
+     aria-label="@(AriaLabel ?? "Radial gauge")"
+     aria-valuemin="@Min"
+     aria-valuemax="@Max"
+     aria-valuenow="@Value">
+
+    <svg class="h-full w-full" viewBox="0 0 200 200" aria-hidden="true">
+        @* ── Background Circle *@
+        <circle cx="100" cy="100" r="90" fill="none" stroke-width="1" class="stroke-surface-200" />
+
+        @* ── Range Bands *@
+        @if (Ranges is { Count: > 0 })
+        {
+            @foreach (var range in Ranges)
+            {
+                var fromAngle = GetAngleForValue(range.From);
+                var toAngle = GetAngleForValue(range.To);
+                <path d="@DescribeArc(fromAngle, toAngle, 80)"
+                      fill="none"
+                      stroke-width="@ArcWidth"
+                      stroke-linecap="round"
+                      class="@(range.Color ?? "stroke-surface-300")" />
+            }
+        }
+
+        @* ── Track Arc *@
+        <path d="@DescribeArc(StartAngle, StartAngle + SweepAngle, 80)"
+              fill="none"
+              stroke-width="@ArcWidth"
+              stroke-linecap="round"
+              class="@(TrackColor ?? "stroke-surface-200")" />
+
+        @* ── Value Arc *@
+        @if (Percent > 0)
+        {
+            <path d="@DescribeArc(StartAngle, ValueAngle, 80)"
+                  fill="none"
+                  stroke-width="@ArcWidth"
+                  stroke-linecap="round"
+                  class="@(Color ?? "stroke-primary")" />
+        }
+
+        @* ── Tick Marks *@
+        @if (ShowTicks)
+        {
+            @for (var i = 0; i <= TickCount; i++)
+            {
+                var tickPercent = (double)i / TickCount;
+                var angle = StartAngle + SweepAngle * tickPercent;
+                var rad = angle * Math.PI / 180;
+                var innerR = 68;
+                var outerR = 75;
+                var x1 = 100 + innerR * Math.Cos(rad);
+                var y1 = 100 + innerR * Math.Sin(rad);
+                var x2 = 100 + outerR * Math.Cos(rad);
+                var y2 = 100 + outerR * Math.Sin(rad);
+                <line x1="@x1" y1="@y1" x2="@x2" y2="@y2"
+                      stroke-width="1.5"
+                      class="stroke-surface-300" />
+            }
+        }
+
+        @* ── Tick Labels *@
+        @if (ShowTickLabels)
+        {
+            @for (var i = 0; i <= TickLabelCount; i++)
+            {
+                var tickPercent = (double)i / TickLabelCount;
+                var angle = StartAngle + SweepAngle * tickPercent;
+                var rad = angle * Math.PI / 180;
+                var labelR = 60;
+                var x = 100 + labelR * Math.Cos(rad);
+                var y = 100 + labelR * Math.Sin(rad);
+                var val = Min + (Max - Min) * tickPercent;
+                @((MarkupString)RenderSvgText(x, y, val.ToString(TickLabelFormat), "fill-text-secondary text-[8px]"))
+            }
+        }
+
+        @* ── Pointer Needle *@
+        @if (ShowPointer)
+        {
+            var pointerAngle = ValueAngle;
+            var pointerRad = pointerAngle * Math.PI / 180;
+            var pointerLength = PointerLength;
+            var px = 100 + pointerLength * Math.Cos(pointerRad);
+            var py = 100 + pointerLength * Math.Sin(pointerRad);
+            <line x1="100" y1="100" x2="@px" y2="@py"
+                  stroke-width="@PointerWidth"
+                  stroke-linecap="round"
+                  class="@(PointerColor ?? "stroke-text-primary")" />
+            <circle cx="100" cy="100" r="@PointerDotRadius"
+                    class="@(PointerColor ?? "fill-text-primary")" />
+        }
+    </svg>
+
+    @* ── Center Value Display *@
+    @if (ShowValue)
+    {
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+            @if (ValueTemplate is not null)
+            {
+                @ValueTemplate(new XFRadialGaugeValueContext(Value, Min, Max, Percent))
+            }
+            else
+            {
+                <span class="text-lg font-bold text-text-primary">
+                    @FormatValue(Value)
+                </span>
+                @if (!string.IsNullOrEmpty(Unit))
+                {
+                    <span class="text-xs text-text-secondary">@Unit</span>
+                }
+            }
+        </div>
+    }
+</div>

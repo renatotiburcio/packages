@@ -1,0 +1,85 @@
+﻿@inherits XForgeComponentBase
+@using Microsoft.AspNetCore.Components.Web
+
+<div id="@Id"
+     @attributes="AdditionalAttributes"
+     class="@GetComponentClass()"
+     style="@Style"
+     data-state="@StateName"
+     data-disabled="@Disabled.ToString().ToLowerInvariant()">
+
+    @* ── Header / Toggle Button ─────────────────────────────────────── *@
+    <h3 class="m-0">
+        <button @ref="headerElement"
+                id="@HeaderId"
+                type="button"
+                class="@HeaderClass"
+                aria-expanded="@internalExpanded.ToString().ToLowerInvariant()"
+                aria-controls="@PanelId"
+                aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                aria-label="@(AriaLabel ?? Title)"
+                disabled="@Disabled"
+                title="@GetToggleTitle()"
+                @onclick="HandleHeaderClickAsync"
+                @onkeydown="HandleKeyDownAsync">
+
+            @if (StartIcon is not null)
+            {
+                <span class="@StartIconClass">@StartIcon</span>
+            }
+
+            <span class="min-w-0 flex-1">
+                @if (Header is not null)
+                {
+                    @Header
+                }
+                else
+                {
+                    @if (!string.IsNullOrWhiteSpace(Title))
+                    {
+                        <span class="block truncate font-semibold text-text-primary">@Title</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Description))
+                    {
+                        <span class="mt-0.5 block text-sm font-normal leading-5 text-text-secondary">@Description</span>
+                    }
+                }
+            </span>
+
+            @if (EndContent is not null)
+            {
+                <span class="shrink-0">@EndContent</span>
+            }
+
+            @if (IconMode != XFCollapseIconMode.None)
+            {
+                <span class="@IconContainerClass" aria-hidden="true">
+                    @if (IconMode == XFCollapseIconMode.PlusMinus)
+                    {
+                        <span class="@PlusIconClass">@XFSvgIcons.Markup(internalExpanded ? "minus" : "plus")</span>
+                        <span class="@PlusVerticalClass"></span>
+                    }
+                    else
+                    {
+                        <span class="@ChevronIconClass">@XFSvgIcons.MarkupWithSize("chevron-down", 14)</span>
+                    }
+                </span>
+            }
+        </button>
+    </h3>
+
+    @* ── Panel ───────────────────────────────────────────────────────── *@
+    <div id="@PanelId"
+         role="region"
+         aria-labelledby="@HeaderId"
+         class="@PanelOuterClass"
+         aria-hidden="@((!internalExpanded).ToString().ToLowerInvariant())"
+         hidden="@HiddenAttribute">
+        <div class="@PanelInnerClass">
+            @if (ShouldRenderContent)
+            {
+                @ChildContent
+            }
+        </div>
+    </div>
+</div>

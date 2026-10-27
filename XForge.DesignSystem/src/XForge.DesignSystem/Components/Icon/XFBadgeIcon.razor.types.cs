@@ -1,0 +1,2 @@
+﻿namespace XForge.DesignSystem.Components.Icon;
+public static class XFBadgeIconParameters { public const string BrandDoc = "Brand name. Must exist in BrandIcons.Catalog."; public const string SizeDoc = "Rendered size in pixels (default 32)."; }

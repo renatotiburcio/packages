@@ -1,0 +1,132 @@
+@inherits XForgeComponentBase
+@implements IDisposable
+
+<div id="@Id"
+     class="@RootClass"
+     style="@Style"
+     role="region"
+     aria-label="Micro-Frontend Container"
+     data-theme="true"
+     @attributes="AdditionalAttributes">
+
+    @if (Module is null)
+    {
+        @* No module configured *@
+        @if (EmptyContent is not null)
+        {
+            @EmptyContent
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center p-6 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50">
+                <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <p class="text-sm text-gray-500 dark:text-gray-400">@EmptyLabel</p>
+            </div>
+        }
+    }
+    else if (CurrentState == XFMicroFrontendState.Loading)
+    {
+        <div class="flex flex-col items-center justify-center p-6 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+            <svg class="w-8 h-8 text-blue-500 animate-spin mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <p class="text-sm text-blue-700 dark:text-blue-300">@LoadingLabel: @Module.Name</p>
+            @if (!string.IsNullOrEmpty(Module.Version))
+            {
+                <p class="text-[10px] text-blue-500 dark:text-blue-400 mt-1">v@(Module.Version)</p>
+            }
+        </div>
+    }
+    else if (CurrentState == XFMicroFrontendState.Error)
+    {
+        @if (FallbackContent is not null)
+        {
+            @FallbackContent
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center p-6 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
+                <svg class="w-8 h-8 text-red-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.072 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <p class="text-sm text-red-700 dark:text-red-300 font-medium">@ErrorLabel</p>
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <p class="text-xs text-red-600 dark:text-red-400 mt-1">@ErrorMessage</p>
+                }
+                @if (ShowRetryButton)
+                {
+                    <button type="button"
+                            class="mt-3 px-3 py-1.5 text-xs font-medium rounded bg-red-500 text-white hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                            @onclick="HandleRetryAsync"
+                            aria-label="Tentar novamente">
+                        @RetryLabel
+                    </button>
+                }
+            </div>
+        }
+    }
+    else if (CurrentState == XFMicroFrontendState.Timeout)
+    {
+        <div class="flex flex-col items-center justify-center p-6 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+            <svg class="w-8 h-8 text-amber-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-sm text-amber-700 dark:text-amber-300 font-medium">@TimeoutLabel</p>
+            <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">@Module.Name</p>
+        </div>
+    }
+    else if (CurrentState == XFMicroFrontendState.Loaded)
+    {
+        @if (ModuleContent is not null)
+        {
+            @ModuleContent(Module)
+        }
+        else
+        {
+            <div class="p-4 rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    <span class="text-sm font-medium text-green-800 dark:text-green-200">@Module.Name</span>
+                    @if (!string.IsNullOrEmpty(Module.Version))
+                    {
+                        <span class="text-[10px] text-green-600 dark:text-green-400">v@(Module.Version)</span>
+                    }
+                    @if (!string.IsNullOrEmpty(Module.Scope))
+                    {
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300">@Module.Scope</span>
+                    }
+                </div>
+                @if (Module.Dependencies.Count > 0)
+                {
+                    <div class="flex flex-wrap gap-1">
+                        @foreach (var dep in Module.Dependencies)
+                        {
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">@dep</span>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        @* Idle state *@
+        <div class="flex items-center gap-2 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+            <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+            <span class="text-sm text-gray-600 dark:text-gray-300">@Module.Name</span>
+            @if (ShowLoadButton)
+            {
+                <button type="button"
+                        class="ml-auto px-3 py-1 text-xs font-medium rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        @onclick="HandleLoadAsync"
+                        aria-label="Carregar modulo">
+                    @LoadLabel
+                </button>
+            }
+        </div>
+    }
+</div>

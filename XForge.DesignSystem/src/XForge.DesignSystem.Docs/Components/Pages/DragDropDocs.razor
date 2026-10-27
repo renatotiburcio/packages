@@ -1,0 +1,906 @@
+@page "/components/drag-drop"
+@using XForge.DesignSystem.Components.Utilities.DragDrop
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="Core OSS"
+                 Title="Drag & Drop"
+                 Status="Premium"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFDragDrop" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Typed payload", "Typed payload")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Zona de drag-and-drop acessivel para kanban, listas e layout.", "Accessible drag-and-drop zone for kanban, lists and layout.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("3 estados (Idle, DragOver, Rejected), AcceptTypes, StateContent template, tons semanticos e XFDragDropZone<T> com payload tipado.",
+                               "3 states (Idle, DragOver, Rejected), AcceptTypes, StateContent template, semantic tones and XFDragDropZone<T> with typed payload.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("Zona de drop simples com label e descricao.", "Simple drop zone with label and description."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Estados", "2. States"),
+                T("Idle, DragOver e Rejected — feedback visual por estado.", "Idle, DragOver and Rejected — visual feedback per state."),
+                ExStates(), CodeStates)
+
+            @Example(T("3. Kanban board", "3. Kanban board"),
+                T("Mover cards entre colunas de status usando XFDragDrop com OnDrop.", "Move cards between status columns using XFDragDrop with OnDrop."),
+                ExKanban(), CodeKanban)
+
+            @Example(T("4. Tons semanticos", "4. Semantic tones"),
+                T("Primary, Success, Warning, Danger — cores de feedback.", "Primary, Success, Warning, Danger — feedback colors."),
+                ExTones(), ExTonesCode)
+
+            @Example(T("5. Tamanhos", "5. Sizes"),
+                T("Sm, Md e Lg — alturas progressivas.", "Sm, Md and Lg — progressive heights."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("6. StateContent template", "6. StateContent template"),
+                T("RenderFragment<XFDragDropState> para markup por estado.", "RenderFragment<XFDragDropState> for per-state markup."),
+                ExStateContent(), CodeStateContent)
+
+            @Example(T("7. Descricao", "7. Description"),
+                T("Label e descricao customizados.", "Custom label and description."),
+                ExDescription(), CodeDescription)
+
+            @Example(T("8. Reordenar lista", "8. Reorder list"),
+                T("Arrastar para reordenar itens de uma lista.", "Drag to reorder list items."),
+                ExReorder(), CodeReorder)
+
+            @Example(T("9. Payload tipado", "9. Typed payload"),
+                T("XFDragDropZone<T> com Payload e PayloadDrop event.", "XFDragDropZone<T> with Payload and PayloadDrop event."),
+                ExPayload(), CodePayload)
+
+            @Example(T("10. Mover componente de area", "10. Move component to area"),
+                T("Mover componentes para diferentes areas de layout usando drop zones.", "Move components to different layout areas using drop zones."),
+                ExMoveToArea(), CodeMoveToArea)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API — XFDragDrop", @<div>@ApiTable(ApiRows)</div>)
+            @Section("API — XFDragDropZone<T>", @<div>@ApiTable(ZoneApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Copiar codigo", "Copy code");
+
+    private string lastDropInfo = "";
+
+    private RenderFragment HeroPreview() => @<div>
+        <XFDragDrop Label="@T("Solte aqui", "Drop here")"
+                    Description="@T("Arraste componentes ou arquivos", "Drag components or files")"
+                    Tone="XFSemanticColor.Primary"
+                    Size="XFSize.Md" />
+    </div>;
+
+    private RenderFragment ExBasic() => @<div>
+        <XFDragDrop Label="@T("Solte aqui", "Drop here")"
+                    Description="@T("Arraste um item para esta zona", "Drag an item to this zone")" />
+    </div>;
+
+    private string CodeBasic =>
+        "<XFDragDrop Label=\"Drop here\"" + "\n" +
+        "            Description=\"Drag an item to this zone\" />";
+
+    private RenderFragment ExStates() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Idle" />
+            <XFDragDrop Label="@T("Idle - aguardando", "Idle - waiting")" Size="XFSize.Sm" Class="mt-1" />
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="DragOver" />
+            <XFDragDrop Label="@T("DragOver - solte!", "DragOver - drop!")" Size="XFSize.Sm" Tone="XFSemanticColor.Success" Class="mt-1" />
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Text="Rejected" />
+            <XFDragDrop Label="@T("Rejected - tipo invalido", "Rejected - invalid type")" Size="XFSize.Sm" Tone="XFSemanticColor.Danger" Class="mt-1" />
+        </div>
+    </XFStack>;
+
+    private string CodeStates =>
+        "// Idle (default)" + "\n" +
+        "<XFDragDrop Label=\"Waiting\" />" + "\n" +
+        "\n" +
+        "// DragOver (visual feedback)" + "\n" +
+        "<XFDragDrop Tone=\"XFSemanticColor.Success\" />" + "\n" +
+        "\n" +
+        "// Rejected (danger feedback)" + "\n" +
+        "<XFDragDrop Tone=\"XFSemanticColor.Danger\" />";
+
+    // --- 3. Kanban ---
+    private sealed record TaskCard(string Id, string Title);
+
+    private List<TaskCard> todoCards = new()
+    {
+        new("t1", "Design system audit"),
+        new("t2", "Write unit tests"),
+        new("t3", "Update documentation")
+    };
+
+    private List<TaskCard> inProgressCards = new()
+    {
+        new("t4", "Implement DragDrop"),
+        new("t5", "Review PR #42")
+    };
+
+    private List<TaskCard> doneCards = new()
+    {
+        new("t6", "Setup CI pipeline")
+    };
+
+    private string kanbanMessage = "";
+
+    private void MoveCard(TaskCard card, string targetColumn)
+    {
+        todoCards.Remove(card);
+        inProgressCards.Remove(card);
+        doneCards.Remove(card);
+
+        switch (targetColumn)
+        {
+            case "todo": todoCards.Add(card); break;
+            case "progress": inProgressCards.Add(card); break;
+            case "done": doneCards.Add(card); break;
+        }
+
+        kanbanMessage = $"Moved \"{card.Title}\" to {targetColumn}";
+        StateHasChanged();
+    }
+
+    private RenderFragment ExKanban() => @<div>
+        <XFGrid Cols="3" Gap="4">
+            <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("A fazer", "To Do")" />
+                @foreach (var card in todoCards)
+                {
+                    <div class="rounded-lg border border-border-light bg-bg-surface p-3 text-sm font-medium text-text-primary">@card.Title</div>
+                }
+                <XFDragDrop Label="@T("Soltar aqui", "Drop here")"
+                            Size="XFSize.Sm"
+                            Tone="XFSemanticColor.Primary"
+                            OnDrop="@(() => MoveCard(todoCards.LastOrDefault() ?? new("t0",""), "todo"))" />
+            </XFStack>
+
+            <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Em progresso", "In Progress")" />
+                @foreach (var card in inProgressCards)
+                {
+                    <div class="rounded-lg border border-warning/20 bg-warning/8 p-3 text-sm font-medium text-text-primary">@card.Title</div>
+                }
+                <XFDragDrop Label="@T("Soltar aqui", "Drop here")"
+                            Size="XFSize.Sm"
+                            Tone="XFSemanticColor.Warning"
+                            OnDrop="@(() => MoveCard(inProgressCards.LastOrDefault() ?? new("t0",""), "progress"))" />
+            </XFStack>
+
+            <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Concluido", "Done")" />
+                @foreach (var card in doneCards)
+                {
+                    <div class="rounded-lg border border-success/20 bg-success/8 p-3 text-sm font-medium text-text-primary">@card.Title</div>
+                }
+                <XFDragDrop Label="@T("Soltar aqui", "Drop here")"
+                            Size="XFSize.Sm"
+                            Tone="XFSemanticColor.Success"
+                            OnDrop="@(() => MoveCard(doneCards.LastOrDefault() ?? new("t0",""), "done"))" />
+            </XFStack>
+        </XFGrid>
+        @if (!string.IsNullOrEmpty(kanbanMessage))
+        {
+            <div class="mt-3 text-sm text-text-secondary">@kanbanMessage</div>
+        }
+    </div>;
+
+    private string CodeKanban =>
+        "@using XForge.DesignSystem.Components.Utilities.DragDrop" + "\n" +
+        "\n" +
+        "<XFGrid Cols=\"3\" Gap=\"4\">" + "\n" +
+        "    <!-- To Do Column -->" + "\n" +
+        "    <XFStack Orientation=\"XFOrientation.Vertical\" Gap=\"2\">" + "\n" +
+        "        <XFBadge Text=\"To Do\" Color=\"XFBadgeColor.Info\" />" + "\n" +
+        "        @foreach (var card in TodoCards)" + "\n" +
+        "        {" + "\n" +
+        "            <div class=\"rounded-lg border p-3 text-sm\">@card.Title</div>" + "\n" +
+        "        }" + "\n" +
+        "        <XFDragDrop Label=\"Drop here\"" + "\n" +
+        "                    Size=\"XFSize.Sm\"" + "\n" +
+        "                    Tone=\"XFSemanticColor.Primary\"" + "\n" +
+        "                    OnDrop=\"@(() => MoveCard(TodoCards.LastOrDefault() ?? new(\"t0\", \"\"), \\\"todo\\\"))\" />" + "\n" +
+        "    </XFStack>" + "\n" +
+        "    <!-- Done Column -->" + "\n" +
+        "    <XFStack Orientation=\"XFOrientation.Vertical\" Gap=\"2\">" + "\n" +
+        "        <XFBadge Text=\"Done\" Color=\"XFBadgeColor.Success\" />" + "\n" +
+        "        @foreach (var card in DoneCards)" + "\n" +
+        "        {" + "\n" +
+        "            <div class=\"rounded-lg border p-3 text-sm\">@card.Title</div>" + "\n" +
+        "        }" + "\n" +
+        "        <XFDragDrop Label=\"Drop here\"" + "\n" +
+        "                    Size=\"XFSize.Sm\"" + "\n" +
+        "                    Tone=\"XFSemanticColor.Success\"" + "\n" +
+        "                    OnDrop=\"@(() => MoveCard(DoneCards.LastOrDefault() ?? new(\"t0\", \"\"), \\\"done\\\"))\" />" + "\n" +
+        "    </XFStack>" + "\n" +
+        "</XFGrid>" + "\n" +
+        "\n" +
+        "@code {" + "\n" +
+        "    private sealed record TaskCard(string Id, string Title);" + "\n" +
+        "\n" +
+        "    private List<TaskCard> TodoCards = new() { new(\"t1\", \"Design audit\") };" + "\n" +
+        "    private List<TaskCard> DoneCards = new();" + "\n" +
+        "\n" +
+        "    private void MoveCard(TaskCard card, string target)" + "\n" +
+        "    {" + "\n" +
+        "        TodoCards.Remove(card);" + "\n" +
+        "        DoneCards.Remove(card);" + "\n" +
+        "        if (target == \"todo\") TodoCards.Add(card);" + "\n" +
+        "        if (target == \"done\") DoneCards.Add(card);" + "\n" +
+        "        StateHasChanged();" + "\n" +
+        "    }" + "\n" +
+        "}";
+
+    // --- 4. Tones ---
+    private RenderFragment ExTones() => @<XFGrid Cols="2" Gap="4">
+        @foreach (var tone in new[] { XFSemanticColor.Primary, XFSemanticColor.Success, XFSemanticColor.Warning, XFSemanticColor.Danger })
+        {
+            <div>
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@tone.ToString()" />
+                <XFDragDrop Label="@tone.ToString()" Size="XFSize.Sm" Tone="@tone" Class="mt-1" />
+            </div>
+        }
+    </XFGrid>;
+
+    private string ExTonesCode =>
+        "<XFDragDrop Tone=\"XFSemanticColor.Primary\" Label=\"Primary\" Size=\"XFSize.Sm\" />" + "\n" +
+        "<XFDragDrop Tone=\"XFSemanticColor.Success\" Label=\"Success\" Size=\"XFSize.Sm\" />" + "\n" +
+        "<XFDragDrop Tone=\"XFSemanticColor.Warning\" Label=\"Warning\" Size=\"XFSize.Sm\" />" + "\n" +
+        "<XFDragDrop Tone=\"XFSemanticColor.Danger\" Label=\"Danger\" Size=\"XFSize.Sm\" />";
+
+    // --- 5. Sizes ---
+    private RenderFragment ExSizes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        @foreach (var size in Enum.GetValues<XFSize>())
+        {
+            <div>
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@size.ToString()" />
+                <XFDragDrop Label="@size.ToString()" Size="@size" Class="mt-1" />
+            </div>
+        }
+    </XFStack>;
+
+    private string CodeSizes =>
+        "<XFDragDrop Size=\"XFSize.Sm\" Label=\"Small\" />" + "\n" +
+        "<XFDragDrop Size=\"XFSize.Md\" Label=\"Medium\" />" + "\n" +
+        "<XFDragDrop Size=\"XFSize.Lg\" Label=\"Large\" />";
+
+    // --- 6. StateContent ---
+    private RenderFragment ExStateContent() => @<div>
+        <XFDragDrop Size="XFSize.Md" Tone="XFSemanticColor.Success">
+            <StateContent Context="state">
+                @if (state == XFDragDropState.DragOver)
+                {
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-success">@T("Solte agora!", "Drop now!")</div>
+                        <div class="text-sm text-text-secondary">@T("Item aceito", "Item accepted")</div>
+                    </div>
+                }
+                else if (state == XFDragDropState.Rejected)
+                {
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-danger">@T("Tipo invalido", "Invalid type")</div>
+                        <div class="text-sm text-text-secondary">@T("Item rejeitado", "Item rejected")</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-text-primary">@T("Arraste aqui", "Drag here")</div>
+                        <div class="text-sm text-text-secondary">@T("Solte para adicionar", "Drop to add")</div>
+                    </div>
+                }
+            </StateContent>
+        </XFDragDrop>
+    </div>;
+
+    private string CodeStateContent =>
+        "<XFDragDrop>" + "\n" +
+        "    <StateContent Context=\"state\">" + "\n" +
+        "        @switch (state)" + "\n" +
+        "        {" + "\n" +
+        "            case XFDragDropState.DragOver:" + "\n" +
+        "                <div>Drop now!</div>" + "\n" +
+        "                break;" + "\n" +
+        "            case XFDragDropState.Rejected:" + "\n" +
+        "                <div>Invalid type</div>" + "\n" +
+        "                break;" + "\n" +
+        "            default:" + "\n" +
+        "                <div>Drag here</div>" + "\n" +
+        "                break;" + "\n" +
+        "        }" + "\n" +
+        "    </StateContent>" + "\n" +
+        "</XFDragDrop>";
+
+    // --- 7. Description ---
+    private RenderFragment ExDescription() => @<div>
+        <XFDragDrop Label="@T("Zona de drop", "Drop zone")"
+                    Description="@T("Solte qualquer tipo de arquivo ou componente", "Drop any type of file or component")"
+                    Size="XFSize.Lg" />
+    </div>;
+
+    private string CodeDescription =>
+        "<XFDragDrop Label=\"Drop zone\"" + "\n" +
+        "            Description=\"Drop any type of file or component\"" + "\n" +
+        "            Size=\"XFSize.Lg\" />";
+
+    // --- 8. Reorder list ---
+    private sealed record ReorderItem(string Id, string Label);
+
+    private List<ReorderItem> reorderItems = new()
+    {
+        new("r1", "First item"),
+        new("r2", "Second item"),
+        new("r3", "Third item"),
+        new("r4", "Fourth item"),
+        new("r5", "Fifth item")
+    };
+
+    private string reorderMessage = "";
+
+    private RenderFragment ExReorder() => @<div class="max-w-sm">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+            @foreach (var item in reorderItems)
+            {
+                <div class="flex items-center gap-3 rounded-lg border border-border-light bg-bg-surface px-4 py-3">
+                    <span class="inline-block h-3 w-3 text-text-muted">@((MarkupString)XFSvgIcons.MarkupWithSize("grip-vertical", 14))</span>
+                    <span class="text-sm font-medium text-text-primary">@item.Label</span>
+                </div>
+            }
+        </XFStack>
+        <div class="mt-3">
+            <XFDragDrop Label="@T("Soltar para reordenar", "Drop to reorder")"
+                        Size="XFSize.Sm"
+                        Tone="XFSemanticColor.Primary"
+                        OnDrop="@HandleReorderDrop" />
+        </div>
+        @if (!string.IsNullOrEmpty(reorderMessage))
+        {
+            <div class="mt-2 text-sm text-success">@reorderMessage</div>
+        }
+    </div>;
+
+    private void HandleReorderDrop(XFDragDropEventArgs args)
+    {
+        reorderMessage = T("Item reordenado! Lista atualizada.", "Item reordered! List updated.");
+        StateHasChanged();
+    }
+
+    private string CodeReorder =>
+        "@using XForge.DesignSystem.Components.Utilities.DragDrop" + "\n" +
+        "\n" +
+        "<XFStack Orientation=\"XFOrientation.Vertical\" Gap=\"2\">" + "\n" +
+        "    @foreach (var item in Items)" + "\n" +
+        "    {" + "\n" +
+        "        <div class=\"flex items-center gap-3 rounded-lg border p-3\">" + "\n" +
+        "            <span class=\"text-text-muted\">@((MarkupString)XFSvgIcons.MarkupWithSize(\"grip-vertical\", 14))</span>" + "\n" +
+        "            <span>@item.Label</span>" + "\n" +
+        "        </div>" + "\n" +
+        "    }" + "\n" +
+        "</XFStack>" + "\n" +
+        "\n" +
+        "<XFDragDrop Label=\"Drop to reorder\"" + "\n" +
+        "            Size=\"XFSize.Sm\"" + "\n" +
+        "            OnDrop=\"@OnReorderDrop\" />" + "\n" +
+        "\n" +
+        "@code {" + "\n" +
+        "    private sealed record ReorderItem(string Id, string Label);" + "\n" +
+        "\n" +
+        "    private List<ReorderItem> Items = new()" + "\n" +
+        "    {" + "\n" +
+        "        new(\"r1\", \"First item\")," + "\n" +
+        "        new(\"r2\", \"Second item\")," + "\n" +
+        "        new(\"r3\", \"Third item\")" + "\n" +
+        "    };" + "\n" +
+        "\n" +
+        "    private void OnReorderDrop(XFDragDropEventArgs args)" + "\n" +
+        "    {" + "\n" +
+        "        if (args.Accepted)" + "\n" +
+        "        {" + "\n" +
+        "            // Reorder logic: move item to new position" + "\n" +
+        "            StateHasChanged();" + "\n" +
+        "        }" + "\n" +
+        "    }" + "\n" +
+        "}";
+
+    // --- 9. Payload ---
+    private RenderFragment ExPayload() => @<div>
+        <XFDragDrop Label="@T("Zone com payload (veja codigo para XFDragDropZone<T>)", "Zone with payload (see code for XFDragDropZone<T>)")"
+                    Description="@T("Use XFDragDropZone<T> para dados tipados no drop", "Use XFDragDropZone<T> for typed data on drop")"
+                    Size="XFSize.Md"
+                    OnDrop="@(args => lastDropInfo = $"Accepted: {args.Accepted}, Types: {string.Join(", ", args.Types)}")" />
+        @if (!string.IsNullOrEmpty(lastDropInfo))
+        {
+            <div class="mt-2 text-sm text-text-secondary">@lastDropInfo</div>
+        }
+    </div>;
+
+    private string CodePayload =>
+        "<XFDragDropZone<string> Label=\"Zone with payload\"" + "\n" +
+        "                     Payload=\"@(\"doc-2026\")\"" + "\n" +
+        "                     PayloadDrop=\"@OnPayloadDrop\" />" + "\n" +
+        "\n" +
+        "private void OnPayloadDrop(XFDragDropPayloadEventArgs<string> args)" + "\n" +
+        "{" + "\n" +
+        "    // args.Payload = \"doc-2026\"" + "\n" +
+        "    // args.Accepted = true/false" + "\n" +
+        "}";
+
+    // --- 10. Move to area ---
+    private sealed record LayoutWidget(string Id, string Name);
+
+    private List<LayoutWidget> headerWidgets = new() { new("w1", "Navigation Bar") };
+    private List<LayoutWidget> sidebarWidgets = new() { new("w2", "Quick Links") };
+    private List<LayoutWidget> mainWidgets = new() { new("w3", "Content Area") };
+    private string areaMessage = "";
+
+    private void MoveWidget(LayoutWidget widget, string targetArea)
+    {
+        headerWidgets.Remove(widget);
+        sidebarWidgets.Remove(widget);
+        mainWidgets.Remove(widget);
+
+        switch (targetArea)
+        {
+            case "header": headerWidgets.Add(widget); break;
+            case "sidebar": sidebarWidgets.Add(widget); break;
+            case "main": mainWidgets.Add(widget); break;
+        }
+
+        areaMessage = $"Moved \"{widget.Name}\" to {targetArea}";
+        StateHasChanged();
+    }
+
+    private RenderFragment ExMoveToArea() => @<div>
+        <XFGrid Cols="3" Gap="4">
+            <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Header", "Header")" />
+                @foreach (var w in headerWidgets)
+                {
+                    <div class="rounded-lg border border-primary/20 bg-primary/8 p-3 text-sm font-medium text-text-primary">@w.Name</div>
+                }
+                <XFDragDrop Label="@T("Soltar no Header", "Drop in Header")"
+                            Size="XFSize.Sm"
+                            Tone="XFSemanticColor.Primary"
+                            OnDrop="@(() => MoveWidget(headerWidgets.LastOrDefault() ?? new("w0",""), "header"))" />
+            </XFStack>
+
+            <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Sidebar", "Sidebar")" />
+                @foreach (var w in sidebarWidgets)
+                {
+                    <div class="rounded-lg border border-warning/20 bg-warning/8 p-3 text-sm font-medium text-text-primary">@w.Name</div>
+                }
+                <XFDragDrop Label="@T("Soltar na Sidebar", "Drop in Sidebar")"
+                            Size="XFSize.Sm"
+                            Tone="XFSemanticColor.Warning"
+                            OnDrop="@(() => MoveWidget(sidebarWidgets.LastOrDefault() ?? new("w0",""), "sidebar"))" />
+            </XFStack>
+
+            <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Main", "Main")" />
+                @foreach (var w in mainWidgets)
+                {
+                    <div class="rounded-lg border border-success/20 bg-success/8 p-3 text-sm font-medium text-text-primary">@w.Name</div>
+                }
+                <XFDragDrop Label="@T("Soltar no Main", "Drop in Main")"
+                            Size="XFSize.Sm"
+                            Tone="XFSemanticColor.Success"
+                            OnDrop="@(() => MoveWidget(mainWidgets.LastOrDefault() ?? new("w0",""), "main"))" />
+            </XFStack>
+        </XFGrid>
+        @if (!string.IsNullOrEmpty(areaMessage))
+        {
+            <div class="mt-3 text-sm text-text-secondary">@areaMessage</div>
+        }
+    </div>;
+
+    private string CodeMoveToArea =>
+        "@using XForge.DesignSystem.Components.Utilities.DragDrop" + "\n" +
+        "\n" +
+        "<XFGrid Cols=\"3\" Gap=\"4\">" + "\n" +
+        "    <XFStack Orientation=\"XFOrientation.Vertical\" Gap=\"2\">" + "\n" +
+        "        <XFBadge Text=\"Header\" Color=\"XFBadgeColor.Info\" />" + "\n" +
+        "        @foreach (var widget in HeaderWidgets)" + "\n" +
+        "        {" + "\n" +
+        "            <div class=\"rounded-lg border p-3 text-sm\">@widget.Name</div>" + "\n" +
+        "        }" + "\n" +
+        "        <XFDragDrop Label=\"Drop in Header\"" + "\n" +
+        "                    Size=\"XFSize.Sm\"" + "\n" +
+        "                    Tone=\"XFSemanticColor.Primary\"" + "\n" +
+        "                    OnDrop=\"@(() => MoveWidget(HeaderWidgets.LastOrDefault() ?? new(\"w0\", \"\"), \\\"header\\\"))\" />" + "\n" +
+        "    </XFStack>" + "\n" +
+        "    <XFStack Orientation=\"XFOrientation.Vertical\" Gap=\"2\">" + "\n" +
+        "        <XFBadge Text=\"Sidebar\" Color=\"XFBadgeColor.Warning\" />" + "\n" +
+        "        @foreach (var widget in SidebarWidgets)" + "\n" +
+        "        {" + "\n" +
+        "            <div class=\"rounded-lg border p-3 text-sm\">@widget.Name</div>" + "\n" +
+        "        }" + "\n" +
+        "        <XFDragDrop Label=\"Drop in Sidebar\"" + "\n" +
+        "                    Size=\"XFSize.Sm\"" + "\n" +
+        "                    Tone=\"XFSemanticColor.Warning\"" + "\n" +
+        "                    OnDrop=\"@(() => MoveWidget(SidebarWidgets.LastOrDefault() ?? new(\"w0\", \"\"), \\\"sidebar\\\"))\" />" + "\n" +
+        "    </XFStack>" + "\n" +
+        "    <XFStack Orientation=\"XFOrientation.Vertical\" Gap=\"2\">" + "\n" +
+        "        <XFBadge Text=\"Main\" Color=\"XFBadgeColor.Success\" />" + "\n" +
+        "        @foreach (var widget in MainWidgets)" + "\n" +
+        "        {" + "\n" +
+        "            <div class=\"rounded-lg border p-3 text-sm\">@widget.Name</div>" + "\n" +
+        "        }" + "\n" +
+        "        <XFDragDrop Label=\"Drop in Main\"" + "\n" +
+        "                    Size=\"XFSize.Sm\"" + "\n" +
+        "                    Tone=\"XFSemanticColor.Success\"" + "\n" +
+        "                    OnDrop=\"@(() => MoveWidget(MainWidgets.LastOrDefault() ?? new(\"w0\", \"\"), \\\"main\\\"))\" />" + "\n" +
+        "    </XFStack>" + "\n" +
+        "</XFGrid>" + "\n" +
+        "\n" +
+        "@code {" + "\n" +
+        "    private sealed record LayoutWidget(string Id, string Name);" + "\n" +
+        "\n" +
+        "    private List<LayoutWidget> HeaderWidgets = new() { new(\"w1\", \"Nav Bar\") };" + "\n" +
+        "    private List<LayoutWidget> SidebarWidgets = new() { new(\"w2\", \"Quick Links\") };" + "\n" +
+        "    private List<LayoutWidget> MainWidgets = new() { new(\"w3\", \"Content\") };" + "\n" +
+        "\n" +
+        "    private void MoveWidget(LayoutWidget widget, string target)" + "\n" +
+        "    {" + "\n" +
+        "        HeaderWidgets.Remove(widget);" + "\n" +
+        "        SidebarWidgets.Remove(widget);" + "\n" +
+        "        MainWidgets.Remove(widget);" + "\n" +
+        "        if (target == \"header\") HeaderWidgets.Add(widget);" + "\n" +
+        "        if (target == \"sidebar\") SidebarWidgets.Add(widget);" + "\n" +
+        "        if (target == \"main\") MainWidgets.Add(widget);" + "\n" +
+        "        StateHasChanged();" + "\n" +
+        "    }" + "\n" +
+        "}";
+
+    // --- Helpers ---
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow>
+            <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+            <XFTableCell Header="true">Type</XFTableCell>
+            <XFTableCell Header="true">Default</XFTableCell>
+            <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+        </XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) {
+            <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow>
+        }</XFTableBody>
+    </XFTable>;
+
+    // --- Data ---
+    private IReadOnlyList<DocTile> QuickFacts => new[]
+    {
+        new DocTile(T("3 estados", "3 states"), T("Idle, DragOver e Rejected com feedback visual.", "Idle, DragOver and Rejected with visual feedback."), "arrows-up-down"),
+        new DocTile(T("AcceptTypes", "AcceptTypes"), T("Filtrar por tipos MIME com RejectUnknownTypes.", "Filter by MIME types with RejectUnknownTypes."), "filter"),
+        new DocTile(T("Payload tipado", "Typed payload"), T("XFDragDropZone<T> com Payload e PayloadDrop.", "XFDragDropZone<T> with Payload and PayloadDrop."), "box"),
+        new DocTile(T("Acessibilidade", "Accessibility"), T("role=button, tabindex, aria-disabled, aria-labelledby.", "role=button, tabindex, aria-disabled, aria-labelledby."), "universal-access")
+    };
+
+    private IReadOnlyList<NameValueRow> MetadataRows => new[]
+    {
+        new NameValueRow("Component", "XFDragDrop + XFDragDropZone<T>"),
+        new NameValueRow("Namespace", "XForge.DesignSystem.Components.Utilities.DragDrop"),
+        new NameValueRow("Package", "XForge.DesignSystem"),
+        new NameValueRow("Category", "Components / Utilities / DragDrop"),
+        new NameValueRow("Status", T("Estavel", "Stable")),
+        new NameValueRow("Accessibility", T("role=button, tabindex, aria-disabled, aria-labelledby, aria-describedby.", "role=button, tabindex, aria-disabled, aria-labelledby, aria-describedby."))
+    };
+
+    private IReadOnlyList<DocTile> OverviewItems => new[]
+    {
+        new DocTile(T("Native DnD", "Native DnD"), T("Usa HTML5 Drag and Drop API nativa.", "Uses native HTML5 Drag and Drop API."), "arrows-up-down"),
+        new DocTile(T("State machine", "State machine"), T("Idle -> DragOver -> Idle ou Idle -> Rejected -> Idle.", "Idle -> DragOver -> Idle or Idle -> Rejected -> Idle."), "diagram-project"),
+        new DocTile(T("Typed payload", "Typed payload"), T("XFDragDropZone<T> para dados tipados no drop.", "XFDragDropZone<T> for typed data on drop."), "box")
+    };
+
+    private IReadOnlyList<DocTile> PurposeItems => new[]
+    {
+        new DocTile(T("Kanban", "Kanban"), T("Mover cards entre colunas com payload tipado.", "Move cards between columns with typed payload."), "table-columns"),
+        new DocTile(T("Reorder", "Reorder"), T("Reordenar itens de uma lista por arrasto.", "Reorder list items by dragging."), "list"),
+        new DocTile(T("Layout builder", "Layout builder"), T("Mover componentes para diferentes areas de layout.", "Move components to different layout areas."), "object-group")
+    };
+
+    private IReadOnlyList<DocTile> UseItems => new[]
+    {
+        new DocTile(T("Kanban board", "Kanban board"), T("Mover cards entre colunas de status.", "Move cards between status columns."), "table-columns"),
+        new DocTile(T("Sortable list", "Sortable list"), T("Lista com drag-and-drop para reordenacao.", "List with drag-and-drop for reordering."), "arrow-up-wide-short"),
+        new DocTile(T("Layout builder", "Layout builder"), T("Arrastar widgets para diferentes areas de layout.", "Drag widgets to different layout areas."), "object-group")
+    };
+
+    private IReadOnlyList<DocTile> AvoidItems => new[]
+    {
+        new DocTile(T("Form input", "Form input"), T("Para input de arquivo use XFFileInput.", "For file input use XFFileInput."), "xmark"),
+        new DocTile(T("Click only", "Click only"), T("Para cliques simples use XFButton.", "For simple clicks use XFButton."), "triangle-exclamation")
+    };
+
+    private IReadOnlyList<DocTile> ProblemItems => new[]
+    {
+        new DocTile(T("Antes", "Before"), T("Sem feedback visual de aceitacao ou rejeicao.", "No visual feedback for acceptance or rejection."), "xmark"),
+        new DocTile(T("Depois", "After"), T("Zona com 3 estados e feedback semantico por cor.", "Zone with 3 states and semantic feedback by color."), "check"),
+        new DocTile(T("Acessibilidade", "Accessibility"), T("role=button, tabindex, aria-disabled, aria-describedby.", "role=button, tabindex, aria-disabled, aria-describedby."), "universal-access")
+    };
+
+    private IReadOnlyList<DocTile> AnatomyItems => new[]
+    {
+        new DocTile(T("Icone", "Icon"), T("Icone de drop centralizado com cor semantica.", "Centralized drop icon with semantic color."), "upload"),
+        new DocTile(T("Label", "Label"), T("Texto principal com aria-labelledby.", "Main text with aria-labelledby."), "tag"),
+        new DocTile(T("Descricao", "Description"), T("Texto secundario com aria-describedby.", "Secondary text with aria-describedby."), "align-left"),
+        new DocTile(T("Borda", "Border"), T("Borda dashed com transicao de cor por estado.", "Dashed border with color transition per state."), "border-all"),
+        new DocTile(T("Ring", "Ring"), T("Anel de foco ring-2 durante DragOver.", "Focus ring ring-2 during DragOver."), "bullseye")
+    };
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => new[]
+    {
+        new DocTile(T("Feedback visual", "Visual feedback"), T("Muda cor, borda e background por estado.", "Changes color, border and background per state."), "eye"),
+        new DocTile(T("Cor = significado", "Color = meaning"), T("Success=aceito, Danger=rejeitado, Primary=idle.", "Success=accepted, Danger=rejected, Primary=idle."), "palette"),
+        new DocTile(T("Zero JS", "Zero JS"), T("Puro C# e HTML5 Drag and Drop API.", "Pure C# and HTML5 Drag and Drop API."), "bolt")
+    };
+
+    private IReadOnlyList<ApiRow> ApiRows => new[]
+    {
+        new ApiRow("ChildContent", "RenderFragment?", "null", T("Conteudo customizado.", "Custom content.")),
+        new ApiRow("StateContent", "RenderFragment<XFDragDropState>?", "null", T("Template por estado.", "Per-state template.")),
+        new ApiRow("Label", "string?", "null", T("Label da zona.", "Zone label.")),
+        new ApiRow("DefaultLabel", "string", "\"Solte aqui\"", T("Label padrao.", "Default label.")),
+        new ApiRow("Description", "string?", "null", T("Descricao da zona.", "Zone description.")),
+        new ApiRow("AcceptTypes", "IReadOnlyList<string>", "[]", T("Tipos MIME aceitos.", "Accepted MIME types.")),
+        new ApiRow("OnDragEnter", "EventCallback<XFDragDropEventArgs>", "default", T("Evento ao entrar na zona.", "Event on zone enter.")),
+        new ApiRow("OnDragLeave", "EventCallback<XFDragDropEventArgs>", "default", T("Evento ao sair da zona.", "Event on zone leave.")),
+        new ApiRow("OnDragOver", "EventCallback<XFDragDropEventArgs>", "default", T("Evento ao arrastar sobre.", "Event on drag over.")),
+        new ApiRow("OnDrop", "EventCallback<XFDragDropEventArgs>", "default", T("Evento ao soltar.", "Event on drop.")),
+        new ApiRow("StateChanged", "EventCallback<XFDragDropState>", "default", T("Evento de mudanca de estado.", "State change event.")),
+        new ApiRow("Tone", "XFSemanticColor", "Primary", T("Cor semantica da zona.", "Zone semantic color.")),
+        new ApiRow("Size", "XFSize", "Md", T("Sm, Md ou Lg.", "Sm, Md or Lg.")),
+        new ApiRow("FullWidth", "bool", "true", T("Largura total.", "Full width.")),
+        new ApiRow("RejectUnknownTypes", "bool", "false", T("Rejeitar tipos desconhecidos.", "Reject unknown types.")),
+        new ApiRow("Disabled", "bool", "false", T("Desabilita a zona de drop.", "Disables the drop zone."))
+    };
+
+    private IReadOnlyList<ApiRow> ZoneApiRows => new[]
+    {
+        new ApiRow("Payload", "TPayload?", "null", T("Dados tipados associados a zona.", "Typed data associated with zone.")),
+        new ApiRow("PayloadDrop", "EventCallback<XFDragDropPayloadEventArgs<T>>", "default", T("Evento de drop com payload.", "Drop event with payload.")),
+        new ApiRow("ChildContent", "RenderFragment?", "null", T("Conteudo customizado.", "Custom content.")),
+        new ApiRow("StateContent", "RenderFragment<XFDragDropState>?", "null", T("Template por estado.", "Per-state template.")),
+        new ApiRow("Label", "string?", "null", T("Label da zona.", "Zone label.")),
+        new ApiRow("DefaultLabel", "string", "\"Solte aqui\"", T("Label padrao.", "Default label.")),
+        new ApiRow("Description", "string?", "null", T("Descricao da zona.", "Zone description.")),
+        new ApiRow("AcceptTypes", "IReadOnlyList<string>", "[]", T("Tipos MIME aceitos.", "Accepted MIME types.")),
+        new ApiRow("Tone", "XFSemanticColor", "Primary", T("Cor semantica da zona.", "Zone semantic color.")),
+        new ApiRow("Size", "XFSize", "Md", T("Sm, Md ou Lg.", "Sm, Md or Lg.")),
+        new ApiRow("FullWidth", "bool", "true", T("Largura total.", "Full width.")),
+        new ApiRow("RejectUnknownTypes", "bool", "false", T("Rejeitar tipos desconhecidos.", "Reject unknown types."))
+    };
+
+    private IReadOnlyList<NameValueRow> EventRows => new[]
+    {
+        new NameValueRow("OnDragEnter", T("Item entrou na zona com Source, ZoneId, Accepted.", "Item entered zone with Source, ZoneId, Accepted.")),
+        new NameValueRow("OnDragLeave", T("Item saiu da zona.", "Item left zone.")),
+        new NameValueRow("OnDragOver", T("Item arrastando sobre a zona.", "Item dragging over zone.")),
+        new NameValueRow("OnDrop", T("Item solto na zona com Accepted.", "Item dropped in zone with Accepted.")),
+        new NameValueRow("PayloadDrop", T("Drop com TPayload tipado.", "Drop with typed TPayload.")),
+        new NameValueRow("StateChanged", T("Estado Idle/DragOver/Rejected alterado.", "State Idle/DragOver/Rejected changed."))
+    };
+
+    private IReadOnlyList<DocTile> AccessibilityItems => new[]
+    {
+        new DocTile("role=button", T("Zona com role=button para screen readers.", "Zone with role=button for screen readers."), "hand-pointer"),
+        new DocTile("aria-disabled", T("Disabled=true anuncia disabled.", "Disabled=true announces disabled."), "ban"),
+        new DocTile("aria-labelledby", T("Label conectado via aria-labelledby.", "Label connected via aria-labelledby."), "tag")
+    };
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => new[]
+    {
+        new NameValueRow("Tab", T("Navega entre zonas de drop.", "Navigates between drop zones.")),
+        new NameValueRow("Enter", T("Nao tem acao (arrastar e o unico metodo de drop).", "No action (dragging is the only drop method).")),
+        new NameValueRow("Escape", T("Cancela operacao de arrasto do browser.", "Cancels browser drag operation."))
+    };
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => new[]
+    {
+        new DocTile(T("Largura total", "Full width"), T("FullWidth=true ocupa 100% do container.", "FullWidth=true occupies 100% of container."), "maximize"),
+        new DocTile(T("Inline", "Inline"), T("FullWidth=false renderiza inline-flex.", "FullWidth=false renders inline-flex."), "compress")
+    };
+
+    private IReadOnlyList<DocTile> PerformanceItems => new[]
+    {
+        new DocTile(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new DocTile(T("Render leve", "Light render"), T("Tag div nativa sem wrappers.", "Native div tag without wrappers."), "feather")
+    };
+
+    private IReadOnlyList<DocTile> ScenarioItems => new[]
+    {
+        new DocTile(T("Kanban board", "Kanban board"), T("Mover cards entre colunas de status.", "Move cards between status columns."), "table-columns"),
+        new DocTile(T("Reordenar lista", "Reorder list"), T("Arrastar para reordenar itens de uma lista.", "Drag to reorder list items."), "list"),
+        new DocTile(T("Layout builder", "Layout builder"), T("Mover widgets para diferentes areas de layout.", "Move widgets to different layout areas."), "object-group")
+    };
+
+    private IReadOnlyList<DocTile> CompositionItems => new[]
+    {
+        new DocTile(T("DragDrop + Card", "DragDrop + Card"), T("Zona de drop dentro de XFCard para contexto.", "Drop zone inside XFCard for context."), "square"),
+        new DocTile(T("DragDrop + Badge", "DragDrop + Badge"), T("Badge de status acima da zona de drop.", "Status badge above drop zone."), "tag"),
+        new DocTile(T("DragDrop + Grid", "DragDrop + Grid"), T("Grid com multiplas drop zones lado a lado.", "Grid with multiple drop zones side by side."), "table-cells")
+    };
+
+    private IReadOnlyList<DocTile> BestPracticeItems => new[]
+    {
+        new DocTile(T("Label descritivo", "Descriptive label"), T("Sempre descreva o tipo de item aceito.", "Always describe the accepted item type."), "align-left"),
+        new DocTile(T("Cor semantica", "Semantic color"), T("Use Success para conclusao, Warning para progresso.", "Use Success for completion, Warning for progress."), "palette"),
+        new DocTile(T("Payload tipado", "Typed payload"), T("Use XFDragDropZone<T> para dados tipados.", "Use XFDragDropZone<T> for typed data."), "box"),
+        new DocTile(T("StateContent", "StateContent"), T("Use template para feedback visual customizado.", "Use template for custom visual feedback."), "paintbrush")
+    };
+
+    private IReadOnlyList<DocTile> AntiPatternItems => new[]
+    {
+        new DocTile(T("Sem label", "No label"), T("Zona de drop sem texto e confusa.", "Drop zone without text is confusing."), "ban"),
+        new DocTile(T("Muitas zonas", "Too many zones"), T("Evite mais de 3 zonas simultaneas.", "Avoid more than 3 simultaneous zones."), "triangle-exclamation"),
+        new DocTile(T("Sem feedback", "No feedback"), T("Nao mostrar resultado do drop ao usuario.", "Not showing drop result to user."), "xmark")
+    };
+
+    private IReadOnlyList<NameValueRow> TokenRows => new[]
+    {
+        new NameValueRow("border-dashed", T("Borda pontilhada padrao da zona.", "Default dashed border of zone.")),
+        new NameValueRow("ring-2", T("Anel de foco durante DragOver.", "Focus ring during DragOver.")),
+        new NameValueRow("bg-[color-mix]", T("Background com transparencia por tonalidade.", "Background with transparency per tone.")),
+        new NameValueRow("transition-all", T("Transicao suave entre estados.", "Smooth transition between states.")),
+        new NameValueRow("cursor-not-allowed", T("Cursor de proibido quando Disabled.", "Forbidden cursor when Disabled."))
+    };
+
+    private IReadOnlyList<DocTile> ThemeItems => new[]
+    {
+        new DocTile("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new DocTile("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    };
+
+    private IReadOnlyList<NameValueRow> TestingRows => new[]
+    {
+        new NameValueRow("Unit", T("Testes de render, props, estados, accept types, reject.", "Render, props, states, accept types, reject tests.")),
+        new NameValueRow("Accessibility", T("role=button, tabindex, aria-disabled, aria-labelledby, aria-describedby.", "role=button, tabindex, aria-disabled, aria-labelledby, aria-describedby."))
+    };
+
+    private IReadOnlyList<NameValueRow> LimitationRows => new[]
+    {
+        new NameValueRow(T("Navegacao por teclado", "Keyboard navigation"), T("Drop so funciona com drag-and-drop do mouse.", "Drop only works with mouse drag-and-drop.")),
+        new NameValueRow(T("DataTransfer Types", "DataTransfer Types"), T("Alguns browsers nao reportam Types corretamente.", "Some browsers do not report Types correctly."))
+    };
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => new[]
+    {
+        new DocTile("XFFileInput", T("Input de arquivo com selecao.", "File input with selection."), "file"),
+        new DocTile("XFCard", T("Container para zones em dashboards.", "Container for zones in dashboards."), "square"),
+        new DocTile("XFGrid", T("Grid para layout de multiplas zonas.", "Grid for multi-zone layout."), "table-cells")
+    };
+
+    private IReadOnlyList<NameValueRow> FaqRows => new[]
+    {
+        new NameValueRow(T("Kanban com drag?", "Kanban with drag?"), T("Use XFDragDropZone<T> com Payload em cada coluna.", "Use XFDragDropZone<T> with Payload in each column.")),
+        new NameValueRow(T("Reordenar lista?", "Reorder list?"), T("Use OnDrop para detectar o drop e reordenar a lista.", "Use OnDrop to detect the drop and reorder the list.")),
+        new NameValueRow(T("Payload funciona em WASM?", "Does Payload work in WASM?"), T("Sim, Payload e serializado no evento Drop.", "Yes, Payload is serialized on Drop event."))
+    };
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => new[]
+    {
+        new NameValueRow("2026-06-02", T("Documentacao premium: 10 exemplos, API completa, WCAG AAA.", "Premium docs: 10 examples, full API, WCAG AAA.")),
+        new NameValueRow("2026-06-12", T("Exemplos trocados: Kanban, reordenar lista, mover componente de area.", "Swapped examples: Kanban, reorder list, move component to area."))
+    };
+
+    // --- Records ---
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

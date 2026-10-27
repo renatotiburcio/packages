@@ -1,0 +1,36 @@
+@inherits XForgeComponentBase
+
+<div @attributes="AdditionalAttributes"
+     id="@Id"
+     class="@RootClass"
+     style="@RootStyle">
+    <div class="@PrimaryPaneClass" style="@PrimaryPaneStyle">
+        @PrimaryContent
+    </div>
+
+    @if (!Collapsed)
+    {
+        <div class="@SeparatorWrapClass">
+            <button id="@HandleId"
+                    class="@HandleClass"
+                    type="button"
+                    role="separator"
+                    disabled="@Disabled"
+                    aria-label="@AriaLabel"
+                    aria-orientation="@OrientationValue"
+                    aria-valuemin="@Min"
+                    aria-valuemax="@Max"
+                    aria-valuenow="@CurrentSize"
+                    @onkeydown="HandleKeyDownAsync"
+                    @ondblclick="ResetAsync">
+                <span class="@HandleVisualClass" aria-hidden="true">
+                    <span class="@GripClass"></span>
+                </span>
+            </button>
+        </div>
+    }
+
+    <div class="@SecondaryPaneClass" style="@SecondaryPaneStyle">
+        @SecondaryContent
+    </div>
+</div>

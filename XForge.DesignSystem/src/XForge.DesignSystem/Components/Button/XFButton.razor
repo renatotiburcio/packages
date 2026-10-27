@@ -1,0 +1,58 @@
+@inherits XForgeComponentBase
+<button @attributes="AdditionalAttributes"
+        id="@Id"
+        class="@GetComponentClass()"
+        type="@ButtonTypeValue"
+        name="@Name"
+        value="@Value"
+        form="@Form"
+        formaction="@FormAction"
+        formenctype="@FormEnctype"
+        formmethod="@FormMethod"
+        formnovalidate="@FormNoValidate"
+        formtarget="@FormTarget"
+        autofocus="@Autofocus"
+        disabled="@IsDisabled"
+        aria-disabled="@IsDisabled.ToString().ToLowerInvariant()"
+        aria-busy="@EffectiveLoading.ToString().ToLowerInvariant()"
+        aria-pressed="@AriaPressed"
+        aria-label="@EffectiveAriaLabel"
+        title="@Title"
+        @onclick="HandleClickAsync">
+    @if (EffectiveLoading)
+    {
+        <span class="@LoadingIndicatorClass" aria-hidden="true">
+            @if (LoadingContent is not null)
+            {
+                @LoadingContent
+            }
+            else
+            {
+                <span class="block h-full w-full animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+            }
+        </span>
+    }
+
+    @if (!EffectiveLoading && StartIcon is not null)
+    {
+        <span class="@IconClass" aria-hidden="true">@StartIcon</span>
+    }
+
+    @if (EffectiveLoading && !string.IsNullOrWhiteSpace(LoadingText))
+    {
+        <span>@LoadingText</span>
+    }
+    else if (!string.IsNullOrWhiteSpace(Text))
+    {
+        <span>@Text</span>
+    }
+    else if (ChildContent != null)
+    {
+        @ChildContent
+    }
+
+    @if (!EffectiveLoading && EndIcon is not null)
+    {
+        <span class="@IconClass" aria-hidden="true">@EndIcon</span>
+    }
+</button>

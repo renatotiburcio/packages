@@ -1,0 +1,13 @@
+@namespace XForge.Components.Charts
+@inherits XForgeComponentBase
+
+<div class="xf-heatmap" data-rows="@Rows.Count" data-cols="@Columns.Count" data-color="@ColorScale">
+  @for (int r = 0; r < Rows.Count; r++)
+  {
+    for (int c = 0; c < Columns.Count; c++)
+    {
+      var v = Values?[r, c] ?? 0;
+      <div class="xf-heatmap-cell" style="background:hsl(@(Hue(v)),70%,@((1-v)*50+25)%)" @onclick="() => OnCellClick.InvokeAsync((r,c))"></div>
+    }
+  }
+</div>

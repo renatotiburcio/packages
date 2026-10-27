@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "source": "https://www.syncfusion.com/blazor-components",
+  "sourceName": "Syncfusion Blazor UI Components",
+  "consolidationLevel": "8-way",
+  "sourcesAnalyzed": ["MudBlazor", "antd-blazor", "Blazorise", "Radzen", "Havit", "FluentUI", "Telerik", "Syncfusion"],
+  "filesGenerated": ["BACKLOG.md", "SPRINTS.md", "ROADMAP.md", "ARCHITECTURE.md", "DECISIONS.md", "STATUS.md", "TASKS/T124-T142.md"],
+  "taskCount": 19,
+  "priorityBreakdown": {"P0": 5, "P1": 6, "P2": 5, "P3": 3},
+  "estimatedHoursTotal": 332,
+  "eightWayTotal": 142,
+  "eightWayHours": 2032,
+  "keyStats": {
+    "components": 155,
+    "charts": 55,
+    "themes": 4,
+    "downloads": "8.7M+",
+    "g2Rating": "4.5/5",
+    "g2Reviews": 700,
+    "showcaseApps": 15,
+    "docProcessingLibraries": 4,
+    "aiComponents": 5
+  },
+  "customers": ["Igniatek Consultancy", "McDaniel and Associates", "Sistemi", "Synchrony Digital", "Capita", "Vialto Partners"],
+  "licensing": "Commercial ($1,995/dev/year Essential Studio) + Community License (<$1M revenue, 5 devs)",
+  "decisions": ["D051", "D052", "D053", "D054", "D055", "D056", "D057", "D058", "D059"],
+  "timestamp": "2026-06-13T15:00:00-03:00"
+}

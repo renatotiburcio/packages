@@ -1,0 +1,31 @@
+{
+  "name": "xforge-redis",
+  "version": "1.0.0",
+  "description": "MCP server for Redis cache access",
+  "type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-redis"],
+  "env": {
+    "REDIS_URL": "env:REDIS_URL"
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "get",
+        "description": "Get a value from Redis by key"
+      },
+      {
+        "name": "set",
+        "description": "Set a key-value pair in Redis"
+      },
+      {
+        "name": "list_keys",
+        "description": "List keys matching a pattern"
+      },
+      {
+        "name": "delete",
+        "description": "Delete a key from Redis"
+      }
+    ]
+  }
+}

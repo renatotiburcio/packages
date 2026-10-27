@@ -1,0 +1,94 @@
+@inherits XFInputComponentBase
+
+<div class="@RootClass" style="@Style">
+    <div class="@HeaderClass">
+        @if (!string.IsNullOrWhiteSpace(Label))
+        {
+            <label for="@StartId" class="@LabelClass">
+                @Label
+                @if (Required)
+                {
+                    <span class="text-danger" aria-hidden="true">*</span>
+                }
+            </label>
+        }
+
+        @if (ShowValue)
+        {
+            <span class="@ValueClass">@DisplayRange</span>
+        }
+    </div>
+
+    <div class="flex items-center gap-3">
+        <div class="@TrackWrapClass" style="@TrackStyle">
+            <div class="@TrackClass" aria-hidden="true"></div>
+
+            <input @ref="InputRef"
+                   @attributes="AdditionalAttributes"
+                   id="@StartId"
+                   name="@StartName"
+                   class="@StartInputClass"
+                   type="range"
+                   min="@MinString"
+                   max="@StartMaxString"
+                   step="@StepString"
+                   value="@StartString"
+                    disabled="@SliderDisabled"
+                    readonly="@ReadOnly"
+                    required="@Required"
+                    aria-label="@StartAriaLabel"
+                    aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                    aria-invalid="@AriaInvalid"
+                   aria-required="@Required.ToString().ToLowerInvariant()"
+                   aria-readonly="@ReadOnly.ToString().ToLowerInvariant()"
+                   aria-valuemin="@MinString"
+                   aria-valuemax="@EndString"
+                   aria-valuenow="@StartString"
+                   aria-valuetext="@DisplayStart"
+                   aria-describedby="@DescribedBy"
+                   @oninput="HandleStartInputAsync"
+                   @onchange="HandleStartChangeAsync" />
+
+            <input id="@EndId"
+                   name="@EndName"
+                   class="@EndInputClass"
+                   type="range"
+                   min="@EndMinString"
+                   max="@MaxString"
+                   step="@StepString"
+                   value="@EndString"
+                    disabled="@SliderDisabled"
+                    readonly="@ReadOnly"
+                    required="@Required"
+                    aria-label="@EndAriaLabel"
+                    aria-disabled="@Disabled.ToString().ToLowerInvariant()"
+                    aria-invalid="@AriaInvalid"
+                   aria-required="@Required.ToString().ToLowerInvariant()"
+                   aria-readonly="@ReadOnly.ToString().ToLowerInvariant()"
+                   aria-valuemin="@StartString"
+                   aria-valuemax="@MaxString"
+                   aria-valuenow="@EndString"
+                   aria-valuetext="@DisplayEnd"
+                   aria-describedby="@DescribedBy"
+                   @oninput="HandleEndInputAsync"
+                   @onchange="HandleEndChangeAsync" />
+        </div>
+
+        @if (ShowBounds)
+        {
+            <div class="@BoundsClass" aria-hidden="true">
+                <span>@DisplayMin</span>
+                <span>@DisplayMax</span>
+            </div>
+        }
+    </div>
+
+    @if (HasValidationError)
+    {
+        <div id="@ErrorId" class="@ErrorClass" role="alert">@FirstValidationMessage</div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <div id="@HelperId" class="@HelperClass">@HelperText</div>
+    }
+</div>

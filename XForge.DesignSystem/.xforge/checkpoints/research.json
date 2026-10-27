@@ -1,0 +1,19 @@
+﻿{
+    "filesGenerated":  [
+                           "BACKLOG.md",
+                           "SPRINTS.md",
+                           "ROADMAP.md",
+                           "ARCHITECTURE.md",
+                           "DECISIONS.md",
+                           "STATUS.md"
+                       ],
+    "timestamp":  "2026-06-26T11:33:00-03:00",
+    "priorityBreakdown":  {
+                              "P1":  11,
+                              "P0":  3,
+                              "P2":  5,
+                              "P3":  4
+                          },
+    "source":  "D:\\dev\\XForge\\components\\XForge.DesignSystem",
+    "taskCount":  15
+}

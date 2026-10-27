@@ -1,0 +1,12 @@
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(XForge.DesignSystem.Docs.Shared.Components.Layout.XForgeDocsMainLayout)" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(XForge.DesignSystem.Docs.Shared.Components.Layout.XForgeDocsMainLayout)">
+            <main class="px-6 py-8 text-text-primary">
+                <h1 class="text-xl font-semibold">Pagina nao encontrada</h1>
+            </main>
+        </LayoutView>
+    </NotFound>
+</Router>

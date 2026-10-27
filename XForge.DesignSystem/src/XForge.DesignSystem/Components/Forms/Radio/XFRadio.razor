@@ -1,0 +1,182 @@
+@typeparam TValue
+@inherits XForgeComponentBase
+@using XForge.DesignSystem.Core.Primitives
+@using System.Globalization
+
+<div class="@RootClass"
+     style="@Style"
+     role="radio"
+     aria-checked="@AriaChecked"
+     aria-disabled="@(IsRadioDisabled ? "true" : "false")"
+     tabindex="@(IsRadioDisabled ? "-1" : "0")"
+     @onclick="OnRadioClick"
+     @onkeydown="OnKeyDown">
+
+    <span class="@ControlWrapClass">
+        <span class="@RadioClass" aria-hidden="true">
+            @if (IsSelected)
+            {
+                <span class="@DotClass"></span>
+            }
+        </span>
+    </span>
+
+    <span class="@TextWrapClass">
+        @if (!string.IsNullOrWhiteSpace(Label) || ChildContent is not null)
+        {
+            <span class="@LabelClass">
+                @if (ChildContent is not null)
+                {
+                    @ChildContent
+                }
+                else
+                {
+                    @Label
+                }
+            </span>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Description))
+        {
+            <span id="@DescriptionElementId" class="text-xs leading-5 text-text-secondary">
+                @Description
+            </span>
+        }
+    </span>
+</div>
+
+@code {
+    [Parameter] public TValue? Value { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
+    [Parameter] public bool Required { get; set; }
+    [Parameter] public XFSize? Size { get; set; }
+    [Parameter] public XFSemanticColor? Tone { get; set; }
+    [Parameter] public XFRadioVariant? Variant { get; set; }
+
+    [CascadingParameter] internal XFRadioGroup<TValue>? Group { get; set; }
+
+    internal TValue? OptionValue => Value;
+    internal bool IsRadioDisabled => Disabled || ReadOnly || Group?.IsGroupDisabled == true;
+
+    private XFSize ResolvedSize => Size ?? Group?.GroupSize ?? XFSize.Md;
+    private XFSemanticColor ResolvedTone => Tone ?? Group?.GroupTone ?? XFSemanticColor.Primary;
+    private XFRadioVariant ResolvedVariant => Variant ?? Group?.GroupVariant ?? XFRadioVariant.Default;
+    private bool IsSelected => Group?.IsSelected(Value) == true;
+    private string AriaChecked => IsSelected ? "true" : "false";
+    private string FormattedValue => Value switch
+    {
+        null => string.Empty,
+        IFormattable formattable => formattable.ToString(null, Group?.GroupValueFormatCulture ?? CultureInfo.InvariantCulture),
+        _ => Value.ToString() ?? string.Empty
+    };
+    private string DescriptionElementId => $"{Id}-description";
+    private string? DescribedBy => !string.IsNullOrWhiteSpace(Description) ? DescriptionElementId : null;
+
+
+
+    private async Task OnRadioClick()
+    {
+        if (IsRadioDisabled || Group is null)
+            return;
+        await Group.SelectRadioAsync(Value);
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter" || args.Key == " ")
+        {
+            await OnRadioClick();
+        }
+    }
+
+    private string RootClass =>
+        Join(
+            "xf-radio group flex gap-3 transition-all duration-200 ease-out",
+            ResolvedVariant == XFRadioVariant.Card ? CardClass : ResolvedVariant == XFRadioVariant.Button ? ButtonClass : "items-start",
+            IsRadioDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
+            Class);
+
+    private string CardClass =>
+        Join(
+            "items-start rounded-lg border p-3 shadow-[0_1px_2px_rgb(15_23_42/.035)]",
+            IsSelected ? SelectedCardToneClass : "border-surface-200 bg-bg-surface hover:border-[color-mix(in_oklab,var(--color-primary)_40%,transparent)] hover:ring-4 hover:ring-[color-mix(in_oklab,var(--color-primary)_8%,transparent)]");
+
+    private string ButtonClass =>
+        Join(
+            "items-center rounded-lg border px-3 py-2",
+            IsSelected ? SelectedCardToneClass : "border-surface-200 bg-bg-surface hover:border-[color-mix(in_oklab,var(--color-primary)_40%,transparent)]");
+
+    private string ControlWrapClass =>
+        Join("relative inline-flex shrink-0 items-center justify-center", SizeWrapClass);
+
+    private string RadioClass =>
+        Join(
+            "relative flex shrink-0 items-center justify-center rounded-full border transition-all duration-200 ease-out",
+            SizeRadioClass,
+            IsSelected ? SelectedRadioToneClass : UnselectedRadioToneClass,
+            IsRadioDisabled ? string.Empty : "focus-visible:ring-4 active:scale-95");
+
+    private string DotClass => ResolvedSize switch
+    {
+        XFSize.Sm => "h-1.5 w-1.5 rounded-full bg-current",
+        XFSize.Lg => "h-2.5 w-2.5 rounded-full bg-current",
+        _ => "h-2 w-2 rounded-full bg-current"
+    };
+
+    private string TextWrapClass => "grid min-w-0 gap-0.5";
+
+    private string LabelClass =>
+        Join(
+            "font-medium leading-5 text-text-primary",
+            ResolvedSize == XFSize.Lg ? "text-base" : "text-sm");
+
+    private string SizeWrapClass => ResolvedSize switch
+    {
+        XFSize.Sm => "h-5",
+        XFSize.Lg => "h-6",
+        _ => "h-[1.375rem]"
+    };
+
+    private string SizeRadioClass => ResolvedSize switch
+    {
+        XFSize.Sm => "h-4 w-4",
+        XFSize.Lg => "h-[1.375rem] w-[1.375rem]",
+        _ => "h-5 w-5"
+    };
+
+    private string UnselectedRadioToneClass => ResolvedTone switch
+    {
+        XFSemanticColor.Secondary => "border-surface-300 bg-bg-surface text-secondary shadow-[0_1px_2px_rgb(15_23_42/.04)] group-hover:border-[color-mix(in_oklab,var(--color-secondary)_50%,transparent)] focus-visible:border-[var(--color-secondary)] focus-visible:ring-[color-mix(in_oklab,var(--color-secondary)_16%,transparent)]",
+        XFSemanticColor.Success => "border-surface-300 bg-bg-surface text-success shadow-[0_1px_2px_rgb(15_23_42/.04)] group-hover:border-[color-mix(in_oklab,var(--color-success)_50%,transparent)] focus-visible:border-[var(--color-success)] focus-visible:ring-[color-mix(in_oklab,var(--color-success)_16%,transparent)]",
+        XFSemanticColor.Warning => "border-surface-300 bg-bg-surface text-warning shadow-[0_1px_2px_rgb(15_23_42/.04)] group-hover:border-[color-mix(in_oklab,var(--color-warning)_55%,transparent)] focus-visible:border-[var(--color-warning)] focus-visible:ring-[color-mix(in_oklab,var(--color-warning)_20%,transparent)]",
+        XFSemanticColor.Danger => "border-surface-300 bg-bg-surface text-danger shadow-[0_1px_2px_rgb(15_23_42/.04)] group-hover:border-[color-mix(in_oklab,var(--color-danger)_50%,transparent)] focus-visible:border-[var(--color-danger)] focus-visible:ring-[color-mix(in_oklab,var(--color-danger)_16%,transparent)]",
+        _ => "border-surface-300 bg-bg-surface text-primary shadow-[0_1px_2px_rgb(15_23_42/.04)] group-hover:border-[color-mix(in_oklab,var(--color-primary)_50%,transparent)] focus-visible:border-[var(--color-primary)] focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_16%,transparent)]"
+    };
+
+    private string SelectedRadioToneClass => ResolvedTone switch
+    {
+        XFSemanticColor.Secondary => "border-[var(--color-secondary)] bg-[color-mix(in_oklab,var(--color-secondary)_10%,transparent)] text-secondary ring-1 ring-[color-mix(in_oklab,var(--color-secondary)_18%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-secondary)_24%,transparent)]",
+        XFSemanticColor.Success => "border-[var(--color-success)] bg-[color-mix(in_oklab,var(--color-success)_10%,transparent)] text-success ring-1 ring-[color-mix(in_oklab,var(--color-success)_18%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-success)_24%,transparent)]",
+        XFSemanticColor.Warning => "border-[var(--color-warning)] bg-[color-mix(in_oklab,var(--color-warning)_12%,transparent)] text-warning ring-1 ring-[color-mix(in_oklab,var(--color-warning)_22%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-warning)_28%,transparent)]",
+        XFSemanticColor.Danger => "border-[var(--color-danger)] bg-[color-mix(in_oklab,var(--color-danger)_10%,transparent)] text-danger ring-1 ring-[color-mix(in_oklab,var(--color-danger)_18%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-danger)_24%,transparent)]",
+        _ => "border-[var(--color-primary)] bg-[color-mix(in_oklab,var(--color-primary)_10%,transparent)] text-primary ring-1 ring-[color-mix(in_oklab,var(--color-primary)_18%,transparent)] focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_24%,transparent)]"
+    };
+
+    private string SelectedCardToneClass => ResolvedTone switch
+    {
+        XFSemanticColor.Secondary => "border-[color-mix(in_oklab,var(--color-secondary)_45%,transparent)] bg-[color-mix(in_oklab,var(--color-secondary)_5%,transparent)] ring-4 ring-[color-mix(in_oklab,var(--color-secondary)_10%,transparent)]",
+        XFSemanticColor.Success => "border-[color-mix(in_oklab,var(--color-success)_45%,transparent)] bg-[color-mix(in_oklab,var(--color-success)_5%,transparent)] ring-4 ring-[color-mix(in_oklab,var(--color-success)_10%,transparent)]",
+        XFSemanticColor.Warning => "border-[color-mix(in_oklab,var(--color-warning)_50%,transparent)] bg-[color-mix(in_oklab,var(--color-warning)_6%,transparent)] ring-4 ring-[color-mix(in_oklab,var(--color-warning)_12%,transparent)]",
+        XFSemanticColor.Danger => "border-[color-mix(in_oklab,var(--color-danger)_45%,transparent)] bg-[color-mix(in_oklab,var(--color-danger)_5%,transparent)] ring-4 ring-[color-mix(in_oklab,var(--color-danger)_10%,transparent)]",
+        _ => "border-[color-mix(in_oklab,var(--color-primary)_45%,transparent)] bg-[color-mix(in_oklab,var(--color-primary)_5%,transparent)] ring-4 ring-[color-mix(in_oklab,var(--color-primary)_10%,transparent)]"
+    };
+
+    private static string Join(params string?[] values)
+    {
+        return string.Join(" ", values.Where(value => !string.IsNullOrWhiteSpace(value)));
+    }
+}
