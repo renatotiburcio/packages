@@ -13,6 +13,7 @@ e pode ser consumido de forma independente ou em conjunto.
 | [`XForge.Mapper.SourceGenerator`](XForge.Mapper.SourceGenerator/) | 0.1.0 | Source generator: métodos parciais em classes `[XForgeMap]` ganham corpo gerado em compile-time — mesmas convenções do motor, código C# puro (zero reflection) | 6/6 (net8.0) |
 | [`XForge.Mapper.Projections`](XForge.Mapper.Projections/) | 0.1.0 | `ProjectTo` para `IQueryable` — projeções LINQ traduzíveis pelo EF Core | 9/9 (net8.0) |
 | [`XForge.Validation`](XForge.Validation/) | 0.1.0 | Validação fluente (`Validator<T>`, `Ensure`, RuleSet, cascade) — mental model do FluentValidation, `ValueTask` async, códigos padronizados | 32/32 (net8.0 + net10.0) |
+| [`XForge.Validation.TestHelper`](XForge.Validation.TestHelper/) | 0.1.0 | Assertions de teste para o Validation (`ShouldHaveValidationErrorFor`, `ShouldHaveValidationErrorWithCode`, `TestValidationResult`) — estilo FluentValidation.TestHelper | 15/15 (net8.0 + net10.0) |
 | [`XForge.Mediator.Behaviors`](XForge.Mediator.Behaviors/) | 0.1.0 | Integração dos 3 pacotes: `ValidationBehavior` + `LoggingBehavior` para o pipeline do Mediator | 2/2 (net8.0) |
 
 ## Princípios
@@ -32,6 +33,7 @@ dotnet test XForge.Mapper.SourceGenerator/XForge.Mapper.SourceGenerator.sln
 dotnet test XForge.Mediator.SourceGenerator/XForge.Mediator.SourceGenerator.sln
 dotnet test XForge.Mapper.Projections/XForge.Mapper.Projections.sln
 dotnet test XForge.Validation/XForge.Validation.sln
+dotnet test XForge.Validation.TestHelper/XForge.Validation.TestHelper.sln
 dotnet test XForge.Mediator.Behaviors/XForge.Mediator.Behaviors.sln
 
 # empacotamento

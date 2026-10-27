@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XForge.Validation.TestHelper</RootNamespace>
+
+    <!-- Packaging: pacote de uso exclusivo em projetos de teste -->
+    <PackageId>XForge.Validation.TestHelper</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>XForge</Authors>
+    <Company>XForge</Company>
+    <Product>XForge.Validation.TestHelper</Product>
+    <Description>Assertions de teste para o XForge.Validation (estilo FluentValidation.TestHelper): ShouldNotHaveValidationErrorFor, ShouldHaveValidationErrorFor, ShouldHaveValidationErrorWithCode e helpers de resultado para validadores, sobre Xunit.</Description>
+    <PackageTags>validation;testhelper;xunit;fluentvalidation;assertions;testing;ddd;fluent</PackageTags>
+    <PackageProjectUrl>https://github.com/renatotibircio/packages</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <ProjectReference Include="..\..\..\XForge.Validation\src\XForge.Validation\XForge.Validation.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -50,6 +50,11 @@ jobs:
           dotnet build XForge.Validation/XForge.Validation.sln -c Release
           dotnet test XForge.Validation/XForge.Validation.sln -c Release --no-build
 
+      - name: Build & test XForge.Validation.TestHelper
+        run: |
+          dotnet build XForge.Validation.TestHelper/XForge.Validation.TestHelper.sln -c Release
+          dotnet test XForge.Validation.TestHelper/XForge.Validation.TestHelper.sln -c Release --no-build
+
       - name: Build & test XForge.Mediator.Behaviors
         run: |
           dotnet build XForge.Mediator.Behaviors/XForge.Mediator.Behaviors.sln -c Release
