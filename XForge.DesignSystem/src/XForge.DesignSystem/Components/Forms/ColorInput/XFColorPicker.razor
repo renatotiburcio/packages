@@ -156,7 +156,7 @@
                                 <div class="grid grid-cols-10 overflow-hidden rounded-md ring-1 ring-border-light">
                                     @foreach (var color in row)
                                     {
-                                        <button type="button"
+                                        <button @key="color" type="button"
                                                 class="@GetThemeSwatchClass(color)"
                                                 style="@GetSwatchStyle(color)"
                                                 disabled="@Disabled"
@@ -189,7 +189,7 @@
                                 <div class="@PaletteClass">
                                     @foreach (var color in Palette)
                                     {
-                                        <button type="button"
+                                        <button @key="color" type="button"
                                                 class="@GetSwatchClass(color)"
                                                 style="@GetSwatchStyle(color)"
                                                 disabled="@Disabled"

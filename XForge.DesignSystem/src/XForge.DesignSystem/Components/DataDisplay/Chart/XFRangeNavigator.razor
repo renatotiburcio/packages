@@ -55,7 +55,7 @@
         <div class="absolute bottom-0 left-0 right-0 flex justify-between border-t border-surface-200 px-2 py-1">
             @foreach (var tick in GetAxisTicks())
             {
-                <span class="text-[10px] text-text-secondary">@tick</span>
+                <span @key="tick" class="text-[10px] text-text-secondary">@tick</span>
             }
         </div>
     }

@@ -89,7 +89,7 @@
                     @foreach (var o in d.Outliers)
                     {
                         var oY = paddingTop + (1 - (o - yMin) / yRange) * chartH;
-                        <circle cx="@cx" cy="@oY" r="3"
+                        <circle @key="o" cx="@cx" cy="@oY" r="3"
                                 fill="none" stroke="var(--color-warning, #f59e0b)" stroke-width="1.5" />
                     }
                 }

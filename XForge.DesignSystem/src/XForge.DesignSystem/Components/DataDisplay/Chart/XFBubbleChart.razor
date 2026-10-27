@@ -48,7 +48,7 @@
                 var normSize = (SizeSelector(pt) - sizeMin) / sizeRange;
                 var radius = 5 + normSize * (MaxBubbleSize - 5);
 
-                <circle cx="@px" cy="@py" r="@radius"
+                <circle @key="pt" cx="@px" cy="@py" r="@radius"
                         fill="@(FillColor ?? "fill-primary/40")"
                         stroke="@(StrokeColor ?? "stroke-primary")"
                         stroke-width="1" />
