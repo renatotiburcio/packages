@@ -63,6 +63,13 @@ jobs:
       - name: Build XForge.DesignSystem (core)
         run: |
           dotnet build XForge.DesignSystem/src/XForge.DesignSystem/XForge.DesignSystem.csproj -c Release
+          dotnet build XForge.DesignSystem/src/XForge.DesignSystem.Tests/XForge.DesignSystem.Tests.csproj -c Release
+
+      # Suite bUnit completa e longa (488 arquivos) — job dedicado com timeout folgado
+      - name: Test XForge.DesignSystem (nucleo)
+        timeout-minutes: 40
+        run: |
+          dotnet test XForge.DesignSystem/src/XForge.DesignSystem.Tests/XForge.DesignSystem.Tests.csproj -c Release --no-build --logger "console;verbosity=minimal"
 
       - name: Build & test XForge.Mediator.Behaviors
         run: |
