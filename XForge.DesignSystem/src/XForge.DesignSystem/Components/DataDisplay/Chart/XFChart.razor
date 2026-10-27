@@ -54,17 +54,17 @@
                 <p id="@DescriptionId">@AccessibleDescription</p>
                 @foreach (var point in ActivePoints)
                 {
-                    <button type="button" data-xf-chart-point="@point.Label" @onclick="() => SelectPointAsync(point)">
+                    <button @key="point" type="button" data-xf-chart-point="@point.Label" @onclick="() => SelectPointAsync(point)">
                         @point.Label: @FormatValue(point.Value)
                     </button>
                 }
                 @foreach (var annotation in Annotations)
                 {
-                    <p data-xf-chart-annotation="@annotation.Label">@annotation.Label: @FormatValue(annotation.Value)</p>
+                    <p @key="annotation" data-xf-chart-annotation="@annotation.Label">@annotation.Label: @FormatValue(annotation.Value)</p>
                 }
                 @foreach (var trendline in Trendlines)
                 {
-                    <p data-xf-chart-trendline="@trendline.Name">@trendline.Name: @FormatValue(trendline.StartValue) - @FormatValue(trendline.EndValue)</p>
+                    <p @key="trendline" data-xf-chart-trendline="@trendline.Name">@trendline.Name: @FormatValue(trendline.StartValue) - @FormatValue(trendline.EndValue)</p>
                 }
                 @if (ShowDataTable)
                 {
