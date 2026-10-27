@@ -78,7 +78,7 @@
                 {
                     var px = paddingLeft + (XSelector(pt) - xMin) / xRange * chartW;
                     var py = paddingTop + (1 - (YSelector(pt) - yMin) / yRange) * chartH;
-                    <circle cx="@px" cy="@py" r="3"
+                    <circle @key="pt" cx="@px" cy="@py" r="3"
                             fill="@(StrokeColor ?? "fill-primary")"
                             stroke="white" stroke-width="1" />
                 }

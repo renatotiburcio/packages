@@ -10,7 +10,7 @@
             <rect width="@SvgWidth" height="@SvgHeight" fill="@BackgroundColor" />
             @foreach (var bar in Bars)
             {
-                <rect x="@bar.X" y="@QuietZone" width="@bar.Width" height="@BarHeight" fill="@ForegroundColor" />
+                <rect @key="bar" x="@bar.X" y="@QuietZone" width="@bar.Width" height="@BarHeight" fill="@ForegroundColor" />
             }
             @if (ShowText)
             {

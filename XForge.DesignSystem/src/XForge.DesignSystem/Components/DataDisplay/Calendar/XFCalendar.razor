@@ -22,7 +22,7 @@
             <div class="@WeekdayGridClass" aria-hidden="true">
                 @foreach (var dayName in WeekdayNames)
                 {
-                    <span>@dayName</span>
+                    <span @key="dayName">@dayName</span>
                 }
             </div>
             <div class="@DayGridClass" role="grid" aria-label="@Title">

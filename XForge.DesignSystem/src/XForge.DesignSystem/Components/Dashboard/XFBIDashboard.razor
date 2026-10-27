@@ -48,7 +48,7 @@
         <div class="flex items-center gap-2 mb-4 flex-wrap">
             @foreach (var filter in Filters)
             {
-                <div class="flex items-center gap-1 rounded-lg bg-surface-100 px-2 py-1 text-xs font-medium text-text-secondary">
+                <div @key="filter" class="flex items-center gap-1 rounded-lg bg-surface-100 px-2 py-1 text-xs font-medium text-text-secondary">
                     <span>@filter.Label</span>
                     @if (filter.HasOptions)
                     {
