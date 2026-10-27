@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XForge.Mediator\src\XForge.Mediator\XForge.Mediator.csproj" />
+    <ProjectReference Include="..\..\..\..\XForge.Mapper\src\XForge.Mapper\XForge.Mapper.csproj" />
+    <ProjectReference Include="..\..\..\..\XForge.Validation\src\XForge.Validation\XForge.Validation.csproj" />
+    <ProjectReference Include="..\..\..\..\XForge.Mapper.SourceGenerator\src\XForge.Mapper.SourceGenerator\XForge.Mapper.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+    <ProjectReference Include="..\..\..\..\XForge.Mediator.SourceGenerator\src\XForge.Mediator.SourceGenerator\XForge.Mediator.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+    <ProjectReference Include="..\Sample.Domain\Sample.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
+
+

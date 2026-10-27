@@ -23,6 +23,12 @@ e pode ser consumido de forma independente ou em conjunto.
 - **Multi-arquitetura** — Clean Architecture, CQRS, Vertical Slices, DDD, modular monolith.
 - **Multi-target** — `netstandard2.0` + `net8.0`.
 
+## Samples
+
+- [`samples/CleanArchitecture`](samples/CleanArchitecture/) — API ASP.NET Core mínima provando os
+  pacotes integrados: Mediator (+ source generator), Mapper (+ source generator), Validation e o
+  `ValidationBehavior` do pipeline, com testes de integração ponta a ponta.
+
 ## Desenvolvimento
 
 ```bash

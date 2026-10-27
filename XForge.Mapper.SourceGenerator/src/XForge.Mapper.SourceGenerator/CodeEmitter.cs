@@ -68,16 +68,32 @@ internal sealed class CodeEmitter
             .AddModifiers(SyntaxFactory.Token(SyntaxKind.PartialKeyword))
             .WithMembers(SyntaxFactory.List(classMembers));
 
-        var usings = SyntaxFactory.List(new[]
+        // replica os usings do arquivo do usuario (tipos do usuario aparecem nas assinaturas
+        // geradas), sem duplicatas
+        var usings = new List<UsingDirectiveSyntax>
         {
             SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Collections.Generic")),
-        });
+        };
+        var seenUsings = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal)
+        {
+            "System.Collections.Generic",
+        };
+
+        foreach (var userUsing in declaration.SyntaxTree.GetCompilationUnitRoot().Usings)
+        {
+            var usingName = userUsing.Name.ToString();
+
+            if (seenUsings.Add(usingName))
+            {
+                usings.Add(userUsing.WithoutTrivia());
+            }
+        }
 
         var namespaceName = symbol.ContainingNamespace.IsGlobalNamespace
             ? null
             : symbol.ContainingNamespace.ToDisplayString();
 
-        var compilationUnit = SyntaxFactory.CompilationUnit().WithUsings(usings);
+        var compilationUnit = SyntaxFactory.CompilationUnit().WithUsings(SyntaxFactory.List(usings));
 
         return namespaceName is null
             ? compilationUnit.WithMembers(
@@ -221,3 +237,7 @@ internal sealed class MemberIssue
     public string Reason { get; }
     public string DiagnosticId { get; }
 }
+
+
+
+
