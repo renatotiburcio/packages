@@ -25,7 +25,7 @@
                 var capturedIndex = index;
                 var isExpanded = _expandedItems.Contains(capturedIndex);
 
-                <div class="@ItemClass(isExpanded)"
+                <div @key="item" class="@ItemClass(isExpanded)"
                      draggable="@(AllowReorder ? "true" : null)"
                      @ondragstart="() => OnDragStart(capturedIndex)"
                      @ondragover:preventDefault="true"

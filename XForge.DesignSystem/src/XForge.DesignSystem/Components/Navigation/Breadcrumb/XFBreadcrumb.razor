@@ -21,7 +21,7 @@
                     </li>
                 }
 
-                <li class="@ItemShellClass">
+                <li @key="entry.item" class="@ItemShellClass">
                     @if (entry.index > 0)
                     {
                         @RenderSeparator()
