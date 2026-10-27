@@ -25,7 +25,7 @@
                 var toPct = Math.Clamp((range.To - Min) / Range, 0, 1);
                 var fromAngle = StartAngle + SweepAngle * fromPct;
                 var toAngle = StartAngle + SweepAngle * toPct;
-                <path d="@DescribeArc(fromAngle, toAngle)"
+                <path @key="range" d="@DescribeArc(fromAngle, toAngle)"
                       fill="none"
                       stroke-width="@(Thickness + 2)"
                       stroke-linecap="round"
@@ -62,7 +62,7 @@
                     || Math.Abs(tickValue - Max) < 0.001
                     || Math.Abs(tickValue % (EffectiveTickStep * 5)) < EffectiveTickStep * 0.001;
                 var (x1, y1, x2, y2) = GetTickLine(angle, isMajor);
-                <line x1="@x1.ToString("0.###", CultureInfo.InvariantCulture)"
+                <line @key="tickValue" x1="@x1.ToString("0.###", CultureInfo.InvariantCulture)"
                       y1="@y1.ToString("0.###", CultureInfo.InvariantCulture)"
                       x2="@x2.ToString("0.###", CultureInfo.InvariantCulture)"
                       y2="@y2.ToString("0.###", CultureInfo.InvariantCulture)"

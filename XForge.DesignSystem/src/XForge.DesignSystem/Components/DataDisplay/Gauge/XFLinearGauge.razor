@@ -22,7 +22,7 @@
             @foreach (var range in Ranges)
             {
                 var r = ComputeRangeRect(range);
-                <rect x="@r.X" y="@r.Y" width="@r.W" height="@r.H" rx="0"
+                <rect @key="range" x="@r.X" y="@r.Y" width="@r.W" height="@r.H" rx="0"
                       class="@RangeFillClass(range.Color)"
                       style="@RangeFillStyle(range.Color)" />
             }

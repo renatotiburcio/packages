@@ -21,7 +21,7 @@
             {
                 var fromAngle = GetAngleForValue(range.From);
                 var toAngle = GetAngleForValue(range.To);
-                <path d="@DescribeArc(fromAngle, toAngle, 80)"
+                <path @key="range" d="@DescribeArc(fromAngle, toAngle, 80)"
                       fill="none"
                       stroke-width="@ArcWidth"
                       stroke-linecap="round"

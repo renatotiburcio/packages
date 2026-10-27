@@ -25,7 +25,7 @@
                 <div class="@ViewToggleClass" role="tablist" aria-label="@ViewSwitcherLabel">
                     @foreach (var view in Enum.GetValues<XFSchedulerView>())
                     {
-                        <button type="button" class="@ViewButtonClass(view)" aria-selected="@(View == view)" @onclick="() => SetViewAsync(view)">
+                        <button @key="view" type="button" class="@ViewButtonClass(view)" aria-selected="@(View == view)" @onclick="() => SetViewAsync(view)">
                             @GetViewLabel(view)
                         </button>
                     }
@@ -44,7 +44,7 @@
             <div class="@MonthGridClass" role="grid" aria-label="@Title">
                 @foreach (var day in MonthDays)
                 {
-                    <div role="button" tabindex="0" class="@MonthCellClass(day)" data-xf-scheduler-slot="@day.ToString("yyyy-MM-dd")"
+                    <div @key="day" role="button" tabindex="0" class="@MonthCellClass(day)" data-xf-scheduler-slot="@day.ToString("yyyy-MM-dd")"
                          @onclick="() => SelectSlotAsync(day.ToDateTime(TimeOnly.MinValue), day.ToDateTime(TimeOnly.MaxValue))"
                          ondragover="event.preventDefault()"
                          @ondrop="() => OnDrop(day.ToDateTime(TimeOnly.MinValue))">
