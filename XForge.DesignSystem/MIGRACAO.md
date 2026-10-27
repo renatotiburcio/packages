@@ -42,3 +42,36 @@ compat√≠vel com os padr√µes de publica√ß√£o do monorepo.
   projetos pelos paths.
 - Testes completos (`.Tests`, `.E2E`, `.AI.Tests`) exigem o runtime de ASP.NET/Blazor e o
   pipeline de assets (`BUN-PIPELINE.md`); rodar localmente antes de publicar.
+
+## Reorganizacao profunda (2026-10-27)
+
+Analise de dependencias: o nucleo (XForge.DesignSystem) referencia APENAS
+XForge.DesignSystem.Shared. Todos os outros 13 projetos do repo de origem consumiam os
+componentes, mas nao sao necessarios para eles.
+
+### Estrutura final (somente o que importa para a biblioteca de componentes)
+
+`
+docs/                             guias e analises de design (8 arquivos)
+src/XForge.DesignSystem/          componentes, tokens e temas (297 .razor)
+src/XForge.DesignSystem.Shared/   unica dependencia do nucleo
+src/XForge.DesignSystem.Tests/    testes bUnit (488 arquivos)
+Directory.Packages.props          central package management (build)
+NuGet.config                      fontes de pacote
+`
+
+### Removido (9 projetos satellite + tooling do repo de origem)
+
+- Projetos: XForge.DesignSystem.AI(+Tests), Analyzers, Benchmarks, Docs(+.AI/.Shared),
+  Generators.AssetsGenerator, Generators.DocsCompiler, XForge.Docs.MCP,
+  XForge.AI, XForge.AgenticUIBuilder.Mcp, XForge.AICodingAssistant.Mcp,
+  XForge.DesignSystem.Tools, XForge.FigmaSync, XForge.McpServer
+- Testes: 	ests/XForge.DesignSystem.E2E e Tests/DocsQualityTests
+- Raiz: .githooks, .kilo, .mimocode, .xforge, scripts, .github aninhado (o CI do
+  monorepo e o da raiz), package.json, 	sconfig.json, kilo.jsonc, .kilocodeignore,
+  AGENTS.md, BUN-PIPELINE.md, docker-compose.yml, XForge.DesignSystem.slnx
+
+### Verificacao pos-reorganizacao
+
+- dotnet build src/XForge.DesignSystem ó passa
+- testes filtrados (Scheduler) ó 51/51; suÌte completa no job dedicado do CI
