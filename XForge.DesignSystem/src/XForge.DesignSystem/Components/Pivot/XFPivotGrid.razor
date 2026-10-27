@@ -1,12 +1,13 @@
-@namespace XForge.Components.Pivot
+﻿@namespace XForge.Components.Pivot
 @inherits XForgeComponentBase
 
 <div class="xf-pivotgrid">
-  <div class="xf-pivot-rows">@foreach (var r in Rows) { <span>@r</span> }</div>
-  <div class="xf-pivot-cols">@foreach (var c in Columns) { <span>@c</span> }</div>
-  <div class="xf-pivot-vals">@foreach (var (r,c,v) in Cells) { <span>@(r)|@(c)|@v</span> }</div>
+  <div class="xf-pivot-rows">@foreach (var r in Rows) { <span @key="r">@r</span> }</div>
+  <div class="xf-pivot-cols">@foreach (var c in Columns) { <span @key="c">@c</span> }</div>
+  <div class="xf-pivot-vals">@foreach (var (r,c,v) in Cells) { <span @key="(r,c)">@(r)|@(c)|@v</span> }</div>
 </div>
 
 @code {
   public enum AggregationType { Sum, Avg, Count, Min, Max }
 }
+

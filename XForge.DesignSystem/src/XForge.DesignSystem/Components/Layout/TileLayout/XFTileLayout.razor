@@ -36,7 +36,7 @@
         @foreach (var tile in _tiles)
         {
             var isActive = tile.Id == _selectedTileId;
-            <div class="@TileClass(tile, isActive)"
+            <div @key="tile" class="@TileClass(tile, isActive)"
                  style="grid-column: @(tile.ColumnSpan); grid-row: @(tile.RowSpan);"
                  draggable="@(_isEditMode ? "true" : null)"
                  @ondragstart="() => OnTileDragStart(tile)"

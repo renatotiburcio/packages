@@ -10,7 +10,7 @@
         <div class="grid gap-1">
             @foreach (var message in Messages)
             {
-                <div>@message</div>
+                <div @key="message">@message</div>
             }
         </div>
     </div>

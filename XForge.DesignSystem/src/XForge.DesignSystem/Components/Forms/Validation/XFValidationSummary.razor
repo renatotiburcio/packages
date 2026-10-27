@@ -16,7 +16,7 @@
                 <ul class="@ListClass">
                     @foreach (var message in Messages)
                     {
-                        <li>@message</li>
+                        <li @key="message">@message</li>
                     }
                 </ul>
             </div>
