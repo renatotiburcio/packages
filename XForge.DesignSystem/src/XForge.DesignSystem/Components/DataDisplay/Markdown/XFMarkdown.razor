@@ -46,7 +46,7 @@
                     <ul class="my-3 list-disc space-y-1 pl-6 text-text-secondary">
                         @foreach (var item in block.Items ?? Array.Empty<string>())
                         {
-                            <li>@RenderInline(item)</li>
+                            <li @key="item">@RenderInline(item)</li>
                         }
                     </ul>
                     break;
@@ -54,7 +54,7 @@
                     <ol class="my-3 list-decimal space-y-1 pl-6 text-text-secondary">
                         @foreach (var item in block.Items ?? Array.Empty<string>())
                         {
-                            <li>@RenderInline(item)</li>
+                            <li @key="item">@RenderInline(item)</li>
                         }
                     </ol>
                     break;

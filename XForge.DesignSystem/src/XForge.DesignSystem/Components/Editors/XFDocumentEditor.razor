@@ -2,7 +2,7 @@
 @inherits XForgeComponentBase
 
 <div class="xf-documenteditor" data-pages="@Pages" data-orientation="@Orientation">
-  <div class="xf-de-toolbar">@foreach (var cmd in ToolbarCommands) { <button @onclick="() => OnCommand.InvokeAsync(cmd)">@cmd</button> }</div>
+  <div class="xf-de-toolbar">@foreach (var cmd in ToolbarCommands) { <button @key="cmd" @onclick="() => OnCommand.InvokeAsync(cmd)">@cmd</button> }</div>
   <div class="xf-de-pages">
     @for (int p = 0; p < Pages; p++)
     {
