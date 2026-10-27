@@ -82,7 +82,7 @@
                 {
                     @foreach (var indexedItem in FilteredItems.Select((item, index) => new { item, index }))
                     {
-                        <button type="button"
+                        <button @key="indexedItem.item" type="button"
                                 id="@GetOptionId(indexedItem.index)"
                                 class="@GetOptionClass(indexedItem.index)"
                                 role="option"

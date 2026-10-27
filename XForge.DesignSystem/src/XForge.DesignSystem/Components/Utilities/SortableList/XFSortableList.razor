@@ -10,7 +10,7 @@
     @foreach (var entry in Items.Select((item, index) => new { item, index }))
     {
         var disabled = IsDisabled(entry.item);
-        <div class="@ItemClass(entry.item)"
+        <div @key="entry.item" class="@ItemClass(entry.item)"
              role="listitem"
              aria-disabled="@disabled.ToString().ToLowerInvariant()"
              data-index="@entry.index"

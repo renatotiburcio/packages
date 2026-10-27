@@ -32,7 +32,7 @@
             {
                 if (indexedItem.item.Kind == XFDropdownMenuItemKind.Separator)
                 {
-                    <div class="my-1 h-px bg-border-light" role="separator"></div>
+                    <div @key="indexedItem.item" class="my-1 h-px bg-border-light" role="separator"></div>
                 }
                 else if (indexedItem.item.Kind == XFDropdownMenuItemKind.Header)
                 {
