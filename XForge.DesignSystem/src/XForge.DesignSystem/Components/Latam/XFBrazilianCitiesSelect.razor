@@ -3,5 +3,5 @@
 
 <select class="xf-br-cities" @bind="Value" @bind:after="() => ValueChanged.InvokeAsync(Value)">
   <option value="">--</option>
-  @foreach (var c in Cities) { <option value="@c">@c</option> }
+  @foreach (var c in Cities) { <option @key="c" value="@c">@c</option> }
 </select>

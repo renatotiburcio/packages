@@ -3,7 +3,7 @@
 
 <select class="xf-br-states" @bind="Value" @bind:after="() => ValueChanged.InvokeAsync(Value)">
   <option value="">--</option>
-  @foreach (var s in States) { <option value="@s.Code">@s.Code - @s.Name</option> }
+  @foreach (var s in States) { <option @key="s.Code" value="@s.Code">@s.Code - @s.Name</option> }
 </select>
 
 @code {

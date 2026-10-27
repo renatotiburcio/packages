@@ -3,7 +3,7 @@
 
 <select class="xf-cfop-select" @bind="Value" @bind:after="() => ValueChanged.InvokeAsync(Value)">
   <option value="">--</option>
-  @foreach (var c in Cfops) { <option value="@c.Code">@c.Code - @c.Description</option> }
+  @foreach (var c in Cfops) { <option @key="c.Code" value="@c.Code">@c.Code - @c.Description</option> }
 </select>
 
 @code {

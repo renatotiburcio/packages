@@ -5,7 +5,7 @@
   <input type="text" placeholder="Search CNAE..." @bind="Filter" @bind:event="oninput" />
   <select @bind="SelectedCode" @bind:after="OnChanged">
     <option value="">--</option>
-    @foreach (var c in Filtered) { <option value="@c.Code">@c.Code - @c.Description</option> }
+    @foreach (var c in Filtered) { <option @key="c.Code" value="@c.Code">@c.Code - @c.Description</option> }
   </select>
 </div>
 
