@@ -21,7 +21,7 @@
             @foreach (var item in Items)
             {
                 var isSelected = SelectedItems?.Contains(item) == true;
-                <span class="inline-flex"
+                <span @key="item" class="inline-flex"
                       role="option"
                       aria-selected="@isSelected.ToString().ToLowerInvariant()">
                     @if (ItemTemplate is not null)

@@ -11,7 +11,7 @@
         @foreach (var item in Items)
         {
             var isSelected = string.Equals(Value, item.Value, StringComparison.Ordinal);
-            <button type="button"
+            <button @key="item" type="button"
                     class="@GetItemClass(item.Value, item.Disabled)"
                     role="radio"
                     aria-checked="@(isSelected ? "true" : "false")"

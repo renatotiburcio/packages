@@ -58,7 +58,7 @@
             @foreach (var item in GetVisibleItems(target))
             {
                 var selected = IsSelected(target, item.Value);
-                <li>
+                <li @key="item">
                     <button class="@ItemClass(selected, item.Disabled)"
                     type="button"
                     role="option"

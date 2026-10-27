@@ -12,7 +12,7 @@
                 <th class="@CornerHeaderClass">@RowHeader</th>
                 @foreach (var column in Columns)
                 {
-                    <th class="@ColumnHeaderClass" scope="col">@column</th>
+                    <th @key="column" class="@ColumnHeaderClass" scope="col">@column</th>
                 }
                 @if (ShowTotals)
                 {
