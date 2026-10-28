@@ -99,3 +99,18 @@ Levantamento e exclusoes (todas documentadas no csproj, todas reversiveis):
 | Tests\DocsQualityTests\** | qualidade de docs do site (removido) |
 
 Tambem foi restaurado o PackageReference de Moq (perdido na reescrita anterior do csproj).
+
+## Campanha @key + auditoria de performance (2026-10-27, 18 lotes)
+
+- 75 de 77 componentes com @foreach receberam chave estavel (nao o indice — fragil em
+  reordenacao/filtragem). Build verde em todos os 18 lotes.
+- Remanescente consciente: XFTreeView e XFTOC (corpo do loop e RenderFragment;
+  @key exigiria wrapper com mudanca de DOM — decisao de design pendente).
+- Auditoria de callbacks: 376 EventCallback vs 1 Action<> nas APIs de componente —
+  migraco para o idioma Blazor praticamente concluida no nucleo.
+- Metodologia apos incidentes: replaces via shell corromperam arquivos duas vezes (<
+  engolido); protocolo consolidado = edit tool + git checkout para restaurar + build a
+  cada lote.
+- Impactos: foco/selecao em listas longas (5.570 municipios), drag&drop (Scheduler,
+  Repeater, SortableList, Gantt), digitacao (Autocomplete, Combobox, EditForm,
+  PasswordStrength), charts densos (QRCode, Sparkline, Gauge).
