@@ -7,7 +7,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFPivotDataGridComponentTest : BunitContext
+public class XFPivotDataGridComponentTest : XForgeTestContext
 {
     public XFPivotDataGridComponentTest()
     {

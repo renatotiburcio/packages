@@ -4,7 +4,7 @@ using XForge.Components.Pivot;
 
 namespace XForge.DesignSystem.Tests.Components.Pivot;
 
-public class XFPivotFieldListTest : Bunit.BunitContext
+public class XFPivotFieldListTest : XForgeTestContext
 {
     public XFPivotFieldListTest()
     {

@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Overlays.Popover;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFPopoverKeyboardTest : BunitContext
+public class XFPopoverKeyboardTest : XForgeTestContext
 {
     public XFPopoverKeyboardTest()
     {

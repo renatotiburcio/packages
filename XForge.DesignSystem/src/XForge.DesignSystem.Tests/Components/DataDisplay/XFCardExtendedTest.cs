@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFCardExtendedTest : BunitContext
+public class XFCardExtendedTest : XForgeTestContext
 {
     public XFCardExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

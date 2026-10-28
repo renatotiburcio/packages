@@ -8,7 +8,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDataGridComponentTest : BunitContext
+public class XFDataGridComponentTest : XForgeTestContext
 {
     public XFDataGridComponentTest()
     {

@@ -26,7 +26,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public sealed class XFFormComponentsTest : BunitContext
+public sealed class XFFormComponentsTest : XForgeTestContext
 {
     public XFFormComponentsTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void TextInput_Renders() => Render<XFTextInput>();

@@ -10,7 +10,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFBadgeComponentTest : Bunit.BunitContext
+public class XFBadgeComponentTest : XForgeTestContext
 {
     public XFBadgeComponentTest()
     {

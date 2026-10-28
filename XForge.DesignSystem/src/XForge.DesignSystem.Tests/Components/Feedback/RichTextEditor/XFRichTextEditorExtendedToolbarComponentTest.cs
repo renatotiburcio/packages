@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Feedback.RichTextEditor;
 
-public class XFRichTextEditorExtendedToolbarComponentTest : BunitContext
+public class XFRichTextEditorExtendedToolbarComponentTest : XForgeTestContext
 {
     public XFRichTextEditorExtendedToolbarComponentTest() { Services.AddSingleton<IXFLocalizer, TestLocalizer>(); }
 

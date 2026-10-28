@@ -10,7 +10,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTextInputComponentTest : Bunit.BunitContext
+public class XFTextInputComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithLabelHelperAndPlaceholder()

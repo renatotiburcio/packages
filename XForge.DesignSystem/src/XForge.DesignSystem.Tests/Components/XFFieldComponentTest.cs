@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Forms.Field;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFFieldComponentTest : BunitContext
+public class XFFieldComponentTest : XForgeTestContext
 {
     [Fact]
     public void Field_RendersLabelHelperAndRequired()

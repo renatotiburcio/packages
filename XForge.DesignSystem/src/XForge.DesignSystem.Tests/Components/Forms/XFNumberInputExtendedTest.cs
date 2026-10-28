@@ -8,7 +8,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public class XFNumberInputExtendedTest : BunitContext
+public class XFNumberInputExtendedTest : XForgeTestContext
 {
     public XFNumberInputExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

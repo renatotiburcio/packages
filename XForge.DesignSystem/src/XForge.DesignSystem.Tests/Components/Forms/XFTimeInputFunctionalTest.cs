@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Forms.TimeInput;
@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFTimeInputFunctionalTest : BunitContext
+public sealed class XFTimeInputFunctionalTest : XForgeTestContext
 {
     public XFTimeInputFunctionalTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

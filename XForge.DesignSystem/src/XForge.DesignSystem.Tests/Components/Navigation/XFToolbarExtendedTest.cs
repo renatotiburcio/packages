@@ -8,7 +8,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public sealed class XFToolbarExtendedTest : BunitContext
+public sealed class XFToolbarExtendedTest : XForgeTestContext
 {
     private static readonly IReadOnlyList<XFToolbarItem> SampleItems = new[]
     {

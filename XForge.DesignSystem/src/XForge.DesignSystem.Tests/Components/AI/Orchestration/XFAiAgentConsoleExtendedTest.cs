@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.AI.Orchestration;
 
-public class XFAiAgentConsoleExtendedTest : BunitContext
+public class XFAiAgentConsoleExtendedTest : XForgeTestContext
 {
     private static XFAiAgentInfo CreateAgent(string id = "a1", string name = "Agent", XFAiAgentRole role = XFAiAgentRole.Worker, XFAiAgentStatus status = XFAiAgentStatus.Idle)
     {

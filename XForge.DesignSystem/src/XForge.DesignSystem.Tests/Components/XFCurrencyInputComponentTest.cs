@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Forms.CurrencyInput;
@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Forms.NumberInput;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFCurrencyInputComponentTest : BunitContext
+public class XFCurrencyInputComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithCurrencyDefaults_UsesMoneyContract()

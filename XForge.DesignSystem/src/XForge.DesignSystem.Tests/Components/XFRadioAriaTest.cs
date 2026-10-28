@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Forms.Radio;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFRadioAriaTest : BunitContext
+public class XFRadioAriaTest : XForgeTestContext
 {
     [Fact]
     public void AriaChecked_SelectedRadio_IsTrue()

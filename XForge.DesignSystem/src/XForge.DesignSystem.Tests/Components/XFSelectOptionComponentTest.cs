@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Forms.Select;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSelectOptionComponentTest : Bunit.BunitContext
+public class XFSelectOptionComponentTest : XForgeTestContext
 {
     public XFSelectOptionComponentTest()
     {

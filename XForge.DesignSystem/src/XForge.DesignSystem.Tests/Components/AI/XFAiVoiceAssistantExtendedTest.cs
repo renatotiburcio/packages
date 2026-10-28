@@ -9,7 +9,7 @@ using XForge.DesignSystem.Services.AI;
 
 namespace XForge.DesignSystem.Tests.Components.AI;
 
-public sealed class XFAiVoiceAssistantExtendedTest : BunitContext
+public sealed class XFAiVoiceAssistantExtendedTest : XForgeTestContext
 {
     public XFAiVoiceAssistantExtendedTest()
     {

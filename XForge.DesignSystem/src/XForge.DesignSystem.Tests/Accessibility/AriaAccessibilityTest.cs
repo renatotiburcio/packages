@@ -10,7 +10,7 @@ namespace XForge.DesignSystem.Tests.Accessibility;
 /// Accessibility tests validating WCAG 2.1 AA compliance for key components.
 /// Tests ARIA attributes, roles, labels, and keyboard accessibility patterns.
 /// </summary>
-public class AriaAccessibilityTest : BunitContext
+public class AriaAccessibilityTest : XForgeTestContext
 {
     public AriaAccessibilityTest()
     {

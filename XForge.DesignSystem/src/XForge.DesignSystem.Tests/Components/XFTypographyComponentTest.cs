@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Typography;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTypographyComponentTest : Bunit.BunitContext
+public class XFTypographyComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_DefaultBody()

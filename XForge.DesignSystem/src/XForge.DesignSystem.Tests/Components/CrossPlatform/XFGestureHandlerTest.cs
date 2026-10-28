@@ -1,10 +1,10 @@
-﻿using Bunit;
+using Bunit;
 using Xunit;
 using XForge.DesignSystem.Components.CrossPlatform;
 
 namespace XForge.DesignSystem.Tests.Components.CrossPlatform;
 
-public class XFGestureHandlerTest : BunitContext
+public class XFGestureHandlerTest : XForgeTestContext
 {
     public XFGestureHandlerTest()
     {

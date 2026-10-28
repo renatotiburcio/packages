@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.DataDisplay.Code;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFCodeComponentTest : BunitContext
+public class XFCodeComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_Inline_RendersCodeElement()

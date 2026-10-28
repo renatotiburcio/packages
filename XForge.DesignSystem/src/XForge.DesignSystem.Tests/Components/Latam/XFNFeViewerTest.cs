@@ -4,7 +4,7 @@ using XForge.Components.Latam;
 
 namespace XForge.DesignSystem.Tests.Components.Latam;
 
-public class XFNFeViewerTest : Bunit.BunitContext
+public class XFNFeViewerTest : XForgeTestContext
 {
     public XFNFeViewerTest()
     {

@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Forms.OnScreenKeyboard;
 
-public class XFOnScreenKeyboardTest : BunitContext
+public class XFOnScreenKeyboardTest : XForgeTestContext
 {
     public XFOnScreenKeyboardTest()
     {

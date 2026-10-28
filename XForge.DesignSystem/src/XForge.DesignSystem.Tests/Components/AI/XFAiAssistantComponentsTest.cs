@@ -48,7 +48,7 @@ internal sealed class AssistantMockProvider : IAiProvider, IAsyncDisposable
 /// Tests for XFAiAccountingAssistant, XFAiFormAssistant, and XFAiFinancialConciliator.
 /// All three follow the same pattern: query input + AnalyzeAsync + JSON result.
 /// </summary>
-public sealed class XFAiAssistantComponentsTest : BunitContext
+public sealed class XFAiAssistantComponentsTest : XForgeTestContext
 {
     public XFAiAssistantComponentsTest()
     {

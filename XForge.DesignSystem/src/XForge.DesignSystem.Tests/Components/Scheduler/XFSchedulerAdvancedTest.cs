@@ -4,7 +4,7 @@ using XForge.Components.Scheduler;
 
 namespace XForge.DesignSystem.Tests.Components.Scheduler;
 
-public class XFSchedulerAdvancedTest : Bunit.BunitContext
+public class XFSchedulerAdvancedTest : XForgeTestContext
 {
     public XFSchedulerAdvancedTest()
     {

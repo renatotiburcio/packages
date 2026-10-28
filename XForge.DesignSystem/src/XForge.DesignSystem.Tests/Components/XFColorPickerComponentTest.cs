@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Forms.ColorInput;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFColorPickerComponentTest : BunitContext
+public class XFColorPickerComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithValue_ShowsHexAndRgb()

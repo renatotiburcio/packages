@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.Validation;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFValidationStatusComponentTest : Bunit.BunitContext
+public class XFValidationStatusComponentTest : XForgeTestContext
 {
     public XFValidationStatusComponentTest()
     {

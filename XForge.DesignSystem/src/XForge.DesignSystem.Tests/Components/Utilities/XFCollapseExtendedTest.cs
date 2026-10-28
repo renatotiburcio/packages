@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Utilities;
 
-public class XFCollapseExtendedTest : BunitContext
+public class XFCollapseExtendedTest : XForgeTestContext
 {
     public XFCollapseExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

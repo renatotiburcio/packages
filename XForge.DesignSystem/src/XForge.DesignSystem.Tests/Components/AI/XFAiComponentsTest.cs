@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -16,7 +16,7 @@ namespace XForge.DesignSystem.Tests.Components.AI;
 /// XFAiChat, XFAiCommandPalette, XFAiPromptBox, XFAiSuggestionPanel.
 /// Covers rendering, parameters, events, states, accessibility, and interaction.
 /// </summary>
-public class XFAiComponentsTest : BunitContext
+public class XFAiComponentsTest : XForgeTestContext
 {
     public XFAiComponentsTest()
     {

@@ -12,7 +12,7 @@ namespace XForge.DesignSystem.Tests.Components;
 /// Tests for XFGauge (radial) and XFLinearGauge components.
 /// Covers rendering, ARIA, value display, ranges, ticks, labels, sizes, orientations.
 /// </summary>
-public class XFGaugeComponentTest : Bunit.BunitContext
+public class XFGaugeComponentTest : XForgeTestContext
 {
     #region XFGauge — Rendering
 

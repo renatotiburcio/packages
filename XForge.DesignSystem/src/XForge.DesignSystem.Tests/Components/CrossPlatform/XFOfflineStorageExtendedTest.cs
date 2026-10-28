@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.CrossPlatform;
 
 namespace XForge.DesignSystem.Tests.Components.CrossPlatform;
 
-public class XFOfflineStorageExtendedTest : BunitContext
+public class XFOfflineStorageExtendedTest : XForgeTestContext
 {
     public XFOfflineStorageExtendedTest()
     {

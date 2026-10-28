@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.DataDisplay.Calendar;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFCalendarComponentTest : BunitContext
+public class XFCalendarComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_MonthView_RendersSixWeekGrid()

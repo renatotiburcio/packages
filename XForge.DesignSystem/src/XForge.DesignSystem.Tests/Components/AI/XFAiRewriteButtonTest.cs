@@ -44,7 +44,7 @@ internal sealed class RewriteMockProvider : IAiProvider, IAsyncDisposable
 /// Tests for XFAiRewriteButton — rewrite generation, JSON parsing,
 /// all rewrite modes, error handling, and apply workflow.
 /// </summary>
-public sealed class XFAiRewriteButtonTest : BunitContext
+public sealed class XFAiRewriteButtonTest : XForgeTestContext
 {
     public XFAiRewriteButtonTest()
     {

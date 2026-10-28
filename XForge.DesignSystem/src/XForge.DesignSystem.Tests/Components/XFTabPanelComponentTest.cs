@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Navigation.Tabs;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTabPanelComponentTest : BunitContext
+public class XFTabPanelComponentTest : XForgeTestContext
 {
     public XFTabPanelComponentTest()
     {

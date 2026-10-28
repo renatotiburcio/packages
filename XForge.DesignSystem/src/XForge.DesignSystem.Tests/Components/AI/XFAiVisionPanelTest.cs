@@ -10,7 +10,7 @@ namespace XForge.DesignSystem.Tests.Components.AI;
 /// <summary>
 /// Tests for XFAiVisionPanel component.
 /// </summary>
-public sealed class XFAiVisionPanelTest : BunitContext
+public sealed class XFAiVisionPanelTest : XForgeTestContext
 {
     public XFAiVisionPanelTest()
     {

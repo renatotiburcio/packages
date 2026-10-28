@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Forms.OneTimeInput;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFOneTimeInputComponentTest : BunitContext
+public class XFOneTimeInputComponentTest : XForgeTestContext
 {
     public XFOneTimeInputComponentTest()
     {

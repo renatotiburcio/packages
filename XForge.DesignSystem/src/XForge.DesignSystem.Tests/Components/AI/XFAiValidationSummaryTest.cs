@@ -22,7 +22,7 @@ internal sealed class ValidationMockProvider : IAiProvider, IDisposable
     public void Dispose() { }
 }
 
-public sealed class XFAiValidationSummaryTest : BunitContext
+public sealed class XFAiValidationSummaryTest : XForgeTestContext
 {
     public XFAiValidationSummaryTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

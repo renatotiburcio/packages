@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Utilities.KeyCode;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFKeyCodeComponentTest : BunitContext
+public class XFKeyCodeComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_FocusableAreaAndHints()

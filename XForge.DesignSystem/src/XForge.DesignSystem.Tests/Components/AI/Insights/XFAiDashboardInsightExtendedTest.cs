@@ -8,7 +8,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.AI.Insights;
 
-public class XFAiDashboardInsightExtendedTest : BunitContext
+public class XFAiDashboardInsightExtendedTest : XForgeTestContext
 {
     private sealed class TestAiProvider : IAiProvider
     {

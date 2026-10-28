@@ -8,7 +8,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Feedback;
 
-public sealed class XFAlertProgressTest : BunitContext
+public sealed class XFAlertProgressTest : XForgeTestContext
 {
     public XFAlertProgressTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     // Alert

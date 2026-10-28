@@ -22,7 +22,7 @@ namespace XForge.DesignSystem.Tests.Components;
 /// Verifies that all form input components inherit <see cref="XFInputComponentBase"/>
 /// and expose FocusAsync, SelectAsync, BlurAsync, aria-disabled and InputRef.
 /// </summary>
-public class XFInputBaseContractTest : Bunit.BunitContext
+public class XFInputBaseContractTest : XForgeTestContext
 {
     public XFInputBaseContractTest()
     {

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFTreeViewExtendedTest : BunitContext
+public class XFTreeViewExtendedTest : XForgeTestContext
 {
     public XFTreeViewExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

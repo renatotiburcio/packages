@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Forms.Field;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFFieldsetComponentTest : Bunit.BunitContext
+public class XFFieldsetComponentTest : XForgeTestContext
 {
     public XFFieldsetComponentTest()
     {

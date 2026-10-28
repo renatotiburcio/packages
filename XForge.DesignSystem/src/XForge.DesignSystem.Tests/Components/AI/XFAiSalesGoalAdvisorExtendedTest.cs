@@ -9,7 +9,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.AI;
 
-public sealed class XFAiSalesGoalAdvisorExtendedTest : BunitContext
+public sealed class XFAiSalesGoalAdvisorExtendedTest : XForgeTestContext
 {
     public XFAiSalesGoalAdvisorExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

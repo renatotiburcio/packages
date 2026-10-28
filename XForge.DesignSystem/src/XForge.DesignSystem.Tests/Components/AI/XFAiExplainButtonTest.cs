@@ -44,7 +44,7 @@ internal sealed class ExplainMockProvider : IAiProvider, IAsyncDisposable
 /// Tests for XFAiExplainButton — explain generation, JSON parsing,
 /// error handling, variants, accessibility, and dispose lifecycle.
 /// </summary>
-public sealed class XFAiExplainButtonTest : BunitContext
+public sealed class XFAiExplainButtonTest : XForgeTestContext
 {
     public XFAiExplainButtonTest()
     {

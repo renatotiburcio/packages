@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -15,7 +15,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFNavigationTest : BunitContext
+public class XFNavigationTest : XForgeTestContext
 {
     public XFNavigationTest()
     {

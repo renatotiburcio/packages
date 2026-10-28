@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public class XFStepsExtendedTest : BunitContext
+public class XFStepsExtendedTest : XForgeTestContext
 {
     public XFStepsExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

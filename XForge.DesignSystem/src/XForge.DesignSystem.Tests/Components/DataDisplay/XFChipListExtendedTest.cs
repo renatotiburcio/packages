@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFChipListExtendedTest : BunitContext
+public class XFChipListExtendedTest : XForgeTestContext
 {
     public XFChipListExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

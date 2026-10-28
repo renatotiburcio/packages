@@ -8,7 +8,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSelectBarComponentTest : BunitContext
+public class XFSelectBarComponentTest : XForgeTestContext
 {
     public XFSelectBarComponentTest()
     {

@@ -17,7 +17,7 @@ namespace XForge.DesignSystem.Tests.Components.AI;
 /// XFAiFinancialConciliator, XFAiAccountingAssistant, XFAiFormAssistant.
 /// Covers rendering, parameters, states, accessibility, and models.
 /// </summary>
-public class XFAiDomainComponentsTest : BunitContext
+public class XFAiDomainComponentsTest : XForgeTestContext
 {
     public XFAiDomainComponentsTest()
     {

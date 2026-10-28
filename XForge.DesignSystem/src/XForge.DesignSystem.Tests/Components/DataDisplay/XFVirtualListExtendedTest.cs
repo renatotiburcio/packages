@@ -9,7 +9,7 @@ namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 /// Additional tests for XFVirtualList to improve coverage from 66.2% → 85%+.
 /// Covers all variants, parameters, templates, and edge cases.
 /// </summary>
-public class XFVirtualListExtendedTest : BunitContext
+public class XFVirtualListExtendedTest : XForgeTestContext
 {
     public XFVirtualListExtendedTest()
     {

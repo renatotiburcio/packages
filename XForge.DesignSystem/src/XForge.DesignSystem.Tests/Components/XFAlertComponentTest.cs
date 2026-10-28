@@ -9,7 +9,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFAlertComponentTest : Bunit.BunitContext
+public class XFAlertComponentTest : XForgeTestContext
 {
     public XFAlertComponentTest()
     {

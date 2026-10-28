@@ -9,7 +9,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Button;
 
-public sealed class XFSplitButtonTest : BunitContext
+public sealed class XFSplitButtonTest : XForgeTestContext
 {
     public XFSplitButtonTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

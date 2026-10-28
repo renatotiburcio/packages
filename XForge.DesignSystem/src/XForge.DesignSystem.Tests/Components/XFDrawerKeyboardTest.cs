@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Overlays.Drawer;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDrawerKeyboardTest : BunitContext
+public class XFDrawerKeyboardTest : XForgeTestContext
 {
     public XFDrawerKeyboardTest()
     {

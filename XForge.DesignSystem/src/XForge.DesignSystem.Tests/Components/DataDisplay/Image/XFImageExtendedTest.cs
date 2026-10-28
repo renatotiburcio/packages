@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.DataDisplay.Image;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay.Image;
 
-public class XFImageExtendedTest : BunitContext
+public class XFImageExtendedTest : XForgeTestContext
 {
     // ─── 1. Default render - renders xf-image class ───────────────────────────
 

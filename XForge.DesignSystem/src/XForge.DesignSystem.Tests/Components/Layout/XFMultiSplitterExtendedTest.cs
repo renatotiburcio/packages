@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Layout;
 
-public class XFMultiSplitterExtendedTest : BunitContext
+public class XFMultiSplitterExtendedTest : XForgeTestContext
 {
     public XFMultiSplitterExtendedTest()
     {

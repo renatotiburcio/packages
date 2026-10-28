@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Navigation.Tabs;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTabsKeyboardTest : BunitContext
+public class XFTabsKeyboardTest : XForgeTestContext
 {
     [Fact]
     public void ArrowRight_Moves_To_Next_Tab()

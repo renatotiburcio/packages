@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Overlays.Dialog;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDialogServiceComponentTest : BunitContext
+public class XFDialogServiceComponentTest : XForgeTestContext
 {
     private readonly XFDialogService dialogService = new();
 

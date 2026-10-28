@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Typography;
 
-public class XFTypographyExtendedTest : BunitContext
+public class XFTypographyExtendedTest : XForgeTestContext
 {
     public XFTypographyExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Forms.PasswordStrength;
 
 namespace XForge.DesignSystem.Tests.Components.Forms.PasswordStrength;
 
-public class XFPasswordStrengthExtendedTest : BunitContext
+public class XFPasswordStrengthExtendedTest : XForgeTestContext
 {
     private IRenderedComponent<XFPasswordStrength> RenderPassword(
         Action<ComponentParameterCollectionBuilder<XFPasswordStrength>>? configure = null)

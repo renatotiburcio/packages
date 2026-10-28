@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Utilities.DragDrop;
 
 namespace XForge.DesignSystem.Tests.Components.Utilities;
 
-public sealed class XFUtilitiesDomainTest : BunitContext
+public sealed class XFUtilitiesDomainTest : XForgeTestContext
 {
     public XFUtilitiesDomainTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void KeyCode_Renders() => Render<XFKeyCode>();

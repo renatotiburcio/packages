@@ -11,7 +11,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public sealed class XFLayoutTest : BunitContext
+public sealed class XFLayoutTest : XForgeTestContext
 {
     public XFLayoutTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.DataDisplay.Avatar;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFAvatarGroupComponentTest : BunitContext
+public class XFAvatarGroupComponentTest : XForgeTestContext
 {
     public XFAvatarGroupComponentTest()
     {

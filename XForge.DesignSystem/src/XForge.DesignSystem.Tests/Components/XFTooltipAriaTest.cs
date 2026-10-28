@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.Shared;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTooltipAriaTest : BunitContext
+public class XFTooltipAriaTest : XForgeTestContext
 {
     public XFTooltipAriaTest()
     {

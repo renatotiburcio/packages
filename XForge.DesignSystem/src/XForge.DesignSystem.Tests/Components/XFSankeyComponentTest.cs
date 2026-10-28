@@ -6,7 +6,7 @@ using Xunit;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSankeyComponentTest : BunitContext
+public class XFSankeyComponentTest : XForgeTestContext
 {
     private sealed record FlowItem(
         string Source,

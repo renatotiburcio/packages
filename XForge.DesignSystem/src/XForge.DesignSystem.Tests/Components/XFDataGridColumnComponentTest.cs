@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.DataDisplay.DataGrid;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDataGridColumnComponentTest : BunitContext
+public class XFDataGridColumnComponentTest : XForgeTestContext
 {
     public XFDataGridColumnComponentTest()
     {

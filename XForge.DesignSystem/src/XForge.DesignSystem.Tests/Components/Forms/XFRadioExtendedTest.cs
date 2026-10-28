@@ -7,7 +7,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFRadioExtendedTest : BunitContext
+public sealed class XFRadioExtendedTest : XForgeTestContext
 {
     private static void AddRadio0(RenderTreeBuilder builder, string value, string label)
     {

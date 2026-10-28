@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Forms.Validation;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFValidatorComponentTest : BunitContext
+public class XFValidatorComponentTest : XForgeTestContext
 {
     [Fact]
     public void RequiredValidator_NullValue_ShowsError()

@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Xunit;
@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.DataDisplay.Table;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTableRowComponentTest : BunitContext
+public class XFTableRowComponentTest : XForgeTestContext
 {
     public XFTableRowComponentTest()
     {

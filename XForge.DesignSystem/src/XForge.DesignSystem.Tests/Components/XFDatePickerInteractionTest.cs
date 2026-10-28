@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public sealed class XFDatePickerInteractionTest : BunitContext
+public sealed class XFDatePickerInteractionTest : XForgeTestContext
 {
     public XFDatePickerInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

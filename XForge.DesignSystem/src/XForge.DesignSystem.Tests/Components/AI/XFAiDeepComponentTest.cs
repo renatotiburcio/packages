@@ -83,7 +83,7 @@ internal sealed class MockAiAudioProvider : IAiAudioProvider
 /// <summary>
 /// Deep tests for XFAiDataGridAssistant and XFAiVoiceAssistant.
 /// </summary>
-public sealed class XFAiDeepComponentTest : BunitContext
+public sealed class XFAiDeepComponentTest : XForgeTestContext
 {
     public XFAiDeepComponentTest()
     {

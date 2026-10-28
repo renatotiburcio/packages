@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.DataDisplay.Avatar;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFAvatarComponentTest : BunitContext
+public class XFAvatarComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_Name_GeneratesInitialsAndAriaLabel()

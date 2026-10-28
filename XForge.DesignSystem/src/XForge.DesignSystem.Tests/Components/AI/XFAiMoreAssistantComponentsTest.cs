@@ -52,7 +52,7 @@ internal sealed class AssistantMockProvider2 : IAiProvider, IAsyncDisposable
 /// XFAiVisionPanel, XFAiMultiModalChat, XFAiNFeAnalyzer, XFAiDashboardInsight,
 /// and XFAiValidationSummary.
 /// </summary>
-public sealed class XFAiMoreAssistantComponentsTest : BunitContext
+public sealed class XFAiMoreAssistantComponentsTest : XForgeTestContext
 {
     public XFAiMoreAssistantComponentsTest()
     {

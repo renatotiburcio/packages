@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Overlays;
 
-public sealed class XFDropdownMenuExtendedTest : BunitContext
+public sealed class XFDropdownMenuExtendedTest : XForgeTestContext
 {
     public XFDropdownMenuExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

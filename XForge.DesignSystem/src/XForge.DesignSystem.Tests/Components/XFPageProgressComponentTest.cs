@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Feedback.Progress;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFPageProgressComponentTest : BunitContext
+public class XFPageProgressComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_InitiallyHidden()

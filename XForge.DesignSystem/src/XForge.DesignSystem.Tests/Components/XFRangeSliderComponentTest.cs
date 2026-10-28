@@ -9,7 +9,7 @@ using XForge.DesignSystem.Components.Forms.RangeSlider;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFRangeSliderComponentTest : BunitContext
+public class XFRangeSliderComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithValues_ShowsRange()

@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Navigation.Steps;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFWizardStepComponentTest : BunitContext
+public class XFWizardStepComponentTest : XForgeTestContext
 {
     public XFWizardStepComponentTest()
     {

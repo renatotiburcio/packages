@@ -43,7 +43,7 @@ internal sealed class ReportMockProvider : IAiProvider, IDisposable
     public void Dispose() { }
 }
 
-public sealed class XFAiReportBuilderTest : BunitContext
+public sealed class XFAiReportBuilderTest : XForgeTestContext
 {
     public XFAiReportBuilderTest()
     {

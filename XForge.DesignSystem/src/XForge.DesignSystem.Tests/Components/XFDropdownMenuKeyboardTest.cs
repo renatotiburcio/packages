@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Overlays.Popover;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDropdownMenuKeyboardTest : BunitContext
+public class XFDropdownMenuKeyboardTest : XForgeTestContext
 {
     public XFDropdownMenuKeyboardTest()
     {

@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
@@ -8,7 +8,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDragDropZoneComponentTest : Bunit.BunitContext
+public class XFDragDropZoneComponentTest : XForgeTestContext
 {
     public XFDragDropZoneComponentTest()
     {

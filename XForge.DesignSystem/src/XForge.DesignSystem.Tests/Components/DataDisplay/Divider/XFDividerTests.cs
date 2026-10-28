@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay.Divider;
 
-public class XFDividerTests : BunitContext
+public class XFDividerTests : XForgeTestContext
 {
     [Fact]
     public void Divider_RendersBaseClass()

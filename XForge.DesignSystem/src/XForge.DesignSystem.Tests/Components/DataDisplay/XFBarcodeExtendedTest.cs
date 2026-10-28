@@ -4,7 +4,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFBarcodeExtendedTest : BunitContext
+public class XFBarcodeExtendedTest : XForgeTestContext
 {
     public XFBarcodeExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

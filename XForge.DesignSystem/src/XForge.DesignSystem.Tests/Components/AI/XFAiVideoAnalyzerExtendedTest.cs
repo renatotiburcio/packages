@@ -7,7 +7,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.AI;
 
-public sealed class XFAiVideoAnalyzerExtendedTest : BunitContext
+public sealed class XFAiVideoAnalyzerExtendedTest : XForgeTestContext
 {
     public XFAiVideoAnalyzerExtendedTest()
     {

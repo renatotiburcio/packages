@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Layout;
 
-public class XFGridExtendedTest : BunitContext
+public class XFGridExtendedTest : XForgeTestContext
 {
     public XFGridExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

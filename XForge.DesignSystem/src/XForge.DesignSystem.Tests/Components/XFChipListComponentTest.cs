@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.DataDisplay.Chip;
@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFChipListComponentTest : BunitContext
+public class XFChipListComponentTest : XForgeTestContext
 {
     public XFChipListComponentTest()
     {

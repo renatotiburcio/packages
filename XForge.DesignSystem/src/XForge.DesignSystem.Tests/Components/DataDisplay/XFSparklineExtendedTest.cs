@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFSparklineExtendedTest : BunitContext
+public class XFSparklineExtendedTest : XForgeTestContext
 {
     public XFSparklineExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

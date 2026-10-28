@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Emoji;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSkintonePickerComponentTest : BunitContext
+public class XFSkintonePickerComponentTest : XForgeTestContext
 {
     public XFSkintonePickerComponentTest()
     {

@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Xunit;
 using XForge.DesignSystem.Components.Forms.InputMask;
 using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFInputMaskBRTest : BunitContext
+public sealed class XFInputMaskBRTest : XForgeTestContext
 {
     public XFInputMaskBRTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

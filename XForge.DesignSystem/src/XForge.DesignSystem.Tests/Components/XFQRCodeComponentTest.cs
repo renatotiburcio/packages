@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.DataDisplay.QRCode;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFQRCodeComponentTest : BunitContext
+public class XFQRCodeComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_ShortValueGeneratesSvgModules()

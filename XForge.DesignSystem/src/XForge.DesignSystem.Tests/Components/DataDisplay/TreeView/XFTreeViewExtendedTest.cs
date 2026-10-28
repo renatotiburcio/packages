@@ -12,7 +12,7 @@ namespace XForge.DesignSystem.Tests.Components.DataDisplay.TreeView;
 /// checkboxes, filtering, keyboard navigation, and visibility.
 /// Uses BunitContext (not obsolete TestContext) with JSRuntimeMode.Loose.
 /// </summary>
-public sealed class XFTreeViewExtendedTest : BunitContext
+public sealed class XFTreeViewExtendedTest : XForgeTestContext
 {
     public XFTreeViewExtendedTest()
     {

@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Layout.TileLayout;
 
-public class XFTileLayoutTest : BunitContext
+public class XFTileLayoutTest : XForgeTestContext
 {
     public XFTileLayoutTest()
     {

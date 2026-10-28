@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Overlays.DropdownMenu;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFContextMenuKeyboardTest : BunitContext
+public class XFContextMenuKeyboardTest : XForgeTestContext
 {
     public XFContextMenuKeyboardTest()
     {

@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public sealed class XFStepsInteractionTest : BunitContext
+public sealed class XFStepsInteractionTest : XForgeTestContext
 {
     public XFStepsInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void Renders_Default() => Render<XFSteps>();

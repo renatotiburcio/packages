@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Feedback.RichTextEditor;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFRichTextEditorComponentTest : BunitContext
+public class XFRichTextEditorComponentTest : XForgeTestContext
 {
     public XFRichTextEditorComponentTest()
     {

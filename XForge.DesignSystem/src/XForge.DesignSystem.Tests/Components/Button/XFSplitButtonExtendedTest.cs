@@ -7,7 +7,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Button;
 
-public sealed class XFSplitButtonExtendedTest : BunitContext
+public sealed class XFSplitButtonExtendedTest : XForgeTestContext
 {
     public XFSplitButtonExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

@@ -10,7 +10,7 @@ namespace XForge.DesignSystem.Tests.Components;
 /// Tests for event naming (D-001 On{Action} convention).
 /// Verifies that OnClick/OnDismiss fire correctly and keyboard events work.
 /// </summary>
-public class XFEventAliasTest : Bunit.BunitContext
+public class XFEventAliasTest : XForgeTestContext
 {
     #region XFChip — OnClick
 

@@ -10,7 +10,7 @@ using XForge.DesignSystem.Components.Forms.Radio;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFRadioComponentTest : BunitContext
+public class XFRadioComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithLabelDescriptionAndSelectedOption()

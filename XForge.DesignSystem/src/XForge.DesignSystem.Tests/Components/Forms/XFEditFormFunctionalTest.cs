@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Xunit;
@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFEditFormFunctionalTest : BunitContext
+public sealed class XFEditFormFunctionalTest : XForgeTestContext
 {
     public XFEditFormFunctionalTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

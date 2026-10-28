@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Layout;
 
-public class XFDrawerExtendedTest : BunitContext
+public class XFDrawerExtendedTest : XForgeTestContext
 {
     public XFDrawerExtendedTest()
     {

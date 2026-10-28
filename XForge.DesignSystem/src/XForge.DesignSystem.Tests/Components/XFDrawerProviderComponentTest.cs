@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Overlays.Drawer;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDrawerProviderComponentTest : BunitContext
+public class XFDrawerProviderComponentTest : XForgeTestContext
 {
     private readonly XFDrawerService drawerService = new();
 

@@ -4,7 +4,7 @@ using XForge.Components.Charts;
 
 namespace XForge.DesignSystem.Tests.Components.Charts;
 
-public class XFRadarChartTest : Bunit.BunitContext
+public class XFRadarChartTest : XForgeTestContext
 {
     public XFRadarChartTest()
     {

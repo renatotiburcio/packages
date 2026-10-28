@@ -4,7 +4,7 @@ using XForge.Components.Latam;
 
 namespace XForge.DesignSystem.Tests.Components.Latam;
 
-public class XFPixKeyInputTest : Bunit.BunitContext
+public class XFPixKeyInputTest : XForgeTestContext
 {
     public XFPixKeyInputTest()
     {

@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Forms.Repeater;
 
-public class XFRepeaterTest : BunitContext
+public class XFRepeaterTest : XForgeTestContext
 {
     public XFRepeaterTest()
     {

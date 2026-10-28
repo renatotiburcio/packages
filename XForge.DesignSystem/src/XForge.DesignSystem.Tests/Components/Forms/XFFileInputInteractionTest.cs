@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFFileInputInteractionTest : BunitContext
+public sealed class XFFileInputInteractionTest : XForgeTestContext
 {
     public XFFileInputInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void Renders_Default() => Render<XFFileInput>();

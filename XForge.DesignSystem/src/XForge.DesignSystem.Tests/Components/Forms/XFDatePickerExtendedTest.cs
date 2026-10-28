@@ -7,7 +7,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFDatePickerExtendedTest : BunitContext
+public sealed class XFDatePickerExtendedTest : XForgeTestContext
 {
     public XFDatePickerExtendedTest()
     {

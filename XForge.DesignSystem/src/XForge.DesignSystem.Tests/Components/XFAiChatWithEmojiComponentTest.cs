@@ -1,10 +1,10 @@
-﻿using Bunit;
+using Bunit;
 using Xunit;
 using XForge.DesignSystem.Components.AI;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFAiChatWithEmojiComponentTest : BunitContext
+public class XFAiChatWithEmojiComponentTest : XForgeTestContext
 {
     public XFAiChatWithEmojiComponentTest()
     {

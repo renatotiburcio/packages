@@ -7,7 +7,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.AI.Insights;
 
-public class XFAiSuggestionPanelExtendedTest : BunitContext
+public class XFAiSuggestionPanelExtendedTest : XForgeTestContext
 {
     private static XFAiSuggestion CreateSuggestion(string id = "s1", string title = "Test", XFAiSuggestionType type = XFAiSuggestionType.Action, double? confidence = 0.85)
     {

@@ -7,7 +7,7 @@ using XForge.DesignSystem.Services;
 
 namespace XForge.DesignSystem.Tests.Components.Layout;
 
-public class XFRailExtendedTest : BunitContext
+public class XFRailExtendedTest : XForgeTestContext
 {
     public XFRailExtendedTest()
     {

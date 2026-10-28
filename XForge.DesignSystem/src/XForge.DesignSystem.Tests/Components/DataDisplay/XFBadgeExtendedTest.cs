@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFBadgeExtendedTest : BunitContext
+public class XFBadgeExtendedTest : XForgeTestContext
 {
     public XFBadgeExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

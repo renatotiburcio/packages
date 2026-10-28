@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Forms.Radio;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFRadioKeyboardTest : BunitContext
+public class XFRadioKeyboardTest : XForgeTestContext
 {
     [Fact]
     public void Tab_Key_Moves_Focus_To_Radio_Group_First_Option()

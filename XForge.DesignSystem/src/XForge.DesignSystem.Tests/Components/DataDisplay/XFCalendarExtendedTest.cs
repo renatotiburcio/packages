@@ -6,7 +6,7 @@ using Xunit;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public sealed class XFCalendarExtendedTest : BunitContext
+public sealed class XFCalendarExtendedTest : XForgeTestContext
 {
     public XFCalendarExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

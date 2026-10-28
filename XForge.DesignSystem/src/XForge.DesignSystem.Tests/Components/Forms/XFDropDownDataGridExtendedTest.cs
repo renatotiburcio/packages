@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFDropDownDataGridExtendedTest : BunitContext
+public sealed class XFDropDownDataGridExtendedTest : XForgeTestContext
 {
     public XFDropDownDataGridExtendedTest()
     {

@@ -7,7 +7,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFChartComponentTest : BunitContext
+public class XFChartComponentTest : XForgeTestContext
 {
     public XFChartComponentTest()
     {

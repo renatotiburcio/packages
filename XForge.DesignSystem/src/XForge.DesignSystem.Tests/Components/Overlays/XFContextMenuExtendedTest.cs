@@ -8,7 +8,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Overlays;
 
-public sealed class XFContextMenuExtendedTest : BunitContext
+public sealed class XFContextMenuExtendedTest : XForgeTestContext
 {
     public XFContextMenuExtendedTest()
     {

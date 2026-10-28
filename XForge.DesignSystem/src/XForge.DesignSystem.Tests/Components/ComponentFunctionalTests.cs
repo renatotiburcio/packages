@@ -1,4 +1,4 @@
-﻿// T201: Sprint 6 - Functional render tests for major XForge components.
+// T201: Sprint 6 - Functional render tests for major XForge components.
 // Exercises actual component lifecycle (OnInitialized, OnParametersSet, BuildRenderTree)
 // to contribute meaningful line coverage beyond type-existence smoke tests.
 using Bunit;
@@ -24,7 +24,7 @@ namespace XForge.DesignSystem.Tests.Components;
 /// assert the render produces markup. Exercises the full Blazor component
 /// lifecycle (OnInitialized, OnParametersSet, BuildRenderTree) for line coverage.
 /// </summary>
-public class ComponentFunctionalTests : BunitContext
+public class ComponentFunctionalTests : XForgeTestContext
 {
     public ComponentFunctionalTests()
     {

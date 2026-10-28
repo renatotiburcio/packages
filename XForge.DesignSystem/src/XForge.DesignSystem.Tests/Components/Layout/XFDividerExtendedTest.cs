@@ -11,7 +11,7 @@ namespace XForge.DesignSystem.Tests.Components.Layout;
 /// spacing, thickness, inset, child content, visibility, and CanCreate.
 /// Complements XFDividerComponentTest — no test name overlap.
 /// </summary>
-public class XFDividerExtendedTest : BunitContext
+public class XFDividerExtendedTest : XForgeTestContext
 {
     // ── Base class / base CSS ──────────────────────────────────────────
 

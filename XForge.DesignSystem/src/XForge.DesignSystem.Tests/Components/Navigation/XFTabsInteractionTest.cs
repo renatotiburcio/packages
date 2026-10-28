@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public sealed class XFTabsInteractionTest : BunitContext
+public sealed class XFTabsInteractionTest : XForgeTestContext
 {
     public XFTabsInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void Renders_Default() => Render<XFTabs>();

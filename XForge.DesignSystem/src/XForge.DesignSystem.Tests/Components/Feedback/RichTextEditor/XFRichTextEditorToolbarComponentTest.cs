@@ -10,7 +10,7 @@ namespace XForge.DesignSystem.Tests.Components.Feedback.RichTextEditor;
 /// <summary>
 /// Tests all 11 RichTextEditor toolbar components: the container and 10 button types.
 /// </summary>
-public class XFRichTextEditorToolbarComponentTest : BunitContext
+public class XFRichTextEditorToolbarComponentTest : XForgeTestContext
 {
     public XFRichTextEditorToolbarComponentTest()
     {

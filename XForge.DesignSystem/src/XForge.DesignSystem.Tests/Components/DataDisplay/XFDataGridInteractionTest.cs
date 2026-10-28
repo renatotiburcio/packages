@@ -8,7 +8,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public sealed class XFDataGridInteractionTest : BunitContext
+public sealed class XFDataGridInteractionTest : XForgeTestContext
 {
     public XFDataGridInteractionTest()
     {

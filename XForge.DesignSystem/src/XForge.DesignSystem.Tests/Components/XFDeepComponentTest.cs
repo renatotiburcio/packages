@@ -22,7 +22,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDeepComponentTest : BunitContext
+public class XFDeepComponentTest : XForgeTestContext
 {
     public XFDeepComponentTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

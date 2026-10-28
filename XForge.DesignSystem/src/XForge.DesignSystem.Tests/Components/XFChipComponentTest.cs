@@ -9,7 +9,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFChipComponentTest : BunitContext
+public class XFChipComponentTest : XForgeTestContext
 {
     public XFChipComponentTest()
     {

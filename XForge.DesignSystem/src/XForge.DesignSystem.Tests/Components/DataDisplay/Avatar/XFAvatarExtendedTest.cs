@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.DataDisplay.Avatar;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay.Avatar;
 
-public class XFAvatarExtendedTest : BunitContext
+public class XFAvatarExtendedTest : XForgeTestContext
 {
     [Fact]
     public void SizeXs_RendersExtraSmall()

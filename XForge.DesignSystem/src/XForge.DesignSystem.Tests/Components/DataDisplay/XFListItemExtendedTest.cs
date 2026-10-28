@@ -10,7 +10,7 @@ namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 /// Extended tests for XFListItem to cover parameters, selection modes,
 /// cascading parent, click interaction, and accessibility attributes.
 /// </summary>
-public sealed class XFListItemExtendedTest : BunitContext
+public sealed class XFListItemExtendedTest : XForgeTestContext
 {
     public XFListItemExtendedTest()
     {

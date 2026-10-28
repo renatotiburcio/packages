@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms.Checkbox;
 
-public class XFCheckboxExtendedTest : BunitContext
+public class XFCheckboxExtendedTest : XForgeTestContext
 {
     [Fact]
     public void LabelPosition_Start_RendersLabelBeforeInput()

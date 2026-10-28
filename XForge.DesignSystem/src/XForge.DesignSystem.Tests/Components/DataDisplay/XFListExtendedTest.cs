@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFListExtendedTest : BunitContext
+public class XFListExtendedTest : XForgeTestContext
 {
     public XFListExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

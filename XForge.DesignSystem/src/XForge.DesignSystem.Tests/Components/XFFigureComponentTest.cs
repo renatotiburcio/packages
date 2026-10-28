@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.DataDisplay.Image;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFFigureComponentTest : BunitContext
+public class XFFigureComponentTest : XForgeTestContext
 {
     public XFFigureComponentTest()
     {

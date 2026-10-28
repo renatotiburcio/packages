@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.TimeInput;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTimeInputComponentTest : BunitContext
+public class XFTimeInputComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithLabelHelperAndConstraints()

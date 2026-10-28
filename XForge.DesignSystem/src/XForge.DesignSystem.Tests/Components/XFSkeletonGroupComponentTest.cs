@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Feedback.Skeleton;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSkeletonGroupComponentTest : BunitContext
+public class XFSkeletonGroupComponentTest : XForgeTestContext
 {
     public XFSkeletonGroupComponentTest()
     {

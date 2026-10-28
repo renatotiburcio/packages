@@ -8,7 +8,7 @@ using XForge.Localization;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFGanttComponentTest : BunitContext
+public class XFGanttComponentTest : XForgeTestContext
 {
     public XFGanttComponentTest()
     {

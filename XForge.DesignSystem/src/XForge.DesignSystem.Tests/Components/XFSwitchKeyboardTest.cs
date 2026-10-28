@@ -9,7 +9,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSwitchKeyboardTest : BunitContext
+public class XFSwitchKeyboardTest : XForgeTestContext
 {
     public XFSwitchKeyboardTest()
     {

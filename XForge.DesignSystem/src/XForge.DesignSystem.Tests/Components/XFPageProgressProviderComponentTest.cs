@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Feedback.Progress;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFPageProgressProviderComponentTest : Bunit.BunitContext
+public class XFPageProgressProviderComponentTest : XForgeTestContext
 {
     public XFPageProgressProviderComponentTest()
     {

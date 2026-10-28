@@ -12,7 +12,7 @@ namespace XForge.DesignSystem.Tests.Components.Forms.RangeSlider;
 /// HelperClass, and AllowOverlap rendering.
 /// Complements XFRangeSliderComponentTest — no test name overlap.
 /// </summary>
-public class XFRangeSliderExtendedTest : BunitContext
+public class XFRangeSliderExtendedTest : XForgeTestContext
 {
     // ── HelperClass rendering (line 116) ────────────────────────────────
 

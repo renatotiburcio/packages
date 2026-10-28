@@ -4,7 +4,7 @@ using XForge.Components.Latam;
 
 namespace XForge.DesignSystem.Tests.Components.Latam;
 
-public class XFVehiclePlateInputTest : Bunit.BunitContext
+public class XFVehiclePlateInputTest : XForgeTestContext
 {
     public XFVehiclePlateInputTest()
     {

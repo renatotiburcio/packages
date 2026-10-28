@@ -5,7 +5,7 @@ using XForge.Components.Lgpd;
 
 namespace XForge.DesignSystem.Tests.Components.Lgpd;
 
-public class XFDataExportRequestTests : BunitContext
+public class XFDataExportRequestTests : XForgeTestContext
 {
     [Fact]
     public void Render_ShowsExportForm()

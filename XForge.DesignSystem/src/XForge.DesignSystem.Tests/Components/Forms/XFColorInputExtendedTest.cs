@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public class XFColorInputExtendedTest : BunitContext
+public class XFColorInputExtendedTest : XForgeTestContext
 {
     public XFColorInputExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

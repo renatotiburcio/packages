@@ -5,7 +5,7 @@ using XForge.Components.Lgpd;
 
 namespace XForge.DesignSystem.Tests.Components.Lgpd;
 
-public class XFConsentBannerTests : BunitContext
+public class XFConsentBannerTests : XForgeTestContext
 {
     [Fact]
     public void Render_WhenVisible_ShowsBanner()

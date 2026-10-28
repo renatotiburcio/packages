@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFFileInputGapTest : BunitContext
+public sealed class XFFileInputGapTest : XForgeTestContext
 {
     public XFFileInputGapTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

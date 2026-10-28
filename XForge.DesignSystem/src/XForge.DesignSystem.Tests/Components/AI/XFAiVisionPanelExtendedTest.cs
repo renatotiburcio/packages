@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
@@ -9,7 +9,7 @@ using AiStreamChunk = XForge.DesignSystem.Components.AI.Common.AiStreamChunk;
 
 namespace XForge.DesignSystem.Tests.Components.AI;
 
-public sealed class XFAiVisionPanelExtendedTest : BunitContext
+public sealed class XFAiVisionPanelExtendedTest : XForgeTestContext
 {
     private readonly InMemoryAiVisionProvider _provider = new();
 

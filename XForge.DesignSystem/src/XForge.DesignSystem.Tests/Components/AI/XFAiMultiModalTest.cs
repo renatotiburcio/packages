@@ -15,7 +15,7 @@ namespace XForge.DesignSystem.Tests.Components.AI;
 /// XFAiMultiModalChat, and XFAiVideoAnalyzer.
 /// Covers unit tests, rendering, interaction, accessibility, and snapshot.
 /// </summary>
-public class XFAiMultiModalTest : BunitContext
+public class XFAiMultiModalTest : XForgeTestContext
 {
     public XFAiMultiModalTest()
     {

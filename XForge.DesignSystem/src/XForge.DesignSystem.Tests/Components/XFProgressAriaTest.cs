@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.Feedback.Progress;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFProgressAriaTest : BunitContext
+public class XFProgressAriaTest : XForgeTestContext
 {
     [Fact]
     public void Role_IsProgressbar()

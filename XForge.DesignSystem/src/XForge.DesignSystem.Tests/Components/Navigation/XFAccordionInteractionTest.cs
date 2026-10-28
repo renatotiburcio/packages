@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public sealed class XFAccordionInteractionTest : BunitContext
+public sealed class XFAccordionInteractionTest : XForgeTestContext
 {
     public XFAccordionInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void Renders_Default() => Render<XFAccordion>();

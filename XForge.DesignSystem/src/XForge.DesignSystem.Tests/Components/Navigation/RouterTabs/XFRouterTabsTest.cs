@@ -8,7 +8,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation.RouterTabs;
 
-public class XFRouterTabsTest : BunitContext
+public class XFRouterTabsTest : XForgeTestContext
 {
     public XFRouterTabsTest()
     {

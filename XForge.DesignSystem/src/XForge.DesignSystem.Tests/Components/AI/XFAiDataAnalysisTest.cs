@@ -16,7 +16,7 @@ namespace XForge.DesignSystem.Tests.Components.AI;
 /// XFAiDashboardInsight, XFAiDocumentReader.
 /// Covers rendering, parameters, events, states, accessibility, models, and security.
 /// </summary>
-public class XFAiDataAnalysisTest : BunitContext
+public class XFAiDataAnalysisTest : XForgeTestContext
 {
     public XFAiDataAnalysisTest()
     {

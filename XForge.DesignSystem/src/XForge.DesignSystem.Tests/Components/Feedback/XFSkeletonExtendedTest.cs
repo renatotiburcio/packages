@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Feedback;
 
-public class XFSkeletonExtendedTest : BunitContext
+public class XFSkeletonExtendedTest : XForgeTestContext
 {
     public XFSkeletonExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

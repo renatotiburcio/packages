@@ -4,7 +4,7 @@ using XForge.Components.Latam;
 
 namespace XForge.DesignSystem.Tests.Components.Latam;
 
-public class XFBoletoGeneratorTest : Bunit.BunitContext
+public class XFBoletoGeneratorTest : XForgeTestContext
 {
     public XFBoletoGeneratorTest()
     {

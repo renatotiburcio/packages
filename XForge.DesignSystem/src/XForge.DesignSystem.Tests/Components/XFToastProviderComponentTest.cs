@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFToastProviderComponentTest : BunitContext
+public class XFToastProviderComponentTest : XForgeTestContext
 {
     public XFToastProviderComponentTest()
     {

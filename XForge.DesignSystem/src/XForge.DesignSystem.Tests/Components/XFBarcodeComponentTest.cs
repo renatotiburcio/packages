@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.DataDisplay.Barcode;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFBarcodeComponentTest : BunitContext
+public class XFBarcodeComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_Code128SvgWithBarsAndText()

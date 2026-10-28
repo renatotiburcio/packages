@@ -4,7 +4,7 @@ using XForge.Components.Latam;
 
 namespace XForge.DesignSystem.Tests.Components.Latam;
 
-public class XFCfopSelectTest : Bunit.BunitContext
+public class XFCfopSelectTest : XForgeTestContext
 {
     public XFCfopSelectTest()
     {

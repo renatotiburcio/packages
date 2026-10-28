@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFFileInputTest : BunitContext
+public sealed class XFFileInputTest : XForgeTestContext
 {
     public XFFileInputTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

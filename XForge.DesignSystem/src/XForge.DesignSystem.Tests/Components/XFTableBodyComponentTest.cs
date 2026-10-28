@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.DataDisplay.Table;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTableBodyComponentTest : BunitContext
+public class XFTableBodyComponentTest : XForgeTestContext
 {
     public XFTableBodyComponentTest()
     {

@@ -10,7 +10,7 @@ namespace XForge.DesignSystem.Tests.Components;
 /// <summary>
 /// Tests for XFMap and XFNavigationGuard components.
 /// </summary>
-public sealed class XFMapAndNavigationGuardTest : BunitContext
+public sealed class XFMapAndNavigationGuardTest : XForgeTestContext
 {
     public XFMapAndNavigationGuardTest()
     {

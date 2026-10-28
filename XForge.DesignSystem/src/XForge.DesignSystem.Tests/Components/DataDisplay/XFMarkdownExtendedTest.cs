@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFMarkdownExtendedTest : BunitContext
+public class XFMarkdownExtendedTest : XForgeTestContext
 {
     public XFMarkdownExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

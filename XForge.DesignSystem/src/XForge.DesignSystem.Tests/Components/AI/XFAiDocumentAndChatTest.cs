@@ -44,7 +44,7 @@ internal sealed class DocMockProvider : IAiProvider, IAsyncDisposable
 /// <summary>
 /// Tests for XFAiDocumentReader, XFAiReportBuilder, and XFAiChat.
 /// </summary>
-public sealed class XFAiDocumentAndChatTest : BunitContext
+public sealed class XFAiDocumentAndChatTest : XForgeTestContext
 {
     public XFAiDocumentAndChatTest()
     {

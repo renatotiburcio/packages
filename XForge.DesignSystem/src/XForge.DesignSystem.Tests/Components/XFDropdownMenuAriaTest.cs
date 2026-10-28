@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Overlays.DropdownMenu;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDropdownMenuAriaTest : BunitContext
+public class XFDropdownMenuAriaTest : XForgeTestContext
 {
     public XFDropdownMenuAriaTest()
     {

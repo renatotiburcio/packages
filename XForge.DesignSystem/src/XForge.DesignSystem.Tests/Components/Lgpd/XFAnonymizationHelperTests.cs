@@ -4,7 +4,7 @@ using XForge.Components.Lgpd;
 
 namespace XForge.DesignSystem.Tests.Components.Lgpd;
 
-public class XFAnonymizationHelperTests : BunitContext
+public class XFAnonymizationHelperTests : XForgeTestContext
 {
     [Fact]
     public void Render_ShowsAnonymizationForm()

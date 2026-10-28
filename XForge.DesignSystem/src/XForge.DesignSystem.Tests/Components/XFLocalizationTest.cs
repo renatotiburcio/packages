@@ -15,7 +15,7 @@ namespace XForge.DesignSystem.Tests.Components;
 /// Tests for i18n/localization defaults (S-G008).
 /// Verifies all user-facing strings have PT-BR defaults via [Parameter] properties.
 /// </summary>
-public class XFLocalizationTest : Bunit.BunitContext
+public class XFLocalizationTest : XForgeTestContext
 {
     #region XFTab — CloseTabLabel
 

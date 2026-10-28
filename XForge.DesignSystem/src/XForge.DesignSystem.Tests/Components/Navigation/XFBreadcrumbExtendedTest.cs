@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public class XFBreadcrumbExtendedTest : BunitContext
+public class XFBreadcrumbExtendedTest : XForgeTestContext
 {
     public XFBreadcrumbExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

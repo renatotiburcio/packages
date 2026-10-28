@@ -9,7 +9,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public class XFMenuExtendedTest : BunitContext
+public class XFMenuExtendedTest : XForgeTestContext
 {
     private static readonly IReadOnlyList<XFMenuItem> DefaultItems = new[]
     {

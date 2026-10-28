@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.DataDisplay.Code;
@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFHighlighterComponentTest : BunitContext
+public class XFHighlighterComponentTest : XForgeTestContext
 {
     public XFHighlighterComponentTest()
     {

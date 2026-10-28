@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Utilities;
 
-public class XFDragDropZoneExtendedTest : BunitContext
+public class XFDragDropZoneExtendedTest : XForgeTestContext
 {
     public XFDragDropZoneExtendedTest()
     {

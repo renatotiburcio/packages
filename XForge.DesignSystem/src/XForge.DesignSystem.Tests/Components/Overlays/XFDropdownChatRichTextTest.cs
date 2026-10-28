@@ -9,7 +9,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Overlays;
 
-public sealed class XFDropdownChatRichTextTest : BunitContext
+public sealed class XFDropdownChatRichTextTest : XForgeTestContext
 {
     public XFDropdownChatRichTextTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void DropdownMenu_Renders() => Render<XFDropdownMenu>();

@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFEditFormSubmitTest : BunitContext
+public sealed class XFEditFormSubmitTest : XForgeTestContext
 {
     public XFEditFormSubmitTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     private class TestModel { public string? Name { get; set; } public string? Email { get; set; } }

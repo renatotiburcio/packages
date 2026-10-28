@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.Utilities.Animate;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFAnimateComponentTest : BunitContext
+public class XFAnimateComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_VisibleContentWithEnteredState()

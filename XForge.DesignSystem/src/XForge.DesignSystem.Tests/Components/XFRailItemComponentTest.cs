@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,7 @@ using XForge.DesignSystem.Services;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFRailItemComponentTest : Bunit.BunitContext
+public class XFRailItemComponentTest : XForgeTestContext
 {
     public XFRailItemComponentTest()
     {

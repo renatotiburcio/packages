@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.DataDisplay.Carousel;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFCarouselComponentTest : Bunit.BunitContext
+public class XFCarouselComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithSlidesControlsAndIndicators()

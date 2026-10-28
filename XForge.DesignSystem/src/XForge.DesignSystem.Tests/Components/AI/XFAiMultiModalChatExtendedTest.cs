@@ -45,7 +45,7 @@ internal sealed class ExtendedMultiModalMockProvider : IAiProvider, IDisposable,
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }
 
-public sealed class XFAiMultiModalChatExtendedTest : BunitContext
+public sealed class XFAiMultiModalChatExtendedTest : XForgeTestContext
 {
     private readonly ExtendedMultiModalMockProvider _mockProvider;
 

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.AI.Prompting;
 
-public class XFAiCommandPaletteExtendedTest : BunitContext
+public class XFAiCommandPaletteExtendedTest : XForgeTestContext
 {
     public XFAiCommandPaletteExtendedTest()
     {

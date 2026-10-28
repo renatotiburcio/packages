@@ -44,7 +44,7 @@ internal sealed class DataGridMockProvider : IAiProvider, IAsyncDisposable
 /// Tests for XFAiDataGridAssistant — query submission, insight generation,
 /// error handling, and grid query/insight DTOs.
 /// </summary>
-public sealed class XFAiDataGridAssistantTest : BunitContext
+public sealed class XFAiDataGridAssistantTest : XForgeTestContext
 {
     public XFAiDataGridAssistantTest()
     {

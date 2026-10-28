@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Overlays;
 
-public sealed class XFDrawerInteractionTest : BunitContext
+public sealed class XFDrawerInteractionTest : XForgeTestContext
 {
     public XFDrawerInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void Renders_Default() => Render<XFDrawer>();

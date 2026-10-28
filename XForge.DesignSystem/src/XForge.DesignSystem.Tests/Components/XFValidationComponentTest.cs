@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Forms.Validation;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFValidationComponentTest : BunitContext
+public class XFValidationComponentTest : XForgeTestContext
 {
     [Fact]
     public void Message_RendersManualItems()

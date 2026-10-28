@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Xunit;
 using XForge.DesignSystem.Components.Feedback.Skeleton;
@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSkeletonTableComponentTest : Bunit.BunitContext
+public class XFSkeletonTableComponentTest : XForgeTestContext
 {
     public XFSkeletonTableComponentTest()
     {

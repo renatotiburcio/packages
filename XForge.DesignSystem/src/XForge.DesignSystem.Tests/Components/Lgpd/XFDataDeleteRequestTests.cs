@@ -5,7 +5,7 @@ using XForge.Components.Lgpd;
 
 namespace XForge.DesignSystem.Tests.Components.Lgpd;
 
-public class XFDataDeleteRequestTests : BunitContext
+public class XFDataDeleteRequestTests : XForgeTestContext
 {
     [Fact]
     public void Render_ShowsDeleteForm()

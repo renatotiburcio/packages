@@ -6,7 +6,7 @@ using Xunit;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSpeechToTextComponentTest : BunitContext
+public class XFSpeechToTextComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_Default_RendersButton()

@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.Textarea;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTextareaComponentTest : BunitContext
+public class XFTextareaComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithLabelHelperAndPlaceholder()

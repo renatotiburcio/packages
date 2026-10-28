@@ -7,7 +7,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFMapComponentTest : BunitContext
+public class XFMapComponentTest : XForgeTestContext
 {
     public XFMapComponentTest()
     {

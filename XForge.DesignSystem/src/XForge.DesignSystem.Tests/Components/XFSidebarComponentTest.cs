@@ -1,10 +1,10 @@
-﻿using Bunit;
+using Bunit;
 using Xunit;
 using XForge.DesignSystem.Components.Layout.Shell;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSidebarComponentTest : BunitContext
+public class XFSidebarComponentTest : XForgeTestContext
 {
     public XFSidebarComponentTest()
     {

@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Icon;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFIconPickerComponentTest : BunitContext
+public class XFIconPickerComponentTest : XForgeTestContext
 {
     public XFIconPickerComponentTest()
     {

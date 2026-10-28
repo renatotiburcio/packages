@@ -9,7 +9,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms.EditForm;
 
-public class XFEditFormExtendedTest : BunitContext
+public class XFEditFormExtendedTest : XForgeTestContext
 {
     public XFEditFormExtendedTest()
     {

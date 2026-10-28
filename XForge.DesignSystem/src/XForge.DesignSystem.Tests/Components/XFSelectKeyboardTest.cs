@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Forms.Select;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSelectKeyboardTest : BunitContext
+public class XFSelectKeyboardTest : XForgeTestContext
 {
     [Fact]
     public void Tab_Key_Moves_Focus_To_Select()

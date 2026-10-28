@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Interaction.Gesture;
 
-public class XFGestureDetectorTest : BunitContext
+public class XFGestureDetectorTest : XForgeTestContext
 {
     public XFGestureDetectorTest()
     {

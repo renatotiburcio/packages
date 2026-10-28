@@ -42,7 +42,7 @@ internal sealed class DataGridMockProvider : IAiProvider
         => Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 }
 
-public class XFAiDataGridAssistantExtendedTest : BunitContext
+public class XFAiDataGridAssistantExtendedTest : XForgeTestContext
 {
     public XFAiDataGridAssistantExtendedTest()
     {

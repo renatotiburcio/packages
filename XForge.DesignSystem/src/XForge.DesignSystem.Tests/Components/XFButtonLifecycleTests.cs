@@ -9,7 +9,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFButtonLifecycleTests : BunitContext
+public class XFButtonLifecycleTests : XForgeTestContext
 {
     public XFButtonLifecycleTests()
     {

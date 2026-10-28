@@ -6,7 +6,7 @@ using XForge.DesignSystem.Services;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public sealed class XFNavigationGuardTest : BunitContext
+public sealed class XFNavigationGuardTest : XForgeTestContext
 {
     public XFNavigationGuardTest()
     {

@@ -9,7 +9,7 @@ namespace XForge.DesignSystem.Tests.Components.Forms;
 /// <summary>
 /// Tests for XFSpeechToText component.
 /// </summary>
-public sealed class XFSpeechToTextTest : BunitContext
+public sealed class XFSpeechToTextTest : XForgeTestContext
 {
     public XFSpeechToTextTest()
     {

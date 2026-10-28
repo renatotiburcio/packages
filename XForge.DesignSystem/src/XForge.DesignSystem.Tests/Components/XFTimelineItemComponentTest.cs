@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
@@ -9,7 +9,7 @@ using XForge.DesignSystem.Components.Layout;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTimelineItemComponentTest : Bunit.BunitContext
+public class XFTimelineItemComponentTest : XForgeTestContext
 {
     public XFTimelineItemComponentTest()
     {

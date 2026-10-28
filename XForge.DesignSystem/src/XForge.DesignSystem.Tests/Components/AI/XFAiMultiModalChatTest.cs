@@ -45,7 +45,7 @@ internal sealed class MultiModalMockProvider : IAiProvider, IDisposable
 /// <summary>
 /// Tests for XFAiMultiModalChat component.
 /// </summary>
-public sealed class XFAiMultiModalChatTest : BunitContext
+public sealed class XFAiMultiModalChatTest : XForgeTestContext
 {
     public XFAiMultiModalChatTest()
     {

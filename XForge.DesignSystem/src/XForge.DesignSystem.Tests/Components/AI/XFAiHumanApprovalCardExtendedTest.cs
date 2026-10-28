@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.AI;
 
-public sealed class XFAiHumanApprovalCardExtendedTest : BunitContext
+public sealed class XFAiHumanApprovalCardExtendedTest : XForgeTestContext
 {
     public XFAiHumanApprovalCardExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

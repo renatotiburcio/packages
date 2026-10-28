@@ -53,7 +53,7 @@ internal sealed class ExtendedDocMockProvider : IAiProvider, IDisposable, IAsync
 /// Extended tests for XFAiDocumentReader covering parameters, render fragments,
 /// document types, public methods, and disposal.
 /// </summary>
-public sealed class XFAiDocumentReaderExtendedTest : BunitContext
+public sealed class XFAiDocumentReaderExtendedTest : XForgeTestContext
 {
     public XFAiDocumentReaderExtendedTest()
     {

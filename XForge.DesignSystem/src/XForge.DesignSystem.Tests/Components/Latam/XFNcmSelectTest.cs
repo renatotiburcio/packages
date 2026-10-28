@@ -4,7 +4,7 @@ using XForge.Components.Latam;
 
 namespace XForge.DesignSystem.Tests.Components.Latam;
 
-public class XFNcmSelectTest : Bunit.BunitContext
+public class XFNcmSelectTest : XForgeTestContext
 {
     public XFNcmSelectTest()
     {

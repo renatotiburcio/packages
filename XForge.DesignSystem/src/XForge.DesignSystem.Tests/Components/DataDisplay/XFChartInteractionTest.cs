@@ -8,7 +8,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public sealed class XFChartInteractionTest : BunitContext
+public sealed class XFChartInteractionTest : XForgeTestContext
 {
     public XFChartInteractionTest()
     {

@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.DataDisplay.Markdown;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFMarkdownComponentTest : Bunit.BunitContext
+public class XFMarkdownComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_BasicMarkdownBlocks()

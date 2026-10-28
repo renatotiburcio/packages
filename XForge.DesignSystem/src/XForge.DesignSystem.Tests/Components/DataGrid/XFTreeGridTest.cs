@@ -4,7 +4,7 @@ using XForge.Components.DataGrid;
 
 namespace XForge.DesignSystem.Tests.Components.DataGrid;
 
-public class XFTreeGridTest : Bunit.BunitContext
+public class XFTreeGridTest : XForgeTestContext
 {
     public XFTreeGridTest()
     {

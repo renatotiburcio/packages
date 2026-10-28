@@ -8,7 +8,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public class XFMultiSelectExtendedTest : BunitContext
+public class XFMultiSelectExtendedTest : XForgeTestContext
 {
     private static readonly Option[] Options = new[]
     {

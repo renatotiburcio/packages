@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Navigation.TOC;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTOCComponentTest : BunitContext
+public class XFTOCComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_UsesNavAndHashLinks()

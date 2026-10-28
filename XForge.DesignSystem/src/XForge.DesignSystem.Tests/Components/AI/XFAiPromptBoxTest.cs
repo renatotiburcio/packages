@@ -34,7 +34,7 @@ internal sealed class PromptBoxMockProvider : IAiProvider, IDisposable
     public void Dispose() { }
 }
 
-public sealed class XFAiPromptBoxTest : BunitContext
+public sealed class XFAiPromptBoxTest : XForgeTestContext
 {
     public XFAiPromptBoxTest()
     {

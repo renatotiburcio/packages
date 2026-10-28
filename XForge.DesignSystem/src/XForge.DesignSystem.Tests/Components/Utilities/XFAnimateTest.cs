@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Utilities.Animate;
 
 namespace XForge.DesignSystem.Tests.Components.Utilities;
 
-public sealed class XFAnimateTest : BunitContext
+public sealed class XFAnimateTest : XForgeTestContext
 {
     public XFAnimateTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

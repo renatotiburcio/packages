@@ -8,7 +8,7 @@ namespace XForge.DesignSystem.Tests.Components.Forms;
 
 internal sealed record ComboboxOption(int Id, string Name, bool Locked);
 
-public sealed class XFComboboxExtendedTest : BunitContext
+public sealed class XFComboboxExtendedTest : XForgeTestContext
 {
     private readonly IReadOnlyList<ComboboxOption> _options = new[]
     {

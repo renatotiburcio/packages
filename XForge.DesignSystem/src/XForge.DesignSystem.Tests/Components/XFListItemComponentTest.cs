@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.DataDisplay.List;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFListItemComponentTest : Bunit.BunitContext
+public class XFListItemComponentTest : XForgeTestContext
 {
     public XFListItemComponentTest()
     {

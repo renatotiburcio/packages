@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.FileInput;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFFileInputComponentTest : BunitContext
+public class XFFileInputComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithLabelHelperAndNativeAttributes()

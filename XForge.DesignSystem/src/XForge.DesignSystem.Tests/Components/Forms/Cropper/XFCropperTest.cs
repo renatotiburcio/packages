@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Forms.Cropper;
 
-public class XFCropperTest : BunitContext
+public class XFCropperTest : XForgeTestContext
 {
     public XFCropperTest()
     {

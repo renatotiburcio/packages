@@ -9,7 +9,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSwitchAriaTest : BunitContext
+public class XFSwitchAriaTest : XForgeTestContext
 {
     public XFSwitchAriaTest()
     {

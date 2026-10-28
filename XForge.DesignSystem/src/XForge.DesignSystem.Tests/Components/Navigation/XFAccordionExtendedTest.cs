@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public class XFAccordionExtendedTest : BunitContext
+public class XFAccordionExtendedTest : XForgeTestContext
 {
     public XFAccordionExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay.Card;
 
-public class XFCardTests : BunitContext
+public class XFCardTests : XForgeTestContext
 {
     public XFCardTests() { }
 

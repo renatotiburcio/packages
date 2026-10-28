@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFBoxPlotChartComponentTest : BunitContext
+public class XFBoxPlotChartComponentTest : XForgeTestContext
 {
     public XFBoxPlotChartComponentTest()
     {

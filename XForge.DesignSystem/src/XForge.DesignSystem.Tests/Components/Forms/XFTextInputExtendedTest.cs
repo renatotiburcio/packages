@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public class XFTextInputExtendedTest : BunitContext
+public class XFTextInputExtendedTest : XForgeTestContext
 {
     public XFTextInputExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

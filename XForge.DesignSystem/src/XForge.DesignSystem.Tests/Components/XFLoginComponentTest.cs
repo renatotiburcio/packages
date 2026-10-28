@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFLoginComponentTest : BunitContext
+public class XFLoginComponentTest : XForgeTestContext
 {
     public XFLoginComponentTest()
     {

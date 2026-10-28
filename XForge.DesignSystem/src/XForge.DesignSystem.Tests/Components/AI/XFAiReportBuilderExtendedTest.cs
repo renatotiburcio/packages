@@ -48,7 +48,7 @@ internal sealed class ExtendedReportMockProvider : IAiProvider, IDisposable, IAs
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }
 
-public sealed class XFAiReportBuilderExtendedTest : BunitContext
+public sealed class XFAiReportBuilderExtendedTest : XForgeTestContext
 {
     public XFAiReportBuilderExtendedTest()
     {

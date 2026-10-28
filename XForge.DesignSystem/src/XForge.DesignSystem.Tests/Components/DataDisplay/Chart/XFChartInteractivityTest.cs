@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay.Chart;
 
-public class XFChartInteractivityTest : BunitContext
+public class XFChartInteractivityTest : XForgeTestContext
 {
     public XFChartInteractivityTest()
     {

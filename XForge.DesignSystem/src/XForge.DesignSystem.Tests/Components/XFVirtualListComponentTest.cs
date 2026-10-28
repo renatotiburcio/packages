@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.DataDisplay.VirtualList;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFVirtualListComponentTest : BunitContext
+public class XFVirtualListComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithItems_ShowsContent()

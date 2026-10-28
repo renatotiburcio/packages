@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Button;
 
-public class XFButtonExtendedTest : BunitContext
+public class XFButtonExtendedTest : XForgeTestContext
 {
     public XFButtonExtendedTest()
     {

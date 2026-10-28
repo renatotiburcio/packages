@@ -12,7 +12,7 @@ namespace XForge.DesignSystem.Tests.Components.Forms.Rating;
 /// keyboard edge cases, NormalizeValue edge cases, and ClearAsync path.
 /// Complements XFRatingComponentTest — no test name overlap.
 /// </summary>
-public class XFRatingExtendedTest : BunitContext
+public class XFRatingExtendedTest : XForgeTestContext
 {
     // ── SizeClass branches (Sm, Lg, Xl) ────────────────────────────────
 

@@ -7,7 +7,7 @@ using XForge.DesignSystem.Services.AI;
 
 namespace XForge.DesignSystem.Tests.Components.AI;
 
-public sealed class XFAiVideoAnalyzerTest : BunitContext
+public sealed class XFAiVideoAnalyzerTest : XForgeTestContext
 {
     public XFAiVideoAnalyzerTest()
     {

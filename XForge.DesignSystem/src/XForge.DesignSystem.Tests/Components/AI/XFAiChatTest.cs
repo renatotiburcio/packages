@@ -39,7 +39,7 @@ internal sealed class ChatMockProvider : IAiProvider, IDisposable
     public void Dispose() { }
 }
 
-public sealed class XFAiChatTest : BunitContext
+public sealed class XFAiChatTest : XForgeTestContext
 {
     public XFAiChatTest()
     {

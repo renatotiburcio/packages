@@ -9,7 +9,7 @@ using XForge.DesignSystem.Components.Layout;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTimelineComponentTest : Bunit.BunitContext
+public class XFTimelineComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_VerticalItemsWithTimestampAndTone()

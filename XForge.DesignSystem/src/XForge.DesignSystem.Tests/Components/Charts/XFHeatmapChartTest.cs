@@ -4,7 +4,7 @@ using XForge.Components.Charts;
 
 namespace XForge.DesignSystem.Tests.Components.Charts;
 
-public class XFHeatmapChartTest : Bunit.BunitContext
+public class XFHeatmapChartTest : XForgeTestContext
 {
     public XFHeatmapChartTest()
     {

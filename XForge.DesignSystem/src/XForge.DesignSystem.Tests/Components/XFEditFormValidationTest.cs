@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public sealed class XFEditFormValidationTest : BunitContext
+public sealed class XFEditFormValidationTest : XForgeTestContext
 {
     public XFEditFormValidationTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

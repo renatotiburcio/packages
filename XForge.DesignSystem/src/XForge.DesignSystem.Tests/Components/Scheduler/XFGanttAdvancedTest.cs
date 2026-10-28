@@ -4,7 +4,7 @@ using XForge.Components.Gantt;
 
 namespace XForge.DesignSystem.Tests.Components.Scheduler;
 
-public class XFGanttAdvancedTest : Bunit.BunitContext
+public class XFGanttAdvancedTest : XForgeTestContext
 {
     public XFGanttAdvancedTest()
     {

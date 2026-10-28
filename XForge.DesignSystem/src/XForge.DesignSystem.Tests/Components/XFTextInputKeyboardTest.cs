@@ -9,7 +9,7 @@ using XForge.DesignSystem.Components.Forms.TextInput;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTextInputKeyboardTest : BunitContext
+public class XFTextInputKeyboardTest : XForgeTestContext
 {
     [Fact]
     public void Tab_Key_Moves_Focus_To_Input()

@@ -9,7 +9,7 @@ namespace XForge.DesignSystem.Tests.Components.Shell;
 /// Extended tests for XFAppShell covering slot ordering, conditional rendering,
 /// AdditionalAttributes, disabled state, default values, and structural integrity.
 /// </summary>
-public class XFAppShellExtendedTest : Bunit.BunitContext
+public class XFAppShellExtendedTest : XForgeTestContext
 {
     [Fact]
     public void Render_RailSlot_AppearsBeforeSidebarInsideAside()

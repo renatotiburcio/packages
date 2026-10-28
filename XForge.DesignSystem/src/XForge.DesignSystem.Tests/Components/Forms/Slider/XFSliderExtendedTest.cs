@@ -11,7 +11,7 @@ namespace XForge.DesignSystem.Tests.Components.Forms.Slider;
 /// OnParametersSet edge cases (Max&lt;Min, Step&lt;=0), Clamp edge cases, and HelperId rendering.
 /// Complements XFSliderComponentTest — no test name overlap.
 /// </summary>
-public class XFSliderExtendedTest : BunitContext
+public class XFSliderExtendedTest : XForgeTestContext
 {
     // ── HelperId rendering (line 44) ───────────────────────────────────
 

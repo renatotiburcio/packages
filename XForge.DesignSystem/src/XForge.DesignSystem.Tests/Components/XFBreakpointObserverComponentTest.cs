@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Utilities.BreakpointObserver;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFBreakpointObserverComponentTest : BunitContext
+public class XFBreakpointObserverComponentTest : XForgeTestContext
 {
     [Fact]
     public void XFBreakpoint_HasExpectedValues()

@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.Feedback.SplashScreen;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSplashScreenComponentTest : BunitContext
+public class XFSplashScreenComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_FullScreenStatusWithDefaultLogo()

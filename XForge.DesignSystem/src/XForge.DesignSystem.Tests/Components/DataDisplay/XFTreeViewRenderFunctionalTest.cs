@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public sealed class XFTreeViewRenderFunctionalTest : BunitContext
+public sealed class XFTreeViewRenderFunctionalTest : XForgeTestContext
 {
     public XFTreeViewRenderFunctionalTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     private static XFTreeNode SampleTree => new() { Text = "Root", Children = new[] { new XFTreeNode { Text = "Child1", HasChildren = true, Children = new[] { new XFTreeNode { Text = "Grandchild1" } } }, new XFTreeNode { Text = "Child2" }, new XFTreeNode { Text = "Child3", Disabled = true } } };

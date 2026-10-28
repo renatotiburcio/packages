@@ -6,7 +6,7 @@ using XForge.DesignSystem.Services;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFRailComponentTest : BunitContext
+public class XFRailComponentTest : XForgeTestContext
 {
     public XFRailComponentTest()
     {

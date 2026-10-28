@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Utilities.BreakpointObserver;
 
 namespace XForge.DesignSystem.Tests.Components.AI;
 
-public class XFCrossPlatformComponentsTest : BunitContext
+public class XFCrossPlatformComponentsTest : XForgeTestContext
 {
     #region XFResponsiveContainer
 

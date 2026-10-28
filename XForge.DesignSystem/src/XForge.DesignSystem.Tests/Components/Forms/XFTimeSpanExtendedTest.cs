@@ -11,7 +11,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public class XFTimeSpanExtendedTest : BunitContext
+public class XFTimeSpanExtendedTest : XForgeTestContext
 {
     [Fact]
     public void Extended_XFTimeSpan_Default_Renders()

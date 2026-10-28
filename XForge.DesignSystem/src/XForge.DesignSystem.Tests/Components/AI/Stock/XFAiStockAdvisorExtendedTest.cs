@@ -84,7 +84,7 @@ internal sealed class StockAdvisorMockProvider : IAiProvider
         => Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 }
 
-public sealed class XFAiStockAdvisorExtendedTest : BunitContext
+public sealed class XFAiStockAdvisorExtendedTest : XForgeTestContext
 {
     public XFAiStockAdvisorExtendedTest()
     {

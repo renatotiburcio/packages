@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Overlays.Dialog;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDialogAriaTest : BunitContext
+public class XFDialogAriaTest : XForgeTestContext
 {
     public XFDialogAriaTest()
     {

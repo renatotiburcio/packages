@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFLottieComponentTest : BunitContext
+public class XFLottieComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_Default_RendersContainer()

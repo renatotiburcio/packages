@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.DataDisplay.Table;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTableFooterComponentTest : BunitContext
+public class XFTableFooterComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_Default_ShowsFooterElement()

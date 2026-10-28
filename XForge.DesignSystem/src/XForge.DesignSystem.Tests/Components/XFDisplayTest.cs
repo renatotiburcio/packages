@@ -1,4 +1,4 @@
-﻿#region Using directives
+#region Using directives
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
@@ -20,7 +20,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDisplayTest : BunitContext
+public class XFDisplayTest : XForgeTestContext
 {
     public XFDisplayTest() => JSInterop.Mode = JSRuntimeMode.Loose;
 

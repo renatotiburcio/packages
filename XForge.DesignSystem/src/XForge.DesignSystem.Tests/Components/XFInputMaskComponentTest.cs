@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.InputMask;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFInputMaskComponentTest : BunitContext
+public class XFInputMaskComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithLabelHelperAndMaskedValue()

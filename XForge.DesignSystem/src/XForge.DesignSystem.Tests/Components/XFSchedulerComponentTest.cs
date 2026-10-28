@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSchedulerComponentTest : BunitContext
+public class XFSchedulerComponentTest : XForgeTestContext
 {
     public XFSchedulerComponentTest()
     {

@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFStackedAreaChartComponentTest : BunitContext
+public class XFStackedAreaChartComponentTest : XForgeTestContext
 {
     public XFStackedAreaChartComponentTest() { JSInterop.Mode = JSRuntimeMode.Loose; Services.AddSingleton<IXFLocalizer, TestLocalizer>(); }
 

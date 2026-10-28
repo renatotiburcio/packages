@@ -4,7 +4,7 @@ using XForge.Components.Diagram;
 
 namespace XForge.DesignSystem.Tests.Components.Diagram;
 
-public class XFDiagramAdvancedTest : Bunit.BunitContext
+public class XFDiagramAdvancedTest : XForgeTestContext
 {
     public XFDiagramAdvancedTest()
     {

@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.NumberInput;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFNumberInputComponentTest : BunitContext
+public class XFNumberInputComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithLabelHelperAndConstraints()

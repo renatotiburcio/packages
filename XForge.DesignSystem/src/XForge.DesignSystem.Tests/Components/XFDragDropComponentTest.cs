@@ -6,7 +6,7 @@ using XForge.DesignSystem.Components.Utilities.DragDrop;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDragDropComponentTest : BunitContext
+public class XFDragDropComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithDefaults_RendersAccessibleDropZone()

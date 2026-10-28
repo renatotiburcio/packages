@@ -9,7 +9,7 @@ namespace XForge.DesignSystem.Tests.Components.Forms;
 /// <summary>
 /// Deep bUnit render tests for XFDatePicker — parameters, markup assertions, interaction.
 /// </summary>
-public sealed class XFDatePickerRenderFunctionalTest : BunitContext
+public sealed class XFDatePickerRenderFunctionalTest : XForgeTestContext
 {
     public XFDatePickerRenderFunctionalTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

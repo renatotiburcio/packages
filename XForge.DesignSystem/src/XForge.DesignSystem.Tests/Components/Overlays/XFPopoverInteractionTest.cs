@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Overlays;
 
-public sealed class XFPopoverInteractionTest : BunitContext
+public sealed class XFPopoverInteractionTest : XForgeTestContext
 {
     public XFPopoverInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void Renders_Default() => Render<XFPopover>();

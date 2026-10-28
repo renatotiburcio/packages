@@ -8,7 +8,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public sealed class XFTabsExtendedTest : BunitContext
+public sealed class XFTabsExtendedTest : XForgeTestContext
 {
     public XFTabsExtendedTest()
     {

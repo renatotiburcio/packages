@@ -4,7 +4,7 @@ using XForge.Components.Pdf;
 
 namespace XForge.DesignSystem.Tests.Components.Pdf;
 
-public class XFPdfViewerAdvancedTest : Bunit.BunitContext
+public class XFPdfViewerAdvancedTest : XForgeTestContext
 {
     public XFPdfViewerAdvancedTest()
     {

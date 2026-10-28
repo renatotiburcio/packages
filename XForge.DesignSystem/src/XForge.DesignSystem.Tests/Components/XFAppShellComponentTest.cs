@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Layout.Shell;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFAppShellComponentTest : BunitContext
+public class XFAppShellComponentTest : XForgeTestContext
 {
     public XFAppShellComponentTest()
     {

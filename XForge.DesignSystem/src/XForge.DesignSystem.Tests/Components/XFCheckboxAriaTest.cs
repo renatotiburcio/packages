@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Forms.Checkbox;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFCheckboxAriaTest : BunitContext
+public class XFCheckboxAriaTest : XForgeTestContext
 {
     [Fact]
     public void AriaChecked_Unchecked_IsFalse()

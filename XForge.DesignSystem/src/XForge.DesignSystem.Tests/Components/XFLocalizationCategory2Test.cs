@@ -21,7 +21,7 @@ namespace XForge.DesignSystem.Tests.Components;
 /// Validates that all Category 2 localized components use L() calls correctly.
 /// With TestLocalizer, L(key, fallback) returns the key instead of the fallback.
 /// </summary>
-public class XFLocalizationCategory2Test : BunitContext
+public class XFLocalizationCategory2Test : XForgeTestContext
 {
     public XFLocalizationCategory2Test()
     {

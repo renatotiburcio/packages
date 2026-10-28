@@ -99,7 +99,7 @@ namespace XForge.DesignSystem.Tests.Components;
 /// Performance smoke tests for heavy components.
 /// Verifies that components render within acceptable time bounds and produce reasonable markup size.
 /// </summary>
-public class XFPerformanceTest : Bunit.BunitContext
+public class XFPerformanceTest : XForgeTestContext
 {
     public XFPerformanceTest()
     {

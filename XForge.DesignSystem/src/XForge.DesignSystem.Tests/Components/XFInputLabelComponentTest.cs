@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFInputLabelComponentTest : BunitContext
+public class XFInputLabelComponentTest : XForgeTestContext
 {
     public XFInputLabelComponentTest()
     {

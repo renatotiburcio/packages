@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Feedback;
 
-public class XFProgressExtendedTest : BunitContext
+public class XFProgressExtendedTest : XForgeTestContext
 {
     public XFProgressExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

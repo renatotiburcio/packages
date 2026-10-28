@@ -4,7 +4,7 @@ using XForge.Components.Editors;
 
 namespace XForge.DesignSystem.Tests.Components.Editors;
 
-public class XFSpreadsheetTest : Bunit.BunitContext
+public class XFSpreadsheetTest : XForgeTestContext
 {
     public XFSpreadsheetTest()
     {

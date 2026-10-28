@@ -9,7 +9,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms.Switch;
 
-public class XFSwitchExtendedTest : BunitContext
+public class XFSwitchExtendedTest : XForgeTestContext
 {
     public XFSwitchExtendedTest()
     {

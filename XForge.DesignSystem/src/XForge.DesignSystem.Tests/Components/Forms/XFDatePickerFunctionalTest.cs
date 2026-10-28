@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Forms.DatePicker;
@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFDatePickerFunctionalTest : BunitContext
+public sealed class XFDatePickerFunctionalTest : XForgeTestContext
 {
     public XFDatePickerFunctionalTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

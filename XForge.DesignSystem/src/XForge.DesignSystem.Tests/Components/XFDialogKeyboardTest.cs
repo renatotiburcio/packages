@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Overlays.Dialog;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDialogKeyboardTest : BunitContext
+public class XFDialogKeyboardTest : XForgeTestContext
 {
     public XFDialogKeyboardTest()
     {

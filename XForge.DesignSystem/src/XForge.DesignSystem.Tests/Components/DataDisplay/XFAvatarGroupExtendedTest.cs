@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFAvatarGroupExtendedTest : BunitContext
+public class XFAvatarGroupExtendedTest : XForgeTestContext
 {
     public XFAvatarGroupExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

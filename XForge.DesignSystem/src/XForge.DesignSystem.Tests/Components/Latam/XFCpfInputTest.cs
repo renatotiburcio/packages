@@ -4,7 +4,7 @@ using XForge.Components.Latam;
 
 namespace XForge.DesignSystem.Tests.Components.Latam;
 
-public class XFCpfInputTest : Bunit.BunitContext
+public class XFCpfInputTest : XForgeTestContext
 {
     public XFCpfInputTest()
     {

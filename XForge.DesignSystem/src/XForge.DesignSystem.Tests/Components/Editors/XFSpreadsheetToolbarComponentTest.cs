@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSpreadsheetToolbarComponentTest : BunitContext
+public class XFSpreadsheetToolbarComponentTest : XForgeTestContext
 {
     public XFSpreadsheetToolbarComponentTest() { Services.AddSingleton<IXFLocalizer, TestLocalizer>(); }
 

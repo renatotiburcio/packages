@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.DateInput;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDateInputComponentTest : BunitContext
+public class XFDateInputComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithLabelHelperAndConstraints()

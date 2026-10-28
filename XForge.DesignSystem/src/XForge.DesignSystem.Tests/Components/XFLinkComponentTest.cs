@@ -8,7 +8,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFLinkComponentTest : BunitContext
+public class XFLinkComponentTest : XForgeTestContext
 {
     public XFLinkComponentTest()
     {

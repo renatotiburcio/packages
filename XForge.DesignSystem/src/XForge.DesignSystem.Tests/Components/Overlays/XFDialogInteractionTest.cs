@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Overlays;
 
-public sealed class XFDialogInteractionTest : BunitContext
+public sealed class XFDialogInteractionTest : XForgeTestContext
 {
     public XFDialogInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void Renders_Default() => Render<XFDialog>();

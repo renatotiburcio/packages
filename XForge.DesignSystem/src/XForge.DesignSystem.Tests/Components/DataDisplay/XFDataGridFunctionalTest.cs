@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.DataDisplay.DataGrid;
@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public sealed class XFDataGridFunctionalTest : BunitContext
+public sealed class XFDataGridFunctionalTest : XForgeTestContext
 {
     public XFDataGridFunctionalTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

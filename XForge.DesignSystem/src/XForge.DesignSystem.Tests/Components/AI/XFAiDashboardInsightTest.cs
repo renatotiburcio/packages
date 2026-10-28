@@ -43,7 +43,7 @@ internal sealed class DashboardMockProvider : IAiProvider, IDisposable
     public void Dispose() { }
 }
 
-public sealed class XFAiDashboardInsightTest : BunitContext
+public sealed class XFAiDashboardInsightTest : XForgeTestContext
 {
     public XFAiDashboardInsightTest()
     {

@@ -7,7 +7,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFDatePickerInteractionTest : BunitContext
+public sealed class XFDatePickerInteractionTest : XForgeTestContext
 {
     public XFDatePickerInteractionTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void ClickToggleButton_OpensCalendar() { var cut = Render<XFDatePicker>(p => p.Add(x => x.Label, "Data")); var toggleBtn = cut.Find("[aria-label=\"Abrir calendario\"]"); toggleBtn.Click(); Assert.NotNull(cut.Find("[role=\"grid\"]")); }

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFEditFormExtendedTest : BunitContext
+public sealed class XFEditFormExtendedTest : XForgeTestContext
 {
     public XFEditFormExtendedTest()
     {

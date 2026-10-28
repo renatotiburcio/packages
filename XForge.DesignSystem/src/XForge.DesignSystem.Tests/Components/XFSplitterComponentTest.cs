@@ -9,7 +9,7 @@ using XForge.DesignSystem.Core.Primitives;
 using XForge.DesignSystem.Components.Layout;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSplitterComponentTest : BunitContext
+public class XFSplitterComponentTest : XForgeTestContext
 {
     public XFSplitterComponentTest()
     {

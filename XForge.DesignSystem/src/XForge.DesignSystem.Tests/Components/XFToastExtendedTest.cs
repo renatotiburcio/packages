@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using XForge.DesignSystem.Components.Feedback.Toast;
 using XForge.DesignSystem.Core.Primitives;
 using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFToastExtendedTest : BunitContext
+public class XFToastExtendedTest : XForgeTestContext
 {
     public XFToastExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

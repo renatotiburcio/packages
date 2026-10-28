@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.CrossPlatform;
 
 namespace XForge.DesignSystem.Tests.Components.CrossPlatform;
 
-public class XFDeviceBridgeExtendedTest : BunitContext
+public class XFDeviceBridgeExtendedTest : XForgeTestContext
 {
     public XFDeviceBridgeExtendedTest()
     {

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public sealed class XFInputMaskExtendedTest : BunitContext
+public sealed class XFInputMaskExtendedTest : XForgeTestContext
 {
     private IRenderedComponent<XFInputMask> RenderMask(
         Action<ComponentParameterCollectionBuilder<XFInputMask>>? configure = null)

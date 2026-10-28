@@ -5,7 +5,7 @@ using XForge.Components.Lgpd;
 
 namespace XForge.DesignSystem.Tests.Components.Lgpd;
 
-public class XFPrivacyPolicyModalTests : BunitContext
+public class XFPrivacyPolicyModalTests : XForgeTestContext
 {
     [Fact]
     public void Render_WhenVisible_ShowsModal()

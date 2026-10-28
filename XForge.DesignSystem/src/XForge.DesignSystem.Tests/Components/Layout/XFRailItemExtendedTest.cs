@@ -8,7 +8,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Shell;
 
-public sealed class XFRailItemExtendedTest : Bunit.BunitContext
+public sealed class XFRailItemExtendedTest : XForgeTestContext
 {
     public XFRailItemExtendedTest()
     {

@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Layout.ProfileMenu;
 
-public class XFProfileMenuTest : BunitContext
+public class XFProfileMenuTest : XForgeTestContext
 {
     public XFProfileMenuTest()
     {

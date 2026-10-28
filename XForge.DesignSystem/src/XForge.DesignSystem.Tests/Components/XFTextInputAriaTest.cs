@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Forms.TextInput;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTextInputAriaTest : BunitContext
+public class XFTextInputAriaTest : XForgeTestContext
 {
     [Fact]
     public void AriaInvalid_WhenValidationFails_IsTrue()

@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.Autocomplete;
 using XForge.DesignSystem.Core.Primitives;
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFAutocompleteComponentTest : BunitContext
+public class XFAutocompleteComponentTest : XForgeTestContext
 {
     private readonly IReadOnlyList<Customer> customers = new[]
     {

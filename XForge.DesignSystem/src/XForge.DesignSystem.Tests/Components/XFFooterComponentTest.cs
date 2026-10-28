@@ -1,10 +1,10 @@
-﻿using Bunit;
+using Bunit;
 using Xunit;
 using XForge.DesignSystem.Components.Layout.Shell;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFFooterComponentTest : BunitContext
+public class XFFooterComponentTest : XForgeTestContext
 {
     public XFFooterComponentTest()
     {

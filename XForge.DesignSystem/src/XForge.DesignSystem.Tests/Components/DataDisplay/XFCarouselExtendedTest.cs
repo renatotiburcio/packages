@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public class XFCarouselExtendedTest : BunitContext
+public class XFCarouselExtendedTest : XForgeTestContext
 {
     public XFCarouselExtendedTest()
     {

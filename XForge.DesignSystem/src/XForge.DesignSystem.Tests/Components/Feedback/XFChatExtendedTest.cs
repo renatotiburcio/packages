@@ -7,7 +7,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Feedback;
 
-public sealed class XFChatExtendedTest : BunitContext
+public sealed class XFChatExtendedTest : XForgeTestContext
 {
     private static readonly XFChatUser User = new() { Id = "user", Name = "Renato" };
     private static readonly XFChatUser Bot = new() { Id = "bot", Name = "Assistant" };

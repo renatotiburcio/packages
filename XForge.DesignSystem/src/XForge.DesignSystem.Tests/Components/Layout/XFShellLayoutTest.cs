@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Layout;
 
-public sealed class XFShellLayoutTest : BunitContext
+public sealed class XFShellLayoutTest : XForgeTestContext
 {
     public XFShellLayoutTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void AppShell_Renders() => Render<XFAppShell>();

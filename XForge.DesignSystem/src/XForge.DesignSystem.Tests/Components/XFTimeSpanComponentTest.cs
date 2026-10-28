@@ -8,7 +8,7 @@ using XForge.DesignSystem.Components.Forms.TimeSpan;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFTimeSpanComponentTest : BunitContext
+public class XFTimeSpanComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_Default_RendersHoursMinutesSeconds()

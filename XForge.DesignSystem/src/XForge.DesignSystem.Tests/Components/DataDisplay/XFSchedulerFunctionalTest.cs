@@ -7,7 +7,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public sealed class XFSchedulerFunctionalTest : BunitContext
+public sealed class XFSchedulerFunctionalTest : XForgeTestContext
 {
     public XFSchedulerFunctionalTest()
     {

@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Overlays.Drawer;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDrawerAriaTest : BunitContext
+public class XFDrawerAriaTest : XForgeTestContext
 {
     public XFDrawerAriaTest()
     {

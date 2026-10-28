@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.DataDisplay.PdfViewer;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFPdfViewerComponentTest : BunitContext
+public class XFPdfViewerComponentTest : XForgeTestContext
 {
     // --- Existing tests (preserved) ---
 

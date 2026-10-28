@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Xunit;
 using XForge.DesignSystem.Components.Emoji;
 
@@ -6,7 +6,7 @@ namespace XForge.DesignSystem.Tests.Components;
 
 public class TestEmojiClass { }
 
-public class XFFluentEmojiComponentTest : BunitContext
+public class XFFluentEmojiComponentTest : XForgeTestContext
 {
     public XFFluentEmojiComponentTest()
     {

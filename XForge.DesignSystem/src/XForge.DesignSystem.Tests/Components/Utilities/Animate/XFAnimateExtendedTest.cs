@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Utilities.Animate;
 
 namespace XForge.DesignSystem.Tests.Components.Utilities.Animate;
 
-public sealed class XFAnimateExtendedTest : BunitContext
+public sealed class XFAnimateExtendedTest : XForgeTestContext
 {
     public XFAnimateExtendedTest()
     {

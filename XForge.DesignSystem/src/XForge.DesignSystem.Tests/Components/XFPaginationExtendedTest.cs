@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFPaginationExtendedTest : BunitContext
+public class XFPaginationExtendedTest : XForgeTestContext
 {
     public XFPaginationExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

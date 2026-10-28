@@ -1,11 +1,11 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.DataDisplay.Carousel;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFCarouselSlideComponentTest : BunitContext
+public class XFCarouselSlideComponentTest : XForgeTestContext
 {
     public XFCarouselSlideComponentTest()
     {

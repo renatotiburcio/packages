@@ -5,7 +5,7 @@ using XForge.Components.Lgpd;
 
 namespace XForge.DesignSystem.Tests.Components.Lgpd;
 
-public class XFCookieConsentTests : BunitContext
+public class XFCookieConsentTests : XForgeTestContext
 {
     [Fact]
     public void Render_WhenVisible_ShowsConsentForm()

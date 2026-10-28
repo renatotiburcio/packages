@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Navigation.Accordion;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFAccordionKeyboardTest : BunitContext
+public class XFAccordionKeyboardTest : XForgeTestContext
 {
     [Fact]
     public void Tab_Key_Moves_Focus_To_Accordion_Header()

@@ -4,7 +4,7 @@ using XForge.Components.Editors;
 
 namespace XForge.DesignSystem.Tests.Components.Editors;
 
-public class XFImageEditorTest : Bunit.BunitContext
+public class XFImageEditorTest : XForgeTestContext
 {
     public XFImageEditorTest()
     {

@@ -6,7 +6,7 @@ using XForge.Localization;
 
 namespace XForge.DesignSystem.Tests.Components.Dashboard;
 
-public class XFBIDashboardTest : BunitContext
+public class XFBIDashboardTest : XForgeTestContext
 {
     public XFBIDashboardTest()
     {

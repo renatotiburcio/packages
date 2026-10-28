@@ -4,7 +4,7 @@ using XForge.DesignSystem.Components.DataDisplay.Video;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFVideoComponentTest : BunitContext
+public class XFVideoComponentTest : XForgeTestContext
 {
     [Fact]
     public void Render_WithSrc_UsesVideoAttributes()

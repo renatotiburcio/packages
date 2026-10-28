@@ -4,7 +4,7 @@ using XForge.Components.Charts;
 
 namespace XForge.DesignSystem.Tests.Components.Charts;
 
-public class XFCandlestickChartTest : Bunit.BunitContext
+public class XFCandlestickChartTest : XForgeTestContext
 {
     public XFCandlestickChartTest()
     {

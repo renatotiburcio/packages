@@ -5,7 +5,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public sealed class XFMenuFunctionalTest : BunitContext
+public sealed class XFMenuFunctionalTest : XForgeTestContext
 {
     public XFMenuFunctionalTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

@@ -48,7 +48,7 @@ internal sealed class MockAiProvider : IAiProvider, IAsyncDisposable
 /// read-only enforcement, blocked operations, and approval workflow.
 /// All GenerateAsync calls must run within cut.InvokeAsync() to satisfy Blazor's dispatcher.
 /// </summary>
-public sealed class XFAiSqlQueryBuilderTest : BunitContext
+public sealed class XFAiSqlQueryBuilderTest : XForgeTestContext
 {
     private void SetInput(IRenderedComponent<XFAiSqlQueryBuilder> cut, string value)
     {

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Forms;
 
-public class XFRatingExtendedTest : BunitContext
+public class XFRatingExtendedTest : XForgeTestContext
 {
     public XFRatingExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

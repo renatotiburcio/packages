@@ -4,7 +4,7 @@ using XForge.Components.Maps;
 
 namespace XForge.DesignSystem.Tests.Components.Maps;
 
-public class XFMapsAdvancedTest : Bunit.BunitContext
+public class XFMapsAdvancedTest : XForgeTestContext
 {
     public XFMapsAdvancedTest()
     {

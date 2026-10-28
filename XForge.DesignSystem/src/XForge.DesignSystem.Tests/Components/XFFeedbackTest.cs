@@ -10,7 +10,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public sealed class XFFeedbackTest : BunitContext
+public sealed class XFFeedbackTest : XForgeTestContext
 {
     public XFFeedbackTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

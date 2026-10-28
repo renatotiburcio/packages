@@ -4,7 +4,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSparklineComponentTest : BunitContext
+public class XFSparklineComponentTest : XForgeTestContext
 {
     private sealed record TestItem(string Label, double Value);
 

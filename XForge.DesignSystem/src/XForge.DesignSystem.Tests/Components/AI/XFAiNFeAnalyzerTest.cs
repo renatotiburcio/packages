@@ -42,7 +42,7 @@ internal sealed class NFeMockProvider : IAiProvider, IDisposable
     public void Dispose() { }
 }
 
-public sealed class XFAiNFeAnalyzerTest : BunitContext
+public sealed class XFAiNFeAnalyzerTest : XForgeTestContext
 {
     public XFAiNFeAnalyzerTest()
     {

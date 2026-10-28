@@ -10,7 +10,7 @@ namespace XForge.DesignSystem.Tests.Components.Forms.Select;
 /// Extended tests for XFSelect covering SizeClass, VariantClass, ToneClass,
 /// AdornmentClass, HelperClass, and Placeholder rendering.
 /// </summary>
-public class XFSelectExtendedTest : BunitContext
+public class XFSelectExtendedTest : XForgeTestContext
 {
     public XFSelectExtendedTest()
     {

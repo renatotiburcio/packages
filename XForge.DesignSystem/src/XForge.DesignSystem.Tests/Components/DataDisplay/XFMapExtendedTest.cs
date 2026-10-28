@@ -5,7 +5,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.DataDisplay;
 
-public sealed class XFMapExtendedTest : BunitContext
+public sealed class XFMapExtendedTest : XForgeTestContext
 {
     public XFMapExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

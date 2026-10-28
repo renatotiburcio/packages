@@ -6,7 +6,7 @@ using XForge.DesignSystem.Core.Primitives;
 
 namespace XForge.DesignSystem.Tests.Components.Navigation;
 
-public sealed class XFBreadcrumbToolbarTest : BunitContext
+public sealed class XFBreadcrumbToolbarTest : XForgeTestContext
 {
     public XFBreadcrumbToolbarTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
     [Fact] public void Breadcrumb_Renders() => Render<XFBreadcrumb>();

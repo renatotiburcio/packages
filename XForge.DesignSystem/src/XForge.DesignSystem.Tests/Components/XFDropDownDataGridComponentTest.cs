@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Forms.DropDownDataGrid;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFDropDownDataGridComponentTest : BunitContext
+public class XFDropDownDataGridComponentTest : XForgeTestContext
 {
     private readonly IReadOnlyList<Product> products = new[]
     {

@@ -53,7 +53,7 @@ internal sealed class ExtendedDataGridMockProvider : IAiProvider, IDisposable, I
 /// disabled state, data/columns, render fragments, insight types, query submission,
 /// error handling, and lifecycle.
 /// </summary>
-public sealed class XFAiDataGridAssistantExtendedTest : BunitContext
+public sealed class XFAiDataGridAssistantExtendedTest : XForgeTestContext
 {
     public XFAiDataGridAssistantExtendedTest()
     {

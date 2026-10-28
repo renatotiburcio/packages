@@ -7,7 +7,7 @@ using XForge.DesignSystem.Components.Forms.Checkbox;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFCheckboxKeyboardTest : BunitContext
+public class XFCheckboxKeyboardTest : XForgeTestContext
 {
     [Fact]
     public void Tab_Key_Moves_Focus_To_Checkbox()

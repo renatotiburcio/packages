@@ -6,7 +6,7 @@ using Xunit;
 
 namespace XForge.DesignSystem.Tests.Components.Layout;
 
-public class XFStackExtendedTest : BunitContext
+public class XFStackExtendedTest : XForgeTestContext
 {
     public XFStackExtendedTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 

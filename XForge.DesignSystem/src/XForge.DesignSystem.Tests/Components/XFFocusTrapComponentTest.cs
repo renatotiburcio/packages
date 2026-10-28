@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Utilities.FocusTrap;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFFocusTrapComponentTest : BunitContext
+public class XFFocusTrapComponentTest : XForgeTestContext
 {
     public XFFocusTrapComponentTest()
     {

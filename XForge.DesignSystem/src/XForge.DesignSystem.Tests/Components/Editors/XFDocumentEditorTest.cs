@@ -4,7 +4,7 @@ using XForge.Components.Editors;
 
 namespace XForge.DesignSystem.Tests.Components.Editors;
 
-public class XFDocumentEditorTest : Bunit.BunitContext
+public class XFDocumentEditorTest : XForgeTestContext
 {
     public XFDocumentEditorTest()
     {

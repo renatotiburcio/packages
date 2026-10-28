@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Forms.SignaturePad;
 
 namespace XForge.DesignSystem.Tests.Components;
 
-public class XFSignaturePadComponentTest : BunitContext
+public class XFSignaturePadComponentTest : XForgeTestContext
 {
     public XFSignaturePadComponentTest()
     {

@@ -9,7 +9,7 @@ namespace XForge.DesignSystem.Tests.Components.Feedback;
 /// Additional tests for XFRichTextEditor to improve coverage from 59.6% → 85%+.
 /// Covers theme, placeholder, readonly, value change, and all parameter combinations.
 /// </summary>
-public class XFRichTextEditorExtendedTest : BunitContext
+public class XFRichTextEditorExtendedTest : XForgeTestContext
 {
     public XFRichTextEditorExtendedTest()
     {

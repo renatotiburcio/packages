@@ -5,7 +5,7 @@ using XForge.DesignSystem.Components.Feedback.Lottie;
 
 namespace XForge.DesignSystem.Tests.Components.Feedback;
 
-public sealed class XFLottieTest : BunitContext
+public sealed class XFLottieTest : XForgeTestContext
 {
     public XFLottieTest() { JSInterop.Mode = JSRuntimeMode.Loose; }
 
