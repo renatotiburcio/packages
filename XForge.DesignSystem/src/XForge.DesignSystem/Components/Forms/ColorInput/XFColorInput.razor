@@ -84,7 +84,7 @@
         <div id="@PaletteId" class="@SwatchListClass" role="group" aria-label="@PaletteLabel">
             @foreach (var color in Palette)
             {
-                <button type="button"
+                <button @key="color" type="button"
                         class="@GetSwatchButtonClass(color)"
                         style="@GetSwatchStyle(color)"
                         disabled="@Disabled"

@@ -98,7 +98,7 @@
                                     <tr>
                                         @foreach (var column in Columns)
                                         {
-                                            <th class="px-3 py-2 text-left">@column.Title</th>
+                                            <th @key="column" class="px-3 py-2 text-left">@column.Title</th>
                                         }
                                     </tr>
                                 </thead>

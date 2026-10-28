@@ -18,7 +18,7 @@
         <div class="xf-scheduler-view-switcher">
             @foreach (var view in Enum.GetValues<SchedulerView>())
             {
-                <button class="xf-scheduler-view-btn @(_currentView == view ? "active" : "")" @onclick="() => SwitchView(view)">@GetViewLabel(view)</button>
+                <button @key="view" class="xf-scheduler-view-btn @(_currentView == view ? "active" : "")" @onclick="() => SwitchView(view)">@GetViewLabel(view)</button>
             }
         </div>
     </div>
