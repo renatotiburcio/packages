@@ -262,11 +262,11 @@ namespace XForge.DesignSystem.Components.DataDisplay.Gantt
         /// <inheritdoc/>
         protected override void OnInitialized()
         {
-            TodayLabel = L("gantt.today", TodayLabel);
-            NoDataText = L("gantt.empty", NoDataText);
-            ProgressLabel = L("gantt.progress", ProgressLabel);
-            StartLabel = L("gantt.start", StartLabel);
-            EndLabel = L("gantt.end", EndLabel);
+            if (string.IsNullOrWhiteSpace(TodayLabel)) TodayLabel = L("gantt.today", TodayLabel);
+            if (string.IsNullOrWhiteSpace(NoDataText)) NoDataText = L("gantt.empty", NoDataText);
+            if (string.IsNullOrWhiteSpace(ProgressLabel)) ProgressLabel = L("gantt.progress", ProgressLabel);
+            if (string.IsNullOrWhiteSpace(StartLabel)) StartLabel = L("gantt.start", StartLabel);
+            if (string.IsNullOrWhiteSpace(EndLabel)) EndLabel = L("gantt.end", EndLabel);
             base.OnInitialized();
         }
 

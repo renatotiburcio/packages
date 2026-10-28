@@ -34,12 +34,12 @@ namespace XForge.DesignSystem.Components.Forms.DropDownDataGrid
         [Parameter] public bool FullWidth { get; set; } = true;
         [Parameter] public bool Clearable { get; set; } = true;
         [Parameter] public bool Loading { get; set; }
-        [Parameter] public string ClearLabel { get; set; } = "Limpar";
-        [Parameter] public string ToggleLabel { get; set; } = "Abrir opcoes";
-        [Parameter] public string LoadingText { get; set; } = "Carregando...";
-        [Parameter] public string EmptyText { get; set; } = "Nenhum resultado.";
-        [Parameter] public string ListboxLabel { get; set; } = "Opcoes";
-        [Parameter] public string SearchPlaceholder { get; set; } = "Buscar...";
+        [Parameter] public string ClearLabel { get; set; } = default!;
+        [Parameter] public string ToggleLabel { get; set; } = default!;
+        [Parameter] public string LoadingText { get; set; } = default!;
+        [Parameter] public string EmptyText { get; set; } = default!;
+        [Parameter] public string ListboxLabel { get; set; } = default!;
+        [Parameter] public string SearchPlaceholder { get; set; } = default!;
 
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 
@@ -117,12 +117,12 @@ namespace XForge.DesignSystem.Components.Forms.DropDownDataGrid
 
         protected override void OnInitialized()
         {
-            ClearLabel = L("dropdownDatagrid.clear", ClearLabel);
-            ToggleLabel = L("dropdownDatagrid.toggle", ToggleLabel);
-            LoadingText = L("dropdownDatagrid.loading", LoadingText);
-            EmptyText = L("dropdownDatagrid.empty", EmptyText);
-            ListboxLabel = L("dropdownDatagrid.listbox", ListboxLabel);
-            SearchPlaceholder = L("dropdownDatagrid.search", SearchPlaceholder);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("dropdownDatagrid.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(ToggleLabel)) ToggleLabel = L("dropdownDatagrid.toggle", ToggleLabel);
+            if (string.IsNullOrWhiteSpace(LoadingText)) LoadingText = L("dropdownDatagrid.loading", LoadingText);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("dropdownDatagrid.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(ListboxLabel)) ListboxLabel = L("dropdownDatagrid.listbox", ListboxLabel);
+            if (string.IsNullOrWhiteSpace(SearchPlaceholder)) SearchPlaceholder = L("dropdownDatagrid.search", SearchPlaceholder);
             base.OnInitialized();
         }
 

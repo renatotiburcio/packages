@@ -47,13 +47,13 @@ namespace XForge.DesignSystem.Components.Forms.MultiSelect
         [Parameter] public bool ShowBulkActions { get; set; } = true;
         [Parameter] public int MaxItems { get; set; } = 10;
         [Parameter] public int MaxVisibleChips { get; set; } = 3;
-        [Parameter] public string ClearLabel { get; set; } = "Limpar";
-        [Parameter] public string SelectAllLabel { get; set; } = "Selecionar todos";
-        [Parameter] public string ToggleLabel { get; set; } = "Abrir opcoes";
-        [Parameter] public string LoadingText { get; set; } = "Carregando...";
-        [Parameter] public string EmptyText { get; set; } = "Nenhuma opcao.";
-        [Parameter] public string ListboxLabel { get; set; } = "Opcoes";
-        [Parameter] public string RemoveChipLabelFormat { get; set; } = "Remover {0}";
+        [Parameter] public string ClearLabel { get; set; } = default!;
+        [Parameter] public string SelectAllLabel { get; set; } = default!;
+        [Parameter] public string ToggleLabel { get; set; } = default!;
+        [Parameter] public string LoadingText { get; set; } = default!;
+        [Parameter] public string EmptyText { get; set; } = default!;
+        [Parameter] public string ListboxLabel { get; set; } = default!;
+        [Parameter] public string RemoveChipLabelFormat { get; set; } = default!;
 
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 
@@ -169,13 +169,13 @@ namespace XForge.DesignSystem.Components.Forms.MultiSelect
 
         protected override void OnInitialized()
         {
-            ClearLabel = L("multiselect.clear", ClearLabel);
-            SelectAllLabel = L("multiselect.select_all", SelectAllLabel);
-            ToggleLabel = L("multiselect.toggle", ToggleLabel);
-            LoadingText = L("multiselect.loading", LoadingText);
-            EmptyText = L("multiselect.no_options", EmptyText);
-            ListboxLabel = L("multiselect.listbox", ListboxLabel);
-            RemoveChipLabelFormat = L("multiselect.remove_chip", RemoveChipLabelFormat);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("multiselect.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(SelectAllLabel)) SelectAllLabel = L("multiselect.select_all", SelectAllLabel);
+            if (string.IsNullOrWhiteSpace(ToggleLabel)) ToggleLabel = L("multiselect.toggle", ToggleLabel);
+            if (string.IsNullOrWhiteSpace(LoadingText)) LoadingText = L("multiselect.loading", LoadingText);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("multiselect.no_options", EmptyText);
+            if (string.IsNullOrWhiteSpace(ListboxLabel)) ListboxLabel = L("multiselect.listbox", ListboxLabel);
+            if (string.IsNullOrWhiteSpace(RemoveChipLabelFormat)) RemoveChipLabelFormat = L("multiselect.remove_chip", RemoveChipLabelFormat);
             base.OnInitialized();
         }
 
