@@ -149,3 +149,16 @@ Alternativa de menor risco que destrava a suite **sem tocar no produto**: regist
 TestLocalizer no **projeto de teste** de forma global — bUnit expõe
 BunitContext.TestServiceProvider/Services, e um fixture de coleção xUnit cobre
 todas as classes que herdam BunitContext. Fica para decisão.
+
+## Triagem das falhas restantes (2026-10-28)
+
+Apos o localizer pt-BR real, ~60 falhas permanecem — todas do tipo
+Assert.Contains(): Sub-string not found, nenhuma de @key/chave duplicada.
+Amostras: Render_DefaultNavigationAriaLabel_IsPortuguese,
+Extended_CustomAriaLabel_Renders, Render_WithCustomEmptyText,
+ButtonClass_Dismissible_RendersDismissLabel.
+
+Leitura: testes esperando strings pt-BR que nao aparecem — ou a chave nao existe em
+Localization/Json/Locales/pt-BR.json, ou o componente usa default hardcoded em vez do
+localizer. Classificaç~ao por teste: ajustar a expectativa, completar o locale, ou
+migrar o default do componente para o localizer.
