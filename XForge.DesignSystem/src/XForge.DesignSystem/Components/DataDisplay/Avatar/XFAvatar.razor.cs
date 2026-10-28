@@ -26,11 +26,11 @@ namespace XForge.DesignSystem.Components.DataDisplay.Avatar
         [Parameter] public XFAvatarStatus Status { get; set; } = XFAvatarStatus.None;
         [Parameter] public string? StatusTitle { get; set; }
         [Parameter] public string DefaultAltText { get; set; } = "Avatar";
-        [Parameter] public string OnlineStatusLabel { get; set; } = "Disponivel";
-        [Parameter] public string AwayStatusLabel { get; set; } = "Ausente";
-        [Parameter] public string BusyStatusLabel { get; set; } = "Ocupado";
-        [Parameter] public string OfflineStatusLabel { get; set; } = "Indisponivel";
-        [Parameter] public string DefaultStatusLabel { get; set; } = "Status";
+        [Parameter] public string OnlineStatusLabel { get; set; } = default!;
+        [Parameter] public string AwayStatusLabel { get; set; } = default!;
+        [Parameter] public string BusyStatusLabel { get; set; } = default!;
+        [Parameter] public string OfflineStatusLabel { get; set; } = default!;
+        [Parameter] public string DefaultStatusLabel { get; set; } = default!;
         [Parameter] public RenderFragment? Icon { get; set; }
 
         private bool imageFailed;
@@ -61,11 +61,12 @@ namespace XForge.DesignSystem.Components.DataDisplay.Avatar
         {
             base.OnParametersSet();
 
-            OnlineStatusLabel = L("avatar.online", "Disponivel");
-            AwayStatusLabel = L("avatar.away", "Ausente");
-            BusyStatusLabel = L("avatar.busy", "Ocupado");
-            OfflineStatusLabel = L("avatar.offline", "Indisponivel");
-            DefaultStatusLabel = L("avatar.status", "Status");
+            // honra o valor do usuário quando informado; default localizado caso contrário
+            if (string.IsNullOrWhiteSpace(OnlineStatusLabel)) OnlineStatusLabel = L("avatar.online", "Disponível");
+            if (string.IsNullOrWhiteSpace(AwayStatusLabel)) AwayStatusLabel = L("avatar.away", "Ausente");
+            if (string.IsNullOrWhiteSpace(BusyStatusLabel)) BusyStatusLabel = L("avatar.busy", "Ocupado");
+            if (string.IsNullOrWhiteSpace(OfflineStatusLabel)) OfflineStatusLabel = L("avatar.offline", "Indisponível");
+            if (string.IsNullOrWhiteSpace(DefaultStatusLabel)) DefaultStatusLabel = L("avatar.status", "Status");
 
             if (!string.IsNullOrWhiteSpace(ImageSrc) || UseGravatar)
             {
