@@ -16,12 +16,12 @@ namespace XForge.DesignSystem.Components.Feedback.Chat
         [Parameter] public EventCallback<IReadOnlyList<XFChatMessage>> MessagesChanged { get; set; }
         [Parameter] public IReadOnlyList<XFChatUser> Users { get; set; } = Array.Empty<XFChatUser>();
         [Parameter] public string CurrentUserId { get; set; } = string.Empty;
-        [Parameter] public string Placeholder { get; set; } = "Digite sua mensagem...";
-        [Parameter] public string SendLabel { get; set; } = "Enviar mensagem";
-        [Parameter] public string EmptyText { get; set; } = "Nenhuma mensagem ainda.";
-        [Parameter] public string ComposerLabel { get; set; } = "Digite sua mensagem";
-        [Parameter] public string TypingText { get; set; } = "Digitando...";
-        [Parameter] public string MessageLoadingLabel { get; set; } = "Carregando";
+        [Parameter] public string Placeholder { get; set; } = default!;
+        [Parameter] public string SendLabel { get; set; } = default!;
+        [Parameter] public string EmptyText { get; set; } = default!;
+        [Parameter] public string ComposerLabel { get; set; } = default!;
+        [Parameter] public string TypingText { get; set; } = default!;
+        [Parameter] public string MessageLoadingLabel { get; set; } = default!;
         [Parameter] public bool Loading { get; set; }
         [Parameter] public bool ReadOnly { get; set; }
         [Parameter] public bool ShowTypingIndicator { get; set; }
@@ -36,22 +36,22 @@ namespace XForge.DesignSystem.Components.Feedback.Chat
         [Parameter] public EventCallback<XFChatSendEventArgs> MessageSent { get; set; }
         [Parameter] public EventCallback<string?> DraftChanged { get; set; }
         [Parameter] public bool ShowDateSeparators { get; set; } = true;
-        [Parameter] public string DateFormat { get; set; } = "dd/MM/yyyy";
-        [Parameter] public string TimestampFormat { get; set; } = "HH:mm";
+        [Parameter] public string DateFormat { get; set; } = default!;
+        [Parameter] public string TimestampFormat { get; set; } = default!;
         [Parameter] public bool ShowTimestamps { get; set; } = true;
         [Parameter] public bool ShowUserNames { get; set; } = true;
         [Parameter] public int? MaxMessages { get; set; }
-        [Parameter] public string MaxMessagesText { get; set; } = "Mostrando as ultimas {0} mensagens";
+        [Parameter] public string MaxMessagesText { get; set; } = default!;
 
         protected override void OnInitialized()
         {
-            Placeholder = L("chat.placeholder", Placeholder);
-            SendLabel = L("chat.send", SendLabel);
-            EmptyText = L("chat.empty", EmptyText);
-            ComposerLabel = L("chat.composer", ComposerLabel);
-            TypingText = L("chat.typing", TypingText);
-            MessageLoadingLabel = L("chat.loading", MessageLoadingLabel);
-            MaxMessagesText = L("chat.max_messages", MaxMessagesText);
+            if (string.IsNullOrWhiteSpace(Placeholder)) Placeholder = L("chat.placeholder", Placeholder);
+            if (string.IsNullOrWhiteSpace(SendLabel)) SendLabel = L("chat.send", SendLabel);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("chat.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(ComposerLabel)) ComposerLabel = L("chat.composer", ComposerLabel);
+            if (string.IsNullOrWhiteSpace(TypingText)) TypingText = L("chat.typing", TypingText);
+            if (string.IsNullOrWhiteSpace(MessageLoadingLabel)) MessageLoadingLabel = L("chat.loading", MessageLoadingLabel);
+            if (string.IsNullOrWhiteSpace(MaxMessagesText)) MaxMessagesText = L("chat.max_messages", MaxMessagesText);
             base.OnInitialized();
         }
 

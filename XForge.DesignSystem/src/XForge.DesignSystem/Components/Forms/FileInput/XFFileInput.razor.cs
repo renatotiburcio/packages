@@ -14,7 +14,7 @@ namespace XForge.DesignSystem.Components.Forms.FileInput
         [Parameter] public string? Description { get; set; }
         [Parameter] public string? HelperText { get; set; }
         [Parameter] public string? Accept { get; set; }
-        [Parameter] public string ChooseText { get; set; } = "Escolher";
+        [Parameter] public string ChooseText { get; set; } = default!;
         [Parameter] public IReadOnlyList<IBrowserFile>? Files { get; set; }
         [Parameter] public EventCallback<IReadOnlyList<IBrowserFile>> FilesChanged { get; set; }
         [Parameter] public Expression<Func<IReadOnlyList<IBrowserFile>?>>? FilesExpression { get; set; }
@@ -26,12 +26,12 @@ namespace XForge.DesignSystem.Components.Forms.FileInput
         [Parameter] public bool FullWidth { get; set; } = true;
         [Parameter] public int MaximumFileCount { get; set; } = 10;
         [Parameter] public long MaximumFileSize { get; set; } = 10 * 1024 * 1024;
-        [Parameter] public string SingleTitle { get; set; } = "Solte um arquivo aqui ou selecione";
-        [Parameter] public string MultipleTitle { get; set; } = "Solte arquivos aqui ou selecione";
-        [Parameter] public string SingleDescriptionFormat { get; set; } = "Arquivo unico - max. {0}";
-        [Parameter] public string MultipleDescriptionFormat { get; set; } = "Multiplos arquivos - max. {0}";
-        [Parameter] public string FileTooLargeMessage { get; set; } = "Arquivo excede o tamanho maximo.";
-        [Parameter] public string MetadataSeparator { get; set; } = " - ";
+        [Parameter] public string SingleTitle { get; set; } = default!;
+        [Parameter] public string MultipleTitle { get; set; } = default!;
+        [Parameter] public string SingleDescriptionFormat { get; set; } = default!;
+        [Parameter] public string MultipleDescriptionFormat { get; set; } = default!;
+        [Parameter] public string FileTooLargeMessage { get; set; } = default!;
+        [Parameter] public string MetadataSeparator { get; set; } = default!;
         [Parameter] public XFFormVariant Variant { get; set; } = XFFormVariant.Outline;
         [Parameter] public XFSize Size { get; set; } = XFSize.Md;
         [Parameter] public XFSemanticColor Tone { get; set; } = XFSemanticColor.Default;
@@ -42,10 +42,10 @@ namespace XForge.DesignSystem.Components.Forms.FileInput
 
         // Progress tracking parameters
         [Parameter] public bool ShowProgress { get; set; }
-        [Parameter] public string UploadingText { get; set; } = "Enviando";
-        [Parameter] public string UploadedText { get; set; } = "Enviado";
-        [Parameter] public string ErrorUploadText { get; set; } = "Erro";
-        [Parameter] public string CanceledText { get; set; } = "Cancelado";
+        [Parameter] public string UploadingText { get; set; } = default!;
+        [Parameter] public string UploadedText { get; set; } = default!;
+        [Parameter] public string ErrorUploadText { get; set; } = default!;
+        [Parameter] public string CanceledText { get; set; } = default!;
 
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 
@@ -148,16 +148,16 @@ namespace XForge.DesignSystem.Components.Forms.FileInput
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            ChooseText = L("fileinput.choose", ChooseText);
-            SingleTitle = L("fileinput.drop_single", SingleTitle);
-            MultipleTitle = L("fileinput.drop_multiple", MultipleTitle);
-            SingleDescriptionFormat = L("fileinput.max_single_format", SingleDescriptionFormat);
-            MultipleDescriptionFormat = L("fileinput.max_multiple_format", MultipleDescriptionFormat);
-            FileTooLargeMessage = L("fileinput.too_large", FileTooLargeMessage);
-            UploadingText = L("fileinput.uploading", UploadingText);
-            UploadedText = L("fileinput.uploaded", UploadedText);
-            ErrorUploadText = L("fileinput.error", ErrorUploadText);
-            CanceledText = L("fileinput.cancelled", CanceledText);
+            if (string.IsNullOrWhiteSpace(ChooseText)) ChooseText = L("fileinput.choose", ChooseText);
+            if (string.IsNullOrWhiteSpace(SingleTitle)) SingleTitle = L("fileinput.drop_single", SingleTitle);
+            if (string.IsNullOrWhiteSpace(MultipleTitle)) MultipleTitle = L("fileinput.drop_multiple", MultipleTitle);
+            if (string.IsNullOrWhiteSpace(SingleDescriptionFormat)) SingleDescriptionFormat = L("fileinput.max_single_format", SingleDescriptionFormat);
+            if (string.IsNullOrWhiteSpace(MultipleDescriptionFormat)) MultipleDescriptionFormat = L("fileinput.max_multiple_format", MultipleDescriptionFormat);
+            if (string.IsNullOrWhiteSpace(FileTooLargeMessage)) FileTooLargeMessage = L("fileinput.too_large", FileTooLargeMessage);
+            if (string.IsNullOrWhiteSpace(UploadingText)) UploadingText = L("fileinput.uploading", UploadingText);
+            if (string.IsNullOrWhiteSpace(UploadedText)) UploadedText = L("fileinput.uploaded", UploadedText);
+            if (string.IsNullOrWhiteSpace(ErrorUploadText)) ErrorUploadText = L("fileinput.error", ErrorUploadText);
+            if (string.IsNullOrWhiteSpace(CanceledText)) CanceledText = L("fileinput.cancelled", CanceledText);
         }
 
         protected override void OnParametersSet()

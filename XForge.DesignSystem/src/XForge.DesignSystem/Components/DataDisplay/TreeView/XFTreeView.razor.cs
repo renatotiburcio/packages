@@ -37,14 +37,14 @@ namespace XForge.DesignSystem.Components.DataDisplay.TreeView
         [Parameter] public Func<XFTreeNode, string, bool>? FilterPredicate { get; set; }
         [Parameter] public bool ExpandFilteredMatches { get; set; } = true;
         [Parameter] public bool Visible { get; set; } = true;
-        [Parameter] public string EmptyText { get; set; } = "Nenhum item para exibir.";
+        [Parameter] public string EmptyText { get; set; } = default!;
         [Parameter] public XFTreeViewSelectionMode SelectionMode { get; set; } = XFTreeViewSelectionMode.Single;
         [Parameter] public XFSize Size { get; set; } = XFSize.Md;
         [Parameter] public XFContainerVariant Variant { get; set; } = XFContainerVariant.Surface;
         [Parameter] public bool ExpandOnNodeClick { get; set; } = true;
         [Parameter] public bool SelectOnNodeClick { get; set; } = true;
-        [Parameter] public string ExpandItemLabel { get; set; } = "Expandir item";
-        [Parameter] public string CollapseItemLabel { get; set; } = "Recolher item";
+        [Parameter] public string ExpandItemLabel { get; set; } = default!;
+        [Parameter] public string CollapseItemLabel { get; set; } = default!;
 
         // Checkbox parameters
         [Parameter] public bool AllowCheckBoxes { get; set; }
@@ -54,9 +54,9 @@ namespace XForge.DesignSystem.Components.DataDisplay.TreeView
         [Parameter] public EventCallback<XFTreeNodeEventArgs> NodeUnchecked { get; set; }
         [Parameter] public bool AllowCheckChildren { get; set; } = true;
         [Parameter] public bool AllowCheckParents { get; set; } = true;
-        [Parameter] public string CheckLabel { get; set; } = "Marcar";
-        [Parameter] public string UncheckLabel { get; set; } = "Desmarcar";
-        [Parameter] public string IndeterminateLabel { get; set; } = "Parcialmente marcado";
+        [Parameter] public string CheckLabel { get; set; } = default!;
+        [Parameter] public string UncheckLabel { get; set; } = default!;
+        [Parameter] public string IndeterminateLabel { get; set; } = default!;
 
         // Drag/drop parameters
         [Parameter] public bool AllowDrag { get; set; }
@@ -66,10 +66,10 @@ namespace XForge.DesignSystem.Components.DataDisplay.TreeView
         [Parameter] public EventCallback<XFTreeLoadChildrenEventArgs> OnLoadChildren { get; set; }
 
 
-        [Parameter] public string DragLabel { get; set; } = "Arrastar";
-        [Parameter] public string DropBeforeLabel { get; set; } = "Soltar antes";
-        [Parameter] public string DropInsideLabel { get; set; } = "Soltar dentro";
-        [Parameter] public string DropAfterLabel { get; set; } = "Soltar depois";
+        [Parameter] public string DragLabel { get; set; } = default!;
+        [Parameter] public string DropBeforeLabel { get; set; } = default!;
+        [Parameter] public string DropInsideLabel { get; set; } = default!;
+        [Parameter] public string DropAfterLabel { get; set; } = default!;
 
         private IReadOnlyList<XFTreeNode> ItemsList => Items ?? Array.Empty<XFTreeNode>();
 
@@ -81,16 +81,16 @@ namespace XForge.DesignSystem.Components.DataDisplay.TreeView
 
         protected override void OnInitialized()
         {
-            EmptyText = L("treeview.empty", EmptyText);
-            ExpandItemLabel = L("treeview.expand", ExpandItemLabel);
-            CollapseItemLabel = L("treeview.collapse", CollapseItemLabel);
-            CheckLabel = L("treeview.check", CheckLabel);
-            UncheckLabel = L("treeview.uncheck", UncheckLabel);
-            IndeterminateLabel = L("treeview.indeterminate", IndeterminateLabel);
-            DragLabel = L("treeview.drag", DragLabel);
-            DropBeforeLabel = L("treeview.drop_before", DropBeforeLabel);
-            DropInsideLabel = L("treeview.drop_inside", DropInsideLabel);
-            DropAfterLabel = L("treeview.drop_after", DropAfterLabel);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("treeview.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(ExpandItemLabel)) ExpandItemLabel = L("treeview.expand", ExpandItemLabel);
+            if (string.IsNullOrWhiteSpace(CollapseItemLabel)) CollapseItemLabel = L("treeview.collapse", CollapseItemLabel);
+            if (string.IsNullOrWhiteSpace(CheckLabel)) CheckLabel = L("treeview.check", CheckLabel);
+            if (string.IsNullOrWhiteSpace(UncheckLabel)) UncheckLabel = L("treeview.uncheck", UncheckLabel);
+            if (string.IsNullOrWhiteSpace(IndeterminateLabel)) IndeterminateLabel = L("treeview.indeterminate", IndeterminateLabel);
+            if (string.IsNullOrWhiteSpace(DragLabel)) DragLabel = L("treeview.drag", DragLabel);
+            if (string.IsNullOrWhiteSpace(DropBeforeLabel)) DropBeforeLabel = L("treeview.drop_before", DropBeforeLabel);
+            if (string.IsNullOrWhiteSpace(DropInsideLabel)) DropInsideLabel = L("treeview.drop_inside", DropInsideLabel);
+            if (string.IsNullOrWhiteSpace(DropAfterLabel)) DropAfterLabel = L("treeview.drop_after", DropAfterLabel);
             base.OnInitialized();
         }
 
