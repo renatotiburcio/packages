@@ -22,37 +22,37 @@ public partial class XFTransferList : XForgeComponentBase
     [Parameter] public IReadOnlyList<string> TargetValues { get; set; } = Array.Empty<string>();
     [Parameter] public EventCallback<IReadOnlyList<string>> TargetValuesChanged { get; set; }
     [Parameter] public EventCallback<IReadOnlyList<string>> Change { get; set; }
-    [Parameter] public string SourceLabel { get; set; } = "Disponiveis";
-    [Parameter] public string TargetLabel { get; set; } = "Selecionados";
-    [Parameter] public string SearchPlaceholder { get; set; } = "Buscar";
-    [Parameter] public string SourceSearchLabel { get; set; } = "Buscar itens disponiveis";
-    [Parameter] public string TargetSearchLabel { get; set; } = "Buscar itens selecionados";
-    [Parameter] public string MoveSelectedRightLabel { get; set; } = "Mover selecionados para selecionados";
-    [Parameter] public string MoveSelectedLeftLabel { get; set; } = "Mover selecionados para disponiveis";
-    [Parameter] public string MoveAllRightLabel { get; set; } = "Mover todos para selecionados";
-    [Parameter] public string MoveAllLeftLabel { get; set; } = "Mover todos para disponiveis";
+    [Parameter] public string SourceLabel { get; set; } = default!;
+    [Parameter] public string TargetLabel { get; set; } = default!;
+    [Parameter] public string SearchPlaceholder { get; set; } = default!;
+    [Parameter] public string SourceSearchLabel { get; set; } = default!;
+    [Parameter] public string TargetSearchLabel { get; set; } = default!;
+    [Parameter] public string MoveSelectedRightLabel { get; set; } = default!;
+    [Parameter] public string MoveSelectedLeftLabel { get; set; } = default!;
+    [Parameter] public string MoveAllRightLabel { get; set; } = default!;
+    [Parameter] public string MoveAllLeftLabel { get; set; } = default!;
 
-    [Parameter] public string SelectAllText { get; set; } = "Todos";
-    [Parameter] public string SingleCountFormat { get; set; } = "{0} item";
-    [Parameter] public string MultipleCountFormat { get; set; } = "{0} itens";
-    [Parameter] public string MovedLiveMessageFormat { get; set; } = "{0} item(ns) movido(s).";
+    [Parameter] public string SelectAllText { get; set; } = default!;
+    [Parameter] public string SingleCountFormat { get; set; } = default!;
+    [Parameter] public string MultipleCountFormat { get; set; } = default!;
+    [Parameter] public string MovedLiveMessageFormat { get; set; } = default!;
     [Parameter] public bool Searchable { get; set; } = true;
 
     protected override void OnInitialized()
     {
-        SourceLabel = L("transferlist.source", SourceLabel);
-        TargetLabel = L("transferlist.target", TargetLabel);
-        SearchPlaceholder = L("transferlist.search", SearchPlaceholder);
-        SourceSearchLabel = L("transferlist.source_search", SourceSearchLabel);
-        TargetSearchLabel = L("transferlist.target_search", TargetSearchLabel);
-        MoveSelectedRightLabel = L("transferlist.move_selected_right", MoveSelectedRightLabel);
-        MoveSelectedLeftLabel = L("transferlist.move_selected_left", MoveSelectedLeftLabel);
-        MoveAllRightLabel = L("transferlist.move_all_right", MoveAllRightLabel);
-        MoveAllLeftLabel = L("transferlist.move_all_left", MoveAllLeftLabel);
-        SelectAllText = L("transferlist.select_all", SelectAllText);
-        SingleCountFormat = L("transferlist.single_count", SingleCountFormat);
-        MultipleCountFormat = L("transferlist.multiple_count", MultipleCountFormat);
-        MovedLiveMessageFormat = L("transferlist.moved_message", MovedLiveMessageFormat);
+        if (string.IsNullOrWhiteSpace(SourceLabel)) SourceLabel = L("transferlist.source", SourceLabel);
+        if (string.IsNullOrWhiteSpace(TargetLabel)) TargetLabel = L("transferlist.target", TargetLabel);
+        if (string.IsNullOrWhiteSpace(SearchPlaceholder)) SearchPlaceholder = L("transferlist.search", SearchPlaceholder);
+        if (string.IsNullOrWhiteSpace(SourceSearchLabel)) SourceSearchLabel = L("transferlist.source_search", SourceSearchLabel);
+        if (string.IsNullOrWhiteSpace(TargetSearchLabel)) TargetSearchLabel = L("transferlist.target_search", TargetSearchLabel);
+        if (string.IsNullOrWhiteSpace(MoveSelectedRightLabel)) MoveSelectedRightLabel = L("transferlist.move_selected_right", MoveSelectedRightLabel);
+        if (string.IsNullOrWhiteSpace(MoveSelectedLeftLabel)) MoveSelectedLeftLabel = L("transferlist.move_selected_left", MoveSelectedLeftLabel);
+        if (string.IsNullOrWhiteSpace(MoveAllRightLabel)) MoveAllRightLabel = L("transferlist.move_all_right", MoveAllRightLabel);
+        if (string.IsNullOrWhiteSpace(MoveAllLeftLabel)) MoveAllLeftLabel = L("transferlist.move_all_left", MoveAllLeftLabel);
+        if (string.IsNullOrWhiteSpace(SelectAllText)) SelectAllText = L("transferlist.select_all", SelectAllText);
+        if (string.IsNullOrWhiteSpace(SingleCountFormat)) SingleCountFormat = L("transferlist.single_count", SingleCountFormat);
+        if (string.IsNullOrWhiteSpace(MultipleCountFormat)) MultipleCountFormat = L("transferlist.multiple_count", MultipleCountFormat);
+        if (string.IsNullOrWhiteSpace(MovedLiveMessageFormat)) MovedLiveMessageFormat = L("transferlist.moved_message", MovedLiveMessageFormat);
         base.OnInitialized();
     }
 

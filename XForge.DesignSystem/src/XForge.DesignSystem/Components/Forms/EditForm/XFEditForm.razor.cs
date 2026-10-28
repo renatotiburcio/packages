@@ -54,21 +54,21 @@ namespace XForge.DesignSystem.Components.Forms.EditForm
         [Parameter] public bool ReadOnly { get; set; }
         [Parameter] public bool Submitting { get; set; }
         [Parameter] public string? AriaLabel { get; set; }
-        [Parameter] public string ValidationReviewTitle { get; set; } = "Revise os campos pendentes";
-        [Parameter] public string ValidationReviewDescription { get; set; } = "Corrija os itens abaixo para continuar com seguranca.";
-        [Parameter] public string ValidationReviewButtonText { get; set; } = "Revisar erros";
-        [Parameter] public string ValidationReviewLead { get; set; } = "Encontramos pendencias no formulario.";
-        [Parameter] public string ValidationReviewHint { get; set; } = "A lista abaixo mostra exatamente o que precisa de atencao antes do envio.";
-        [Parameter] public string ValidationReviewCloseText { get; set; } = "Entendi";
-        [Parameter] public string ValidationReviewSingleCountFormat { get; set; } = "{0} pendencia para revisar";
-        [Parameter] public string ValidationReviewMultipleCountFormat { get; set; } = "{0} pendencias para revisar";
-        [Parameter] public string UnsavedChangesTitle { get; set; } = "Alteracoes nao salvas";
-        [Parameter] public string UnsavedChangesDescription { get; set; } = "Existem alteracoes pendentes neste formulario.";
-        [Parameter] public string UnsavedChangesLead { get; set; } = "Voce esta saindo com dados modificados.";
-        [Parameter] public string UnsavedChangesHint { get; set; } = "Escolha se deseja voltar para continuar, descartar as alteracoes ou salvar e fechar.";
-        [Parameter] public string UnsavedChangesContinueText { get; set; } = "Voltar e continuar";
-        [Parameter] public string UnsavedChangesDiscardText { get; set; } = "Descartar";
-        [Parameter] public string UnsavedChangesSaveText { get; set; } = "Salvar e fechar";
+        [Parameter] public string ValidationReviewTitle { get; set; } = default!;
+        [Parameter] public string ValidationReviewDescription { get; set; } = default!;
+        [Parameter] public string ValidationReviewButtonText { get; set; } = default!;
+        [Parameter] public string ValidationReviewLead { get; set; } = default!;
+        [Parameter] public string ValidationReviewHint { get; set; } = default!;
+        [Parameter] public string ValidationReviewCloseText { get; set; } = default!;
+        [Parameter] public string ValidationReviewSingleCountFormat { get; set; } = default!;
+        [Parameter] public string ValidationReviewMultipleCountFormat { get; set; } = default!;
+        [Parameter] public string UnsavedChangesTitle { get; set; } = default!;
+        [Parameter] public string UnsavedChangesDescription { get; set; } = default!;
+        [Parameter] public string UnsavedChangesLead { get; set; } = default!;
+        [Parameter] public string UnsavedChangesHint { get; set; } = default!;
+        [Parameter] public string UnsavedChangesContinueText { get; set; } = default!;
+        [Parameter] public string UnsavedChangesDiscardText { get; set; } = default!;
+        [Parameter] public string UnsavedChangesSaveText { get; set; } = default!;
 
         [Inject] private IServiceProvider Services { get; set; } = default!;
 
@@ -171,21 +171,21 @@ namespace XForge.DesignSystem.Components.Forms.EditForm
 
         protected override void OnInitialized()
         {
-            ValidationReviewTitle = L("editform.validation_title", ValidationReviewTitle);
-            ValidationReviewDescription = L("editform.validation_desc", ValidationReviewDescription);
-            ValidationReviewButtonText = L("editform.validation_button", ValidationReviewButtonText);
-            ValidationReviewLead = L("editform.validation_lead", ValidationReviewLead);
-            ValidationReviewHint = L("editform.validation_hint", ValidationReviewHint);
-            ValidationReviewCloseText = L("editform.validation_close", ValidationReviewCloseText);
-            ValidationReviewSingleCountFormat = L("editform.validation_single", ValidationReviewSingleCountFormat);
-            ValidationReviewMultipleCountFormat = L("editform.validation_multiple", ValidationReviewMultipleCountFormat);
-            UnsavedChangesTitle = L("editform.unsaved_title", UnsavedChangesTitle);
-            UnsavedChangesDescription = L("editform.unsaved_desc", UnsavedChangesDescription);
-            UnsavedChangesLead = L("editform.unsaved_lead", UnsavedChangesLead);
-            UnsavedChangesHint = L("editform.unsaved_hint", UnsavedChangesHint);
-            UnsavedChangesContinueText = L("editform.unsaved_continue", UnsavedChangesContinueText);
-            UnsavedChangesDiscardText = L("editform.unsaved_discard", UnsavedChangesDiscardText);
-            UnsavedChangesSaveText = L("editform.save_close", UnsavedChangesSaveText);
+            if (string.IsNullOrWhiteSpace(ValidationReviewTitle)) ValidationReviewTitle = L("editform.validation_title", ValidationReviewTitle);
+            if (string.IsNullOrWhiteSpace(ValidationReviewDescription)) ValidationReviewDescription = L("editform.validation_desc", ValidationReviewDescription);
+            if (string.IsNullOrWhiteSpace(ValidationReviewButtonText)) ValidationReviewButtonText = L("editform.validation_button", ValidationReviewButtonText);
+            if (string.IsNullOrWhiteSpace(ValidationReviewLead)) ValidationReviewLead = L("editform.validation_lead", ValidationReviewLead);
+            if (string.IsNullOrWhiteSpace(ValidationReviewHint)) ValidationReviewHint = L("editform.validation_hint", ValidationReviewHint);
+            if (string.IsNullOrWhiteSpace(ValidationReviewCloseText)) ValidationReviewCloseText = L("editform.validation_close", ValidationReviewCloseText);
+            if (string.IsNullOrWhiteSpace(ValidationReviewSingleCountFormat)) ValidationReviewSingleCountFormat = L("editform.validation_single", ValidationReviewSingleCountFormat);
+            if (string.IsNullOrWhiteSpace(ValidationReviewMultipleCountFormat)) ValidationReviewMultipleCountFormat = L("editform.validation_multiple", ValidationReviewMultipleCountFormat);
+            if (string.IsNullOrWhiteSpace(UnsavedChangesTitle)) UnsavedChangesTitle = L("editform.unsaved_title", UnsavedChangesTitle);
+            if (string.IsNullOrWhiteSpace(UnsavedChangesDescription)) UnsavedChangesDescription = L("editform.unsaved_desc", UnsavedChangesDescription);
+            if (string.IsNullOrWhiteSpace(UnsavedChangesLead)) UnsavedChangesLead = L("editform.unsaved_lead", UnsavedChangesLead);
+            if (string.IsNullOrWhiteSpace(UnsavedChangesHint)) UnsavedChangesHint = L("editform.unsaved_hint", UnsavedChangesHint);
+            if (string.IsNullOrWhiteSpace(UnsavedChangesContinueText)) UnsavedChangesContinueText = L("editform.unsaved_continue", UnsavedChangesContinueText);
+            if (string.IsNullOrWhiteSpace(UnsavedChangesDiscardText)) UnsavedChangesDiscardText = L("editform.unsaved_discard", UnsavedChangesDiscardText);
+            if (string.IsNullOrWhiteSpace(UnsavedChangesSaveText)) UnsavedChangesSaveText = L("editform.save_close", UnsavedChangesSaveText);
             base.OnInitialized();
         }
 

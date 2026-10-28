@@ -38,25 +38,25 @@ namespace XForge.DesignSystem.Components.Forms.Upload
         [Parameter] public int MaximumFileCount { get; set; } = 10;
         [Parameter] public long MaximumFileSize { get; set; } = 10 * 1024 * 1024;
         [Parameter] public string? UploadUrl { get; set; }
-        [Parameter] public string HttpMethod { get; set; } = "POST";
-        [Parameter] public string ParameterName { get; set; } = "file";
+        [Parameter] public string HttpMethod { get; set; } = default!;
+        [Parameter] public string ParameterName { get; set; } = default!;
         [Parameter] public int MaxChunkSize { get; set; } = 0;
-        [Parameter] public string UploadText { get; set; } = "Enviar";
-        [Parameter] public string RetryText { get; set; } = "Tentar novamente";
-        [Parameter] public string CancelText { get; set; } = "Cancelar";
-        [Parameter] public string RemoveText { get; set; } = "Remover";
-        [Parameter] public string ReadyText { get; set; } = "Pronto";
-        [Parameter] public string UploadingText { get; set; } = "Enviando";
-        [Parameter] public string UploadedText { get; set; } = "Enviado";
-        [Parameter] public string ErrorText { get; set; } = "Erro";
-        [Parameter] public string CanceledText { get; set; } = "Cancelado";
-        [Parameter] public string SingleTitle { get; set; } = "Solte um arquivo ou selecione";
-        [Parameter] public string MultipleTitle { get; set; } = "Solte arquivos ou selecione";
-        [Parameter] public string SingleDescriptionFormat { get; set; } = "Arquivo unico - max. {0}";
-        [Parameter] public string MultipleDescriptionFormat { get; set; } = "Fila multipla - max. {0}";
-        [Parameter] public string FileTooLargeMessage { get; set; } = "Arquivo excede o tamanho maximo.";
-        [Parameter] public string UploadingStatusFormat { get; set; } = "{0} {1}%";
-        [Parameter] public string MetadataSeparator { get; set; } = " - ";
+        [Parameter] public string UploadText { get; set; } = default!;
+        [Parameter] public string RetryText { get; set; } = default!;
+        [Parameter] public string CancelText { get; set; } = default!;
+        [Parameter] public string RemoveText { get; set; } = default!;
+        [Parameter] public string ReadyText { get; set; } = default!;
+        [Parameter] public string UploadingText { get; set; } = default!;
+        [Parameter] public string UploadedText { get; set; } = default!;
+        [Parameter] public string ErrorText { get; set; } = default!;
+        [Parameter] public string CanceledText { get; set; } = default!;
+        [Parameter] public string SingleTitle { get; set; } = default!;
+        [Parameter] public string MultipleTitle { get; set; } = default!;
+        [Parameter] public string SingleDescriptionFormat { get; set; } = default!;
+        [Parameter] public string MultipleDescriptionFormat { get; set; } = default!;
+        [Parameter] public string FileTooLargeMessage { get; set; } = default!;
+        [Parameter] public string UploadingStatusFormat { get; set; } = default!;
+        [Parameter] public string MetadataSeparator { get; set; } = default!;
         [Parameter] public bool FullWidth { get; set; } = true;
         [Parameter] public XFFormVariant Variant { get; set; } = XFFormVariant.Outline;
         [Parameter] public XFSize Size { get; set; } = XFSize.Md;
@@ -74,20 +74,20 @@ namespace XForge.DesignSystem.Components.Forms.Upload
 
         protected override void OnInitialized()
         {
-            UploadText = L("upload.send", UploadText);
-            RetryText = L("upload.retry", RetryText);
-            CancelText = L("upload.cancel", CancelText);
-            RemoveText = L("upload.remove", RemoveText);
-            ReadyText = L("upload.ready", ReadyText);
-            UploadingText = L("upload.uploading", UploadingText);
-            UploadedText = L("upload.uploaded", UploadedText);
-            ErrorText = L("upload.error", ErrorText);
-            CanceledText = L("upload.canceled", CanceledText);
-            SingleTitle = L("upload.single_title", SingleTitle);
-            MultipleTitle = L("upload.multiple_title", MultipleTitle);
-            SingleDescriptionFormat = L("upload.single_desc", SingleDescriptionFormat);
-            MultipleDescriptionFormat = L("upload.multiple_desc", MultipleDescriptionFormat);
-            FileTooLargeMessage = L("upload.file_too_large", FileTooLargeMessage);
+            if (string.IsNullOrWhiteSpace(UploadText)) UploadText = L("upload.send", UploadText);
+            if (string.IsNullOrWhiteSpace(RetryText)) RetryText = L("upload.retry", RetryText);
+            if (string.IsNullOrWhiteSpace(CancelText)) CancelText = L("upload.cancel", CancelText);
+            if (string.IsNullOrWhiteSpace(RemoveText)) RemoveText = L("upload.remove", RemoveText);
+            if (string.IsNullOrWhiteSpace(ReadyText)) ReadyText = L("upload.ready", ReadyText);
+            if (string.IsNullOrWhiteSpace(UploadingText)) UploadingText = L("upload.uploading", UploadingText);
+            if (string.IsNullOrWhiteSpace(UploadedText)) UploadedText = L("upload.uploaded", UploadedText);
+            if (string.IsNullOrWhiteSpace(ErrorText)) ErrorText = L("upload.error", ErrorText);
+            if (string.IsNullOrWhiteSpace(CanceledText)) CanceledText = L("upload.canceled", CanceledText);
+            if (string.IsNullOrWhiteSpace(SingleTitle)) SingleTitle = L("upload.single_title", SingleTitle);
+            if (string.IsNullOrWhiteSpace(MultipleTitle)) MultipleTitle = L("upload.multiple_title", MultipleTitle);
+            if (string.IsNullOrWhiteSpace(SingleDescriptionFormat)) SingleDescriptionFormat = L("upload.single_desc", SingleDescriptionFormat);
+            if (string.IsNullOrWhiteSpace(MultipleDescriptionFormat)) MultipleDescriptionFormat = L("upload.multiple_desc", MultipleDescriptionFormat);
+            if (string.IsNullOrWhiteSpace(FileTooLargeMessage)) FileTooLargeMessage = L("upload.file_too_large", FileTooLargeMessage);
             base.OnInitialized();
         }
 
