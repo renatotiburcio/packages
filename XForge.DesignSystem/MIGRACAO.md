@@ -218,3 +218,16 @@ em catch do Cropper — correta como estava). 10 lotes de codemod, build verde em 
 
 Resultado final (3 categorias + overlays): Forms 1154/1183, Navigation 569/570,
 DataDisplay 1173/1179, Overlays 162/163.
+
+## Residuo pos-codemod (2026-10-28) — testes esperamStrings sem acento
+
+~36 falhas restantes, majoritariamente Assert.Contains onde o teste espera texto
+SEM acento ("Abrir calendario", "Alteracoes nao salvas", "Abrir opcoes", "Solte
+arquivos") e o componente agora renderiza COM acento correto (locale/defaults
+corrigidos). Correcao: atualizar as expectativas dos testes para as formas acentuadas.
+
+Excecoes reais (gap de componente, nao de teste):
+- XFColorInputExtendedTest: espera classe h-14 w-14 no swatch Lg (nao renderizada)
+- XFDropDownDataGridExtendedTest: espera "Limpar" (label de clearable)
+
+Fila: (1) atualizar expectativas dos testes; (2) corrigir os 2 gaps de componente.
