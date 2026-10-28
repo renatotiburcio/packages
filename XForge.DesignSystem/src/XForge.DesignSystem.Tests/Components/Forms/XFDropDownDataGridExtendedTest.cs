@@ -288,7 +288,7 @@ public sealed class XFDropDownDataGridExtendedTest : XForgeTestContext
     public void Extended_ToggleButtonClass_ContainsInlineFlexH6W6Shrink0ItemsCenterJustifyCenterRoundedMd()
     {
         var cut = RenderDDDG();
-        var toggleButton = cut.FindAll("button").First(b => b.GetAttribute("aria-label") == "Abrir opcoes");
+        var toggleButton = cut.FindAll("button").First(b => b.GetAttribute("aria-label") == "Abrir opções");
         Assert.Contains("inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md", toggleButton.GetAttribute("class"));
     }
 
@@ -389,7 +389,7 @@ public sealed class XFDropDownDataGridExtendedTest : XForgeTestContext
     public void Extended_Defaults_ToggleLabel_IsAbrirOpcoes()
     {
         var cut = RenderDDDG();
-        Assert.Equal("Abrir opcoes", cut.Instance.ToggleLabel);
+        Assert.Equal("Abrir opções", cut.Instance.ToggleLabel);
     }
 
     [Fact]

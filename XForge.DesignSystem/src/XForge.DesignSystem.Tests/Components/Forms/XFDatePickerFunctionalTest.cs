@@ -41,5 +41,5 @@ public sealed class XFDatePickerFunctionalTest : XForgeTestContext
     [Fact] public void View_Decade() => Render<XFDatePicker>(p => p.Add(x => x.View, XFDatePickerView.Decade));
     [Fact] public void YearRange_10() => Render<XFDatePicker>(p => p.Add(x => x.YearRange, 10));
     [Fact] public void PtBR_WithDisplayFormat() => Render<XFDatePicker>(p => { p.Add(x => x.Culture, new System.Globalization.CultureInfo("pt-BR")); p.Add(x => x.DisplayFormat, "dd/MM/yyyy"); });
-    [Fact] public void ContainsToggleLabel() { var cut = Render<XFDatePicker>(); Assert.Contains("Abrir calendario", cut.Markup); }
+    [Fact] public void ContainsToggleLabel() { var cut = Render<XFDatePicker>(); Assert.Contains("Abrir calendário", cut.Markup); }
 }

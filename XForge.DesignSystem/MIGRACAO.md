@@ -231,3 +231,10 @@ Excecoes reais (gap de componente, nao de teste):
 - XFDropDownDataGridExtendedTest: espera "Limpar" (label de clearable)
 
 Fila: (1) atualizar expectativas dos testes; (2) corrigir os 2 gaps de componente.
+
+## Expectativas dos testes atualizadas (2026-10-28)
+
+21 ocorrencias sem acento corrigidas em 8 arquivos de teste: "Abrir calendario"?calendário,
+"Alteracoes nao salvas"?não salvas, "Abrir opcoes"?opções, "Proxima"?Próxima.
+Forms 1154 ? 1163; totais: Navigation 569/570, DataDisplay 1173/1179, Overlays 162/163,
+Feedback 366/368, Layout 370/372, Charts 21/21, Editors 14/14.

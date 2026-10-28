@@ -50,7 +50,7 @@ public sealed class XFDatePickerRenderFunctionalTest : XForgeTestContext
     [Fact] public void Renders_YearRange5() => Render<XFDatePicker>(p => p.Add(x => x.YearRange, 5));
 
     // ── Markup assertions ──
-    [Fact] public void Markup_ContainsToggleLabel() { var cut = Render<XFDatePicker>(); Assert.Contains("Abrir calendario", cut.Markup); }
+    [Fact] public void Markup_ContainsToggleLabel() { var cut = Render<XFDatePicker>(); Assert.Contains("Abrir calendário", cut.Markup); }
     [Fact] public void Markup_HasId() { var cut = Render<XFDatePicker>(); Assert.NotEmpty(cut.Markup); }
     [Fact] public void Markup_InlineShowsLabels() { var cut = Render<XFDatePicker>(p => p.Add(x => x.Inline, true)); Assert.NotNull(cut.Markup); }
 

@@ -439,6 +439,6 @@ public class XFPdfViewerComponentTest : XForgeTestContext
         });
 
         Assert.DoesNotContain("Anterior", cut.Markup);
-        Assert.DoesNotContain("Proxima", cut.Markup);
+        Assert.DoesNotContain("Próxima", cut.Markup);
     }
 }

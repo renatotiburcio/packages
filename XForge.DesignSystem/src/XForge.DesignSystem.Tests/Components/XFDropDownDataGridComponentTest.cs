@@ -42,7 +42,7 @@ public class XFDropDownDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.ValueSelector, p => p.Id);
         });
 
-        cut.Find("button[aria-label='Abrir opcoes']").Click();
+        cut.Find("button[aria-label='Abrir opções']").Click();
 
         Assert.Contains("role=\"listbox\"", cut.Markup);
         Assert.Contains("Laptop", cut.Markup);
@@ -61,7 +61,7 @@ public class XFDropDownDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.ValueChanged, EventCallback.Factory.Create<int?>(this, v => value = v));
         });
 
-        cut.Find("button[aria-label='Abrir opcoes']").Click();
+        cut.Find("button[aria-label='Abrir opções']").Click();
         cut.FindAll("tr[role='option']")[1].Click();
 
         Assert.Equal(2, value);
@@ -78,7 +78,7 @@ public class XFDropDownDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.ValueSelector, p => p.Id);
         });
 
-        cut.Find("button[aria-label='Abrir opcoes']").Click();
+        cut.Find("button[aria-label='Abrir opções']").Click();
         cut.Find("input[placeholder='Buscar...']").Input("Laptop");
 
         Assert.Contains("Laptop", cut.Markup);
@@ -102,7 +102,7 @@ public class XFDropDownDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.Columns, columns);
         });
 
-        cut.Find("button[aria-label='Abrir opcoes']").Click();
+        cut.Find("button[aria-label='Abrir opções']").Click();
 
         Assert.Contains("Name", cut.Markup);
         Assert.Contains("Category", cut.Markup);
@@ -119,7 +119,7 @@ public class XFDropDownDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.EmptyText, "No products found");
         });
 
-        cut.Find("button[aria-label='Abrir opcoes']").Click();
+        cut.Find("button[aria-label='Abrir opções']").Click();
 
         Assert.Contains("No products found", cut.Markup);
     }
@@ -152,7 +152,7 @@ public class XFDropDownDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.Disabled, true);
         });
 
-        Assert.Contains("disabled", cut.Find("button[aria-label='Abrir opcoes']").OuterHtml);
+        Assert.Contains("disabled", cut.Find("button[aria-label='Abrir opções']").OuterHtml);
     }
 
     [Fact]
@@ -194,7 +194,7 @@ public class XFDropDownDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.ValueSelector, p => p.Id);
         });
 
-        cut.Find("button[aria-label='Abrir opcoes']").Click();
+        cut.Find("button[aria-label='Abrir opções']").Click();
         Assert.Contains("role=\"listbox\"", cut.Markup);
 
         cut.Find(".xf-dropdown-datagrid").KeyDown("Escape");

@@ -124,14 +124,14 @@ public class XFEditFormExtendedTest : XForgeTestContext
         editContext.NotifyFieldChanged(editContext.Field(nameof(SimpleModel.Name)));
         cut.Render();
         cut.Find("button[type='button']").Click();
-        Assert.Contains("Alteracoes nao salvas", cut.Markup);
+        Assert.Contains("Alterações não salvas", cut.Markup);
 
         // Click "Voltar e continuar" (ContinueEditing)
         var continueBtn = cut.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Voltar e continuar"));
         Assert.NotNull(continueBtn);
         continueBtn.Click();
 
-        Assert.DoesNotContain("Alteracoes nao salvas", cut.Markup);
+        Assert.DoesNotContain("Alterações não salvas", cut.Markup);
     }
 
     [Fact]
@@ -470,7 +470,7 @@ public class XFEditFormExtendedTest : XForgeTestContext
         editContext.NotifyFieldChanged(editContext.Field(nameof(SimpleModel.Name)));
         cut.Render();
         cut.Find("button[type='button']").Click();
-        Assert.Contains("Alteracoes nao salvas", cut.Markup);
+        Assert.Contains("Alterações não salvas", cut.Markup);
 
         // Click "Salvar e fechar" — should fail validation
         var saveBtn = cut.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Salvar e fechar"));
@@ -509,7 +509,7 @@ public class XFEditFormExtendedTest : XForgeTestContext
         editContext.NotifyFieldChanged(editContext.Field(nameof(SimpleModel.Name)));
         cut.Render();
         cut.Find("button[type='button']").Click();
-        Assert.Contains("Alteracoes nao salvas", cut.Markup);
+        Assert.Contains("Alterações não salvas", cut.Markup);
 
         var saveBtn = cut.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Salvar e fechar"));
         Assert.NotNull(saveBtn);

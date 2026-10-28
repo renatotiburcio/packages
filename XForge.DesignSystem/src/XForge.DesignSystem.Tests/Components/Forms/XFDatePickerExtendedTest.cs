@@ -221,7 +221,7 @@ public sealed class XFDatePickerExtendedTest : XForgeTestContext
     public async Task Extended_CalendarContainerClass_Dropdown_AppliesCorrectClasses()
     {
         var cut = RenderDatePicker();
-        var toggle = cut.FindAll("button[aria-label='Abrir calendario']");
+        var toggle = cut.FindAll("button[aria-label='Abrir calendário']");
         if (toggle.Count > 0)
         {
             await toggle[0].ClickAsync();
