@@ -44,14 +44,14 @@ namespace XForge.DesignSystem.Components.Forms.DatePicker
 
         private string L(string key, string fallback) => Localizer?[key] ?? fallback;
 
-        [Parameter] public string ToggleLabel { get; set; } = "Abrir calendario";
-        [Parameter] public string CalendarLabel { get; set; } = "Calendario";
-        [Parameter] public string PreviousMonthLabel { get; set; } = "Mes anterior";
-        [Parameter] public string NextMonthLabel { get; set; } = "Proximo mes";
-        [Parameter] public string TodayLabel { get; set; } = "Hoje";
-        [Parameter] public string ClearLabel { get; set; } = "Limpar";
-        [Parameter] public string SelectedLabel { get; set; } = "selecionado";
-        [Parameter] public string DisabledDayLabel { get; set; } = "indisponivel";
+        [Parameter] public string ToggleLabel { get; set; } = default!;
+        [Parameter] public string CalendarLabel { get; set; } = default!;
+        [Parameter] public string PreviousMonthLabel { get; set; } = default!;
+        [Parameter] public string NextMonthLabel { get; set; } = default!;
+        [Parameter] public string TodayLabel { get; set; } = default!;
+        [Parameter] public string ClearLabel { get; set; } = default!;
+        [Parameter] public string SelectedLabel { get; set; } = default!;
+        [Parameter] public string DisabledDayLabel { get; set; } = default!;
 
         // --- Enterprise parameters (S-G012) ---
 
@@ -83,19 +83,19 @@ namespace XForge.DesignSystem.Components.Forms.DatePicker
         [Parameter] public int YearRange { get; set; } = 20;
 
         /// <summary>Label for the year navigation button.</summary>
-        [Parameter] public string PreviousYearLabel { get; set; } = "Ano anterior";
+        [Parameter] public string PreviousYearLabel { get; set; } = default!;
 
         /// <summary>Label for the year navigation button.</summary>
-        [Parameter] public string NextYearLabel { get; set; } = "Proximo ano";
+        [Parameter] public string NextYearLabel { get; set; } = default!;
 
         /// <summary>Label for the decade navigation button.</summary>
-        [Parameter] public string PreviousDecadeLabel { get; set; } = "Decada anterior";
+        [Parameter] public string PreviousDecadeLabel { get; set; } = default!;
 
         /// <summary>Label for the decade navigation button.</summary>
-        [Parameter] public string NextDecadeLabel { get; set; } = "Proxima decada";
+        [Parameter] public string NextDecadeLabel { get; set; } = default!;
 
         /// <summary>Format for week number aria label.</summary>
-        [Parameter] public string WeekNumberLabelFormat { get; set; } = "Semana {0}";
+        [Parameter] public string WeekNumberLabelFormat { get; set; } = default!;
 
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 
@@ -316,19 +316,19 @@ namespace XForge.DesignSystem.Components.Forms.DatePicker
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            ToggleLabel = L("datepicker.open", ToggleLabel);
-            CalendarLabel = L("datepicker.label", CalendarLabel);
-            PreviousMonthLabel = L("datepicker.prev_month", PreviousMonthLabel);
-            NextMonthLabel = L("datepicker.next_month", NextMonthLabel);
-            TodayLabel = L("datepicker.today", TodayLabel);
-            ClearLabel = L("datepicker.clear", ClearLabel);
-            SelectedLabel = L("datepicker.selected", SelectedLabel);
-            DisabledDayLabel = L("datepicker.unavailable", DisabledDayLabel);
-            PreviousYearLabel = L("datepicker.prev_year", PreviousYearLabel);
-            NextYearLabel = L("datepicker.next_year", NextYearLabel);
-            PreviousDecadeLabel = L("datepicker.prev_decade", PreviousDecadeLabel);
-            NextDecadeLabel = L("datepicker.next_decade", NextDecadeLabel);
-            WeekNumberLabelFormat = L("datepicker.week_format", WeekNumberLabelFormat);
+            if (string.IsNullOrWhiteSpace(ToggleLabel)) ToggleLabel = L("datepicker.open", ToggleLabel);
+            if (string.IsNullOrWhiteSpace(CalendarLabel)) CalendarLabel = L("datepicker.label", CalendarLabel);
+            if (string.IsNullOrWhiteSpace(PreviousMonthLabel)) PreviousMonthLabel = L("datepicker.prev_month", PreviousMonthLabel);
+            if (string.IsNullOrWhiteSpace(NextMonthLabel)) NextMonthLabel = L("datepicker.next_month", NextMonthLabel);
+            if (string.IsNullOrWhiteSpace(TodayLabel)) TodayLabel = L("datepicker.today", TodayLabel);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("datepicker.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(SelectedLabel)) SelectedLabel = L("datepicker.selected", SelectedLabel);
+            if (string.IsNullOrWhiteSpace(DisabledDayLabel)) DisabledDayLabel = L("datepicker.unavailable", DisabledDayLabel);
+            if (string.IsNullOrWhiteSpace(PreviousYearLabel)) PreviousYearLabel = L("datepicker.prev_year", PreviousYearLabel);
+            if (string.IsNullOrWhiteSpace(NextYearLabel)) NextYearLabel = L("datepicker.next_year", NextYearLabel);
+            if (string.IsNullOrWhiteSpace(PreviousDecadeLabel)) PreviousDecadeLabel = L("datepicker.prev_decade", PreviousDecadeLabel);
+            if (string.IsNullOrWhiteSpace(NextDecadeLabel)) NextDecadeLabel = L("datepicker.next_decade", NextDecadeLabel);
+            if (string.IsNullOrWhiteSpace(WeekNumberLabelFormat)) WeekNumberLabelFormat = L("datepicker.week_format", WeekNumberLabelFormat);
         }
 
         protected override void OnParametersSet()
