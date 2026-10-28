@@ -47,15 +47,15 @@ namespace XForge.DesignSystem.Components.Forms.Autocomplete
         [Parameter] public bool Loading { get; set; }
         [Parameter] public int MinLength { get; set; } = 1;
         [Parameter] public int MaxItems { get; set; } = 8;
-        [Parameter] public string ClearLabel { get; set; } = "Limpar";
-        [Parameter] public string LoadingText { get; set; } = "Carregando...";
-        [Parameter] public string EmptyText { get; set; } = "Nenhum resultado.";
-        [Parameter] public string ListboxLabel { get; set; } = "Resultados";
+        [Parameter] public string ClearLabel { get; set; } = default!;
+        [Parameter] public string LoadingText { get; set; } = default!;
+        [Parameter] public string EmptyText { get; set; } = default!;
+        [Parameter] public string ListboxLabel { get; set; } = default!;
         [Parameter] public string? ErrorText { get; set; }
         [Parameter] public bool Virtualize { get; set; }
         [Parameter] public float VirtualItemSize { get; set; } = 40;
         [Parameter] public int? MaximumSelectedOptions { get; set; }
-        [Parameter] public string MaximumSelectedText { get; set; } = "Maximo {0} selecoes";
+        [Parameter] public string MaximumSelectedText { get; set; } = default!;
         [Parameter] public RenderFragment? HeaderContent { get; set; }
         [Parameter] public RenderFragment? FooterContent { get; set; }
         [Parameter] public bool KeepOpen { get; set; }
@@ -168,11 +168,11 @@ namespace XForge.DesignSystem.Components.Forms.Autocomplete
 
         protected override void OnInitialized()
         {
-            ClearLabel = L("autocomplete.clear", ClearLabel);
-            LoadingText = L("autocomplete.loading", LoadingText);
-            EmptyText = L("autocomplete.empty", EmptyText);
-            ListboxLabel = L("autocomplete.listbox", ListboxLabel);
-            MaximumSelectedText = L("autocomplete.max_selected", MaximumSelectedText);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("autocomplete.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(LoadingText)) LoadingText = L("autocomplete.loading", LoadingText);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("autocomplete.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(ListboxLabel)) ListboxLabel = L("autocomplete.listbox", ListboxLabel);
+            if (string.IsNullOrWhiteSpace(MaximumSelectedText)) MaximumSelectedText = L("autocomplete.max_selected", MaximumSelectedText);
             base.OnInitialized();
         }
 

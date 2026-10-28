@@ -30,17 +30,17 @@ namespace XForge.DesignSystem.Components.Overlays.Dialog
         [Parameter] public bool CloseOnEscape { get; set; } = true;
         [Parameter] public bool CloseOnOverlayClick { get; set; } = true;
         [Parameter] public bool ShowCloseButton { get; set; } = true;
-        [Parameter] public string CloseLabel { get; set; } = "Fechar";
+        [Parameter] public string CloseLabel { get; set; } = default!;
         [Parameter] public Func<Task<bool>>? CanClose { get; set; }
         [Parameter] public bool Draggable { get; set; }
         [Parameter] public bool Resizable { get; set; }
         [Parameter] public bool Maximizable { get; set; }
         [Parameter] public bool Maximized { get; set; }
         [Parameter] public EventCallback<bool> MaximizedChanged { get; set; }
-        [Parameter] public string DragHandleLabel { get; set; } = "Mover dialogo";
-        [Parameter] public string ResizeHandleLabel { get; set; } = "Redimensionar dialogo";
-        [Parameter] public string MaximizeLabel { get; set; } = "Maximizar";
-        [Parameter] public string RestoreLabel { get; set; } = "Restaurar";
+        [Parameter] public string DragHandleLabel { get; set; } = default!;
+        [Parameter] public string ResizeHandleLabel { get; set; } = default!;
+        [Parameter] public string MaximizeLabel { get; set; } = default!;
+        [Parameter] public string RestoreLabel { get; set; } = default!;
         [Parameter] public XFDialogScrollMode ScrollMode { get; set; } = XFDialogScrollMode.Body;
         [Parameter] public string? MinWidth { get; set; }
         [Parameter] public string? MaxWidth { get; set; }
@@ -50,11 +50,11 @@ namespace XForge.DesignSystem.Components.Overlays.Dialog
 
         protected override void OnInitialized()
         {
-            CloseLabel = L("dialog.close", CloseLabel);
-            DragHandleLabel = L("dialog.move", DragHandleLabel);
-            ResizeHandleLabel = L("dialog.resize", ResizeHandleLabel);
-            MaximizeLabel = L("dialog.maximize", MaximizeLabel);
-            RestoreLabel = L("dialog.restore", RestoreLabel);
+            if (string.IsNullOrWhiteSpace(CloseLabel)) CloseLabel = L("dialog.close", CloseLabel);
+            if (string.IsNullOrWhiteSpace(DragHandleLabel)) DragHandleLabel = L("dialog.move", DragHandleLabel);
+            if (string.IsNullOrWhiteSpace(ResizeHandleLabel)) ResizeHandleLabel = L("dialog.resize", ResizeHandleLabel);
+            if (string.IsNullOrWhiteSpace(MaximizeLabel)) MaximizeLabel = L("dialog.maximize", MaximizeLabel);
+            if (string.IsNullOrWhiteSpace(RestoreLabel)) RestoreLabel = L("dialog.restore", RestoreLabel);
             base.OnInitialized();
         }
 

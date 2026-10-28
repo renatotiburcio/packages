@@ -48,11 +48,11 @@ namespace XForge.DesignSystem.Components.Forms.Combobox
         [Parameter] public bool Loading { get; set; }
         [Parameter] public bool OpenOnFocus { get; set; } = true;
         [Parameter] public int MaxItems { get; set; } = 10;
-        [Parameter] public string ClearLabel { get; set; } = "Limpar selecao";
-        [Parameter] public string ToggleLabel { get; set; } = "Abrir opcoes";
-        [Parameter] public string LoadingText { get; set; } = "Carregando...";
-        [Parameter] public string EmptyText { get; set; } = "Nenhuma opcao.";
-        [Parameter] public string ListboxLabel { get; set; } = "Opcoes";
+        [Parameter] public string ClearLabel { get; set; } = default!;
+        [Parameter] public string ToggleLabel { get; set; } = default!;
+        [Parameter] public string LoadingText { get; set; } = default!;
+        [Parameter] public string EmptyText { get; set; } = default!;
+        [Parameter] public string ListboxLabel { get; set; } = default!;
         [Parameter] public string? ErrorText { get; set; }
 
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
@@ -167,11 +167,11 @@ namespace XForge.DesignSystem.Components.Forms.Combobox
 
         protected override void OnInitialized()
         {
-            ClearLabel = L("combobox.clear", ClearLabel);
-            ToggleLabel = L("combobox.toggle", ToggleLabel);
-            LoadingText = L("combobox.loading", LoadingText);
-            EmptyText = L("combobox.no_options", EmptyText);
-            ListboxLabel = L("combobox.listbox", ListboxLabel);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("combobox.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(ToggleLabel)) ToggleLabel = L("combobox.toggle", ToggleLabel);
+            if (string.IsNullOrWhiteSpace(LoadingText)) LoadingText = L("combobox.loading", LoadingText);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("combobox.no_options", EmptyText);
+            if (string.IsNullOrWhiteSpace(ListboxLabel)) ListboxLabel = L("combobox.listbox", ListboxLabel);
             base.OnInitialized();
         }
 
