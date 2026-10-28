@@ -20,12 +20,17 @@ namespace XForge.DesignSystem.Components.DataDisplay.VirtualList
         [Parameter] public float ItemSize { get; set; } = 50;
         [Parameter] public int OverscanCount { get; set; } = 3;
         [Parameter] public string? Title { get; set; }
-        [Parameter] public string EmptyText { get; set; } = "Nenhum item para exibir.";
+        [Parameter] public string EmptyText { get; set; } = default!;
         [Parameter] public XFVirtualListVariant Variant { get; set; } = XFVirtualListVariant.Default;
 
         protected override void OnInitialized()
         {
-            EmptyText = L("virtuallist.empty", EmptyText);
+            // honra o valor do usuário quando informado; aplica o default localizado caso contrário
+            if (string.IsNullOrWhiteSpace(EmptyText))
+            {
+                EmptyText = L("virtuallist.empty", "Nenhum item para exibir.");
+            }
+
             base.OnInitialized();
         }
 

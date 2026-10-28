@@ -162,3 +162,15 @@ Leitura: testes esperando strings pt-BR que nao aparecem — ou a chave nao existe
 Localization/Json/Locales/pt-BR.json, ou o componente usa default hardcoded em vez do
 localizer. Classificaç~ao por teste: ajustar a expectativa, completar o locale, ou
 migrar o default do componente para o localizer.
+
+### BUG REAL (produto) encontrado na triagem (2026-10-28)
+
+XFVirtualList.razor.cs sobrescrevia o parametro do usuario com o valor localizado em
+OnInitialized (EmptyText = L("virtuallist.empty", EmptyText)) — qualquer valor
+customizado era perdido. Corrigido: default aplicado apenas quando não informado.
+VirtualList: 24/24 verde.
+
+**Padrão sistêmico** (mesmo bug, outros componentes — a corrigir):
+XFAvatar (5 labels), XFBadge (4 títulos/aria), XFChart (3), e demais que fazem
+<Param> = L("chave", <Param>) em OnInitialized/OnParametersSet. Regra correta:
+aplicar o default localizado SOMENTE quando o usuário não informou o valor.
