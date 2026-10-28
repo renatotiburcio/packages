@@ -20,7 +20,7 @@
                 IsDisabled = IsItemDisabled(entry.item) || Disabled,
                 IsPending = entry.item.Status == XFStepStatus.Pending && !Disabled
             };
-            <li class="@ItemClass(entry.item, entry.index)"
+            <li @key="entry.item" class="@ItemClass(entry.item, entry.index)"
                 aria-current="@(ctx.IsCurrent ? "step" : null)"
                 aria-disabled="@ctx.IsDisabled.ToString().ToLowerInvariant()"
                 aria-label="@GetStepAriaLabel(entry.item, entry.index)"

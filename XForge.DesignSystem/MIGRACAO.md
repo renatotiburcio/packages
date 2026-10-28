@@ -75,3 +75,11 @@ NuGet.config                      fontes de pacote
 
 - dotnet build src/XForge.DesignSystem — passa
 - testes filtrados (Scheduler) — 51/51; suíte completa no job dedicado do CI
+
+### Backlog @key — remanescente consciente (2026-10-27)
+
+De 77 componentes com @foreach, 75 receberam chave estavel em 18 lotes. Remanescente deliberado:
+
+- XFTreeView e XFTOC: o corpo do loop e um RenderFragment (@RenderNode/@RenderItem),
+  onde @key so se aplica a elementos. Aplicar exigiria envolver o fragmento num <div> —
+  mudanca de DOM+CSS que e decisao de design, nao correcao mecanica.

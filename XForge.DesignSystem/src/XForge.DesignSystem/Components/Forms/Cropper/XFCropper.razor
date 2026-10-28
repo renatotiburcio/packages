@@ -100,7 +100,7 @@
                     <span class="text-xs font-medium text-text-secondary">@AspectRatioText:</span>
                     @foreach (var ratio in AspectRatios)
                     {
-                        <button type="button"
+                        <button @key="ratio" type="button"
                                 class="@AspectRatioButtonClass(ratio)"
                                 @onclick="() => SetAspectRatio(ratio)">
                             @ratio.Label

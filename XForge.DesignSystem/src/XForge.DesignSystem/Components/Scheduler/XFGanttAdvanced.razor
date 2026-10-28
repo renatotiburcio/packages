@@ -29,7 +29,7 @@
                         var depth = GetTaskDepth(task);
                         var isEditing = _editingTask?.Id == task.Id;
 
-                        <div class="xf-gantt-tree-row @(IsSelected(task) ? "selected" : "")"
+                        <div @key="task" class="xf-gantt-tree-row @(IsSelected(task) ? "selected" : "")"
                              style="height:@(RowHeight)px; padding-left:@(depth * 20 + 8)px"
                              @onclick="() => SelectTask(task)">
 

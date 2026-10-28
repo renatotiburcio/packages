@@ -63,7 +63,7 @@
         @foreach (var tab in _tabs)
         {
             var isActive = tab.Id == _activeTabId;
-            <div id="@($"panel-{tab.Id}")"
+            <div @key="tab" id="@($"panel-{tab.Id}")"
                  role="tabpanel"
                  aria-labelledby="@($"tab-{tab.Id}")"
                  hidden="@(!isActive)"
