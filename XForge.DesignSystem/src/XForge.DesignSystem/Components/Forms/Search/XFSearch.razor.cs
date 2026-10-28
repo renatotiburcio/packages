@@ -19,8 +19,8 @@ namespace XForge.DesignSystem.Components.Forms.Search
 
         protected override void OnInitialized()
         {
-            Placeholder = L("search.placeholder", Placeholder);
-            ClearLabel = L("search.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(Placeholder)) Placeholder = L("search.placeholder", Placeholder);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("search.clear", ClearLabel);
             base.OnInitialized();
         }
         [Parameter] public string? HelperText { get; set; }
@@ -39,7 +39,7 @@ namespace XForge.DesignSystem.Components.Forms.Search
         [Parameter] public bool Clearable { get; set; } = true;
         [Parameter] public bool ClearOnEscape { get; set; } = true;
         [Parameter] public int DebounceMilliseconds { get; set; } = 300;
-        [Parameter] public string ClearLabel { get; set; } = "Limpar pesquisa";
+        [Parameter] public string ClearLabel { get; set; } = default!;
 
         private string? CurrentValue { get; set; }
         private string? LastParameterValue { get; set; }

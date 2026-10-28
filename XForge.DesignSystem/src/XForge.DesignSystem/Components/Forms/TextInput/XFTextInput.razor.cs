@@ -46,11 +46,11 @@ namespace XForge.DesignSystem.Components.Forms.TextInput
         [Parameter] public int? MaxLength { get; set; }
         [Parameter] public int? MinLength { get; set; }
         [Parameter] public int? VisibleCharacters { get; set; }
-        [Parameter] public string ClearLabel { get; set; } = "Limpar valor";
+        [Parameter] public string ClearLabel { get; set; } = default!;
 
         protected override void OnInitialized()
         {
-            ClearLabel = L("input.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("input.clear", ClearLabel);
             base.OnInitialized();
         }
         [Parameter] public EventCallback<string?> Change { get; set; }

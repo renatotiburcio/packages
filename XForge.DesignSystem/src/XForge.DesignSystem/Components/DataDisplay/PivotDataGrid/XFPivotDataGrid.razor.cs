@@ -16,21 +16,21 @@ public partial class XFPivotDataGrid<TItem> : XForgeComponentBase
     [Parameter] public Func<TItem, double>? ValueSelector { get; set; }
     [Parameter] public XFPivotAggregate Aggregate { get; set; } = XFPivotAggregate.Sum;
     [Parameter] public bool ShowTotals { get; set; } = true;
-    [Parameter] public string RowHeader { get; set; } = "Linha";
-    [Parameter] public string TotalHeader { get; set; } = "Total";
-    [Parameter] public string EmptyText { get; set; } = "Nenhum dado para exibir.";
+    [Parameter] public string RowHeader { get; set; } = default!;
+    [Parameter] public string TotalHeader { get; set; } = default!;
+    [Parameter] public string EmptyText { get; set; } = default!;
     [Parameter] public string? Caption { get; set; }
-    [Parameter] public string DefaultCaption { get; set; } = "Tabela dinamica de dados";
+    [Parameter] public string DefaultCaption { get; set; } = default!;
     [Parameter] public string? ValueFormat { get; set; } = "N0";
     [Parameter] public CultureInfo? Culture { get; set; }
     [Parameter] public IComparer<string>? SortComparer { get; set; }
 
     protected override void OnInitialized()
     {
-        RowHeader = L("pivotdatagrid.row_header", RowHeader);
-        TotalHeader = L("pivotdatagrid.total_header", TotalHeader);
-        EmptyText = L("pivotdatagrid.empty", EmptyText);
-        DefaultCaption = L("pivotdatagrid.caption", DefaultCaption);
+        if (string.IsNullOrWhiteSpace(RowHeader)) RowHeader = L("pivotdatagrid.row_header", RowHeader);
+        if (string.IsNullOrWhiteSpace(TotalHeader)) TotalHeader = L("pivotdatagrid.total_header", TotalHeader);
+        if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("pivotdatagrid.empty", EmptyText);
+        if (string.IsNullOrWhiteSpace(DefaultCaption)) DefaultCaption = L("pivotdatagrid.caption", DefaultCaption);
         base.OnInitialized();
     }
 

@@ -28,7 +28,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.VirtualList
             // honra o valor do usuário quando informado; aplica o default localizado caso contrário
             if (string.IsNullOrWhiteSpace(EmptyText))
             {
-                EmptyText = L("virtuallist.empty", "Nenhum item para exibir.");
+                if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("virtuallist.empty", "Nenhum item para exibir.");
             }
 
             base.OnInitialized();

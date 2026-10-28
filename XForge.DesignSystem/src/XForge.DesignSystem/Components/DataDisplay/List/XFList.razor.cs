@@ -14,7 +14,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.List
 
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public RenderFragment? EmptyContent { get; set; }
-        [Parameter] public string EmptyText { get; set; } = "Nenhum item para exibir.";
+        [Parameter] public string EmptyText { get; set; } = default!;
         [Parameter] public string? AriaLabel { get; set; }
         [Parameter] public bool Visible { get; set; } = true;
         [Parameter] public bool Dividers { get; set; } = true;
@@ -32,7 +32,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.List
 
         protected override void OnInitialized()
         {
-            EmptyText = L("list.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("list.empty", EmptyText);
             base.OnInitialized();
         }
 

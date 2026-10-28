@@ -15,13 +15,13 @@ namespace XForge.DesignSystem.Components.Layout.Shell
         [Parameter] public bool Expanded { get; set; } = true;
         [Parameter] public XFSidebarVariant Variant { get; set; } = XFSidebarVariant.Persistent;
         [Parameter] public string? AriaLabel { get; set; } = "Navegacao secundaria";
-        [Parameter] public string HeaderClass { get; set; } = "h-16 px-4 flex items-center gap-3 border-b border-border-light shrink-0 text-base font-bold text-text-primary transition-theme";
-        [Parameter] public string ContentClass { get; set; } = "flex-1 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin transition-theme";
-        [Parameter] public string FooterClass { get; set; } = "p-3 border-t border-border-light shrink-0 transition-theme";
+        [Parameter] public string HeaderClass { get; set; } = default!;
+        [Parameter] public string ContentClass { get; set; } = default!;
+        [Parameter] public string FooterClass { get; set; } = default!;
 
         protected override void OnInitialized()
         {
-            AriaLabel = L("sidebar.navigation", AriaLabel);
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("sidebar.navigation", AriaLabel);
             base.OnInitialized();
         }
 

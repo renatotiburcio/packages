@@ -51,18 +51,18 @@ public partial class XFPdfViewer : XForgeComponentBase, IAsyncDisposable
     {
         base.OnInitialized();
 
-        Title = L("pdfviewer.document", "Documento PDF");
-        AriaLabel = L("pdfviewer.title", "Visualizador de PDF");
-        EmptyText = L("pdfviewer.placeholder", "Informe uma URL ou base64 para visualizar o PDF.");
-        PreviousLabel = L("pdfviewer.prev", "Anterior");
-        NextLabel = L("pdfviewer.next", "Proxima");
-        ZoomInLabel = L("pdfviewer.zoom_in", "Aumentar zoom");
-        ZoomOutLabel = L("pdfviewer.zoom_out", "Reduzir zoom");
-        PageLabelFormat = L("pdfviewer.page_format", "Pagina {0}");
-        DownloadLabel = L("pdfviewer.download", "Baixar");
-        PrintLabel = L("pdfviewer.print", "Imprimir");
-        FullscreenLabel = L("pdfviewer.fullscreen", "Tela cheia");
-        LoadingText = L("pdfviewer.loading", "Carregando PDF...");
+        if (string.IsNullOrWhiteSpace(Title)) Title = L("pdfviewer.document", "Documento PDF");
+        if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("pdfviewer.title", "Visualizador de PDF");
+        if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("pdfviewer.placeholder", "Informe uma URL ou base64 para visualizar o PDF.");
+        if (string.IsNullOrWhiteSpace(PreviousLabel)) PreviousLabel = L("pdfviewer.prev", "Anterior");
+        if (string.IsNullOrWhiteSpace(NextLabel)) NextLabel = L("pdfviewer.next", "Proxima");
+        if (string.IsNullOrWhiteSpace(ZoomInLabel)) ZoomInLabel = L("pdfviewer.zoom_in", "Aumentar zoom");
+        if (string.IsNullOrWhiteSpace(ZoomOutLabel)) ZoomOutLabel = L("pdfviewer.zoom_out", "Reduzir zoom");
+        if (string.IsNullOrWhiteSpace(PageLabelFormat)) PageLabelFormat = L("pdfviewer.page_format", "Pagina {0}");
+        if (string.IsNullOrWhiteSpace(DownloadLabel)) DownloadLabel = L("pdfviewer.download", "Baixar");
+        if (string.IsNullOrWhiteSpace(PrintLabel)) PrintLabel = L("pdfviewer.print", "Imprimir");
+        if (string.IsNullOrWhiteSpace(FullscreenLabel)) FullscreenLabel = L("pdfviewer.fullscreen", "Tela cheia");
+        if (string.IsNullOrWhiteSpace(LoadingText)) LoadingText = L("pdfviewer.loading", "Carregando PDF...");
     }
 
     // --- Internal state ---

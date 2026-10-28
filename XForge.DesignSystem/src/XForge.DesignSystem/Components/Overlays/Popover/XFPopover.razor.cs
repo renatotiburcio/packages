@@ -14,16 +14,16 @@ namespace XForge.DesignSystem.Components.Overlays.Popover
 
         [Parameter] public bool Open { get; set; }
         [Parameter] public EventCallback<bool> OpenChanged { get; set; }
-        [Parameter] public string ButtonText { get; set; } = "Abrir";
+        [Parameter] public string ButtonText { get; set; } = default!;
 
         protected override void OnInitialized()
         {
-            ButtonText = L("popover.open", ButtonText);
+            if (string.IsNullOrWhiteSpace(ButtonText)) ButtonText = L("popover.open", ButtonText);
             base.OnInitialized();
         }
         [Parameter] public string? PanelAriaLabel { get; set; }
         [Parameter] public string? PanelAriaLabelledBy { get; set; }
-        [Parameter] public string Role { get; set; } = "dialog";
+        [Parameter] public string Role { get; set; } = default!;
         [Parameter] public RenderFragment<XFPopoverTriggerContext>? Trigger { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public XFPopoverPlacement Placement { get; set; } = XFPopoverPlacement.Bottom;

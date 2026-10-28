@@ -15,7 +15,7 @@ namespace XForge.DesignSystem.Components.Feedback.Progress
 
         protected override void OnInitialized()
         {
-            LoadingText = L("progress.loading", LoadingText);
+            if (string.IsNullOrWhiteSpace(LoadingText)) LoadingText = L("progress.loading", LoadingText);
             base.OnInitialized();
         }
 
@@ -32,7 +32,7 @@ namespace XForge.DesignSystem.Components.Feedback.Progress
         [Parameter] public bool Paused { get; set; }
         [Parameter] public string? Label { get; set; }
         [Parameter] public string? AriaLabel { get; set; }
-        [Parameter] public string LoadingText { get; set; } = "Carregando";
+        [Parameter] public string LoadingText { get; set; } = default!;
         [Parameter] public string? Unit { get; set; } = "%";
         [Parameter] public string? ValueFormat { get; set; }
         [Parameter] public XFProgressColor Color { get; set; } = XFProgressColor.Primary;

@@ -13,11 +13,11 @@ namespace XForge.DesignSystem.Components.Layout.Shell
         [Parameter] public XFAppBarPosition Position { get; set; } = XFAppBarPosition.Static;
         [Parameter] public bool Bordered { get; set; } = true;
         [Parameter] public string? AriaLabel { get; set; } = "Barra do aplicativo";
-        [Parameter] public string InnerClass { get; set; } = "flex items-center justify-between w-full px-6";
+        [Parameter] public string InnerClass { get; set; } = default!;
 
         protected override void OnInitialized()
         {
-            AriaLabel = L("appbar.label", AriaLabel);
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("appbar.label", AriaLabel);
             base.OnInitialized();
         }
 

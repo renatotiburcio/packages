@@ -31,7 +31,7 @@ namespace XForge.DesignSystem.Components.Navigation.Toolbar
 
         protected override void OnInitialized()
         {
-            AriaLabel = L("toolbar.label", AriaLabel);
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("toolbar.label", AriaLabel);
             base.OnInitialized();
         }
 

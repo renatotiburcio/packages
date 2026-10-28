@@ -26,7 +26,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chip
         [Parameter] public bool Clickable { get; set; }
         [Parameter] public bool Visible { get; set; } = true;
         [Parameter] public string? AriaLabel { get; set; }
-        [Parameter] public string DismissLabel { get; set; } = "Remover";
+        [Parameter] public string DismissLabel { get; set; } = default!;
 
         /// <summary>Fires when the chip is clicked (if Clickable). Compliant with D-001 On{Action} convention.</summary>
         [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -133,7 +133,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chip
 
         protected override void OnInitialized()
         {
-            DismissLabel = L("chip.dismiss", DismissLabel);
+            if (string.IsNullOrWhiteSpace(DismissLabel)) DismissLabel = L("chip.dismiss", DismissLabel);
             base.OnInitialized();
         }
 

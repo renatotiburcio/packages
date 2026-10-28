@@ -26,17 +26,17 @@ namespace XForge.DesignSystem.Components.Forms.InputMask
         [Parameter] public EventCallback<string?> ValueChanged { get; set; }
         [Parameter] public Expression<Func<string?>>? ValueExpression { get; set; }
         [Parameter] public EventCallback<string?> Change { get; set; }
-        [Parameter] public string Mask { get; set; } = "";
+        [Parameter] public string Mask { get; set; } = default!;
         [Parameter] public char PlaceholderChar { get; set; } = '_';
         [Parameter] public bool ShowMaskPlaceholder { get; set; }
         [Parameter] public bool UnmaskValue { get; set; } = true;
         [Parameter] public bool ClearIncomplete { get; set; }
         [Parameter] public bool Clearable { get; set; }
-        [Parameter] public string ClearLabel { get; set; } = "Limpar";
+        [Parameter] public string ClearLabel { get; set; } = default!;
 
         protected override void OnInitialized()
         {
-            ClearLabel = L("inputmask.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("inputmask.clear", ClearLabel);
             base.OnInitialized();
         }
         [Parameter] public string? MaskDescriptionFormat { get; set; }

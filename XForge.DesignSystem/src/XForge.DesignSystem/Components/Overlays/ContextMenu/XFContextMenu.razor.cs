@@ -24,14 +24,14 @@ namespace XForge.DesignSystem.Components.Overlays.ContextMenu
         [Parameter] public bool CloseOnEscape { get; set; } = true;
         [Parameter] public bool CloseOnOutsideClick { get; set; } = true;
         [Parameter] public double CollisionPadding { get; set; } = 8;
-        [Parameter] public string AriaLabel { get; set; } = "Menu de contexto";
-        [Parameter] public string SubmenuAriaLabelFormat { get; set; } = "{0}";
+        [Parameter] public string AriaLabel { get; set; } = default!;
+        [Parameter] public string SubmenuAriaLabelFormat { get; set; } = default!;
 
         [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
         protected override void OnInitialized()
         {
-            AriaLabel = L("contextmenu.label", AriaLabel);
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("contextmenu.label", AriaLabel);
             base.OnInitialized();
         }
 

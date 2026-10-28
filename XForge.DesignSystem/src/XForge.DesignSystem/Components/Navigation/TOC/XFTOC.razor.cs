@@ -30,7 +30,7 @@ public partial class XFTOC : XForgeComponentBase
     protected override void OnInitialized()
     {
         if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("toc.aria_label", AriaLabel);
-        Title = L("toc.title", Title!);
+        if (string.IsNullOrWhiteSpace(Title)) Title = L("toc.title", Title!);
         if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("toc.empty", EmptyText);
         if (string.IsNullOrWhiteSpace(ActiveItemAriaLabelFormat)) ActiveItemAriaLabelFormat = L("toc.active_format", ActiveItemAriaLabelFormat);
         if (string.IsNullOrWhiteSpace(DisabledItemAriaLabelFormat)) DisabledItemAriaLabelFormat = L("toc.disabled_format", DisabledItemAriaLabelFormat);

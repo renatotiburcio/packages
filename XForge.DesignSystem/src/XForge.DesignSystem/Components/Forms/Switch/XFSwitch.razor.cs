@@ -21,8 +21,8 @@ namespace XForge.DesignSystem.Components.Forms.Switch
 
         protected override void OnInitialized()
         {
-            CheckedText = L("switch.on", CheckedText);
-            UncheckedText = L("switch.off", UncheckedText);
+            if (string.IsNullOrWhiteSpace(CheckedText)) CheckedText = L("switch.on", CheckedText);
+            if (string.IsNullOrWhiteSpace(UncheckedText)) UncheckedText = L("switch.off", UncheckedText);
             base.OnInitialized();
         }
         [Parameter] public RenderFragment? ChildContent { get; set; }

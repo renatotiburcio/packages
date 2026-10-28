@@ -209,3 +209,12 @@ Ja corrigidos: XFVirtualList, XFAvatar, XFBadge, XFChart (21 ocorrencias).
 Por componente: (1) <Param> = L("k", <Param>) -> if (string.IsNullOrWhiteSpace(<Param>)) <Param> = L("k", "fallback");
 (2) default da declaracao do parametro vira default!; (3) fallback explicito em pt-BR
 com acentuação correta; (4) build + teste do componente apos cada arquivo.
+
+## Campanha do bug sistemico — CONCLUIDA (2026-10-28)
+
+201 de 210 ocorrencias corrigidas em 43 componentes (a restante e mensagem de exceção
+em catch do Cropper — correta como estava). 10 lotes de codemod, build verde em todos,
+0 regressões.
+
+Resultado final (3 categorias + overlays): Forms 1154/1183, Navigation 569/570,
+DataDisplay 1173/1179, Overlays 162/163.

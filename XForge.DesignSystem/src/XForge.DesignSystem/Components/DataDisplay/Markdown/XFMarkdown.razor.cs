@@ -25,15 +25,15 @@ namespace XForge.DesignSystem.Components.DataDisplay.Markdown
         [Parameter] public bool OpenLinksInNewTab { get; set; }
         [Parameter] public bool ShowCodeLanguage { get; set; } = true;
         [Parameter] public bool ShowCodeCopy { get; set; } = true;
-        [Parameter] public string CopyCodeLabel { get; set; } = "Copiar";
-        [Parameter] public string CopiedCodeLabel { get; set; } = "Copiado";
-        [Parameter] public string EmptyText { get; set; } = "Nenhum conteudo.";
+        [Parameter] public string CopyCodeLabel { get; set; } = default!;
+        [Parameter] public string CopiedCodeLabel { get; set; } = default!;
+        [Parameter] public string EmptyText { get; set; } = default!;
 
         protected override void OnInitialized()
         {
-            CopyCodeLabel = L("markdown.copy", CopyCodeLabel);
-            CopiedCodeLabel = L("markdown.copied", CopiedCodeLabel);
-            EmptyText = L("markdown.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(CopyCodeLabel)) CopyCodeLabel = L("markdown.copy", CopyCodeLabel);
+            if (string.IsNullOrWhiteSpace(CopiedCodeLabel)) CopiedCodeLabel = L("markdown.copied", CopiedCodeLabel);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("markdown.empty", EmptyText);
             base.OnInitialized();
         }
 

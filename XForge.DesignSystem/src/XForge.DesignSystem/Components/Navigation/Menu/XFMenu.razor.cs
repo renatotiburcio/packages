@@ -39,8 +39,8 @@ namespace XForge.DesignSystem.Components.Navigation.Menu
         [Parameter] public bool ExpandOnItemClick { get; set; } = true;
         [Parameter] public bool SelectOnItemClick { get; set; } = true;
         [Parameter] public string? AriaLabel { get; set; } = "Menu";
-        [Parameter] public string EmptyText { get; set; } = "Nenhum item para exibir.";
-        [Parameter] public string ToggleLabel { get; set; } = "Alternar menu";
+        [Parameter] public string EmptyText { get; set; } = default!;
+        [Parameter] public string ToggleLabel { get; set; } = default!;
         [Parameter] public string? ToggleExpandedLabel { get; set; }
         [Parameter] public string? ToggleCollapsedLabel { get; set; }
 
@@ -64,8 +64,8 @@ namespace XForge.DesignSystem.Components.Navigation.Menu
 
         protected override void OnInitialized()
         {
-            EmptyText = L("menu.empty", EmptyText);
-            ToggleLabel = L("menu.toggle", ToggleLabel);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("menu.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(ToggleLabel)) ToggleLabel = L("menu.toggle", ToggleLabel);
             base.OnInitialized();
         }
 

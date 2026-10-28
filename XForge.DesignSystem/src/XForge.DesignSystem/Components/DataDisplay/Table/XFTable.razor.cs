@@ -14,7 +14,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Table
 
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public string? Caption { get; set; }
-        [Parameter] public string EmptyText { get; set; } = "Nenhum dado para exibir.";
+        [Parameter] public string EmptyText { get; set; } = default!;
         [Parameter] public bool Visible { get; set; } = true;
         [Parameter] public bool Striped { get; set; }
         [Parameter] public bool Hoverable { get; set; } = true;
@@ -26,7 +26,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Table
 
         protected override void OnInitialized()
         {
-            EmptyText = L("table.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("table.empty", EmptyText);
             base.OnInitialized();
         }
 

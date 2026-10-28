@@ -13,11 +13,11 @@ namespace XForge.DesignSystem.Components.Feedback.Chat
         [Parameter] public IReadOnlyList<XFChatMessage> Messages { get; set; } = Array.Empty<XFChatMessage>();
         [Parameter] public IReadOnlyList<XFChatUser> Users { get; set; } = Array.Empty<XFChatUser>();
         [Parameter] public string CurrentUserId { get; set; } = string.Empty;
-        [Parameter] public string EmptyText { get; set; } = "Nenhuma mensagem ainda.";
-        [Parameter] public string TypingText { get; set; } = "Digitando...";
-        [Parameter] public string MessageLoadingLabel { get; set; } = "Carregando";
-        [Parameter] public string TimestampFormat { get; set; } = "HH:mm";
-        [Parameter] public string DateSeparatorFormat { get; set; } = "D";
+        [Parameter] public string EmptyText { get; set; } = default!;
+        [Parameter] public string TypingText { get; set; } = default!;
+        [Parameter] public string MessageLoadingLabel { get; set; } = default!;
+        [Parameter] public string TimestampFormat { get; set; } = default!;
+        [Parameter] public string DateSeparatorFormat { get; set; } = default!;
         [Parameter] public bool ShowDateSeparators { get; set; } = true;
         [Parameter] public bool ShowUserNames { get; set; } = true;
         [Parameter] public bool ShowTypingIndicator { get; set; }
@@ -28,9 +28,9 @@ namespace XForge.DesignSystem.Components.Feedback.Chat
 
         protected override void OnInitialized()
         {
-            EmptyText = L("messagelist.empty", EmptyText);
-            TypingText = L("messagelist.typing", TypingText);
-            MessageLoadingLabel = L("messagelist.loading", MessageLoadingLabel);
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("messagelist.empty", EmptyText);
+            if (string.IsNullOrWhiteSpace(TypingText)) TypingText = L("messagelist.typing", TypingText);
+            if (string.IsNullOrWhiteSpace(MessageLoadingLabel)) MessageLoadingLabel = L("messagelist.loading", MessageLoadingLabel);
             base.OnInitialized();
         }
 

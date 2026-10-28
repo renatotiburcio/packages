@@ -15,13 +15,13 @@ namespace XForge.DesignSystem.Components.Layout.Shell
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public RenderFragment? Footer { get; set; }
 
-        [Parameter] public string Theme { get; set; } = "light";
+        [Parameter] public string Theme { get; set; } = default!;
         [Parameter] public string? Brand { get; set; }
-        [Parameter] public string MainId { get; set; } = "main-content";
+        [Parameter] public string MainId { get; set; } = default!;
         [Parameter] public string? MainAriaLabel { get; set; } = "Conteudo principal";
         [Parameter] public string? NavigationAriaLabel { get; set; } = "Navegacao do aplicativo";
-        [Parameter] public string MainClass { get; set; } = "flex-1 overflow-y-auto overflow-x-hidden p-6 relative";
-        [Parameter] public string AsideClass { get; set; } = "flex h-full shrink-0 z-50";
+        [Parameter] public string MainClass { get; set; } = default!;
+        [Parameter] public string AsideClass { get; set; } = default!;
 
         /// <summary>
         /// When true, the shell fills the entire viewport (h-dvh w-screen).
@@ -32,8 +32,8 @@ namespace XForge.DesignSystem.Components.Layout.Shell
 
         protected override void OnInitialized()
         {
-            MainAriaLabel = L("appshell.main_content", MainAriaLabel);
-            NavigationAriaLabel = L("appshell.navigation", NavigationAriaLabel);
+            if (string.IsNullOrWhiteSpace(MainAriaLabel)) MainAriaLabel = L("appshell.main_content", MainAriaLabel);
+            if (string.IsNullOrWhiteSpace(NavigationAriaLabel)) NavigationAriaLabel = L("appshell.navigation", NavigationAriaLabel);
             base.OnInitialized();
         }
 
