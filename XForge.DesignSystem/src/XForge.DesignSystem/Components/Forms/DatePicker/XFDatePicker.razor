@@ -133,7 +133,7 @@
                     }
                     @foreach (var dayName in WeekdayNames)
                     {
-                        <div>@dayName</div>
+                        <div @key="dayName">@dayName</div>
                     }
                 </div>
 

@@ -10,7 +10,7 @@
             @foreach (var tab in _tabs)
             {
                 var isActive = tab.Id == _activeTabId;
-                <button type="button"
+                <button @key="tab" type="button"
                         role="tab"
                         id="@($"tab-{tab.Id}")"
                         aria-selected="@(isActive.ToString().ToLower())"

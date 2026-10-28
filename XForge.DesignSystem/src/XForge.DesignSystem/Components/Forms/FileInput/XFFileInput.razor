@@ -44,7 +44,7 @@
         <div class="@ListClass">
             @foreach (var item in Items)
             {
-                <div class="@GetItemClass(item)">
+                <div @key="item" class="@GetItemClass(item)">
                     <div class="min-w-0 flex-1">
                         <div class="truncate text-sm font-medium text-text-primary">@item.Name</div>
                         <div class="text-xs text-text-secondary">@FormatFileMetadata(item)</div>

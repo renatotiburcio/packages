@@ -98,7 +98,7 @@ else
                 <div class="grid gap-2">
                     @foreach (var message in ValidationMessages)
                     {
-                        <div class="flex gap-3 rounded-lg border border-border-light bg-bg-surface p-3">
+                        <div @key="message" class="flex gap-3 rounded-lg border border-border-light bg-bg-surface p-3">
                             <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center text-danger" aria-hidden="true">
                                 @XFSvgIcons.MarkupWithSize("xmark", 14)
                             </span>
