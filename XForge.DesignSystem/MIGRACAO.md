@@ -136,3 +136,16 @@ Causa-raiz unica: InvalidOperationException: Cannot provide a value for property
 2. **Infraestrutura de teste**: registrar o TestLocalizer globalmente para as classes que
    na o fazem (bUnit: fixture de colecao ou inicializador por classe).
    Nao muda produto, mas exige tocar em dezenas de arquivos de teste.
+
+### Refinamento da opcao 1 (2026-10-28)
+
+A opcao 1 tem blast radius maior que o estimado: **56 componentes** declaram
+[Inject] private IXFLocalizer? Localizer { get; set; }. A injeção por atributo do
+Blazor LANÇA quando o serviço não está registrado (não deixa a propriedade null) —
+então um null-object exigiria trocar os 56 [Inject] por resolução lazy
+(service-locator com fallback), o que é mudança arquitetural ampla no produto.
+
+Alternativa de menor risco que destrava a suite **sem tocar no produto**: registrar o
+TestLocalizer no **projeto de teste** de forma global — bUnit expõe
+BunitContext.TestServiceProvider/Services, e um fixture de coleção xUnit cobre
+todas as classes que herdam BunitContext. Fica para decisão.
