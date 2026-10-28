@@ -16,9 +16,9 @@ public partial class XFPdfViewer : XForgeComponentBase, IAsyncDisposable
     [Parameter] public string? Base64 { get; set; }
     [Parameter] public string? Title { get; set; } = "Documento PDF";
     [Parameter] public string? SourceLabel { get; set; }
-    [Parameter] public string AriaLabel { get; set; } = "Visualizador de PDF";
-    [Parameter] public string FrameTitle { get; set; } = "PDF";
-    [Parameter] public string EmptyText { get; set; } = "Informe uma URL ou base64 para visualizar o PDF.";
+    [Parameter] public string AriaLabel { get; set; } = default!;
+    [Parameter] public string FrameTitle { get; set; } = default!;
+    [Parameter] public string EmptyText { get; set; } = default!;
     [Parameter] public bool ShowToolbar { get; set; } = true;
     [Parameter] public int Page { get; set; } = 1;
     [Parameter] public EventCallback<int> PageChanged { get; set; }
@@ -28,12 +28,12 @@ public partial class XFPdfViewer : XForgeComponentBase, IAsyncDisposable
     [Parameter] public int MinZoom { get; set; } = 50;
     [Parameter] public int MaxZoom { get; set; } = 200;
     [Parameter] public int ZoomStep { get; set; } = 10;
-    [Parameter] public string PreviousLabel { get; set; } = "Anterior";
-    [Parameter] public string NextLabel { get; set; } = "Proxima";
-    [Parameter] public string ZoomInLabel { get; set; } = "Aumentar zoom";
-    [Parameter] public string ZoomOutLabel { get; set; } = "Reduzir zoom";
-    [Parameter] public string PageLabelFormat { get; set; } = "Pagina {0}";
-    [Parameter] public string PageCountLabelFormat { get; set; } = "{0}/{1}";
+    [Parameter] public string PreviousLabel { get; set; } = default!;
+    [Parameter] public string NextLabel { get; set; } = default!;
+    [Parameter] public string ZoomInLabel { get; set; } = default!;
+    [Parameter] public string ZoomOutLabel { get; set; } = default!;
+    [Parameter] public string PageLabelFormat { get; set; } = default!;
+    [Parameter] public string PageCountLabelFormat { get; set; } = default!;
 
     // --- New parameters for S-C016 ---
     [Parameter] public XFPdfRenderMode RenderMode { get; set; } = XFPdfRenderMode.Iframe;
@@ -42,10 +42,10 @@ public partial class XFPdfViewer : XForgeComponentBase, IAsyncDisposable
     [Parameter] public bool ShowFullscreen { get; set; } = true;
     [Parameter] public string? DownloadFileName { get; set; }
     [Parameter] public EventCallback<XFPdfDocumentLoadedEventArgs> OnDocumentLoaded { get; set; }
-    [Parameter] public string DownloadLabel { get; set; } = "Baixar";
-    [Parameter] public string PrintLabel { get; set; } = "Imprimir";
-    [Parameter] public string FullscreenLabel { get; set; } = "Tela cheia";
-    [Parameter] public string LoadingText { get; set; } = "Carregando PDF...";
+    [Parameter] public string DownloadLabel { get; set; } = default!;
+    [Parameter] public string PrintLabel { get; set; } = default!;
+    [Parameter] public string FullscreenLabel { get; set; } = default!;
+    [Parameter] public string LoadingText { get; set; } = default!;
 
     protected override void OnInitialized()
     {

@@ -28,7 +28,7 @@ namespace XForge.DesignSystem.Components.Navigation.Pagination
         [Parameter] public XFContainerVariant Variant { get; set; } = XFContainerVariant.Surface;
         [Parameter] public XFSize Size { get; set; } = XFSize.Md;
         [Parameter] public XFDensity Density { get; set; } = XFDensity.Comfortable;
-        [Parameter] public string AriaLabel { get; set; } = "Paginação";
+        [Parameter] public string AriaLabel { get; set; } = default!;
         [Parameter] public bool AutoHide { get; set; }
         [Parameter] public bool AllowReload { get; set; }
         [Parameter] public bool ShowSummary { get; set; } = true;
@@ -40,17 +40,17 @@ namespace XForge.DesignSystem.Components.Navigation.Pagination
         [Inject] private IXFLocalizer? Localizer { get; set; }
 
         private string L(string key, string fallback) => Localizer?[key] ?? fallback;
-        [Parameter] public string PageSizeLabel { get; set; } = "Itens por página";
-        [Parameter] public string PageSizeAriaLabel { get; set; } = "Itens por página";
-        [Parameter] public string EmptySummaryText { get; set; } = "0 itens";
-        [Parameter] public string SummaryFormat { get; set; } = "{0}-{1} de {2}";
-        [Parameter] public string FirstPageLabel { get; set; } = "Primeira página";
-        [Parameter] public string PreviousPageLabel { get; set; } = "Página anterior";
-        [Parameter] public string NextPageLabel { get; set; } = "Próxima página";
-        [Parameter] public string LastPageLabel { get; set; } = "Última página";
-        [Parameter] public string ReloadLabel { get; set; } = "Recarregar página atual";
-        [Parameter] public string CurrentPageLabelFormat { get; set; } = "Página {0}, atual";
-        [Parameter] public string GoToPageLabelFormat { get; set; } = "Ir para página {0}";
+        [Parameter] public string PageSizeLabel { get; set; } = default!;
+        [Parameter] public string PageSizeAriaLabel { get; set; } = default!;
+        [Parameter] public string EmptySummaryText { get; set; } = default!;
+        [Parameter] public string SummaryFormat { get; set; } = default!;
+        [Parameter] public string FirstPageLabel { get; set; } = default!;
+        [Parameter] public string PreviousPageLabel { get; set; } = default!;
+        [Parameter] public string NextPageLabel { get; set; } = default!;
+        [Parameter] public string LastPageLabel { get; set; } = default!;
+        [Parameter] public string ReloadLabel { get; set; } = default!;
+        [Parameter] public string CurrentPageLabelFormat { get; set; } = default!;
+        [Parameter] public string GoToPageLabelFormat { get; set; } = default!;
         [Parameter] public XFSemanticColor ActiveColor { get; set; } = XFSemanticColor.Primary;
         [Parameter] public int SiblingCount { get; set; } = 1;
         [Parameter] public int BoundaryCount { get; set; } = 1;
@@ -110,18 +110,18 @@ namespace XForge.DesignSystem.Components.Navigation.Pagination
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            AriaLabel = L("pagination.label", AriaLabel);
-            PageSizeLabel = L("pagination.page_size", PageSizeLabel);
-            PageSizeAriaLabel = L("pagination.page_size", PageSizeAriaLabel);
-            EmptySummaryText = L("pagination.empty", EmptySummaryText);
-            SummaryFormat = L("pagination.range_format", SummaryFormat);
-            FirstPageLabel = L("pagination.first", FirstPageLabel);
-            PreviousPageLabel = L("pagination.prev", PreviousPageLabel);
-            NextPageLabel = L("pagination.next", NextPageLabel);
-            LastPageLabel = L("pagination.last", LastPageLabel);
-            ReloadLabel = L("pagination.reload", ReloadLabel);
-            CurrentPageLabelFormat = L("pagination.current_format", CurrentPageLabelFormat);
-            GoToPageLabelFormat = L("pagination.goto_format", GoToPageLabelFormat);
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("pagination.label", AriaLabel);
+            if (string.IsNullOrWhiteSpace(PageSizeLabel)) PageSizeLabel = L("pagination.page_size", PageSizeLabel);
+            if (string.IsNullOrWhiteSpace(PageSizeAriaLabel)) PageSizeAriaLabel = L("pagination.page_size", PageSizeAriaLabel);
+            if (string.IsNullOrWhiteSpace(EmptySummaryText)) EmptySummaryText = L("pagination.empty", EmptySummaryText);
+            if (string.IsNullOrWhiteSpace(SummaryFormat)) SummaryFormat = L("pagination.range_format", SummaryFormat);
+            if (string.IsNullOrWhiteSpace(FirstPageLabel)) FirstPageLabel = L("pagination.first", FirstPageLabel);
+            if (string.IsNullOrWhiteSpace(PreviousPageLabel)) PreviousPageLabel = L("pagination.prev", PreviousPageLabel);
+            if (string.IsNullOrWhiteSpace(NextPageLabel)) NextPageLabel = L("pagination.next", NextPageLabel);
+            if (string.IsNullOrWhiteSpace(LastPageLabel)) LastPageLabel = L("pagination.last", LastPageLabel);
+            if (string.IsNullOrWhiteSpace(ReloadLabel)) ReloadLabel = L("pagination.reload", ReloadLabel);
+            if (string.IsNullOrWhiteSpace(CurrentPageLabelFormat)) CurrentPageLabelFormat = L("pagination.current_format", CurrentPageLabelFormat);
+            if (string.IsNullOrWhiteSpace(GoToPageLabelFormat)) GoToPageLabelFormat = L("pagination.goto_format", GoToPageLabelFormat);
         }
 
         protected override void OnParametersSet()

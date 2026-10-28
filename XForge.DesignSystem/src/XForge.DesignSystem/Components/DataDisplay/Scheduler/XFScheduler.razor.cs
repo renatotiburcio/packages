@@ -45,21 +45,21 @@ namespace XForge.DesignSystem.Components.DataDisplay.Scheduler
         [Parameter] public bool ShowHeader { get; set; } = true;
         [Parameter] public bool AllowAppointmentMove { get; set; }
         [Parameter] public bool AllowAppointmentResize { get; set; }
-        [Parameter] public string AriaLabel { get; set; } = "Agenda";
-        [Parameter] public string TodayText { get; set; } = "Hoje";
-        [Parameter] public string PreviousPeriodLabel { get; set; } = "Periodo anterior";
-        [Parameter] public string NextPeriodLabel { get; set; } = "Proximo periodo";
-        [Parameter] public string ViewSwitcherLabel { get; set; } = "Visualizacoes da agenda";
-        [Parameter] public string HourHeaderText { get; set; } = "Hora";
-        [Parameter] public string WeekHeaderText { get; set; } = "Semana";
-        [Parameter] public string SingleAppointmentText { get; set; } = "1 agendamento";
-        [Parameter] public string MultipleAppointmentsFormat { get; set; } = "{0} agendamentos";
-        [Parameter] public string MonthViewLabel { get; set; } = "Mes";
-        [Parameter] public string WeekViewLabel { get; set; } = "Semana";
-        [Parameter] public string DayViewLabel { get; set; } = "Dia";
-        [Parameter] public string ResourceHeaderText { get; set; } = "Recurso";
-        [Parameter] public string MoveAppointmentLabel { get; set; } = "Mover agendamento";
-        [Parameter] public string ResizeAppointmentLabel { get; set; } = "Redimensionar agendamento";
+        [Parameter] public string AriaLabel { get; set; } = default!;
+        [Parameter] public string TodayText { get; set; } = default!;
+        [Parameter] public string PreviousPeriodLabel { get; set; } = default!;
+        [Parameter] public string NextPeriodLabel { get; set; } = default!;
+        [Parameter] public string ViewSwitcherLabel { get; set; } = default!;
+        [Parameter] public string HourHeaderText { get; set; } = default!;
+        [Parameter] public string WeekHeaderText { get; set; } = default!;
+        [Parameter] public string SingleAppointmentText { get; set; } = default!;
+        [Parameter] public string MultipleAppointmentsFormat { get; set; } = default!;
+        [Parameter] public string MonthViewLabel { get; set; } = default!;
+        [Parameter] public string WeekViewLabel { get; set; } = default!;
+        [Parameter] public string DayViewLabel { get; set; } = default!;
+        [Parameter] public string ResourceHeaderText { get; set; } = default!;
+        [Parameter] public string MoveAppointmentLabel { get; set; } = default!;
+        [Parameter] public string ResizeAppointmentLabel { get; set; } = default!;
         [Parameter] public int StartHour { get; set; } = 8;
         [Parameter] public int EndHour { get; set; } = 18;
         [Parameter] public int SlotMinutes { get; set; } = 60;
@@ -75,21 +75,21 @@ namespace XForge.DesignSystem.Components.DataDisplay.Scheduler
 
         protected override void OnInitialized()
         {
-            AriaLabel = L("scheduler.aria_label", AriaLabel);
-            TodayText = L("scheduler.today", TodayText);
-            PreviousPeriodLabel = L("scheduler.previous", PreviousPeriodLabel);
-            NextPeriodLabel = L("scheduler.next", NextPeriodLabel);
-            ViewSwitcherLabel = L("scheduler.view_switcher", ViewSwitcherLabel);
-            HourHeaderText = L("scheduler.hour", HourHeaderText);
-            WeekHeaderText = L("scheduler.week", WeekHeaderText);
-            SingleAppointmentText = L("scheduler.single", SingleAppointmentText);
-            MultipleAppointmentsFormat = L("scheduler.multiple", MultipleAppointmentsFormat);
-            MonthViewLabel = L("scheduler.month", MonthViewLabel);
-            WeekViewLabel = L("scheduler.week_view", WeekViewLabel);
-            DayViewLabel = L("scheduler.day", DayViewLabel);
-            ResourceHeaderText = L("scheduler.resource", ResourceHeaderText);
-            MoveAppointmentLabel = L("scheduler.move", MoveAppointmentLabel);
-            ResizeAppointmentLabel = L("scheduler.resize", ResizeAppointmentLabel);
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("scheduler.aria_label", AriaLabel);
+            if (string.IsNullOrWhiteSpace(TodayText)) TodayText = L("scheduler.today", TodayText);
+            if (string.IsNullOrWhiteSpace(PreviousPeriodLabel)) PreviousPeriodLabel = L("scheduler.previous", PreviousPeriodLabel);
+            if (string.IsNullOrWhiteSpace(NextPeriodLabel)) NextPeriodLabel = L("scheduler.next", NextPeriodLabel);
+            if (string.IsNullOrWhiteSpace(ViewSwitcherLabel)) ViewSwitcherLabel = L("scheduler.view_switcher", ViewSwitcherLabel);
+            if (string.IsNullOrWhiteSpace(HourHeaderText)) HourHeaderText = L("scheduler.hour", HourHeaderText);
+            if (string.IsNullOrWhiteSpace(WeekHeaderText)) WeekHeaderText = L("scheduler.week", WeekHeaderText);
+            if (string.IsNullOrWhiteSpace(SingleAppointmentText)) SingleAppointmentText = L("scheduler.single", SingleAppointmentText);
+            if (string.IsNullOrWhiteSpace(MultipleAppointmentsFormat)) MultipleAppointmentsFormat = L("scheduler.multiple", MultipleAppointmentsFormat);
+            if (string.IsNullOrWhiteSpace(MonthViewLabel)) MonthViewLabel = L("scheduler.month", MonthViewLabel);
+            if (string.IsNullOrWhiteSpace(WeekViewLabel)) WeekViewLabel = L("scheduler.week_view", WeekViewLabel);
+            if (string.IsNullOrWhiteSpace(DayViewLabel)) DayViewLabel = L("scheduler.day", DayViewLabel);
+            if (string.IsNullOrWhiteSpace(ResourceHeaderText)) ResourceHeaderText = L("scheduler.resource", ResourceHeaderText);
+            if (string.IsNullOrWhiteSpace(MoveAppointmentLabel)) MoveAppointmentLabel = L("scheduler.move", MoveAppointmentLabel);
+            if (string.IsNullOrWhiteSpace(ResizeAppointmentLabel)) ResizeAppointmentLabel = L("scheduler.resize", ResizeAppointmentLabel);
             base.OnInitialized();
         }
 
