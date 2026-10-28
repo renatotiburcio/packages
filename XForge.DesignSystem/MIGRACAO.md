@@ -114,3 +114,25 @@ Tambem foi restaurado o PackageReference de Moq (perdido na reescrita anterior d
 - Impactos: foco/selecao em listas longas (5.570 municipios), drag&drop (Scheduler,
   Repeater, SortableList, Gantt), digitacao (Autocomplete, Combobox, EditForm,
   PasswordStrength), charts densos (QRCode, Sparkline, Gauge).
+
+## Achado da validacao por categorias (2026-10-27) — NAO e regressao
+
+Forms 482/1183 · Navigation 417/570 · DataDisplay 627/1179.
+Causa-raiz unica: InvalidOperationException: Cannot provide a value for property
+'Localizer' ... no registered service of type 'XForge.Localization.IXFLocalizer'.
+
+- 43 classes de teste registram Services.AddSingleton<IXFLocalizer, TestLocalizer>()
+  no construtor — essas passam. As demais ~1.400 simply nunca registraram o servico.
+- Nenhuma falha envolve @key/chave duplicada: os 75 componentes alterados nao regrediram.
+- Contexto: a suite nunca compilou por inteiro antes desta limpeza (stales dos satelites),
+  entao essas falhas estavam ocultas — sao higiene pre-existente do repo de origem.
+
+### Opcoes de correcao (decisao pendente)
+
+1. **Null-object fallback no produto**: XForgeComponentBase (ou os componentes que injetam
+   IXFLocalizer) caem para um NullLocalizer quando o servico nao esta registrado.
+   Torna a biblioteca resiliente e destrava a suite sem tocar em 1.400 arquivos de teste.
+   Muda comportamento: ausencia de localizacao fica silenciosa.
+2. **Infraestrutura de teste**: registrar o TestLocalizer globalmente para as classes que
+   na o fazem (bUnit: fixture de colecao ou inicializador por classe).
+   Nao muda produto, mas exige tocar em dezenas de arquivos de teste.
