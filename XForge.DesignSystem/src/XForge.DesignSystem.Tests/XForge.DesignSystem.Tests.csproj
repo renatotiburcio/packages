@@ -35,4 +35,9 @@
     <Compile Remove="Extensions\XFAiServiceCollectionExtensionsTest.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- locale pt-BR do nucleo: copiado para a saida dos testes (localizer real) -->
+    <Content Include="..\XForge.DesignSystem\Localization\Json\Locales\pt-BR.json" Link="pt-BR.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
