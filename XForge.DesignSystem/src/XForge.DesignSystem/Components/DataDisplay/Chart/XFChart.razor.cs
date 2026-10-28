@@ -36,15 +36,15 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chart
         [Parameter] public bool ShowDataTable { get; set; } = true;
         [Parameter] public string? Title { get; set; }
         [Parameter] public string? Description { get; set; }
-        [Parameter] public string AriaLabel { get; set; } = "Grafico";
-        [Parameter] public string EmptyText { get; set; } = "Nenhum dado para exibir.";
-        [Parameter] public string AccessibleDescriptionFormat { get; set; } = "{0} pontos de dados.";
-        [Parameter] public string SeriesHeaderText { get; set; } = "Serie";
-        [Parameter] public string LabelHeaderText { get; set; } = "Rotulo";
-        [Parameter] public string ValueHeaderText { get; set; } = "Valor";
-        [Parameter] public string PercentHeaderText { get; set; } = "Percentual";
-        [Parameter] public string SeriesNameFormat { get; set; } = "Serie {0}";
-        [Parameter] public string ItemLabelFormat { get; set; } = "Item {0}";
+        [Parameter] public string AriaLabel { get; set; } = default!;
+        [Parameter] public string EmptyText { get; set; } = default!;
+        [Parameter] public string AccessibleDescriptionFormat { get; set; } = default!;
+        [Parameter] public string SeriesHeaderText { get; set; } = default!;
+        [Parameter] public string LabelHeaderText { get; set; } = default!;
+        [Parameter] public string ValueHeaderText { get; set; } = default!;
+        [Parameter] public string PercentHeaderText { get; set; } = default!;
+        [Parameter] public string SeriesNameFormat { get; set; } = default!;
+        [Parameter] public string ItemLabelFormat { get; set; } = default!;
         [Parameter] public CultureInfo? Culture { get; set; }
         [Parameter] public Func<double, string>? ValueFormatter { get; set; }
         [Parameter] public IReadOnlyList<string>? Palette { get; set; }
@@ -52,8 +52,8 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chart
         [Parameter] public IReadOnlyList<XFChartTrendline> Trendlines { get; set; } = Array.Empty<XFChartTrendline>();
         [Parameter] public XFChartDataZoomMode DataZoomMode { get; set; }
         [Parameter] public bool ExportEnabled { get; set; }
-        [Parameter] public string ExportFileName { get; set; } = "grafico";
-        [Parameter] public string ExportTitle { get; set; } = "Exportar";
+        [Parameter] public string ExportFileName { get; set; } = default!;
+        [Parameter] public string ExportTitle { get; set; } = default!;
         [Parameter] public object? EChartsOptions { get; set; }
         [Parameter] public RenderFragment? EmptyContent { get; set; }
         [Parameter] public EventCallback<XFChartPointSelectedEventArgs<TItem>> PointSelected { get; set; }
@@ -299,17 +299,18 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chart
 
         protected override void OnInitialized()
         {
-            AriaLabel = L("chart.aria_label", AriaLabel);
-            EmptyText = L("chart.empty", EmptyText);
-            AccessibleDescriptionFormat = L("chart.description_format", AccessibleDescriptionFormat);
-            SeriesHeaderText = L("chart.series_header", SeriesHeaderText);
-            LabelHeaderText = L("chart.label_header", LabelHeaderText);
-            ValueHeaderText = L("chart.value_header", ValueHeaderText);
-            PercentHeaderText = L("chart.percent_header", PercentHeaderText);
-            SeriesNameFormat = L("chart.series_name", SeriesNameFormat);
-            ItemLabelFormat = L("chart.item_label", ItemLabelFormat);
-            ExportFileName = L("chart.export_file", ExportFileName);
-            ExportTitle = L("chart.export_title", ExportTitle);
+            // honra o valor do usuário quando informado; default localizado caso contrário
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("chart.aria_label", "Gráfico");
+            if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("chart.empty", "Nenhum dado para exibir.");
+            if (string.IsNullOrWhiteSpace(AccessibleDescriptionFormat)) AccessibleDescriptionFormat = L("chart.description_format", "{0} pontos de dados.");
+            if (string.IsNullOrWhiteSpace(SeriesHeaderText)) SeriesHeaderText = L("chart.series_header", "Série");
+            if (string.IsNullOrWhiteSpace(LabelHeaderText)) LabelHeaderText = L("chart.label_header", "Rótulo");
+            if (string.IsNullOrWhiteSpace(ValueHeaderText)) ValueHeaderText = L("chart.value_header", "Valor");
+            if (string.IsNullOrWhiteSpace(PercentHeaderText)) PercentHeaderText = L("chart.percent_header", "Percentual");
+            if (string.IsNullOrWhiteSpace(SeriesNameFormat)) SeriesNameFormat = L("chart.series_name", "Série {0}");
+            if (string.IsNullOrWhiteSpace(ItemLabelFormat)) ItemLabelFormat = L("chart.item_label", "Item {0}");
+            if (string.IsNullOrWhiteSpace(ExportFileName)) ExportFileName = L("chart.export_file", ExportFileName);
+            if (string.IsNullOrWhiteSpace(ExportTitle)) ExportTitle = L("chart.export_title", ExportTitle);
             base.OnInitialized();
         }
 

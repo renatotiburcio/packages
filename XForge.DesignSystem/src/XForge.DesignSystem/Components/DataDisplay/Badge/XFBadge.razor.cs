@@ -26,11 +26,11 @@ namespace XForge.DesignSystem.Components.DataDisplay.Badge
         [Parameter] public bool Dot { get; set; }
         [Parameter] public string? AriaLabel { get; set; }
         [Parameter] public string? DismissTitle { get; set; }
-        [Parameter] public string DefaultDismissTitle { get; set; } = "Remover marcador";
-        [Parameter] public string DismissTitleFormat { get; set; } = "Remover {0}";
+        [Parameter] public string DefaultDismissTitle { get; set; } = default!;
+        [Parameter] public string DismissTitleFormat { get; set; } = default!;
         [Parameter] public string? DismissAriaLabel { get; set; }
-        [Parameter] public string DefaultDismissAriaLabel { get; set; } = "Remover marcador";
-        [Parameter] public string DismissAriaLabelFormat { get; set; } = "Remover marcador {0}";
+        [Parameter] public string DefaultDismissAriaLabel { get; set; } = default!;
+        [Parameter] public string DismissAriaLabelFormat { get; set; } = default!;
         [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
         [Parameter] public EventCallback<MouseEventArgs> OnDismiss { get; set; }
 
@@ -47,10 +47,11 @@ namespace XForge.DesignSystem.Components.DataDisplay.Badge
 
         protected override void OnInitialized()
         {
-            DefaultDismissTitle = L("badge.dismiss", DefaultDismissTitle);
-            DismissTitleFormat = L("badge.dismiss_format", DismissTitleFormat);
-            DefaultDismissAriaLabel = L("badge.dismiss_aria", DefaultDismissAriaLabel);
-            DismissAriaLabelFormat = L("badge.dismiss_aria_format", DismissAriaLabelFormat);
+            // honra o valor do usuário quando informado; default localizado caso contrário
+            if (string.IsNullOrWhiteSpace(DefaultDismissTitle)) DefaultDismissTitle = L("badge.dismiss", "Remover marcador");
+            if (string.IsNullOrWhiteSpace(DismissTitleFormat)) DismissTitleFormat = L("badge.dismiss_format", "Remover {0}");
+            if (string.IsNullOrWhiteSpace(DefaultDismissAriaLabel)) DefaultDismissAriaLabel = L("badge.dismiss_aria", "Remover marcador");
+            if (string.IsNullOrWhiteSpace(DismissAriaLabelFormat)) DismissAriaLabelFormat = L("badge.dismiss_aria_format", "Remover marcador {0}");
             base.OnInitialized();
         }
 
