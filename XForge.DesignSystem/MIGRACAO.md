@@ -174,3 +174,38 @@ VirtualList: 24/24 verde.
 XFAvatar (5 labels), XFBadge (4 títulos/aria), XFChart (3), e demais que fazem
 <Param> = L("chave", <Param>) em OnInitialized/OnParametersSet. Regra correta:
 aplicar o default localizado SOMENTE quando o usuário não informou o valor.
+
+## BUG SISTEMICO — 210 ocorrencias em 43 componentes (2026-10-28)
+
+Varredura por (?m)^\s*\w+ = L\(" em OnInitialized/OnParametersSet:
+
+| Componente | Ocorrencias | | Componente | Ocorrencias |
+|---|---:|---|---|---:|
+| XFPdfViewer | 12 | | XFGantt | 5 |
+| XFDatePicker | 13 | | XFAutocomplete | 5 |
+| XFUpload | 14 | | XFCombobox | 5 |
+| XFTransferList | 13 | | XFSignaturePad | 5 |
+| XFPagination | 12 | | XFDialog | 5 |
+| XFEditForm | 15 | | XFTOC | 5 |
+| XFScheduler | 15 | | XFSortableList | 4 |
+| XFTreeView | 10 | | XFPivotDataGrid | 4 |
+| XFFileInput | 10 | | XFValidationStatus | 4 |
+| XFChat | 7 | | XFWizard | 4 |
+| XFMultiSelect | 7 | | XFMarkdown | 3 |
+| XFDropDownDataGrid | 6 | | XFMessageList | 3 |
+| + XFSwitch(2), XFSearch(2), XFSplashScreen(2), XFMenu(2), XFAppShell(2),
+XFProgress(1), XFProgressRing(1), XFList(1), XFTable(1), XFChip(1), XFCropper(1),
+XFInputMask(1), XFTextInput(1), XFAppBar(1), XFSidebar(1), XFToolbar(1),
+XFContextMenu(1), XFPopover(1), XFVirtualList(1 — ja corrigido)
+
+### Impacto
+
+Todo parametro de customizacao textual desses componentes e descartado quando o
+componente é renderizado — o valor do usuario é sobrescrito pelo default localizado.
+Ja corrigidos: XFVirtualList, XFAvatar, XFBadge, XFChart (21 ocorrencias).
+
+### Correcao proposta (codemod)
+
+Por componente: (1) <Param> = L("k", <Param>) -> if (string.IsNullOrWhiteSpace(<Param>)) <Param> = L("k", "fallback");
+(2) default da declaracao do parametro vira default!; (3) fallback explicito em pt-BR
+com acentuação correta; (4) build + teste do componente apos cada arquivo.
