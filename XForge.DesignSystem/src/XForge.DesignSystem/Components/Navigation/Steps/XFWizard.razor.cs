@@ -31,10 +31,10 @@ namespace XForge.DesignSystem.Components.Navigation.Steps
         [Parameter] public XFContainerVariant Variant { get; set; } = XFContainerVariant.Surface;
         [Parameter] public XFSize Size { get; set; } = XFSize.Md;
         [Parameter] public XFWizardSequence Sequence { get; set; } = XFWizardSequence.Linear;
-        [Parameter] public string AriaLabel { get; set; } = "Assistente de etapas";
-        [Parameter] public string PreviousText { get; set; } = "Voltar";
-        [Parameter] public string NextText { get; set; } = "Continuar";
-        [Parameter] public string FinishText { get; set; } = "Finalizar";
+        [Parameter] public string AriaLabel { get; set; } = default!;
+        [Parameter] public string PreviousText { get; set; } = default!;
+        [Parameter] public string NextText { get; set; } = default!;
+        [Parameter] public string FinishText { get; set; } = default!;
         [Parameter] public bool HideActions { get; set; }
 
         public int ActiveIndex => ActiveStep is null ? -1 : steps.IndexOf(ActiveStep);
@@ -47,10 +47,10 @@ namespace XForge.DesignSystem.Components.Navigation.Steps
 
         protected override void OnInitialized()
         {
-            AriaLabel = L("wizard.title", AriaLabel);
-            PreviousText = L("wizard.back", PreviousText);
-            NextText = L("wizard.next", NextText);
-            FinishText = L("wizard.finish", FinishText);
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("wizard.title", AriaLabel);
+            if (string.IsNullOrWhiteSpace(PreviousText)) PreviousText = L("wizard.back", PreviousText);
+            if (string.IsNullOrWhiteSpace(NextText)) NextText = L("wizard.next", NextText);
+            if (string.IsNullOrWhiteSpace(FinishText)) FinishText = L("wizard.finish", FinishText);
             base.OnInitialized();
         }
 

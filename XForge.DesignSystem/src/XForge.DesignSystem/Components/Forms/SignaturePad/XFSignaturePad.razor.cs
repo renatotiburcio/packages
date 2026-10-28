@@ -25,17 +25,17 @@ public partial class XFSignaturePad : XForgeComponentBase, IAsyncDisposable
     [Parameter] public EventCallback<string?> ValueChanged { get; set; }
     [Parameter] public EventCallback<string?> Change { get; set; }
     [Parameter] public string? Label { get; set; }
-    [Parameter] public string AriaLabel { get; set; } = "Campo de assinatura";
-    [Parameter] public string HelperText { get; set; } = "Assine usando mouse, caneta ou toque.";
-    [Parameter] public string ClearLabel { get; set; } = "Limpar";
-    [Parameter] public string UndoLabel { get; set; } = "Desfazer";
-    [Parameter] public string RequiredText { get; set; } = "Assinatura obrigatoria.";
+    [Parameter] public string AriaLabel { get; set; } = default!;
+    [Parameter] public string HelperText { get; set; } = default!;
+    [Parameter] public string ClearLabel { get; set; } = default!;
+    [Parameter] public string UndoLabel { get; set; } = default!;
+    [Parameter] public string RequiredText { get; set; } = default!;
     [Parameter] public int Width { get; set; } = 720;
     [Parameter] public int Height { get; set; } = 220;
     [Parameter] public double PenWidth { get; set; } = 3.2;
     [Parameter] public double SmoothingDistance { get; set; } = 1.8;
-    [Parameter] public string PenColor { get; set; } = "#111827";
-    [Parameter] public string BackgroundColor { get; set; } = "#ffffff";
+    [Parameter] public string PenColor { get; set; } = default!;
+    [Parameter] public string BackgroundColor { get; set; } = default!;
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public bool Required { get; set; }
     [Parameter] public bool ShowToolbar { get; set; } = true;
@@ -43,11 +43,11 @@ public partial class XFSignaturePad : XForgeComponentBase, IAsyncDisposable
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        AriaLabel = L("signaturepad.label", AriaLabel);
-        HelperText = L("signaturepad.instruction", HelperText);
-        ClearLabel = L("signaturepad.clear", ClearLabel);
-        UndoLabel = L("signaturepad.undo", UndoLabel);
-        RequiredText = L("signaturepad.required", RequiredText);
+        if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("signaturepad.label", AriaLabel);
+        if (string.IsNullOrWhiteSpace(HelperText)) HelperText = L("signaturepad.instruction", HelperText);
+        if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("signaturepad.clear", ClearLabel);
+        if (string.IsNullOrWhiteSpace(UndoLabel)) UndoLabel = L("signaturepad.undo", UndoLabel);
+        if (string.IsNullOrWhiteSpace(RequiredText)) RequiredText = L("signaturepad.required", RequiredText);
     }
 
     private string CanvasId => $"{Id}-canvas";

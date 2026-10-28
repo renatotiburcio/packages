@@ -16,11 +16,11 @@ public partial class XFTOC : XForgeComponentBase
     [Parameter] public EventCallback<XFTOCItem> ItemClicked { get; set; }
     [Parameter] public XFTOCOrientation Orientation { get; set; }
     [Parameter] public XFTOCMarker Marker { get; set; } = XFTOCMarker.Dot;
-    [Parameter] public string AriaLabel { get; set; } = "Súmario";
+    [Parameter] public string AriaLabel { get; set; } = default!;
     [Parameter] public string? Title { get; set; } = "Nesta página";
-    [Parameter] public string EmptyText { get; set; } = "Nenhuma seção para exibir.";
-    [Parameter] public string ActiveItemAriaLabelFormat { get; set; } = "{0}, seção atual";
-    [Parameter] public string DisabledItemAriaLabelFormat { get; set; } = "{0}, indisponível";
+    [Parameter] public string EmptyText { get; set; } = default!;
+    [Parameter] public string ActiveItemAriaLabelFormat { get; set; } = default!;
+    [Parameter] public string DisabledItemAriaLabelFormat { get; set; } = default!;
     [Parameter] public bool HighlightParent { get; set; } = true;
     [Parameter] public int Offset { get; set; }
     [Parameter] public int StartNumber { get; set; } = 1;
@@ -29,11 +29,11 @@ public partial class XFTOC : XForgeComponentBase
 
     protected override void OnInitialized()
     {
-        AriaLabel = L("toc.aria_label", AriaLabel);
+        if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("toc.aria_label", AriaLabel);
         Title = L("toc.title", Title!);
-        EmptyText = L("toc.empty", EmptyText);
-        ActiveItemAriaLabelFormat = L("toc.active_format", ActiveItemAriaLabelFormat);
-        DisabledItemAriaLabelFormat = L("toc.disabled_format", DisabledItemAriaLabelFormat);
+        if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("toc.empty", EmptyText);
+        if (string.IsNullOrWhiteSpace(ActiveItemAriaLabelFormat)) ActiveItemAriaLabelFormat = L("toc.active_format", ActiveItemAriaLabelFormat);
+        if (string.IsNullOrWhiteSpace(DisabledItemAriaLabelFormat)) DisabledItemAriaLabelFormat = L("toc.disabled_format", DisabledItemAriaLabelFormat);
         base.OnInitialized();
     }
 

@@ -19,10 +19,10 @@ namespace XForge.DesignSystem.Components.Utilities.SortableList
         [Parameter] public Func<TItem, string>? TextSelector { get; set; }
         [Parameter] public Func<TItem, bool>? ItemDisabled { get; set; }
         [Parameter] public string? AriaLabel { get; set; }
-        [Parameter] public string MoveUpLabel { get; set; } = "Mover para cima";
-        [Parameter] public string MoveDownLabel { get; set; } = "Mover para baixo";
-        [Parameter] public string MoveUpLabelFormat { get; set; } = "{0}: {1}";
-        [Parameter] public string MoveDownLabelFormat { get; set; } = "{0}: {1}";
+        [Parameter] public string MoveUpLabel { get; set; } = default!;
+        [Parameter] public string MoveDownLabel { get; set; } = default!;
+        [Parameter] public string MoveUpLabelFormat { get; set; } = default!;
+        [Parameter] public string MoveDownLabelFormat { get; set; } = default!;
         [Parameter] public bool ShowOrder { get; set; } = true;
         [Parameter] public bool AllowDragReorder { get; set; } = true;
         [Parameter] public bool FullWidth { get; set; } = true;
@@ -31,10 +31,10 @@ namespace XForge.DesignSystem.Components.Utilities.SortableList
 
         protected override void OnInitialized()
         {
-            MoveUpLabel = L("sortable.move_up", MoveUpLabel);
-            MoveDownLabel = L("sortable.move_down", MoveDownLabel);
-            MoveUpLabelFormat = L("sortable.move_up_format", MoveUpLabelFormat);
-            MoveDownLabelFormat = L("sortable.move_down_format", MoveDownLabelFormat);
+            if (string.IsNullOrWhiteSpace(MoveUpLabel)) MoveUpLabel = L("sortable.move_up", MoveUpLabel);
+            if (string.IsNullOrWhiteSpace(MoveDownLabel)) MoveDownLabel = L("sortable.move_down", MoveDownLabel);
+            if (string.IsNullOrWhiteSpace(MoveUpLabelFormat)) MoveUpLabelFormat = L("sortable.move_up_format", MoveUpLabelFormat);
+            if (string.IsNullOrWhiteSpace(MoveDownLabelFormat)) MoveDownLabelFormat = L("sortable.move_down_format", MoveDownLabelFormat);
             base.OnInitialized();
         }
 

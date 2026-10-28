@@ -14,18 +14,18 @@ namespace XForge.DesignSystem.Components.Forms.Validation
 
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 
-        [Parameter] public string ValidText { get; set; } = "Formulario valido";
-        [Parameter] public string InvalidText { get; set; } = "Formulario contem erros";
-        [Parameter] public string NeutralText { get; set; } = "Aguardando validacao";
+        [Parameter] public string ValidText { get; set; } = default!;
+        [Parameter] public string InvalidText { get; set; } = default!;
+        [Parameter] public string NeutralText { get; set; } = default!;
         [Parameter] public string? AriaLabel { get; set; } = "Status da validacao";
         [Parameter] public bool ShowIcon { get; set; } = true;
 
         protected override void OnInitialized()
         {
-            ValidText = L("validation.valid", ValidText);
-            InvalidText = L("validation.invalid", InvalidText);
-            NeutralText = L("validation.neutral", NeutralText);
-            AriaLabel = L("validation.status", AriaLabel);
+            if (string.IsNullOrWhiteSpace(ValidText)) ValidText = L("validation.valid", ValidText);
+            if (string.IsNullOrWhiteSpace(InvalidText)) InvalidText = L("validation.invalid", InvalidText);
+            if (string.IsNullOrWhiteSpace(NeutralText)) NeutralText = L("validation.neutral", NeutralText);
+            if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("validation.status", AriaLabel);
             base.OnInitialized();
         }
 
