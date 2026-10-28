@@ -117,7 +117,7 @@ namespace XForge.DesignSystem.Components.Forms.DropDownDataGrid
 
         protected override void OnInitialized()
         {
-            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("dropdownDatagrid.clear", ClearLabel);
+            if (string.IsNullOrWhiteSpace(ClearLabel)) ClearLabel = L("dropdownDatagrid.clear", "Limpar");
             if (string.IsNullOrWhiteSpace(ToggleLabel)) ToggleLabel = L("dropdownDatagrid.toggle", ToggleLabel);
             if (string.IsNullOrWhiteSpace(LoadingText)) LoadingText = L("dropdownDatagrid.loading", LoadingText);
             if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("dropdownDatagrid.empty", EmptyText);

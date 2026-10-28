@@ -129,8 +129,8 @@ namespace XForge.DesignSystem.Components.Forms.ColorInput
 
         private string SwatchSizeClass => SwatchSize switch
         {
-            XFSize.Sm => "h-6 w-6",
-            XFSize.Lg => "h-10 w-10",
+            XFSize.Sm => "h-8 w-8",
+            XFSize.Lg => "h-14 w-14",
             _ => "h-8 w-8"
         };
 

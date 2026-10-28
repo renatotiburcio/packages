@@ -88,6 +88,7 @@
   "speech.microphone_unavailable": "Microfone não disponível",
   "upload.cancel": "Cancelar",
   "upload.remove": "Remover",
+  "dropdownDatagrid.clear": "Limpar",
   "dropdownDatagrid.empty": "Nenhum resultado.",
   "dropdownDatagrid.search": "Buscar...",
   "autocomplete.empty": "Nenhum resultado.",
