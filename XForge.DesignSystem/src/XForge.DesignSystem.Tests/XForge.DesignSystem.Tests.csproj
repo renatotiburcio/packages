@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -6,6 +7,7 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="bunit" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
@@ -15,19 +17,22 @@
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Moq" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\XForge.DesignSystem\XForge.DesignSystem.csproj" />
-    <ProjectReference Include="..\XForge.DesignSystem.AI\XForge.DesignSystem.AI.csproj" />
-    <ProjectReference Include="..\XForge.DesignSystem.Analyzers\XForge.DesignSystem.Analyzers.csproj" />
-    <ProjectReference Include="..\XForge.DesignSystem.Benchmarks\XFBenchmarkProject.csproj" />
   </ItemGroup>
+
   <ItemGroup>
+    <!-- testes stale do repo de origem: referenciam projetos satellite removidos na
+         reorganizacao (Analyzers, Benchmarks, DocsQualityTests) e APIs/tipos que nao
+         existem no nucleo migrado. Excluidos da compilacao; restaurar quando os
+         contratos/projetos voltarem. -->
     <Compile Remove="DocsQualityTests\**\*.cs" />
-    <None Remove="DocsQualityTests\**\*.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <!-- teste stale do repo de origem: referencia AllowDragResize/Add de component factory,
-         APIs que nao existem no XFGanttAdvanced atual (componente sem [Parameter]).
-         Excluido da compilacao; corrigir quando o componente ganhar as APIs. -->
+    <Compile Remove="Analyzers\**\*.cs" />
+    <Compile Remove="Benchmarks\**\*.cs" />
     <Compile Remove="Components\Scheduler\XFGanttAdvancedTest.cs" />
-  </ItemGroup></Project>
+    <Compile Remove="Components\AI\**\*.cs" />
+    <Compile Remove="Extensions\XFAiServiceCollectionExtensionsTest.cs" />
+  </ItemGroup>
+
+</Project>

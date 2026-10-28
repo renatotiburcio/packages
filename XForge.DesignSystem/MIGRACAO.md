@@ -83,3 +83,19 @@ De 77 componentes com @foreach, 75 receberam chave estavel em 18 lotes. Remanesc
 - XFTreeView e XFTOC: o corpo do loop e um RenderFragment (@RenderNode/@RenderItem),
   onde @key so se aplica a elementos. Aplicar exigiria envolver o fragmento num <div> —
   mudanca de DOM+CSS que e decisao de design, nao correcao mecanica.
+
+## Suite de testes — limpeza de stales (2026-10-27)
+
+A suite bUnit referenciava, majoritariamente, codigo dos satelites removidos na reorganizacao.
+Levantamento e exclusoes (todas documentadas no csproj, todas reversiveis):
+
+| Exclusao | Motivo |
+|---|---|
+| Tests\Analyzers\** | testava o pacote XForge.DesignSystem.Analyzers (removido) |
+| Tests\Benchmarks\** | testava o pacote XFBenchmarkProject (removido) |
+| Tests\Components\AI\** (45 arquivos) | testava Components.AI.Common/DataGrid/Insights/Orchestration do projeto XForge.DesignSystem.AI (removido) |
+| Tests\Extensions\XFAiServiceCollectionExtensionsTest.cs | referencia IAiProvider/AiChatRequest do projeto AI removido |
+| Tests\Components\Scheduler\XFGanttAdvancedTest.cs | referencia AllowDragResize (API inexistente no componente) |
+| Tests\DocsQualityTests\** | qualidade de docs do site (removido) |
+
+Tambem foi restaurado o PackageReference de Moq (perdido na reescrita anterior do csproj).
