@@ -42,7 +42,7 @@ namespace XForge.DesignSystem.Components.Forms.TextInput
         // snapshot dos parâmetros que dirigem o render — evita re-render redundante em formulários
         // (o pai re-renderiza a cada tecla; este componente pula quando nada mudou aqui)
         private string? _sName, _sLabel, _sAria, _sPlaceholder, _sHelperText, _sPrefixText, _sSuffixText,
-            _sValue, _sAutoComplete, _sInputMode, _sPattern, _sMaxLength;
+            _sValue, _sAutoComplete, _sInputMode, _sPattern;
         private XFTextInputType _sType;
         private XFFormVariant _sVariant;
         private XFSize _sSize;

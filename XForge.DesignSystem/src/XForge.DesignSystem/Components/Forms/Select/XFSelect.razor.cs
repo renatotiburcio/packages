@@ -40,6 +40,42 @@ namespace XForge.DesignSystem.Components.Forms.Select
         [Parameter] public bool PlaceholderHidden { get; set; }
         [Parameter] public string ClearLabel { get; set; } = "Limpar selecao";
 
+        // snapshot dos parâmetros que dirigem o render — evita re-render redundante do pai
+        private string? _sName, _sLabel, _sAria, _sPlaceholder, _sHelperText, _sSearchPlaceholder,
+            _sClearLabel;
+        private bool _sInitialized, _sSearchable, _sClearable;
+
+        protected override bool ShouldRender()
+        {
+            if (!_sInitialized)
+            {
+                CaptureSelect();
+                return true;
+            }
+
+            var changed = _sName != Name || _sLabel != Label || _sAria != AriaLabel ||
+                          _sPlaceholder != Placeholder || _sHelperText != HelperText ||
+                          _sSearchPlaceholder != SearchPlaceholder || _sClearLabel != ClearLabel ||
+                          _sSearchable != Searchable || _sClearable != Clearable ||
+                          _sSearchable != Searchable || _sClearable != Clearable;
+
+            if (!changed)
+            {
+                return false;
+            }
+
+            CaptureSelect();
+            return true;
+        }
+
+        private void CaptureSelect()
+        {
+            _sName = Name; _sLabel = Label; _sAria = AriaLabel; _sPlaceholder = Placeholder;
+            _sHelperText = HelperText; _sSearchPlaceholder = SearchPlaceholder; _sClearLabel = ClearLabel;
+            _sSearchable = Searchable; _sClearable = Clearable;
+            _sInitialized = true;
+        }
+
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 
         private TValue? LastParameterValue { get; set; }
