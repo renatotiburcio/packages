@@ -22,6 +22,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Timeline
         [Parameter] public bool Alternating { get; set; }
         [Parameter] public bool ShowConnector { get; set; } = true;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, AriaLabel, DefaultAriaLabel, ItemAriaLabelFormat, DefaultItemText, Orientation, Align, Size, Tone, Reverse);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         internal XFOrientation CurrentOrientation => Orientation;
         internal XFTimelineAlign CurrentAlign => Alternating ? XFTimelineAlign.Alternate : Align;
         internal XFSize CurrentSize => Size;

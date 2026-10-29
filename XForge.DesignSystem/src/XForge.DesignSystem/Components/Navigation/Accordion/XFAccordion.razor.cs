@@ -26,6 +26,22 @@ namespace XForge.DesignSystem.Components.Navigation.Accordion
         /// <summary>Fires when an accordion item is collapsed. Compliant with D-001 On{Action} convention.</summary>
         [Parameter] public EventCallback<XFAccordionItemChangeEventArgs> OnCollapsed { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, Multiple, Collapsible, Variant, Size, Animation, IconMode, StaggerContent, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override string GetComponentClass()
         {
             return GetClass($"{BaseClass} {VariantClass} {SizeClass}");
