@@ -33,6 +33,22 @@ namespace XForge.DesignSystem.Components.Layout.Shell
         /// </summary>
         [Parameter] public bool ContainerRelative { get; set; } = false;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Header, ChildContent, Footer, Expanded, Variant, AriaLabel, HeaderClass, ContentClass, FooterClass, ContainerRelative);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string GetVariantClass() => Variant switch
         {
             XFSidebarVariant.Drawer when ContainerRelative => "absolute left-0 top-0 bottom-0 h-full shadow-2xl",

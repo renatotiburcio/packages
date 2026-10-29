@@ -62,6 +62,22 @@ namespace XForge.DesignSystem.Components.Navigation.Pagination
         [Parameter] public RenderFragment? LastContent { get; set; }
         [Parameter] public RenderFragment? ReloadContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Page, PageSize, TotalItems, PageSizeOptions, Variant, Size, Disabled, ShowFirstLast);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private int CurrentPageSize => Math.Max(1, PageSize);
 
         private int TotalPages => Math.Max(1, (int)Math.Ceiling(Math.Max(0, TotalItems) / (double)CurrentPageSize));
