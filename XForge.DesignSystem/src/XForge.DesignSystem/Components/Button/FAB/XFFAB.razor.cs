@@ -23,6 +23,23 @@ public partial class XFFAB : XForgeComponentBase
     [Parameter] public string? OpenMenuAriaLabel { get; set; }
     [Parameter] public string? CloseMenuAriaLabel { get; set; }
 
+        // assinatura de render: botões são o elemento mais frequente em UI — evita re-render
+        // redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Text, Icon, Items.Count, Placement, Color, Size, Mini, Open, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private string MenuId => $"{Id}-menu";
     private bool IsExtended => !string.IsNullOrWhiteSpace(Text);
     private string EffectiveButtonAriaLabel => Items.Count > 0

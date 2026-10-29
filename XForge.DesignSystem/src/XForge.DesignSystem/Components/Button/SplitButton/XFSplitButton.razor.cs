@@ -32,6 +32,23 @@ public partial class XFSplitButton : XForgeComponentBase, IAsyncDisposable
     [Parameter] public string? MenuPanelAriaLabel { get; set; }
     [Parameter] public bool CloseOnSelect { get; set; } = true;
 
+        // assinatura de render: botões são o elemento mais frequente em UI — evita re-render
+        // redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, StartIcon, Text, Variant, Color, Size, Type, FullWidth, Disabled, Open);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private int activeIndex = -1;
     private bool IsDisabled => Disabled;
     private string ButtonTypeValue => Type.ToString().ToLowerInvariant();

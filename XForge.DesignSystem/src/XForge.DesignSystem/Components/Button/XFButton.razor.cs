@@ -44,6 +44,23 @@ namespace XForge.DesignSystem.Components.Button
         [Parameter] public object? CommandParameter { get; set; }
         [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+        // assinatura de render: botões são o elemento mais frequente em UI — evita re-render
+        // redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, Variant, Color, Size, Type, Shape, Text, LoadingText, Disabled, Loading, Icon, FullWidth);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         [CascadingParameter] private XFEditFormContext? FormContext { get; set; }
 
         private bool _clicking;
