@@ -23,6 +23,22 @@ namespace XForge.DesignSystem.Components.Utilities.DragDrop
         [Parameter] public bool FullWidth { get; set; } = true;
         [Parameter] public bool RejectUnknownTypes { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, StateContent, Label, DefaultLabel, Description, AcceptTypes, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private XFDragDropState State { get; set; }
         private string LabelId => $"{Id}-label";
         private string DescriptionId => $"{Id}-description";

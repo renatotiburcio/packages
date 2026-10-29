@@ -20,6 +20,22 @@ namespace XForge.DesignSystem.Components.Feedback.Skeleton
         [Parameter] public string? RoundedClass { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Shape, Animation, Size, Visible, Decorative, AriaLabel, DefaultAriaLabel, WidthClass, HeightClass, RoundedClass);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string? Role => Decorative ? null : "status";
 
         private string? AriaHidden => Decorative ? "true" : null;

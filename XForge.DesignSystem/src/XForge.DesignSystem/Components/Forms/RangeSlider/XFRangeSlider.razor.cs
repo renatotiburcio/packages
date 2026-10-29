@@ -42,6 +42,22 @@ namespace XForge.DesignSystem.Components.Forms.RangeSlider
         [Parameter] public bool AllowOverlap { get; set; }
         [Parameter] public CultureInfo? Culture { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', StartName, EndName, Label, StartAriaLabel, EndAriaLabel, HelperText, StartValue, EndValue, Min, Max, Step, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 
         private FieldIdentifier? StartFieldIdentifier { get; set; }

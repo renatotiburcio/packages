@@ -27,6 +27,22 @@ namespace XForge.DesignSystem.Components.Overlays.ContextMenu
         [Parameter] public string AriaLabel { get; set; } = default!;
         [Parameter] public string SubmenuAriaLabelFormat { get; set; } = default!;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Open, Items.Count, ItemSelected, ChildContent, Size, CloseOnSelect, CloseOnEscape, CloseOnOutsideClick, CollisionPadding);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
         protected override void OnInitialized()
