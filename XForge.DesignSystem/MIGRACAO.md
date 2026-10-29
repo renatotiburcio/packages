@@ -263,3 +263,10 @@ com guarda de interop JS (não repinta o gráfico quando os parâmetros não mudam).
 Padrão consolidado: assinatura de render (string.Join dos parâmetros visuais) comparada
 em ShouldRender(); no XFChart, OnAfterRenderAsync também pula o módulo JS quando a
 assinatura não mudou. 0 regressões funcionais em todos os lotes.
+
+### Expansao (2026-10-29): 22 componentes com ShouldRender
+
+Acrescimo de XFSearch, XFValidationStatus, XFDialog, XFChip, XFAppBar, XFToolbar, XFAlert
+ao lote original (Switch, Checkbox, TextInput, Autocomplete, Select, DropDownDataGrid,
+MultiSelect, DataGrid, Upload, TransferList, DatePicker, Scheduler, PdfViewer, Markdown)
++ XFChart com guard de interop JS. Zero regressoes funcionais em todos os lotes.

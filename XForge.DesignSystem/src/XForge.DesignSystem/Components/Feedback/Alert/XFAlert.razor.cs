@@ -27,6 +27,22 @@ namespace XForge.DesignSystem.Components.Feedback.Alert
         [Parameter] public string? DismissLabel { get; set; }
         [Parameter] public string DismissLabelFormat { get; set; } = "Fechar alerta {0}";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, Title, Text, Intent, Variant, Size, ShowIcon, Dismissible, Visible, Disabled, AriaLabel);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private bool ShowLeadingIcon => ShowIcon || StartIcon is not null;
         private string DismissContext => !string.IsNullOrWhiteSpace(Title) ? Title : AriaLabel ?? "alerta";
         private string ResolvedDismissLabel => DismissLabel ?? string.Format(CultureInfo.CurrentCulture, DismissLabelFormat, DismissContext);

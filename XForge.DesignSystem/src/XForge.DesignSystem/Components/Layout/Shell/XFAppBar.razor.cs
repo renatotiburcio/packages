@@ -15,6 +15,22 @@ namespace XForge.DesignSystem.Components.Layout.Shell
         [Parameter] public string? AriaLabel { get; set; } = "Barra do aplicativo";
         [Parameter] public string InnerClass { get; set; } = default!;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, Position, Bordered, AriaLabel, InnerClass, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override void OnInitialized()
         {
             if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("appbar.label", AriaLabel);
