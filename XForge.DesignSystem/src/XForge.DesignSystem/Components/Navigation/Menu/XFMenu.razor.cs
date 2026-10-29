@@ -44,6 +44,23 @@ namespace XForge.DesignSystem.Components.Navigation.Menu
         [Parameter] public string? ToggleExpandedLabel { get; set; }
         [Parameter] public string? ToggleCollapsedLabel { get; set; }
 
+        // assinatura de render: componente com árvore/lista de itens — evita re-render de toda
+        // a árvore quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Items.Count, ExpandedIds.Count, SelectedId, ItemTemplate, Orientation, Variant, Size, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override void OnParametersSet()
         {
             if (!initialized || ExpandedIds.Count > 0 || ExpandedIdsChanged.HasDelegate)
