@@ -34,6 +34,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chip
         /// <summary>Fires when the chip is dismissed. Compliant with D-001 On{Action} convention.</summary>
         [Parameter] public EventCallback OnDismiss { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Variant, Size, Tone, Selected, Dismissible, Clickable, Visible, AriaLabel, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
 
         private string RootClass => Join(
             BaseClass,

@@ -48,6 +48,22 @@ namespace XForge.DesignSystem.Components.Overlays.Dialog
         [Parameter] public string? MaxHeight { get; set; }
         [Parameter] public string? BodyMaxHeight { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Open, Title, Description, Size, Tone, Placement, Alert, Disabled, ShowCloseButton);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override void OnInitialized()
         {
             if (string.IsNullOrWhiteSpace(CloseLabel)) CloseLabel = L("dialog.close", CloseLabel);

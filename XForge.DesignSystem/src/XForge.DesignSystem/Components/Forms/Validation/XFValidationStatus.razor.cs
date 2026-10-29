@@ -20,6 +20,22 @@ namespace XForge.DesignSystem.Components.Forms.Validation
         [Parameter] public string? AriaLabel { get; set; } = "Status da validacao";
         [Parameter] public bool ShowIcon { get; set; } = true;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ValidText, InvalidText, NeutralText, AriaLabel, ShowIcon, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override void OnInitialized()
         {
             if (string.IsNullOrWhiteSpace(ValidText)) ValidText = L("validation.valid", ValidText);

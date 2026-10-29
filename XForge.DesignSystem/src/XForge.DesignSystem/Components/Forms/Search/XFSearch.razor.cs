@@ -41,6 +41,22 @@ namespace XForge.DesignSystem.Components.Forms.Search
         [Parameter] public int DebounceMilliseconds { get; set; } = 300;
         [Parameter] public string ClearLabel { get; set; } = default!;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Name, Label, AriaLabel, Placeholder, HelperText, Value, AutoComplete, Immediate, DebounceMilliseconds, Disabled, ReadOnly, Clearable);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string? CurrentValue { get; set; }
         private string? LastParameterValue { get; set; }
         private string HelperId => $"{Id}-helper";
