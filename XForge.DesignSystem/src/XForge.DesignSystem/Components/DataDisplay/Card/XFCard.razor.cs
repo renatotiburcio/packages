@@ -24,6 +24,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Card
         [Parameter] public string? AriaLabel { get; set; }
         [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, Media, Header, Actions, Footer, Padding, Variant, Tone, Radius, Interactive, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private bool IsInteractive => Interactive || OnClick.HasDelegate;
         private string? Role => IsInteractive ? "button" : null;
 

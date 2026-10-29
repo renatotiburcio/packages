@@ -34,6 +34,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Badge
         [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
         [Parameter] public EventCallback<MouseEventArgs> OnDismiss { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Text, ChildContent, StartIcon, EndIcon, DismissIcon, Variant, Color, Size, Shape, Rounded, Dot, DismissTitle, DismissAriaLabel);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string? Role => OnClick.HasDelegate ? "button" : null;
         private string? DismissContext => !string.IsNullOrWhiteSpace(Text) ? Text : AriaLabel;
         private string ResolvedDismissTitle => DismissTitle
