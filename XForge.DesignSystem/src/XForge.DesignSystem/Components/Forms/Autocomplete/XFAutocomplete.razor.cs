@@ -50,6 +50,44 @@ namespace XForge.DesignSystem.Components.Forms.Autocomplete
         [Parameter] public string ClearLabel { get; set; } = default!;
         [Parameter] public string LoadingText { get; set; } = default!;
         [Parameter] public string EmptyText { get; set; } = default!;
+
+        // snapshot dos parâmetros que dirigem o render — o componente re-renderiza muito
+        // (busca, abertura do dropdown); pula renders redundantes do pai
+        private string? _sName, _sLabel, _sAria, _sPlaceholder, _sHelperText, _sClearLabel, _sLoadingText, _sEmptyText;
+        private bool _sClearable, _sLoading, _sInitialized;
+        private int _sMinLength, _sMaxItems;
+
+        protected override bool ShouldRender()
+        {
+            if (!_sInitialized)
+            {
+                Capture();
+                return true;
+            }
+
+            var changed = _sName != Name || _sLabel != Label || _sAria != AriaLabel ||
+                          _sPlaceholder != Placeholder || _sHelperText != HelperText ||
+                          _sClearLabel != ClearLabel || _sLoadingText != LoadingText || _sEmptyText != EmptyText ||
+                          _sClearable != Clearable || _sLoading != Loading || _sMinLength != MinLength ||
+                          _sMaxItems != MaxItems;
+
+            if (!changed)
+            {
+                return false;
+            }
+
+            Capture();
+            return true;
+        }
+
+        private void Capture()
+        {
+            _sName = Name; _sLabel = Label; _sAria = AriaLabel; _sPlaceholder = Placeholder;
+            _sHelperText = HelperText; _sClearLabel = ClearLabel; _sLoadingText = LoadingText;
+            _sEmptyText = EmptyText; _sClearable = Clearable; _sLoading = Loading;
+            _sMinLength = MinLength; _sMaxItems = MaxItems;
+            _sInitialized = true;
+        }
         [Parameter] public string ListboxLabel { get; set; } = default!;
         [Parameter] public string? ErrorText { get; set; }
         [Parameter] public bool Virtualize { get; set; }
