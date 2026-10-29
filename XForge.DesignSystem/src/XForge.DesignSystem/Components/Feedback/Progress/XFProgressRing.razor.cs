@@ -35,6 +35,22 @@ namespace XForge.DesignSystem.Components.Feedback.Progress
         [Parameter] public XFExtendedSize Size { get; set; } = XFExtendedSize.Md;
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Value, Min, Max, Indeterminate, Size, ShowValue);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private double Radius => Size is XFExtendedSize.Xs or XFExtendedSize.Sm ? 48 : 46;
 
         private double StrokeWidth => Size switch

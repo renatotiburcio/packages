@@ -40,6 +40,22 @@ namespace XForge.DesignSystem.Components.Feedback.Progress
         [Parameter] public XFProgressVariant Variant { get; set; } = XFProgressVariant.Solid;
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Value, Min, Max, Indeterminate, Visible, ShowValue, InlineValue, Rounded, Striped, Animated, Paused, Label, Size);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private double Range => Math.Max(0.0001, Max - Min);
 
         private double ClampedValue => Math.Clamp(Value, Min, Max);
