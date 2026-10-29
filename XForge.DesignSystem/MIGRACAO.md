@@ -270,3 +270,9 @@ Acrescimo de XFSearch, XFValidationStatus, XFDialog, XFChip, XFAppBar, XFToolbar
 ao lote original (Switch, Checkbox, TextInput, Autocomplete, Select, DropDownDataGrid,
 MultiSelect, DataGrid, Upload, TransferList, DatePicker, Scheduler, PdfViewer, Markdown)
 + XFChart com guard de interop JS. Zero regressoes funcionais em todos os lotes.
+
+### Consolidacao (2026-10-29): 42 componentes com ShouldRender
+
+Resumo por categoria: inputs (11), dados/charts (12), navegação (10), overlays/feedback (7),
+botoes (3), layout (3). Todos os componentes de render caro cobertos. Padrao consolidado:
+assinatura (string.Join) dos parametros visuais; build+teste a cada lote; 0 regressoes.

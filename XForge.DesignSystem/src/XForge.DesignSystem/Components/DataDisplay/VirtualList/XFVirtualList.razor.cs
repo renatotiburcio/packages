@@ -23,6 +23,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.VirtualList
         [Parameter] public string EmptyText { get; set; } = default!;
         [Parameter] public XFVirtualListVariant Variant { get; set; } = XFVirtualListVariant.Default;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ItemTemplate, EmptyContent, LoadingContent, Items.Count, ItemsProvider, ItemSize, OverscanCount, Title, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override void OnInitialized()
         {
             // honra o valor do usuário quando informado; aplica o default localizado caso contrário

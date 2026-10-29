@@ -24,6 +24,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Table
         [Parameter] public XFSize Size { get; set; } = XFSize.Md;
         [Parameter] public XFListVariant Variant { get; set; } = XFListVariant.Bordered;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, Caption, EmptyText, Visible, Striped, Hoverable, StickyHeader, FullWidth, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override void OnInitialized()
         {
             if (string.IsNullOrWhiteSpace(EmptyText)) EmptyText = L("table.empty", EmptyText);

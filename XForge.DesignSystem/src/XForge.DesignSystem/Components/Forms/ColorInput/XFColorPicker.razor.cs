@@ -57,6 +57,22 @@ namespace XForge.DesignSystem.Components.Forms.ColorInput
         [Parameter] public string TabBarLabel { get; set; } = "Color picker sections";
         [Parameter] public string NativePickerTitle { get; set; } = "Native picker";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Label, AriaLabel, HelperText, Value, Immediate, ReadOnly, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string? CurrentValue { get; set; }
         private string? LastParameterValue { get; set; }
         private string? DraftText { get; set; }
