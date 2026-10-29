@@ -31,6 +31,37 @@ namespace XForge.DesignSystem.Components.Forms.Switch
         [Parameter] public Expression<Func<bool>>? ValueExpression { get; set; }
         [Parameter] public EventCallback<bool> Change { get; set; }
         [Parameter] public bool ReadOnly { get; set; }
+
+        // snapshot dos parâmetros que dirigem o render — evita re-render redundante quando o
+        // componente pai re-renderiza sem mudar nada deste componente (padrão ShouldRender)
+        private string? _snapName, _snapLabel, _snapAria, _snapDescription, _snapCheckedText, _snapUncheckedText;
+        private bool _snapValue, _snapReadOnly, _snapInitialized;
+
+        protected override bool ShouldRender()
+        {
+            if (!_snapInitialized)
+            {
+                _snapName = Name; _snapLabel = Label; _snapAria = AriaLabel; _snapDescription = Description;
+                _snapCheckedText = CheckedText; _snapUncheckedText = UncheckedText;
+                _snapValue = Value; _snapReadOnly = ReadOnly;
+                _snapInitialized = true;
+                return true;
+            }
+
+            var changed = _snapName != Name || _snapLabel != Label || _snapAria != AriaLabel ||
+                          _snapDescription != Description || _snapCheckedText != CheckedText ||
+                          _snapUncheckedText != UncheckedText || _snapValue != Value || _snapReadOnly != ReadOnly;
+
+            if (!changed)
+            {
+                return false;
+            }
+
+            _snapName = Name; _snapLabel = Label; _snapAria = AriaLabel; _snapDescription = Description;
+            _snapCheckedText = CheckedText; _snapUncheckedText = UncheckedText;
+            _snapValue = Value; _snapReadOnly = ReadOnly;
+            return true;
+        }
         [Parameter] public bool Required { get; set; }
         [Parameter] public bool FullWidth { get; set; } = true;
         [Parameter] public bool ShowStateText { get; set; }
