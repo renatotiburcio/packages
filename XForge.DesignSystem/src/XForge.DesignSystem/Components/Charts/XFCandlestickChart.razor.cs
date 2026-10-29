@@ -12,6 +12,23 @@ namespace XForge.Components.Charts
         [Parameter] public bool ShowVolume { get; set; } = false;
         [Parameter] public EventCallback<Candle> OnCandleClick { get; set; }
 
+        // assinatura de render: gráficos são caros de renderizar — pula render redundante quando o
+        // pai re-renderiza sem mudar nada aqui (e evita re-invocar interop JS no AfterRender)
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Candles.Count, Width, Height, ShowVolume);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string RenderSvg()
         {
             if (!Candles.Any()) return "";
