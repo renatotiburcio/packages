@@ -38,6 +38,53 @@ namespace XForge.DesignSystem.Components.Forms.TextInput
         [Parameter] public bool Clearable { get; set; }
         [Parameter] public bool FloatingLabel { get; set; }
         [Parameter] public string? Value { get; set; }
+
+        // snapshot dos parâmetros que dirigem o render — evita re-render redundante em formulários
+        // (o pai re-renderiza a cada tecla; este componente pula quando nada mudou aqui)
+        private string? _sName, _sLabel, _sAria, _sPlaceholder, _sHelperText, _sPrefixText, _sSuffixText,
+            _sValue, _sAutoComplete, _sInputMode, _sPattern, _sMaxLength;
+        private XFTextInputType _sType;
+        private XFFormVariant _sVariant;
+        private XFSize _sSize;
+        private XFSemanticColor _sTone;
+        private bool _sInitialized, _sReadOnly, _sRequired, _sFullWidth, _sFloatingLabel, _sClearable;
+
+        protected override bool ShouldRender()
+        {
+            if (!_sInitialized)
+            {
+                CaptureSnapshot();
+                return true;
+            }
+
+            var changed = _sName != Name || _sLabel != Label || _sAria != AriaLabel ||
+                          _sPlaceholder != Placeholder || _sHelperText != HelperText ||
+                          _sPrefixText != PrefixText || _sSuffixText != SuffixText ||
+                          _sType != Type || _sVariant != Variant || _sSize != Size || _sTone != Tone ||
+                          _sValue != Value || _sAutoComplete != AutoComplete || _sInputMode != InputMode ||
+                          _sPattern != Pattern || _sReadOnly != ReadOnly || _sRequired != Required ||
+                          _sFullWidth != FullWidth || _sFloatingLabel != FloatingLabel || _sClearable != Clearable;
+
+            if (!changed)
+            {
+                return false;
+            }
+
+            CaptureSnapshot();
+            return true;
+        }
+
+        private void CaptureSnapshot()
+        {
+            _sName = Name; _sLabel = Label; _sAria = AriaLabel; _sPlaceholder = Placeholder;
+            _sHelperText = HelperText; _sPrefixText = PrefixText; _sSuffixText = SuffixText;
+            _sType = Type; _sVariant = Variant; _sSize = Size; _sTone = Tone;
+            _sValue = Value; _sAutoComplete = AutoComplete; _sInputMode = InputMode; _sPattern = Pattern;
+            _sReadOnly = ReadOnly; _sRequired = Required; _sFullWidth = FullWidth;
+            _sFloatingLabel = FloatingLabel; _sClearable = Clearable;
+            _sInitialized = true;
+        }
+
         [Parameter] public EventCallback<string?> ValueChanged { get; set; }
         [Parameter] public Expression<Func<string?>>? ValueExpression { get; set; }
         [Parameter] public string? AutoComplete { get; set; }
