@@ -253,3 +253,13 @@ Plano (proxima frente): adicionar ShouldRender com snapshot dos parametros que d
 render nos componentes de maior custo — charts (JS interop), grids grandes, editores e
 inputs de texto. Padrao: snapshot no primeiro render + comparacao em ShouldRender;
 retornar false impede o render redundante (e, no caso do chart, o interop repetido).
+
+## Frente ShouldRender — 12 componentes (2026-10-29)
+
+XFSwitch, XFCheckbox, XFTextInput, XFAutocomplete, XFSelect, XFDropDownDataGrid,
+XFMultiSelect, XFDataGrid, XFUpload, XFTransferList, XFDatePicker, XFScheduler + XFChart
+com guarda de interop JS (não repinta o gráfico quando os parâmetros não mudam).
+
+Padrão consolidado: assinatura de render (string.Join dos parâmetros visuais) comparada
+em ShouldRender(); no XFChart, OnAfterRenderAsync também pula o módulo JS quando a
+assinatura não mudou. 0 regressões funcionais em todos os lotes.

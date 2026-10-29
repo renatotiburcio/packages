@@ -97,6 +97,22 @@ namespace XForge.DesignSystem.Components.Forms.DatePicker
         /// <summary>Format for week number aria label.</summary>
         [Parameter] public string WeekNumberLabelFormat { get; set; } = default!;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Name, Label, AriaLabel, Placeholder, HelperText, ToggleLabel, CalendarLabel, PreviousMonthLabel, NextMonthLabel, TodayLabel, ClearLabel, Disabled, ReadOnly, Required, Value);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 
         private DateOnly? CurrentValue { get; set; }

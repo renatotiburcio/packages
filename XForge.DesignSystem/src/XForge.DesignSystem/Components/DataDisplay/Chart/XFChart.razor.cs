@@ -314,8 +314,35 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chart
             base.OnInitialized();
         }
 
+        // assinatura de render + guarda do interop JS: o gráfico só é redesenhado quando os
+        // parâmetros visuais mudam (Blazor re-renderiza o componente a cada StateHasChanged do pai)
+        private string? _renderSignature;
+        private string? _drawnSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', AriaLabel, EmptyText, AccessibleDescriptionFormat,
+                SeriesHeaderText, LabelHeaderText, ValueHeaderText, PercentHeaderText, Visible,
+                SeriesNameFormat, ItemLabelFormat);
+            _renderSignature = signature;
+
+            if (_drawnSignature == signature)
+            {
+                return false; // pai re-renderizou sem mudar nada do gráfico — não repinta o DOM
+            }
+
+            return true;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            if (_renderSignature is not null && _renderSignature == _drawnSignature)
+            {
+                return; // nada mudou — não re-invoca o módulo JS (interop caro)
+            }
+
+            _drawnSignature = _renderSignature;
+
             if (!Visible || VisiblePointCount == 0)
             {
                 return;
