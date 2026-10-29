@@ -238,3 +238,18 @@ Fila: (1) atualizar expectativas dos testes; (2) corrigir os 2 gaps de component
 "Alteracoes nao salvas"?não salvas, "Abrir opcoes"?opções, "Proxima"?Próxima.
 Forms 1154 ? 1163; totais: Navigation 569/570, DataDisplay 1173/1179, Overlays 162/163,
 Feedback 366/368, Layout 370/372, Charts 21/21, Editors 14/14.
+
+## Oportunidade de performance: ShouldRender (2026-10-28)
+
+Diagnostico: 0 de 277 componentes sobrescrevem ShouldRender(). Em Blazor, TODO
+StateHasChanged (keystroke em input, hover, timer, callback do pai) re-renderiza a
+subarvore inteira do componente.
+
+Alvo de maior valor identificado: XFChart.OnAfterRenderAsync — NAO guardado por
+irstRender: a cada render ele re-invoca o modulo JS (interop caro) para redesenhar o
+grafico, mesmo quando os dados nao mudaram.
+
+Plano (proxima frente): adicionar ShouldRender com snapshot dos parametros que dirigem o
+render nos componentes de maior custo — charts (JS interop), grids grandes, editores e
+inputs de texto. Padrao: snapshot no primeiro render + comparacao em ShouldRender;
+retornar false impede o render redundante (e, no caso do chart, o interop repetido).
