@@ -135,6 +135,24 @@ namespace XForge.DesignSystem.Components.DataDisplay.DataGrid
         [Parameter] public string ExportDelimiter { get; set; } = ";";
         [Parameter] public bool ExportAllPages { get; set; } = true;
 
+        // assinatura de render: grid grande — evita re-render de centenas de celulas quando
+        // o componente pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Caption, EmptyText, GroupBy, ColumnChooserLabel,
+                ShowColumnLabelFormat, HideColumnLabelFormat, ShowColumnChooser, Loading, ExportAllPages);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         internal IReadOnlyList<XFDataGridColumn<TItem>> VisibleColumns => columns.Where(IsColumnVisible).ToArray();
 
         private IReadOnlyList<XFDataGridColumn<TItem>> OperationalColumns => columns.ToArray();

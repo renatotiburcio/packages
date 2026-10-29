@@ -28,6 +28,22 @@ public partial class XFTransferList : XForgeComponentBase
     [Parameter] public string SourceSearchLabel { get; set; } = default!;
     [Parameter] public string TargetSearchLabel { get; set; } = default!;
     [Parameter] public string MoveSelectedRightLabel { get; set; } = default!;
+
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Items.Count, TargetValues.Count, SourceLabel, TargetLabel, SearchPlaceholder, SourceSearchLabel, TargetSearchLabel, MoveSelectedRightLabel, MoveSelectedLeftLabel, MoveAllRightLabel, MoveAllLeftLabel);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
     [Parameter] public string MoveSelectedLeftLabel { get; set; } = default!;
     [Parameter] public string MoveAllRightLabel { get; set; } = default!;
     [Parameter] public string MoveAllLeftLabel { get; set; } = default!;

@@ -38,6 +38,22 @@ namespace XForge.DesignSystem.Components.Forms.Upload
         [Parameter] public int MaximumFileCount { get; set; } = 10;
         [Parameter] public long MaximumFileSize { get; set; } = 10 * 1024 * 1024;
         [Parameter] public string? UploadUrl { get; set; }
+
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Label, Title, Description, HelperText, Accept, UploadUrl, Multiple, Items.Count);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
         [Parameter] public string HttpMethod { get; set; } = default!;
         [Parameter] public string ParameterName { get; set; } = default!;
         [Parameter] public int MaxChunkSize { get; set; } = 0;
