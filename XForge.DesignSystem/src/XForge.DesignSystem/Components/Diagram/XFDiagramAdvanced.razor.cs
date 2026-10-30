@@ -14,6 +14,23 @@ namespace XForge.Components.Diagram
         [Parameter] public int Height { get; set; } = 700;
         [Parameter] public EventCallback<DiagramNode> OnNodeClick { get; set; }
 
+        // assinatura de render: wrapper fino — o estado interativo vive no componente
+        // interno; aqui o render e funcao dos parametros
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Nodes.Count, Edges.Count, Layout, StyleLibrary, Width, Height);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string Render()
         {
             var sb = new StringBuilder();

@@ -10,6 +10,23 @@ namespace XForge.Components.DataGrid
         [Parameter] public bool ShowCheckboxes { get; set; }
         [Parameter] public EventCallback<TreeNode> OnNodeClick { get; set; }
 
+        // assinatura de render: wrapper fino — o estado interativo vive no componente
+        // interno; aqui o render e funcao dos parametros
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Nodes.Count, ShowCheckboxes);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private RenderFragment RenderTree(IReadOnlyList<TreeNode> nodes) => __builder =>
         {
             foreach (var n in nodes)

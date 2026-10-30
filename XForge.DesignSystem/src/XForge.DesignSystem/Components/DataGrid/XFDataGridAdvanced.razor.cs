@@ -20,6 +20,23 @@ namespace XForge.Components.DataGrid
         [Parameter] public int VisibleCount { get; set; }
         [Parameter] public EventCallback<int> PageChanged { get; set; }
 
+        // assinatura de render: wrapper fino — o estado interativo vive no componente
+        // interno; aqui o render e funcao dos parametros
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', ServerSide, VirtualScrolling, ColumnChooser, ColumnReorder, ColumnResize, MasterDetail, InlineEdit, ExcelFilters, PrintMode, Page, PageSize, TotalCount, VisibleCount);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private RenderFragment RenderHeader() => __builder => { };
         private RenderFragment RenderBody() => __builder => { };
         private RenderFragment RenderPager() => __builder => { };

@@ -11,5 +11,22 @@ namespace XForge.Components.Pivot
         [Parameter] public AggregationType Aggregation { get; set; } = AggregationType.Sum;
         [Parameter] public bool ShowFieldList { get; set; } = true;
         [Parameter] public EventCallback<(string, string, double)> OnCellClick { get; set; }
+
+        // assinatura de render: wrapper fino — o estado interativo vive no componente
+        // interno; aqui o render e funcao dos parametros
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Rows.Count, Columns.Count, Cells.Count, Aggregation, ShowFieldList);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
     }
 }

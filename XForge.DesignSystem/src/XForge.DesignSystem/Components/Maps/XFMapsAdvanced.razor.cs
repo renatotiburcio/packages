@@ -13,5 +13,22 @@ namespace XForge.Components.Maps
         [Parameter] public int Width { get; set; } = 800;
         [Parameter] public int Height { get; set; } = 600;
         [Parameter] public EventCallback<MapMarker> OnMarkerClick { get; set; }
+
+        // assinatura de render: wrapper fino — o estado interativo vive no componente
+        // interno; aqui o render e funcao dos parametros
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Markers.Count, Layers.Count, Provider, ShowHeatmap, DrawingTools, Width, Height);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
     }
 }
