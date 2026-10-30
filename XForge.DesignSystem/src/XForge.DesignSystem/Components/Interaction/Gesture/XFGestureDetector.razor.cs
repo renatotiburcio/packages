@@ -71,6 +71,22 @@ namespace XForge.DesignSystem.Components.Interaction.Gesture
         /// <summary>Child content to wrap.</summary>
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', EnableTap, EnableDoubleTap, EnableLongPress, EnableSwipe, EnablePinch, EnablePan, LongPressDelay, SwipeThreshold, OnTap, OnDoubleTap, OnLongPress, OnSwipe, OnPinch, OnPan, ChildContent);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         #endregion
 
         #region Pointer Events

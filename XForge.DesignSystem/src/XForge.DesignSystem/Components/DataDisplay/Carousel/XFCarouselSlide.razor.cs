@@ -11,6 +11,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Carousel
         [Parameter] public string? Label { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', SlideId, Label, ChildContent);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private bool registered;
         private int Index => ParentCarousel?.GetSlideIndex(this) ?? -1;
         private bool IsActive => ParentCarousel?.CurrentIndex == Index;

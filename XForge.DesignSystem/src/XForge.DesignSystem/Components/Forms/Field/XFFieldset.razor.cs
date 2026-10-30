@@ -11,6 +11,22 @@ namespace XForge.DesignSystem.Components.Forms.Field
         [Parameter] public string? Description { get; set; }
         [Parameter] public bool Bordered { get; set; } = true;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', ChildContent, LegendContent, Legend, Description, Bordered);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string RootClass => Join(
             "xf-fieldset min-w-0",
             Bordered ? "rounded-lg border border-border-light bg-bg-surface p-4" : "p-0",

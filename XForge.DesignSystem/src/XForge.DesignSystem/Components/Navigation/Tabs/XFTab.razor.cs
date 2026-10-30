@@ -27,6 +27,22 @@ namespace XForge.DesignSystem.Components.Navigation.Tabs
         [Parameter] public RenderFragment? LoadingContent { get; set; }
         [Parameter] public string CloseTabLabel { get; set; } = "Fechar aba";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', TabId, Name, Label, AriaLabel, Href, Match, Value, Closable, StartIcon, EndContent, ChildContent, LoadingContent, CloseTabLabel);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         internal string ResolvedTabId => !string.IsNullOrWhiteSpace(TabId) ? TabId! : (!string.IsNullOrWhiteSpace(Name) ? Name! : Id);
         private string TabDomId => Parent?.GetTabDomId(ResolvedTabId) ?? $"{ResolvedTabId}-tab";
         private string PanelId => Parent?.GetPanelId(ResolvedTabId) ?? $"{ResolvedTabId}-panel";

@@ -17,6 +17,22 @@ namespace XForge.DesignSystem.Components.Layout.Shell
         [Parameter] public bool ShowStatusDot { get; set; } = true;
         [Parameter] public string StatusClass { get; set; } = "text-success";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', StatusText, UserName, Profile, AppName, Environment, Version, CustomDate, StartContent, EndContent, ShowStatusDot, StatusClass);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string DateText => !string.IsNullOrEmpty(CustomDate) ? CustomDate : DateTime.Now.ToString("MM/yyyy");
 
         private string GetFooterClass()

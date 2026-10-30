@@ -27,6 +27,22 @@ namespace XForge.DesignSystem.Components.Navigation.Steps
         [Parameter] public RenderFragment<XFStepContext>? ItemTemplate { get; set; }
         [Parameter] public RenderFragment<XFStepContext>? MarkerTemplate { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Items, Orientation, Variant, Size, StepClick, StepClicking, AriaLabel, StepAriaLabelFormat, CompleteStatusLabel, CurrentStatusLabel, ErrorStatusLabel, DisabledStatusLabel, PendingStatusLabel, ItemTemplate, MarkerTemplate);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override string GetComponentClass()
         {
             var variantClass = Variant switch

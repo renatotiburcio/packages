@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace XForge.DesignSystem.Components.Forms.Select
 {
@@ -16,5 +16,21 @@ namespace XForge.DesignSystem.Components.Forms.Select
 
         /// <summary>The options belonging to this group.</summary>
         [Parameter] public RenderFragment? ChildContent { get; set; }
+
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Label, Disabled, ChildContent);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
     }
 }

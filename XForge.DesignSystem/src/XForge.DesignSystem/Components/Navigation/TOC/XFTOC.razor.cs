@@ -27,6 +27,22 @@ public partial class XFTOC : XForgeComponentBase
     [Parameter] public RenderFragment<XFTOCItem>? ItemTemplate { get; set; }
     [Parameter] public RenderFragment<XFTOCItem>? MarkerTemplate { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Items, ActiveId, ActiveIdChanged, ItemClicked, Orientation, Marker, AriaLabel, Title, EmptyText, ActiveItemAriaLabelFormat, DisabledItemAriaLabelFormat, HighlightParent, Offset, StartNumber, ItemTemplate, MarkerTemplate);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     protected override void OnInitialized()
     {
         if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("toc.aria_label", AriaLabel);

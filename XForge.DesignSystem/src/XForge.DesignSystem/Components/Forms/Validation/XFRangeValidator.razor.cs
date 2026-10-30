@@ -16,6 +16,22 @@ namespace XForge.DesignSystem.Components.Forms.Validation
         /// <summary>When true, null values pass validation.</summary>
         [Parameter] public bool AllowNull { get; set; } = true;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Min, Max, AllowNull);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override bool Validate(object? value)
         {
             if (value is null) return AllowNull;

@@ -9,6 +9,22 @@ namespace XForge.Components.Charts
         [Parameter] public OrgNode? Root { get; set; }
         [Parameter] public EventCallback<OrgNode> OnNodeClick { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Root, OnNodeClick);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private RenderFragment RenderNode(OrgNode? n) => __builder =>
         {
             if (n == null) return;

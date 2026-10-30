@@ -15,6 +15,22 @@ namespace XForge.DesignSystem.Components.Feedback.Skeleton
         [Parameter] public string GapClass { get; set; } = "gap-3";
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Visible, Decorative, AriaLabel, DefaultAriaLabel, Inline, GapClass, ChildContent);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string? Role => Decorative ? null : "status";
 
         private string? AriaHidden => Decorative ? "true" : null;

@@ -19,6 +19,22 @@ namespace XForge.DesignSystem.Components.Feedback.Skeleton
         [Parameter] public XFExtendedSize Size { get; set; } = XFExtendedSize.Sm;
         [Parameter] public bool Compact { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Rows, Columns, ShowHeader, Visible, Decorative, AriaLabel, DefaultAriaLabel, Animation, Size, Compact);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private int NormalizedRows => Math.Clamp(Rows, 1, 20);
 
         private int NormalizedColumns => Math.Clamp(Columns, 1, 8);

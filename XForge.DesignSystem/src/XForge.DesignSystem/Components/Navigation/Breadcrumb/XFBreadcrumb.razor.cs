@@ -21,6 +21,22 @@ namespace XForge.DesignSystem.Components.Navigation.Breadcrumb
         [Parameter] public string CollapsedSingleLabelFormat { get; set; } = "{0} hidden item";
         [Parameter] public string CollapsedMultipleLabelFormat { get; set; } = "{0} hidden items";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Items, ChildContent, Separator, ItemTemplate, AriaLabel, Size, Variant, MaxVisibleItems, CollapseMiddle, CollapsedSingleLabelFormat, CollapsedMultipleLabelFormat);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override string GetComponentClass()
         {
             return GetClass($"{BaseClass} {VariantClass}");

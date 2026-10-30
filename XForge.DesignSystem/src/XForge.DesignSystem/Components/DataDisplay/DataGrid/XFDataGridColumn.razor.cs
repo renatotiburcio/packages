@@ -34,6 +34,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.DataGrid
         [Parameter] public bool Aggregatable { get; set; } = false;
         [Parameter] public XFDataGridAggregateFunction AggregateFunction { get; set; } = XFDataGridAggregateFunction.Sum;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Title, Property, SortKey, FormatString, Sortable, Visible, Hideable, Resizable, WidthPixels, MinWidthPixels, MaxWidthPixels, ResizeStepPixels, Sticky, StickySide, StickyOffset, Align, Width, HeaderTemplate, Template, FooterTemplate, Filterable, FilterOperator, FilterValue, FilterType, FilterTemplate, Aggregatable, AggregateFunction);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         internal string ResolvedTitle => !string.IsNullOrWhiteSpace(Title) ? Title! : Property ?? "";
 
         internal string? ResolvedSortKey => !string.IsNullOrWhiteSpace(SortKey) ? SortKey : Property;

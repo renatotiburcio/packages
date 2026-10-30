@@ -29,6 +29,22 @@ public partial class XFSplashScreen : XForgeComponentBase
     [Parameter] public RenderFragment? Logo { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Visible, FullScreen, Title, Message, Initials, Progress, ShowProgressValue, AriaLabel, ProgressValueFormat, Logo, ChildContent);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private string Role => FullScreen ? "status" : "region";
     private string AriaLive => FullScreen ? "polite" : "off";
     private double ClampedProgress => Math.Clamp(Progress ?? 0, 0, 100);

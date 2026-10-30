@@ -30,6 +30,22 @@ namespace XForge.DesignSystem.Components.Layout.Shell
         /// </summary>
         [Parameter] public bool FullViewport { get; set; } = false;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Rail, Sidebar, AppBar, ChildContent, Footer, Theme, Brand, MainId, MainAriaLabel, NavigationAriaLabel, MainClass, AsideClass, FullViewport);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override void OnInitialized()
         {
             if (string.IsNullOrWhiteSpace(MainAriaLabel)) MainAriaLabel = L("appshell.main_content", MainAriaLabel);

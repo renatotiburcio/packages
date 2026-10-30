@@ -13,6 +13,22 @@ namespace XForge.DesignSystem.Components.Forms.Validation
         /// <summary>The comparison operator.</summary>
         [Parameter] public XFCompareOperator Operator { get; set; } = XFCompareOperator.Equal;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Value, Operator);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override bool Validate(object? value)
         {
             if (value is null && Value is null)

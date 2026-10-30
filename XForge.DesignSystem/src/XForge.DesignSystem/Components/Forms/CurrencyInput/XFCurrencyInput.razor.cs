@@ -44,6 +44,22 @@ namespace XForge.DesignSystem.Components.Forms.CurrencyInput
         [Parameter] public string DecrementLabel { get; set; } = "Decrease value";
         [Parameter] public string? AriaValueTextFormat { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Name, Label, AriaLabel, Placeholder, HelperText, StartIcon, Value, ValueChanged, ValueExpression, Change, Min, Max, Step, Scale, Precision, CultureName, Culture, CurrencySymbol, CurrencyCode, Variant, Size, Tone, TextAlign, ReadOnly, Required, FullWidth, Immediate, Clamp, ShowSteppers, StepperLayout, AutoDecimalSeparator, IncrementLabel, DecrementLabel, AriaValueTextFormat);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string? ResolvedCurrencySymbol
         {
             get
