@@ -35,22 +35,6 @@ namespace XForge.DesignSystem.Components.Navigation.Tabs
         [Parameter] public RenderFragment? Panels { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
-        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
-        private string? _renderSignature;
-
-        protected override bool ShouldRender()
-        {
-            var signature = string.Join('\u0001', ActiveId, Variant, Size, Orientation, ActivationMode, RenderMode, RouteMatch, FullWidth, ShowIndicator, Disabled);
-
-            if (_renderSignature == signature)
-            {
-                return false;
-            }
-
-            _renderSignature = signature;
-            return true;
-        }
-
         [Inject] internal NavigationManager Navigation { get; set; } = default!;
 
         internal string? CurrentActiveId => currentActiveId;

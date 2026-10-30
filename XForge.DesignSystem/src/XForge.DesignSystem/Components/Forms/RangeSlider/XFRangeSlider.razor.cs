@@ -47,7 +47,7 @@ namespace XForge.DesignSystem.Components.Forms.RangeSlider
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', StartName, EndName, Label, StartAriaLabel, EndAriaLabel, HelperText, StartValue, EndValue, Min, Max, Step, Disabled);
+            var signature = string.Join('\u0001', StartName, EndName, Label, StartAriaLabel, EndAriaLabel, HelperText, StartValue, EndValue, Min, Max, Step, Disabled, HasValidationError, FirstValidationMessage);
 
             if (_renderSignature == signature)
             {

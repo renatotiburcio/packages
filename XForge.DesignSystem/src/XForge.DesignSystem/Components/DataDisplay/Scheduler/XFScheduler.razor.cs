@@ -69,22 +69,6 @@ namespace XForge.DesignSystem.Components.DataDisplay.Scheduler
         [Parameter] public XFSize Size { get; set; } = XFSize.Md;
         [Parameter] public XFContainerVariant Variant { get; set; } = XFContainerVariant.Surface;
 
-        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
-        private string? _renderSignature;
-
-        protected override bool ShouldRender()
-        {
-            var signature = string.Join('\u0001', Date, View, Visible, ShowHeader, AllowAppointmentMove, AllowAppointmentResize, Resources.Count);
-
-            if (_renderSignature == signature)
-            {
-                return false;
-            }
-
-            _renderSignature = signature;
-            return true;
-        }
-
         private CultureInfo EffectiveCulture => Culture ?? CultureInfo.CurrentCulture;
 
         private IReadOnlyList<AppointmentInfo> Appointments => appointments;

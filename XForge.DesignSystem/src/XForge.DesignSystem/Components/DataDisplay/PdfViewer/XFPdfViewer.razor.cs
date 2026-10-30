@@ -47,22 +47,6 @@ public partial class XFPdfViewer : XForgeComponentBase, IAsyncDisposable
     [Parameter] public string FullscreenLabel { get; set; } = default!;
     [Parameter] public string LoadingText { get; set; } = default!;
 
-        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
-        private string? _renderSignature;
-
-        protected override bool ShouldRender()
-        {
-            var signature = string.Join('\u0001', Url, Base64, Title, SourceLabel, AriaLabel, FrameTitle, RenderMode, ShowToolbar, ShowDownload, ShowPrint, ShowFullscreen, Disabled);
-
-            if (_renderSignature == signature)
-            {
-                return false;
-            }
-
-            _renderSignature = signature;
-            return true;
-        }
-
     protected override void OnInitialized()
     {
         base.OnInitialized();

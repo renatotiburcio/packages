@@ -40,23 +40,6 @@ namespace XForge.DesignSystem.Components.Forms.DropDownDataGrid
         [Parameter] public string EmptyText { get; set; } = default!;
         [Parameter] public string ListboxLabel { get; set; } = default!;
         [Parameter] public string SearchPlaceholder { get; set; } = default!;
-        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
-        private string? _renderSignature;
-
-        protected override bool ShouldRender()
-        {
-            var signature = string.Join('\u0001', Name, Label, AriaLabel, Placeholder, HelperText,
-                ClearLabel, ToggleLabel, LoadingText, EmptyText, ListboxLabel, SearchPlaceholder,
-                ShowSearch, MaxDropdownHeight, Required, ReadOnly, FullWidth, Clearable, Loading, Disabled);
-
-            if (_renderSignature == signature)
-            {
-                return false;
-            }
-
-            _renderSignature = signature;
-            return true;
-        }
 
         [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
 

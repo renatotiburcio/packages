@@ -29,22 +29,6 @@ namespace XForge.DesignSystem.Components.Navigation.Toolbar
         [Parameter] public bool Dense { get; set; }
         [Parameter] public string? AriaLabel { get; set; } = "Barra de ferramentas";
 
-        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
-        private string? _renderSignature;
-
-        protected override bool ShouldRender()
-        {
-            var signature = string.Join('\u0001', Items.Count, EndItems.Count, StartContent, ChildContent, EndContent, ItemTemplate, Orientation, Variant, Size, Wrap, Dense, Disabled);
-
-            if (_renderSignature == signature)
-            {
-                return false;
-            }
-
-            _renderSignature = signature;
-            return true;
-        }
-
         protected override void OnInitialized()
         {
             if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("toolbar.label", AriaLabel);

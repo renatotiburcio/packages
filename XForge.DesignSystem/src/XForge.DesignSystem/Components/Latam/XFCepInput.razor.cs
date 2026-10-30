@@ -12,22 +12,6 @@ namespace XForge.Components.Latam
         [Parameter] public EventCallback<string> ValueChanged { get; set; }
         [Parameter] public EventCallback<CepResult> OnCepFound { get; set; }
 
-        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
-        private string? _renderSignature;
-
-        protected override bool ShouldRender()
-        {
-            var signature = string.Join('', Value);
-
-            if (_renderSignature == signature)
-            {
-                return false;
-            }
-
-            _renderSignature = signature;
-            return true;
-        }
-
         private string Formatted => Format(_raw);
 
         private void OnInput(ChangeEventArgs e)

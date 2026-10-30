@@ -137,21 +137,8 @@ namespace XForge.DesignSystem.Components.DataDisplay.DataGrid
 
         // assinatura de render: grid grande — evita re-render de centenas de celulas quando
         // o componente pai re-renderiza sem mudar nada aqui
-        private string? _renderSignature;
-
-        protected override bool ShouldRender()
-        {
-            var signature = string.Join('\u0001', Caption, EmptyText, GroupBy, ColumnChooserLabel,
-                ShowColumnLabelFormat, HideColumnLabelFormat, ShowColumnChooser, Loading, ExportAllPages);
-
-            if (_renderSignature == signature)
-            {
-                return false;
-            }
-
-            _renderSignature = signature;
-            return true;
-        }
+        // sem ShouldRender: o grid mantém estado interno próprio (ordenação, seleção, edição
+        // em célula e filtro) que muda o render sem passar por parâmetros
 
         internal IReadOnlyList<XFDataGridColumn<TItem>> VisibleColumns => columns.Where(IsColumnVisible).ToArray();
 

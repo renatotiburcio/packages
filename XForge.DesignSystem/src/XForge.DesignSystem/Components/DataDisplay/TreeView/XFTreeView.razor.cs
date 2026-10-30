@@ -65,28 +65,10 @@ namespace XForge.DesignSystem.Components.DataDisplay.TreeView
         [Parameter] public EventCallback<XFTreeDropEventArgs> OnDrop { get; set; }
         [Parameter] public EventCallback<XFTreeLoadChildrenEventArgs> OnLoadChildren { get; set; }
 
-
         [Parameter] public string DragLabel { get; set; } = default!;
         [Parameter] public string DropBeforeLabel { get; set; } = default!;
         [Parameter] public string DropInsideLabel { get; set; } = default!;
         [Parameter] public string DropAfterLabel { get; set; } = default!;
-
-        // assinatura de render: componente com árvore/lista de itens — evita re-render de toda
-        // a árvore quando o pai re-renderiza sem mudar nada aqui
-        private string? _renderSignature;
-
-        protected override bool ShouldRender()
-        {
-            var signature = string.Join('\u0001', Items.Count, ExpandedIds.Count, SelectedIds.Count, NodeTemplate, FilterText, Variant, Size, Disabled);
-
-            if (_renderSignature == signature)
-            {
-                return false;
-            }
-
-            _renderSignature = signature;
-            return true;
-        }
 
         private IReadOnlyList<XFTreeNode> ItemsList => Items ?? Array.Empty<XFTreeNode>();
 

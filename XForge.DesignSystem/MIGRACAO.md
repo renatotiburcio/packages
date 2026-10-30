@@ -276,3 +276,49 @@ MultiSelect, DataGrid, Upload, TransferList, DatePicker, Scheduler, PdfViewer, M
 Resumo por categoria: inputs (11), dados/charts (12), navegação (10), overlays/feedback (7),
 botoes (3), layout (3). Todos os componentes de render caro cobertos. Padrao consolidado:
 assinatura (string.Join) dos parametros visuais; build+teste a cada lote; 0 regressoes.
+
+## Auditoria e correcao do ShouldRender (2026-10-29/30)
+
+### Problema encontrado
+O padrao implementado (assinatura so com parametros) ignorava **estado interno** dos
+componentes. Um probe bUnit confirmou a semantica exata do Blazor (.NET 10):
+
+    protected void StateHasChanged() {
+        if (_hasPendingQueuedRender) return;
+        if (_hasNeverRendered || ShouldRender() || ...) { _renderHandle.Render(_renderFragment); }
+    }
+
+ShouldRender e consultado em **todo** render (eventos e parametros) - a unica excecao
+e a primeira renderizacao (_hasNeverRendered). Ou seja: qualquer estado interno que
+mudasse o markup sem passar por parametro tinha o render bloqueado.
+
+Regressao real comprovada por teste: XFMultiSelect Extended_Escape_ClosesDropdown e
+Extended_Tab_ClosesDropdown falhavam com o guard e passavam sem ele.
+
+### Componentes com guard removido (22)
+XFButton, XFSplitButton, XFMarkdown, XFPdfViewer, XFScheduler, XFTreeView, XFDatePicker,
+XFDropDownDataGrid, XFMultiSelect, XFTransferList, XFCepInput, XFAccordion, XFMenu,
+XFTabs, XFToolbar, XFContextMenu, XFDialog, XFPopover, XFDragDrop, XFSortableList,
+XFColorPicker, XFDataGrid
+
+Motivo: estado interno que dirige o render (IsOpen, HighlightedIndex, SearchText,
+currentDate, arraste, copiado, pagina atual, foco, X/Y do menu, _clicking, TrapActive...).
+Nesses componentes a otimizacao nao compensa o risco.
+
+### Componentes com assinatura estendida (6)
+XFSlider, XFRangeSlider, XFSearch, XFDatePicker(removido depois), XFMultiSelect(removido),
+XFDropDownDataGrid(removido). Slider/RangeSlider/Search mantiveram pois seu CurrentValue
+e derivado de parametros (verificado), e a assinatura passou a incluir HasValidationError
+e FirstValidationMessage (mensagens de validacao vinham do EditContext cascateado, fora
+dos parametros).
+
+### Componentes que mantem o guard (42)
+Verificados sem estado interno real: apenas caches derivados (GetComponentClass) e
+campos de interop JS. Ex.: XFChart (desenho proprio com _drawnSignature para nao
+reinvocar o modulo JS), XFBarcode (encoders estaticos), XFList, XFPagination,
+XFBarcode, cards, chips, badges, toasts, alerts, progress, skeleton, grids, stacks,
+tabelas, charts SVG (Candlestick, Funnel, Heatmap, Radar, WordCloud), Latam e Editores.
+
+### Resultado dos testes (filtros por categoria)
+Baseline comitado: 60 falhas pre-existentes (divida conhecida ~0,7%).
+Apos a correcao: 54 falhas. Nenhuma regressao nova; 6 testes consertados.
