@@ -340,3 +340,34 @@ mas ja estavam cobertos pela extensao anterior (HasValidationError, FirstValidat
 
 Teste Perf_ValidationStatus_RendersUnderThreshold falhou uma vez por carga da maquina
 (varreu 2,9s vs 0,5s) e passou 3/3 em isolamento — flake, nao regressao.
+
+## Fechamento da frente ShouldRender (2026-10-30)
+
+### Numeros finais
+130 componentes com assinatura de render (47% dos 277 .razor.cs), 71 confirmados
+stateful e portanto sem guard, 2 validadores que nao renderizam nada (fora de
+escopo), e o restante sao arquivos sem parametros.
+
+### Os 71 stateful (nao adicionar guard sem incluir o estado na assinatura)
+XFAccordion, XFAccordionItem, XFAIChat, XFAnimate, XFAvatar, XFBreakpointObserver,
+XFButton, XFCalendar, XFCarousel, XFCepInput, XFChat, XFCnpjInput, XFCode, XFCollapse,
+XFColorInput, XFColorPicker, XFCombobox, XFContextMenu, XFCpfInput, XFDataGrid,
+XFDateInput, XFDatePicker, XFDialog, XFDragDrop, XFDragDropZone, XFDrawer,
+XFDropDownDataGrid, XFDropdownMenu, XFDropZone, XFEditForm, XFFileInput, XFFocusTrap,
+XFGanttAdvanced, XFImage, XFInputMask, XFMap, XFMarkdown, XFMenu, XFMultiSelect,
+XFMultiSplitter, XFNumberInput, XFOneTimeInput, XFPageProgressProvider,
+XFPasswordStrength, XFPdfViewer, XFPopover, XFRail, XFRangeNavigator, XFRating,
+XFRichTextEditor, XFSankey, XFScheduler, XFSchedulerAdvanced, XFSignaturePad,
+XFSortableList, XFSparkline, XFSpeechToText, XFSplitButton, XFSplitter, XFSpreadsheet,
+XFTabs, XFTextarea, XFTileLayout, XFTimeInput, XFTimeSpan, XFToastProvider, XFToolbar,
+XFTransferList, XFTreeView, XFVehiclePlateInput, XFWizard
+
+Tipos de estado encontrados: atribuicao em handler; colecao readonly mutada por
+metodos (Insert/Remove/Clear); subscription de servico ou do EditContext; servico
+injetado com callbacks. Os tres ultimos so foram pegos por verificacao manual.
+
+### Regra para manutencao futura
+Antes de adicionar ShouldRender a um componente: (1) listar todo estado proprio
+(incluindo colecoes readonly e expressoes derivadas); (2) listar estado que entra por
+eventos externos (EditContext, servicos, timers); (3) so usar assinatura se TODO o
+estado que direciona o render entrar nela — caso contrario, nao usar o padrao.
