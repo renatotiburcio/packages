@@ -26,7 +26,7 @@ namespace XForge.DesignSystem.Components.Layout
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', ChildContent, Orientation, AlignItems, JustifyContent, Gap, RowGap, ColumnGap, Wrap, Reverse, Inline, Disabled);
+            var signature = string.Join('\u0001', ChildContent, Orientation, AlignItems, JustifyContent, Gap, RowGap, ColumnGap, Wrap, Reverse, Inline, FullWidth);
 
             if (_renderSignature == signature)
             {

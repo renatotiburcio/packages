@@ -32,7 +32,7 @@ namespace XForge.DesignSystem.Components.Feedback.Alert
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', ChildContent, Title, Text, Intent, Variant, Size, ShowIcon, Dismissible, Visible, Disabled, AriaLabel);
+            var signature = string.Join('\u0001', ChildContent, StartIcon, Actions, Title, Text, Intent, Variant, Size, ShowIcon, Dismissible, Visible, VisibleChanged, OnDismiss, Live, AriaLabel, DismissLabel, DismissLabelFormat);
 
             if (_renderSignature == signature)
             {

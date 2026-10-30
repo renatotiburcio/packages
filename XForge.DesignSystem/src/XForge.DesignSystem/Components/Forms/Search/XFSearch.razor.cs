@@ -46,7 +46,7 @@ namespace XForge.DesignSystem.Components.Forms.Search
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Name, Label, AriaLabel, Placeholder, HelperText, Value, AutoComplete, Immediate, DebounceMilliseconds, Disabled, ReadOnly, Clearable, CurrentValue);
+            var signature = string.Join('\u0001', Name, Label, AriaLabel, Placeholder, HelperText, Value, ValueChanged, Change, OnSearch, OnFocus, OnBlur, AutoComplete, MaxLength, MinLength, ReadOnly, FullWidth, Immediate, Clearable, ClearOnEscape, DebounceMilliseconds, ClearLabel);
 
             if (_renderSignature == signature)
             {

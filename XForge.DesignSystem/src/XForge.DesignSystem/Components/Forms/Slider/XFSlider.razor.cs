@@ -42,7 +42,7 @@ namespace XForge.DesignSystem.Components.Forms.Slider
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Name, Label, AriaLabel, HelperText, Value, Min, Max, Step, Disabled, ReadOnly, ShowValue, HasValidationError, FirstValidationMessage);
+            var signature = string.Join('\u0001', Name, Label, AriaLabel, HelperText, Value, ValueChanged, ValueExpression, Change, Min, Max, Step, ValueFormat, PrefixText, SuffixText, MinLabel, MaxLabel, Size, Tone, Orientation, ReadOnly, Required, FullWidth, Immediate, ShowValue, ShowBounds, Culture);
 
             if (_renderSignature == signature)
             {

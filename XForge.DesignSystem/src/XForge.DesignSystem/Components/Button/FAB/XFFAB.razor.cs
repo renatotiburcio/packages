@@ -29,7 +29,7 @@ public partial class XFFAB : XForgeComponentBase
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Text, Icon, Items.Count, Placement, Color, Size, Mini, Open, Disabled);
+            var signature = string.Join('\u0001', Text, Icon, Items is null ? -1 : Items.Count, Placement, Color, Size, Mini, Open, OpenChanged, OnClick, ItemSelected, MenuLabel, OpenMenuAriaLabel, CloseMenuAriaLabel);
 
             if (_renderSignature == signature)
             {

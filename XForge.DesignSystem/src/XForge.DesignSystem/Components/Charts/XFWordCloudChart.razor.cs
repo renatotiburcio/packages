@@ -16,7 +16,7 @@ namespace XForge.Components.Charts
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Words.Count, MaxFontSize, Width, Height, Disabled);
+            var signature = string.Join('\u0001', Words is null ? -1 : Words.Count, MaxFontSize, Width, Height, OnWordClick);
 
             if (_renderSignature == signature)
             {

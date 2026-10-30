@@ -29,7 +29,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Card
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', ChildContent, Media, Header, Actions, Footer, Padding, Variant, Tone, Radius, Interactive, Disabled);
+            var signature = string.Join('\u0001', ChildContent, Media, Header, Actions, Footer, Padding, Variant, Tone, Radius, Interactive, AreaRestricted, Dividers, AriaLabel, OnClick);
 
             if (_renderSignature == signature)
             {

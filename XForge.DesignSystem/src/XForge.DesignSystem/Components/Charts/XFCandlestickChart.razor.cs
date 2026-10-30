@@ -18,7 +18,7 @@ namespace XForge.Components.Charts
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Candles.Count, Width, Height, ShowVolume);
+            var signature = string.Join('\u0001', Candles is null ? -1 : Candles.Count, Width, Height, ShowVolume, OnCandleClick);
 
             if (_renderSignature == signature)
             {

@@ -27,7 +27,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Timeline
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', ChildContent, AriaLabel, DefaultAriaLabel, ItemAriaLabelFormat, DefaultItemText, Orientation, Align, Size, Tone, Reverse);
+            var signature = string.Join('\u0001', ChildContent, AriaLabel, DefaultAriaLabel, ItemAriaLabelFormat, DefaultItemText, Orientation, Align, Size, Tone, Reverse, Alternating, ShowConnector);
 
             if (_renderSignature == signature)
             {

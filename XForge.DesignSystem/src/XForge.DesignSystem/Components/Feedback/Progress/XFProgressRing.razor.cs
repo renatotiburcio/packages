@@ -40,7 +40,7 @@ namespace XForge.DesignSystem.Components.Feedback.Progress
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Value, Min, Max, Indeterminate, Size, ShowValue);
+            var signature = string.Join('\u0001', Value, Min, Max, Indeterminate, Visible, ShowValue, Rounded, Paused, AriaLabel, LoadingText, Unit, ValueFormat, Color, Size, ChildContent);
 
             if (_renderSignature == signature)
             {

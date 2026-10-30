@@ -28,7 +28,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.VirtualList
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', ItemTemplate, EmptyContent, LoadingContent, Items.Count, ItemsProvider, ItemSize, OverscanCount, Title, Disabled);
+            var signature = string.Join('\u0001', ItemTemplate, EmptyContent, LoadingContent, Items is null ? -1 : Items.Count, ItemsProvider, ItemSize, OverscanCount, Title, EmptyText, Variant);
 
             if (_renderSignature == signature)
             {

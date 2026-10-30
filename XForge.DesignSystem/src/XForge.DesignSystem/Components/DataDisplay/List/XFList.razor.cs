@@ -31,7 +31,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.List
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', ChildContent, EmptyContent, EmptyText, AriaLabel, Visible, Dividers, SelectionMode, SelectedValue, Disabled);
+            var signature = string.Join('\u0001', ChildContent, EmptyContent, EmptyText, AriaLabel, Visible, Dividers, SelectionMode, SelectedValue, SelectedValueChanged, SelectedValues is null ? -1 : SelectedValues.Count, SelectedValuesChanged, Size, Variant);
 
             if (_renderSignature == signature)
             {

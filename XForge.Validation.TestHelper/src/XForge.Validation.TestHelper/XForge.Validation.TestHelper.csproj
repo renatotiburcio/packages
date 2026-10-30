@@ -7,7 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>XForge.Validation.TestHelper</RootNamespace>
 
-    <!-- Packaging: pacote de uso exclusivo em projetos de teste -->
+    <!-- Packaging: pacote de uso exclusivo em projetos de teste (o SDK marcaria como não-empacotável por detectar xunit) -->
+    <IsPackable>true</IsPackable>
     <PackageId>XForge.Validation.TestHelper</PackageId>
     <Version>0.1.0</Version>
     <Authors>XForge</Authors>

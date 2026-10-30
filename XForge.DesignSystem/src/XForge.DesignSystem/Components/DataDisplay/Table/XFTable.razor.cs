@@ -29,7 +29,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Table
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', ChildContent, Caption, EmptyText, Visible, Striped, Hoverable, StickyHeader, FullWidth, Disabled);
+            var signature = string.Join('\u0001', ChildContent, Caption, EmptyText, Visible, Striped, Hoverable, StickyHeader, FullWidth, ViewportRows, Size, Variant);
 
             if (_renderSignature == signature)
             {

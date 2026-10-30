@@ -25,7 +25,7 @@ namespace XForge.DesignSystem.Components.Feedback.Skeleton
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Shape, Animation, Size, Visible, Decorative, AriaLabel, DefaultAriaLabel, WidthClass, HeightClass, RoundedClass);
+            var signature = string.Join('\u0001', Shape, Animation, Size, Visible, Decorative, AriaLabel, DefaultAriaLabel, WidthClass, HeightClass, RoundedClass, ChildContent);
 
             if (_renderSignature == signature)
             {

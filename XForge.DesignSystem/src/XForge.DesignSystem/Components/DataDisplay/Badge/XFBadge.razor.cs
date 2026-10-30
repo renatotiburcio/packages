@@ -39,7 +39,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Badge
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Text, ChildContent, StartIcon, EndIcon, DismissIcon, Variant, Color, Size, Shape, Rounded, Dot, DismissTitle, DismissAriaLabel);
+            var signature = string.Join('\u0001', Text, ChildContent, StartIcon, EndIcon, DismissIcon, Variant, Color, Size, Shape, Rounded, Dot, AriaLabel, DismissTitle, DefaultDismissTitle, DismissTitleFormat, DismissAriaLabel, DefaultDismissAriaLabel, DismissAriaLabelFormat, OnClick, OnDismiss);
 
             if (_renderSignature == signature)
             {

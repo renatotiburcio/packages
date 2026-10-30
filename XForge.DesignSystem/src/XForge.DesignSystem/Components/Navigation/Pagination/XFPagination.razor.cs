@@ -67,7 +67,7 @@ namespace XForge.DesignSystem.Components.Navigation.Pagination
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Page, PageSize, TotalItems, PageSizeOptions, Variant, Size, Disabled, ShowFirstLast);
+            var signature = string.Join('\u0001', Page, PageChanged, PageSize, PageSizeChanged, TotalItems, PageSizeOptions is null ? -1 : PageSizeOptions.Count, Change, OnReload, Variant, Size, Density, AriaLabel, AutoHide, AllowReload, ShowSummary, ShowFirstLast, ShowPrevNext, ShowPageNumbers, ShowPageSize, PageSizeLabel, PageSizeAriaLabel, EmptySummaryText, SummaryFormat, FirstPageLabel, PreviousPageLabel, NextPageLabel, LastPageLabel, ReloadLabel, CurrentPageLabelFormat, GoToPageLabelFormat, ActiveColor, SiblingCount, BoundaryCount, SummaryTemplate, PageTemplate, FirstContent, PreviousContent, NextContent, LastContent, ReloadContent);
 
             if (_renderSignature == signature)
             {

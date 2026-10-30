@@ -39,7 +39,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chip
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Variant, Size, Tone, Selected, Dismissible, Clickable, Visible, AriaLabel, Disabled);
+            var signature = string.Join('\u0001', ChildContent, StartIcon, EndIcon, Avatar, Variant, Size, Tone, Selected, Dismissible, Clickable, Visible, AriaLabel, DismissLabel, OnClick, OnDismiss);
 
             if (_renderSignature == signature)
             {

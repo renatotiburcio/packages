@@ -23,7 +23,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Avatar
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Visible, Stacked, Size, OverflowCount, AriaLabel, OverflowLabel, OverflowSingleLabelFormat, OverflowMultipleLabelFormat);
+            var signature = string.Join('\u0001', Visible, Stacked, Size, OverflowCount, AriaLabel, OverflowLabel, OverflowSingleLabelFormat, OverflowMultipleLabelFormat, ChildContent);
 
             if (_renderSignature == signature)
             {

@@ -321,9 +321,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chart
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', AriaLabel, EmptyText, AccessibleDescriptionFormat,
-                SeriesHeaderText, LabelHeaderText, ValueHeaderText, PercentHeaderText, Visible,
-                SeriesNameFormat, ItemLabelFormat);
+            var signature = string.Join('\u0001', Data is null ? -1 : Data.Count(), Series is null ? -1 : Series.Count, LabelProperty, ValueProperty, Type, StackMode, Tone, Size, Visible, ShowLegend, ShowSummary, ShowValueLabels, ShowDataTable, Title, Description, AriaLabel, EmptyText, AccessibleDescriptionFormat, SeriesHeaderText, LabelHeaderText, ValueHeaderText, PercentHeaderText, SeriesNameFormat, ItemLabelFormat, Culture, Palette is null ? -1 : Palette.Count, Annotations is null ? -1 : Annotations.Count, Trendlines is null ? -1 : Trendlines.Count, DataZoomMode, ExportEnabled, ExportFileName, ExportTitle, EChartsOptions, EmptyContent, PointSelected, LegendChanged, LiveStreaming, LiveStreamingInterval, LiveStreamingMaxPoints, OnDataUpdate);
             _renderSignature = signature;
 
             if (_drawnSignature == signature)

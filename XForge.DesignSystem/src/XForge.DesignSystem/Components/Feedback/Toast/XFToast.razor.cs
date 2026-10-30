@@ -28,8 +28,7 @@ namespace XForge.DesignSystem.Components.Feedback.Toast
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Item, OnDismiss, DismissLabel, ActionLabelFormat,
-                Index, Expanded, IsTopPlacement, Gap, ItemHeight, CloseButton);
+            var signature = string.Join('\u0001', Item, OnDismiss, DismissLabel, ActionLabelFormat, Index, Expanded, IsTopPlacement, Gap, ItemHeight, CloseButton, RichColors, SolidColors, ColorMode);
 
             if (_renderSignature == signature)
             {

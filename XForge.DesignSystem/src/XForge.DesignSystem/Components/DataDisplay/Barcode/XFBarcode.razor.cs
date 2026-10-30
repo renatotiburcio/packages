@@ -77,7 +77,7 @@ public partial class XFBarcode : XForgeComponentBase
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Value, Format, Height, ModuleWidth, QuietZone, ShowText, ForegroundColor, BackgroundColor, Disabled);
+            var signature = string.Join('\u0001', Value, Format, Height, ModuleWidth, QuietZone, ShowText, ForegroundColor, BackgroundColor, EmptyText, AriaLabel, AriaLabelFormat);
 
             if (_renderSignature == signature)
             {

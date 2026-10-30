@@ -15,7 +15,7 @@ namespace XForge.Components.Charts
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Stages.Count, Horizontal);
+            var signature = string.Join('\u0001', Stages is null ? -1 : Stages.Count, Horizontal, OnStageClick);
 
             if (_renderSignature == signature)
             {

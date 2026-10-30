@@ -44,7 +44,7 @@ namespace XForge.DesignSystem.Components.Forms.Upload
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', Label, Title, Description, HelperText, Accept, UploadUrl, Multiple, Items.Count);
+            var signature = string.Join('\u0001', Label, Title, Description, HelperText, Accept, Items is null ? -1 : Items.Count, ItemsChanged, FilesSelected, UploadRequested, UploadAllRequested, CancelRequested, RemoveRequested, UploadCompleted, EmptyContent, Icon, Multiple, AutoUpload, ShowUploadAll, MaximumFileCount, MaximumFileSize, UploadUrl, HttpMethod, ParameterName, MaxChunkSize, UploadText, RetryText, CancelText, RemoveText, ReadyText, UploadingText, UploadedText, ErrorText, CanceledText, SingleTitle, MultipleTitle, SingleDescriptionFormat, MultipleDescriptionFormat, FileTooLargeMessage, UploadingStatusFormat, MetadataSeparator, FullWidth, Variant, Size, Tone, ShowImagePreview, ImagePreviewSize);
 
             if (_renderSignature == signature)
             {
