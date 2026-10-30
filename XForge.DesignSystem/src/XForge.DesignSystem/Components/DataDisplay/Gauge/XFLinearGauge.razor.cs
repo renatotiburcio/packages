@@ -65,6 +65,23 @@ namespace XForge.DesignSystem.Components.DataDisplay.Gauge
         /// <summary>Accessibility label for the gauge.</summary>
         [Parameter] public string? AriaLabel { get; set; }
 
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Value, Min, Max, Orientation, Reversed, Size, Thickness, Color, TrackColor, ShowValue, ValueFormat, Unit, Ranges?.Count, Rounded, AriaLabel);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         // ─── Derived Properties ───────────────────────────────────────
 
         private double Range => Math.Max(0.0001, Max - Min);

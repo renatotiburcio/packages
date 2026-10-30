@@ -82,6 +82,23 @@ public partial class XFRadialGauge : XForgeComponentBase
     /// <summary>Color range bands rendered on the arc.</summary>
     [Parameter] public IReadOnlyList<XFGaugeRange>? Ranges { get; set; }
 
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', AriaLabel, Value, Min, Max, StartAngle, SweepAngle, ArcWidth, Color, TrackColor, ShowValue, ValueFormat, Unit, Ranges?.Count);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private double Range => Max - Min;
     private double Percent => Math.Clamp((Value - Min) / Range, 0, 1);
     private double ValueAngle => StartAngle + SweepAngle * Percent;

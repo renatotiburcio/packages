@@ -44,6 +44,23 @@ public partial class XFStackedBarChart : XForgeComponentBase
     /// <summary>SVG viewport height.</summary>
     [Parameter] public double SvgHeight { get; set; } = 250;
 
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', AriaLabel, Labels.Count, Series.Count, StackMode, MinY, YMax, ShowGrid, ShowLegend, GridLines, SvgWidth, SvgHeight);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private const double MarginLeft = 50;
     private const double MarginTop = 10;
     private double ChartWidth => SvgWidth - MarginLeft - 20;

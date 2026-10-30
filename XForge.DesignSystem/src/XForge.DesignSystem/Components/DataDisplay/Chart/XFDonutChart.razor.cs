@@ -51,6 +51,23 @@ public partial class XFDonutChart<T> : XForgeComponentBase
     /// <summary>Overall SVG size in pixels.</summary>
     [Parameter] public double Size { get; set; } = 200;
 
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', AriaLabel, Data.Count, InnerRadius, Colors is null ? 0 : Colors.Length, ShowLabels, ShowLegend, LegendPosition, Size);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private string GetLayoutClass() => LegendPosition == LegendPosition.Right
         ? "items-center"
         : "flex-col items-center";

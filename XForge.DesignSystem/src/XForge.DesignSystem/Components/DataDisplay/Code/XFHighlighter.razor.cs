@@ -17,6 +17,23 @@ namespace XForge.DesignSystem.Components.DataDisplay.Code
         [Parameter] public bool Visible { get; set; } = true;
         [Parameter] public XFSemanticColor Tone { get; set; } = XFSemanticColor.Primary;
 
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Text, HighlightedText, HighlightedTexts?.Count, CaseSensitive, WholeWord, Visible, Tone);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private IReadOnlyList<Fragment> Fragments { get; set; } = Array.Empty<Fragment>();
 
         protected override void OnParametersSet()

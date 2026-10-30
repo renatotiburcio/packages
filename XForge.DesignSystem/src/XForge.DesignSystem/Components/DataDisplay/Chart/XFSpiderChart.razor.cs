@@ -31,6 +31,23 @@ public partial class XFSpiderChart : XForgeComponentBase
     /// <summary>Whether to show the legend.</summary>
     [Parameter] public bool ShowLegend { get; set; } = true;
 
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', AriaLabel, Axes.Count, Series.Count, Max, Levels, Radius, ShowLegend);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private double GetAngle(int index)
     {
         if (Axes.Count == 0) return 0;

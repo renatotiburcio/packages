@@ -29,6 +29,23 @@ public partial class XFBulletChart : XForgeComponentBase
     /// <summary>Whether to render a marker line at the target position.</summary>
     [Parameter] public bool ShowMarkers { get; set; } = true;
 
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', AriaLabel, Value, Target, Ranges?.Count, Orientation, ShowMarkers);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private RenderFragment RenderHorizontal() => builder =>
     {
         var maxVal = ComputeMax();

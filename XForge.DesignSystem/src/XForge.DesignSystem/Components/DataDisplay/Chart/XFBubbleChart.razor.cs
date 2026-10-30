@@ -46,4 +46,21 @@ public partial class XFBubbleChart<T> : XForgeComponentBase
 
     /// <summary>SVG viewport height.</summary>
     [Parameter] public double SvgHeight { get; set; } = 300;
+
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', AriaLabel, Data.Count, MaxBubbleSize, FillColor, StrokeColor, ShowLabels, SvgWidth, SvgHeight);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
 }

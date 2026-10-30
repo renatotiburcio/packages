@@ -21,6 +21,23 @@ namespace XForge.DesignSystem.Components.DataDisplay.Chip
         [Parameter] public XFSize ChipSize { get; set; } = XFSize.Md;
         [Parameter] public XFSemanticColor ChipTone { get; set; } = XFSemanticColor.Default;
 
+        // assinatura de render: gráfico SVG e caro de repintar — pula render redundante
+        // quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', ChildContent, ItemTemplate, Items is null ? 0 : Items.Count(), Title, AriaLabel, Selectable, Wrap, ChipVariant, ChipSize, ChipTone);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string RootClass => Join(
             BaseClass,
             "flex flex-col gap-1",
