@@ -23,6 +23,23 @@ namespace XForge.DesignSystem.Components.Feedback.Toast
         [Parameter] public bool SolidColors { get; set; }
         [Parameter] public XFToastColorMode ColorMode { get; set; } = XFToastColorMode.Default;
 
+        // assinatura de render: item de toast — evita re-render da lista inteira a cada mudança
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Item, OnDismiss, DismissLabel, ActionLabelFormat,
+                Index, Expanded, IsTopPlacement, Gap, ItemHeight, CloseButton);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string Role => Item?.Live == XFAriaLive.Assertive ? "alert" : "status";
 
         private string AriaLive => Item?.Live switch
