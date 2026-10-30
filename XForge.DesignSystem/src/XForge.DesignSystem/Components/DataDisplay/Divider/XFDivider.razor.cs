@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 using XForge.DesignSystem.Components.Layout;
 
@@ -18,6 +18,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Divider
         [Parameter] public bool Visible { get; set; } = true;
         [Parameter] public string? Label { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
+
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Orientation, Align, Tone, Spacing, Thickness, Dashed, Visible, Label, ChildContent);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
 
         private bool HasLabel => !string.IsNullOrWhiteSpace(Label) || ChildContent is not null;
 

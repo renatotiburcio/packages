@@ -22,6 +22,22 @@ namespace XForge.DesignSystem.Components.Layout
         [Parameter] public XFGridItems JustifyItems { get; set; } = XFGridItems.Normal;
         [Parameter] public bool FullWidth { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, Cols, Sm, Md, Lg, Xl, Gap, RowGap, ColumnGap, Flow, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override string GetComponentClass()
         {
             return GetClass($"{BaseClass} grid {GetColsClass()} {GetResponsiveColsClass()} {GetGapClass()} {GetRowGapClass()} {GetColumnGapClass()} {GetFlowClass()} {GetAlignItemsClass()} {GetJustifyItemsClass()} {GetWidthClass()}");

@@ -36,6 +36,22 @@ namespace XForge.DesignSystem.Components.Overlays.Popover
         [Parameter] public bool CloseOnOutsideClick { get; set; } = true;
         [Parameter] public bool TrapFocus { get; set; } = true;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Open, ButtonText, PanelAriaLabel, PanelAriaLabelledBy, Role, Trigger, ChildContent, Placement, Alignment, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
         private DotNetObjectReference<XFPopover>? DotNetReference { get; set; }

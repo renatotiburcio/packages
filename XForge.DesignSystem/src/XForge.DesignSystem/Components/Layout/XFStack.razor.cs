@@ -21,6 +21,22 @@ namespace XForge.DesignSystem.Components.Layout
         [Parameter] public bool Inline { get; set; }
         [Parameter] public bool FullWidth { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', ChildContent, Orientation, AlignItems, JustifyContent, Gap, RowGap, ColumnGap, Wrap, Reverse, Inline, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected override string GetComponentClass()
         {
             return GetClass($"{BaseClass} {GetDisplayClass()} {GetDirectionClass()} {GetWrapClass()} {GetAlignClass()} {GetJustifyClass()} {GetWidthClass()} {GetGapClass()}");
