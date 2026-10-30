@@ -10,6 +10,22 @@ namespace XForge.Components.Latam
         [Parameter] public string PixType { get; set; } = "cpf";
         [Parameter] public EventCallback<string> PixTypeChanged { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Value, PixType);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string Placeholder => PixType switch
         {
             "cpf" => "000.000.000-00",

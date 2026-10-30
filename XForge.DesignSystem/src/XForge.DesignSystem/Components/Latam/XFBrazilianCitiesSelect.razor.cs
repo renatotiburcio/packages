@@ -9,6 +9,22 @@ namespace XForge.Components.Latam
         [Parameter] public string? Value { get; set; }
         [Parameter] public EventCallback<string> ValueChanged { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Uf, Value);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private IReadOnlyList<string> Cities => Uf switch
         {
             "SP" => new List<string> { "Sao Paulo", "Guarulhos", "Campinas", "Sao Bernardo do Campo", "Santo Andre", "Osasco", "Ribeirao Preto", "Sorocaba" },
