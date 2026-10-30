@@ -29,7 +29,8 @@ namespace XForge.DesignSystem.Components.Layout.Shell
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('', Item, ChildContent, Label, Active, OnClick, ShowTooltip, TooltipPosition, TooltipTheme, Icon, UnlabeledItemAriaLabel);
+            var signature = string.Join('', Item, ChildContent, Label, Active, OnClick, ShowTooltip, TooltipPosition, TooltipTheme, Icon, UnlabeledItemAriaLabel,
+                _isActive, NavigationState?.CurrentBrand);
 
             if (_renderSignature == signature)
             {

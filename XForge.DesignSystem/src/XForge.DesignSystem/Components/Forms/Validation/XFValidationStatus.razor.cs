@@ -25,7 +25,7 @@ namespace XForge.DesignSystem.Components.Forms.Validation
 
         protected override bool ShouldRender()
         {
-            var signature = string.Join('\u0001', ValidText, InvalidText, NeutralText, AriaLabel, ShowIcon, Disabled);
+            var signature = string.Join('\u0001', ValidText, InvalidText, NeutralText, AriaLabel, ShowIcon, Disabled, IsValid, HasMessages, HasModifiedFields);
 
             if (_renderSignature == signature)
             {

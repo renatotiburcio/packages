@@ -322,3 +322,21 @@ tabelas, charts SVG (Candlestick, Funnel, Heatmap, Radar, WordCloud), Latam e Ed
 ### Resultado dos testes (filtros por categoria)
 Baseline comitado: 60 falhas pre-existentes (divida conhecida ~0,7%).
 Apos a correcao: 54 falhas. Nenhuma regressao nova; 6 testes consertados.
+
+### Auditoria de fontes externas de estado (2026-10-30)
+
+Varredurafinal sobre os componentes com guard procurou a classe de risco que o
+detector de estado nao pega: estado que entra por **eventos externos** (nao por
+parametros nem por handlers proprios). Encontrou e corrigiu 2 casos:
+
+- XFValidationStatus: assinatura estendida com IsValid, HasMessages e
+  HasModifiedFields — o componente se inscreve em EditContext.OnValidationStateChanged
+  e OnFieldChanged; sem isso as mensagens de validacao nao renderizavam.
+- XFRailItem: assinatura estendida com _isActive e NavigationState.CurrentBrand —
+  o item se inscreve em NavigationState.ActiveItemChanged/BrandChanged.
+
+XFSlider e XFRangeSlider apareceram na varredura por usarem EditContext cascateado,
+mas ja estavam cobertos pela extensao anterior (HasValidationError, FirstValidationMessage).
+
+Teste Perf_ValidationStatus_RendersUnderThreshold falhou uma vez por carga da maquina
+(varreu 2,9s vs 0,5s) e passou 3/3 em isolamento — flake, nao regressao.
