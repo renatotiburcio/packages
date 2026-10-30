@@ -17,6 +17,22 @@ public partial class XFKeyCode : XForgeComponentBase
     [Parameter] public string HintsLabel { get; set; } = "Atalhos disponiveis";
     [Parameter] public string ShortcutTextSeparator { get; set; } = "+";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', ChildContent, Shortcuts, ShortcutInvoked, Focusable, ShowHints, PreventDefault, StopPropagation, AriaLabel, HintsLabel, ShortcutTextSeparator);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private IReadOnlyList<XFKeyCodeShortcut> EnabledShortcuts => Shortcuts.Where(shortcut => !shortcut.Disabled).ToArray();
     private string? TabIndex => Focusable ? "0" : null;
     private string? Role => Focusable ? "group" : null;

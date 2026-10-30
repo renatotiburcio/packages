@@ -15,6 +15,23 @@ namespace XForge.DesignSystem.Components.Navigation.Tabs
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public RenderFragment? LoadingContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui.
+        // IsActive entra na assinatura porque o estado ativo vive no XFTabs pai.
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', TabId, ChildContent, LoadingContent, IsActive);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private bool IsActive => Parent?.IsActive(TabId) == true;
         private string PanelId => Parent?.GetPanelId(TabId) ?? $"{TabId}-panel";
         private string TabDomId => Parent?.GetTabDomId(TabId) ?? $"{TabId}-tab";

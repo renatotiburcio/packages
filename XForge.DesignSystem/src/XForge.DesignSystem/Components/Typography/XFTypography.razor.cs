@@ -20,6 +20,22 @@ namespace XForge.DesignSystem.Components.Typography
         [Parameter] public bool Truncate { get; set; }
         [Parameter] public bool GutterBottom { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', ChildContent, Variant, Color, Weight, Align, Transform, As, Text, NoWrap, Truncate, GutterBottom);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         protected string GetTagName()
         {
             if (!string.IsNullOrWhiteSpace(As))

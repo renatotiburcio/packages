@@ -24,6 +24,22 @@ namespace XForge.DesignSystem.Components.Layout.Shell
         [Parameter] public string? Icon { get; set; }
         [Parameter] public string UnlabeledItemAriaLabel { get; set; } = "Item de navegacao";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Item, ChildContent, Label, Active, OnClick, ShowTooltip, TooltipPosition, TooltipTheme, Icon, UnlabeledItemAriaLabel);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         [Inject] private NavigationStateService? NavigationState { get; set; }
 
         private bool _isActive;
