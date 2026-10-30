@@ -10,6 +10,22 @@ namespace XForge.Components.Charts
         [Parameter] public IReadOnlyList<RadarSeries> Series { get; set; } = new List<RadarSeries>();
         [Parameter] public double Max { get; set; } = 1.0;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Axes.Count, Series.Count, Max);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private string RenderSvg()
         {
             var sb = new StringBuilder();

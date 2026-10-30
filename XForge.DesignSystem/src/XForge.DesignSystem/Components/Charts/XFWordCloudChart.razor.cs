@@ -10,5 +10,21 @@ namespace XForge.Components.Charts
         [Parameter] public int Width { get; set; } = 600;
         [Parameter] public int Height { get; set; } = 400;
         [Parameter] public EventCallback<WordCloudItem> OnWordClick { get; set; }
+
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Words.Count, MaxFontSize, Width, Height, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
     }
 }

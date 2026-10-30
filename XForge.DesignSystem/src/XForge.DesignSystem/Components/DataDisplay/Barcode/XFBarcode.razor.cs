@@ -72,6 +72,22 @@ public partial class XFBarcode : XForgeComponentBase
     [Parameter] public string? AriaLabel { get; set; }
     [Parameter] public string AriaLabelFormat { get; set; } = "Codigo de barras {0}";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('\u0001', Value, Format, Height, ModuleWidth, QuietZone, ShowText, ForegroundColor, BackgroundColor, Disabled);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private EncodedBarcode? Encoded => Encode(Value, Format);
     private bool CanRender => Encoded is not null;
     private IReadOnlyList<Bar> Bars => Encoded?.Bars ?? Array.Empty<Bar>();
