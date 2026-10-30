@@ -16,6 +16,22 @@ namespace XForge.DesignSystem.Components.Forms.Validation
         [Parameter] public XFSemanticColor Tone { get; set; } = XFSemanticColor.Danger;
         [Parameter] public bool ShowIcon { get; set; } = true;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Items is null ? 0 : Items.Count(), Title, Tone, ShowIcon);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private IReadOnlyList<string> Messages => Items?.Where(value => !string.IsNullOrWhiteSpace(value)).ToArray()
             ?? CascadedEditContext?.GetValidationMessages().ToArray()
             ?? Array.Empty<string>();
