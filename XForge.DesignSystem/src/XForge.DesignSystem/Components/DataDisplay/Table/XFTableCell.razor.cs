@@ -15,6 +15,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Table
         [Parameter] public bool Sticky { get; set; }
         [Parameter] public XFTableStickySide StickySide { get; set; } = XFTableStickySide.Start;
         [Parameter] public XFTableStickyOffset StickyOffset { get; set; } = XFTableStickyOffset.None;
+
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', ChildContent, Header, Visible, Scope, ColSpan, RowSpan, Align, Sticky, StickySide, StickyOffset);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
         [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
         private string? ColSpanValue => ColSpan is > 1 ? ColSpan.Value.ToString() : null;

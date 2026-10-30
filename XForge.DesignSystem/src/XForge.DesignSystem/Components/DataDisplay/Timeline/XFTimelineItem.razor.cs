@@ -20,6 +20,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Timeline
         [Parameter] public XFSemanticColor? Tone { get; set; }
         [Parameter] public XFSize? Size { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Title, Timestamp, Text, ChildContent, Icon, OppositeContent, AriaLabel, Tone, Size);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private bool registered;
         private int Index => ParentTimeline?.GetIndex(this) ?? 0;
         private bool IsLast => ParentTimeline?.IsLast(this) ?? true;

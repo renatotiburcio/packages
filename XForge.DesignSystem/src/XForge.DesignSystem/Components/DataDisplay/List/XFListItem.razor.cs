@@ -22,6 +22,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.List
         [Parameter] public bool Selected { get; set; }
         [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Value, Title, Description, MetadataText, ChildContent, StartIcon, EndIcon, Metadata, Visible, Selected);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private bool IsSelectable => ParentList?.SelectionMode != XFListSelectionMode.None;
 
         private bool IsInteractive => IsSelectable || OnClick.HasDelegate;

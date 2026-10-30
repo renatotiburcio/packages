@@ -29,6 +29,22 @@ public partial class XFQRCode : XForgeComponentBase
     [Parameter] public string? DownloadFileName { get; set; }
     [Parameter] public string AriaLabelFormat { get; set; } = "Codigo QR {0}";
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Value, ModuleSize, QuietZone, ShowText, ForegroundColor, BackgroundColor, EmptyText, AriaLabel, CenterContent, ShowDownload, DownloadText, DownloadFileName, AriaLabelFormat);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private bool[,]? matrix;
     private IReadOnlyList<Module> darkModules = Array.Empty<Module>();
 

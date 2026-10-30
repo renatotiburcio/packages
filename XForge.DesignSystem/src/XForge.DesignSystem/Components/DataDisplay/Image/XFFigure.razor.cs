@@ -15,6 +15,22 @@ namespace XForge.DesignSystem.Components.DataDisplay.Image
         [Parameter] public bool Framed { get; set; }
         [Parameter] public XFImageRadius Radius { get; set; } = XFImageRadius.Lg;
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', ChildContent, CaptionContent, Caption, Credit, Visible, Framed, Radius);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
         private bool HasCaption => CaptionContent is not null || !string.IsNullOrWhiteSpace(Caption) || !string.IsNullOrWhiteSpace(Credit);
 
         protected override string GetComponentClass()

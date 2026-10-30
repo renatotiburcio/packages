@@ -22,6 +22,22 @@ public partial class XFVideo : XForgeComponentBase
     [Parameter] public XFVideoFit Fit { get; set; } = XFVideoFit.Contain;
     [Parameter] public RenderFragment? FallbackContent { get; set; }
 
+        // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
+        private string? _renderSignature;
+
+        protected override bool ShouldRender()
+        {
+            var signature = string.Join('', Src, Type, Sources.Count, Tracks.Count, Poster, AriaLabel, FallbackText, Controls, Autoplay, Muted, Loop, PlaysInline, Visible, Preload, Fit);
+
+            if (_renderSignature == signature)
+            {
+                return false;
+            }
+
+            _renderSignature = signature;
+            return true;
+        }
+
     private bool HasVideo => !string.IsNullOrWhiteSpace(Src) || Sources.Any(source => !string.IsNullOrWhiteSpace(source.Src));
 
     private string RootClass => GetClass($"xf-video relative overflow-hidden rounded-xl bg-surface-950 ring-1 ring-border-light aspect-video");
