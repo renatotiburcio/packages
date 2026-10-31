@@ -116,20 +116,28 @@ public class XFDrawerProviderComponentTest : XForgeTestContext
     }
 
     [Fact]
-    public async Task Provider_DisposeUnsubscribesFromService()
+    public void Provider_DisposeUnsubscribesFromService()
     {
         var provider = Render<XFDrawerProvider>();
 
-        var task = drawerService.ShowAsync(
+        // Deixa o drawer aberto (a tarefa de ShowAsync so completa quando ele fecha).
+        drawerService.ShowAsync(
             new XFDrawerOptions { Title = "Before dispose" },
             controller => builder => builder.AddContent(0, "content"));
 
         provider.Render();
         Assert.Contains("Before dispose", provider.Markup);
 
-        provider.Dispose();
+        // Descarta a instancia direto: o Dispose do bUnit remove o componente da
+        // arvore e depois qualquer acesso a Instance lanca ComponentDisposedException.
+        ((IDisposable)provider.Instance).Dispose();
 
-        await task;
+        // Depois do dispose o provider nao atende mais o servico: sem assinante o
+        // ShowAsync retorna na hora em vez de esperar um drawer que nao existe.
+        // (Aguardar a tarefa do drawer aberto travaria para sempre.)
+        var fim = drawerService.ShowAsync(new XFDrawerOptions { Title = "After dispose" });
+
+        Assert.True(fim.IsCompleted, "ShowAsync deveria completar sem provider assinado.");
     }
 
     [Fact]
@@ -167,14 +175,15 @@ public class XFDrawerProviderComponentTest : XForgeTestContext
         var task = drawerService.ShowAsync(
             new XFDrawerOptions
             {
-                Title = "Titled Drawer",
+                // Sem Title: aria-labelledby nao e gerado, entao o aria-label informado
+                // e o que aparece (com Title, o labelledby vence por design).
                 AriaLabel = "Drawer with aria"
             },
             controller => builder => builder.AddContent(0, "content"));
 
         provider.Render();
 
-        Assert.Contains("Drawer with aria", provider.Markup);
+        Assert.Contains("aria-label=\"Drawer with aria\"", provider.Markup);
     }
 
     [Fact]
@@ -310,7 +319,9 @@ public class XFDrawerProviderComponentTest : XForgeTestContext
             new XFDrawerOptions { Title = "Complete Test" },
             controller =>
             {
-                controllerTask.SetResult(controller);
+                // O fragmento e reexecutado a cada render: TrySetResult evita a
+                // InvalidOperationException na segunda invocacao.
+                controllerTask.TrySetResult(controller);
                 return builder => builder.AddContent(0, "content");
             });
 

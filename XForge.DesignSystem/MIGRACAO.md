@@ -434,3 +434,30 @@ por referencia namespaces inexistentes (XForge.DesignSystem.Components.AI.Accoun
 Suite completa (run interrompido aos 97% pelo host travar, contagem estavel):
   antes: 199 falhas unicas / depois: 121 falhas unicas
   78 testes consertados, 0 regressoes novas.
+
+### Travamento da suite (2026-10-31)
+
+A suite completa nunca terminava: o host pendurava aos ~97% e o Select-Object -Last
+do pipeline nunca recebia o fim do stream. Isolando classe por classe, o culpado era
+um unico teste:
+
+  XFDrawerProviderComponentTest.Provider_DisposeUnsubscribesFromService
+
+Fazia wait task numa tarefa de ShowAsync que so completa quando o drawer fecha —
+mas o provider ja tinha sido descartado, entao ninguem fecharia o drawer. Loop
+infinito. Corrigido: o teste agora verifica o unsubscribe (ShowAsync completa na
+hora sem assinante) e nao aguarda o impossivel.
+
+A mesma classe tinha mais duas falhas reais, tambem corrigidas:
+- Provider_ControllerClose_CompletesShowAsyncTask: o RenderFragment e reexecutado a
+  cada render, e SetResult lancava InvalidOperationException na segunda volta -> TrySetResult.
+- Provider_OptionsWithAriaLabel_PassesToDrawer: com Title definido, aria-labelledby
+  vence e aria-label e omitido por design do XFDrawer. O teste agora exercita o
+  aria-label sem Title, que e o cenario em que ele vale.
+
+Descoberta de processo (nao bug de produto): o Dispose do bUnit no RenderedComponent
+remove o componente da arvore e qualquer acesso posterior a Instance lanca
+ComponentDisposedException; para exercitar o unsubscribe usa-se
+((IDisposable)provider.Instance).Dispose().
+
+Resultado da classe: 17/17 (era 1 travando + 2 falhando).
