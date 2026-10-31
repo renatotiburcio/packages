@@ -28,7 +28,7 @@
 @code {
     private int _renderCounter;
 
-    private RenderFragment RenderItem(XFTOCItem item, int level) => @<li class="@ItemShellClass(level)">
+    private RenderFragment RenderItem(XFTOCItem item, int level) => @<li @key="item" class="@ItemShellClass(level)">
         <a class="@GetItemClass(item, level)"
            href="@GetHref(item)"
            aria-label="@GetItemAriaLabel(item)"

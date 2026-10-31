@@ -135,6 +135,8 @@ namespace XForge.DesignSystem.Components.DataDisplay.TreeView
                 isDragging ? "opacity-50" : null));
 
             builder.OpenElement(seq++, "div");
+            // chave estável por nó: mantém o DOM do item entre renders do pai
+            builder.SetKey(node);
             builder.AddAttribute(seq++, "id", GetNodeDomId(node));
             builder.AddAttribute(seq++, "role", "treeitem");
             builder.AddAttribute(seq++, "aria-level", level.ToString());
