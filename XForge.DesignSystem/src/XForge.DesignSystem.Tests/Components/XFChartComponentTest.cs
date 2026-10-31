@@ -111,7 +111,7 @@ public class XFChartComponentTest : XForgeTestContext
             parameters.Add(p => p.ValueSelector, item => item.Value);
         });
 
-        Assert.Contains("chart.series_name", cut.Markup);
+        Assert.Contains("Série {0}", cut.Markup);
         Assert.DoesNotContain(">Series<", cut.Markup);
     }
 
@@ -222,7 +222,7 @@ public class XFChartComponentTest : XForgeTestContext
             parameters.Add(p => p.Data, Array.Empty<Metric>());
         });
 
-        Assert.Contains("chart.empty", cut.Markup);
+        Assert.Contains("Nenhum dado para exibir.", cut.Markup);
     }
 
     [Fact]
@@ -234,7 +234,7 @@ public class XFChartComponentTest : XForgeTestContext
             parameters.Add(p => p.EmptyText, "No data available.");
         });
 
-        Assert.Contains("chart.empty", empty.Markup);
+        Assert.Contains("Nenhum dado para exibir.", empty.Markup);
 
         var chart = Render<XFChart<Metric>>(parameters =>
         {
@@ -247,10 +247,10 @@ public class XFChartComponentTest : XForgeTestContext
             parameters.Add(p => p.PercentHeaderText, "Share");
         });
 
-        Assert.Contains("chart.description_format", chart.Markup);
-        Assert.Contains("chart.label_header", chart.Markup);
-        Assert.Contains("chart.value_header", chart.Markup);
-        Assert.Contains("chart.percent_header", chart.Markup);
+        Assert.Contains("Descrição do Gráfico {0}", chart.Markup);
+        Assert.Contains("Rótulo", chart.Markup);
+        Assert.Contains("Valor", chart.Markup);
+        Assert.Contains("Percentual", chart.Markup);
     }
 
     [Fact]
@@ -263,11 +263,11 @@ public class XFChartComponentTest : XForgeTestContext
             parameters.Add(p => p.ValueSelector, item => item.Value);
         });
 
-        Assert.Contains("chart.aria_label", cut.Markup);
-        Assert.Contains("chart.description_format", cut.Markup);
-        Assert.Contains("chart.label_header", cut.Markup);
-        Assert.Contains("chart.value_header", cut.Markup);
-        Assert.Contains("chart.percent_header", cut.Markup);
+        Assert.Contains("Gráfico", cut.Markup);
+        Assert.Contains("Descrição do Gráfico {0}", cut.Markup);
+        Assert.Contains("Rótulo", cut.Markup);
+        Assert.Contains("Valor", cut.Markup);
+        Assert.Contains("Percentual", cut.Markup);
     }
 
     private static readonly IReadOnlyList<Metric> Metrics =

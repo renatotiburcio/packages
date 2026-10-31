@@ -148,7 +148,7 @@ public class XFAvatarExtendedTest : XForgeTestContext
             parameters.Add(p => p.Status, XFAvatarStatus.Offline);
         });
 
-        Assert.Contains("Indisponivel", cut.Markup);
+        Assert.Contains("Indispon\u00edvel", cut.Markup);
     }
 
     [Fact]

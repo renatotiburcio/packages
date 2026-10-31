@@ -111,7 +111,7 @@ public class XFGanttComponentTest : XForgeTestContext
             .Add(x => x.StartFunc, new Func<GanttTaskItem, DateTime>(t => t.Start))
             .Add(x => x.EndFunc, new Func<GanttTaskItem, DateTime>(t => t.End))
         );
-        Assert.Contains("gantt.empty", cut.Markup);
+        Assert.Contains("Nenhuma tarefa encontrada", cut.Markup);
         Assert.Contains("role=\"status\"", cut.Markup);
     }
 
@@ -125,7 +125,7 @@ public class XFGanttComponentTest : XForgeTestContext
             .Add(x => x.StartFunc, new Func<GanttTaskItem, DateTime>(t => t.Start))
             .Add(x => x.EndFunc, new Func<GanttTaskItem, DateTime>(t => t.End))
         );
-        Assert.Contains("gantt.empty", cut.Markup);
+        Assert.Contains("Nenhuma tarefa encontrada", cut.Markup);
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public class XFGanttComponentTest : XForgeTestContext
             .Add(x => x.StartFunc, new Func<GanttTaskItem, DateTime>(t => t.Start))
             .Add(x => x.EndFunc, new Func<GanttTaskItem, DateTime>(t => t.End))
         );
-        Assert.Contains("gantt.empty", cut.Markup);
+        Assert.Contains("Nenhuma tarefa encontrada", cut.Markup);
     }
 
     [Fact]
@@ -350,8 +350,8 @@ public class XFGanttComponentTest : XForgeTestContext
     {
         var cut = RenderDefault();
         Assert.Contains("Project", cut.Markup);
-        Assert.Contains("gantt.start", cut.Markup);
-        Assert.Contains("gantt.end", cut.Markup);
+        Assert.Contains("Início", cut.Markup);
+        Assert.Contains("Fim", cut.Markup);
     }
 
     [Fact]
@@ -424,8 +424,8 @@ public class XFGanttComponentTest : XForgeTestContext
         Assert.Equal("300px", instance.TaskListWidth);
         Assert.Equal(XFSize.Md, instance.Size);
         Assert.Equal(XFGanttVariant.Default, instance.Variant);
-        Assert.Equal("gantt.today", instance.TodayLabel);
-        Assert.Equal("gantt.empty", instance.NoDataText);
+        Assert.Equal("Hoje", instance.TodayLabel);
+        Assert.Equal("Nenhuma tarefa encontrada", instance.NoDataText);
     }
 
     [Fact]

@@ -121,7 +121,10 @@ public class XFUploadExtendedTest : XForgeTestContext
     public void Extended_ShowUploadAllFalse_HidesUploadAll()
     {
         var cut = RenderUpload(p => p.Add(x => x.ShowUploadAll, false));
-        Assert.DoesNotContain("Enviar", cut.Markup);
+        // O botao de "enviar todos" desaparece; o texto padrao dele e UploadText.
+        Assert.DoesNotContain(">Enviar tudo<", cut.Markup);
+        Assert.Equal("Enviar", cut.Instance.UploadText);
+        Assert.DoesNotContain("xf-upload__action", cut.Markup);
     }
 
     // HelperText

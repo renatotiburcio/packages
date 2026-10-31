@@ -93,7 +93,7 @@ public class XFSchedulerComponentTest : XForgeTestContext
             parameters.Add(p => p.DateChanged, value => next = value);
         });
 
-        cut.FindAll("header button").Last(button => button.GetAttribute("aria-label") == "scheduler.next").Click();
+        cut.FindAll("header button").Last(button => button.GetAttribute("aria-label") == "PrÃ³ximo").Click();
 
         Assert.Equal(new DateTime(2026, 6, 7), next);
     }
@@ -118,12 +118,12 @@ public class XFSchedulerComponentTest : XForgeTestContext
             parameters.Add(p => p.MultipleAppointmentsFormat, "{0} events");
         });
 
-        Assert.Contains("scheduler.today", cut.Markup);
-        Assert.Contains("scheduler.multiple", cut.Markup);
-        Assert.Contains("scheduler.previous", cut.Markup);
-        Assert.Contains("scheduler.view_switcher", cut.Markup);
-        Assert.Contains("scheduler.month", cut.Markup);
-        Assert.Contains("scheduler.day", cut.Markup);
+        Assert.Contains("Hoje", cut.Markup);
+        Assert.Contains("VÃ¡rios recursos", cut.Markup);
+        Assert.Contains("Anterior", cut.Markup);
+        Assert.Contains("Alternar visualizaÃ§Ã£o", cut.Markup);
+        Assert.Contains("MÃªs", cut.Markup);
+        Assert.Contains("Dia", cut.Markup);
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class XFSchedulerComponentTest : XForgeTestContext
 
         Assert.NotNull(cut.Find("[data-xf-scheduler-slot='2026-05-07T08:00']"));
 
-        cut.FindAll("header button").Last(button => button.GetAttribute("aria-label") == "scheduler.next").Click();
+        cut.FindAll("header button").Last(button => button.GetAttribute("aria-label") == "PrÃ³ximo").Click();
 
         Assert.NotNull(cut.Find("[data-xf-scheduler-slot='2026-05-08T08:00']"));
     }

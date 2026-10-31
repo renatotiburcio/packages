@@ -71,7 +71,7 @@ public class XFValidationComponentTest : XForgeTestContext
             builder.CloseComponent();
         });
 
-        Assert.Contains("Aguardando validacao", markup);
+        Assert.Contains("Aguardando valida\u00e7\u00e3o", markup);
         Assert.Contains("role=\"status\"", markup);
     }
 
@@ -90,7 +90,7 @@ public class XFValidationComponentTest : XForgeTestContext
             builder.CloseComponent();
         });
 
-        Assert.Contains("aria-label=\"Status da validacao\"", defaultMarkup);
+        Assert.Contains("aria-label=\"Status da valida\u00e7\u00e3o\"", defaultMarkup);
         Assert.Contains("aria-label=\"Status da etapa fiscal\"", customMarkup);
     }
 
@@ -110,7 +110,7 @@ public class XFValidationComponentTest : XForgeTestContext
             builder.CloseComponent();
         });
 
-        Assert.Contains("Formulario contem erros", markup);
+        Assert.Contains("Formul\u00e1rio cont\u00e9m erros", markup);
         Assert.Contains("text-danger", markup);
     }
 
@@ -127,7 +127,7 @@ public class XFValidationComponentTest : XForgeTestContext
             builder.CloseComponent();
         });
 
-        Assert.Contains("Formulario valido", markup);
+        Assert.Contains("Formul\u00e1rio v\u00e1lido", markup);
         Assert.Contains("text-success", markup);
     }
 

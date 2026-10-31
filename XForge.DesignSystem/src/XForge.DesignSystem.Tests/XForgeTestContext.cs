@@ -2,6 +2,7 @@ using System.IO;
 using System.Text.Json;
 using Bunit;
 using Microsoft.Extensions.DependencyInjection;
+using XForge.DesignSystem.Components.Icon;
 
 namespace XForge.DesignSystem.Tests;
 
@@ -28,5 +29,8 @@ public class XForgeTestContext : BunitContext
         }
 
         Services.AddSingleton<XForge.Localization.IXFLocalizer>(new XForge.Localization.XFLocalizer(provider));
+
+        // XFIconPicker e os campos de icone consomem IXFIconRegistry por injecao.
+        Services.AddXFIconRegistry();
     }
 }

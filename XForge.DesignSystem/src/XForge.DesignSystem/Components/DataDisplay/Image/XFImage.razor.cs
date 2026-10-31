@@ -22,7 +22,7 @@ namespace XForge.DesignSystem.Components.DataDisplay.Image
         [Parameter] public RenderFragment? FallbackContent { get; set; }
         [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
         [Parameter] public string DefaultAltText { get; set; } = "Imagem";
-        [Parameter] public string UnavailableLabel { get; set; } = "Imagem indisponivel";
+        [Parameter] public string UnavailableLabel { get; set; } = "Imagem indisponível";
         [Parameter] public string FallbackText { get; set; } = "Imagem";
 
         private bool primaryFailed;

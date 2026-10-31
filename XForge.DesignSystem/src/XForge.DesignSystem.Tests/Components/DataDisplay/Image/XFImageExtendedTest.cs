@@ -446,7 +446,7 @@ public class XFImageExtendedTest : XForgeTestContext
 
         var fallbackDiv = cut.Find(".xf-image > div");
         Assert.NotNull(fallbackDiv);
-        Assert.Equal("Imagem indisponivel", fallbackDiv.GetAttribute("aria-label"));
+        Assert.Equal("Imagem indispon\u00edvel", fallbackDiv.GetAttribute("aria-label"));
     }
 
     // ─── 31. Default Alt text when no Alt provided ─────────────────────────────

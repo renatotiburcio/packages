@@ -76,7 +76,7 @@ public class XFPivotDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.ColumnSelector, item => item.Quarter);
         });
 
-        Assert.Contains("pivotdatagrid.empty", cut.Markup);
+        Assert.Contains("Nenhum dado para exibir.", cut.Markup);
     }
 
     [Fact]

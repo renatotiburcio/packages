@@ -17,7 +17,7 @@ namespace XForge.DesignSystem.Components.Forms.Validation
         [Parameter] public string ValidText { get; set; } = default!;
         [Parameter] public string InvalidText { get; set; } = default!;
         [Parameter] public string NeutralText { get; set; } = default!;
-        [Parameter] public string? AriaLabel { get; set; } = "Status da validacao";
+        [Parameter] public string? AriaLabel { get; set; } = "Status da validação";
         [Parameter] public bool ShowIcon { get; set; } = true;
 
         // assinatura de render: pula render redundante quando o pai re-renderiza sem mudar nada aqui
