@@ -15,8 +15,8 @@ public sealed class NoVersionedComponentNamingTest
         var root = FindWorkspaceRoot();
         var productRoots = new[]
         {
-            Path.Combine(root, "XForge.DesignSystem"),
-            Path.Combine(root, "XForge.DesignSystem.Tests")
+            Path.Combine(root, "XForge.DesignSystem", "src"),
+            Path.Combine(root, "XForge.DesignSystem", "docs", "app")
         };
 
         var violations = productRoots
@@ -40,7 +40,10 @@ public sealed class NoVersionedComponentNamingTest
 
         while (directory is not null)
         {
-            if (File.Exists(Path.Combine(directory.FullName, "XForge.slnx")))
+            // A raiz do workspace e identificada pela pasta do design system + NuGet.config
+            // (o XForge.slnx foi removido na reorganizacao).
+            if (Directory.Exists(Path.Combine(directory.FullName, "XForge.DesignSystem")) &&
+                File.Exists(Path.Combine(directory.FullName, "NuGet.config")))
             {
                 return directory.FullName;
             }
@@ -48,7 +51,7 @@ public sealed class NoVersionedComponentNamingTest
             directory = directory.Parent;
         }
 
-        throw new DirectoryNotFoundException("Could not locate workspace root containing XForge.slnx.");
+        throw new DirectoryNotFoundException("Could not locate workspace root containing XForge.DesignSystem and NuGet.config.");
     }
 
     private static bool IsScannedFile(string path)

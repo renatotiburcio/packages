@@ -27,12 +27,6 @@
          reorganizacao (Analyzers, Benchmarks, DocsQualityTests) e APIs/tipos que nao
          existem no nucleo migrado. Excluidos da compilacao; restaurar quando os
          contratos/projetos voltarem. -->
-    <Compile Remove="DocsQualityTests\**\*.cs" />
-    <Compile Remove="Analyzers\**\*.cs" />
-    <Compile Remove="Benchmarks\**\*.cs" />
-    <Compile Remove="Components\Scheduler\XFGanttAdvancedTest.cs" />
-    <Compile Remove="Components\AI\**\*.cs" />
-    <Compile Remove="Extensions\XFAiServiceCollectionExtensionsTest.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -394,3 +394,43 @@ XForge.DesignSystem.Components.<pasta> (namespace segue a pasta):
 
 Ajustados: 40 declaracoes em .cs, 39 @namespace em .razor, 44 usings nos testes,
 e as strings de catalogo (new("Namespace", ...)). 79 arquivos no total.
+
+## Descarte do XForge.DesignSystem.Docs.AI (2026-10-31)
+
+Decisao do usuario: descartar definitivamente a variante AI do manual. Justificativa:
+ela depende do satelite XForge.DesignSystem.AI, removido na reorganizacao — restauralo
+reinflaria o escopo que foi enxugado. O nucleo mantem apenas o chatbot proprio
+(XFAiChatWithEmji em Components/AI/Smart), que segue documentado normalmente.
+
+### Consequencias aplicadas
+1. Catalogo: 64 itens /ai/* sem pagina foram removidos (113 itens, zero links quebrados).
+2. Testes de arquitetura reescritos para a estrutura real (XForgeEcosystemBoundaryTest):
+   - GetRepositoryRoot procurava XForge.slnx, removido na reorganizacao — agora
+     identifica a raiz por XForge.DesignSystem + NuGet.config (13 falhas -> 0).
+   - Testes que exigiam o projeto AI viraram afirmacao de que ele NAO existe.
+   - DocsApp_ShouldDeclareTailwindPipeline passou a validar que cada glob de @source
+     resolve para uma pasta real.
+3. ComponentCoverageTests reescrito: a lista [InlineData] manual tinha 64 entradas de
+   componentes inexistentes (satelite AI + ferramentas). Agora descobre os componentes
+   por reflexao (>= 200), com piso de sanidade, e trata tipos genericos (XFDataGrid1).
+4. NoVersionedComponentNamingTest: mesma causa raiz (XForge.slnx); agora varre
+   src/ e docs/app.
+5. Bug real encontrado no caminho: os @source do app.css do manual apontavam para o
+   layout antigo (o Tailwind resolve relativo ao wwwroot, nao ao projeto). Corrigido
+   para ../../XForge.DesignSystem.Docs.Shared e ../../../../src/XForge.DesignSystem.
+
+### Regra de marca (esclarecida)
+As regras :root[data-brand=...] vivem no CSS do nucleo (xf-designsystem.css), carregado
+via <link>; o app.css do manual tem apenas Tailwind. Teste ajustado para essa realidade.
+
+### Limpeza de peso morto (2026-10-31)
+
+Alem dos testes corrigidos, 48 arquivos de teste do satelite AI estavam no disco mas
+EXCLUIDOS da compilacao via <Compile Remove> no csproj (Componente\AI\**, Analyzers,
+Benchmarks, XFGanttAdvancedTest, XFAiServiceCollectionExtensionsTest). Nao compilavam
+por referencia namespaces inexistentes (XForge.DesignSystem.Components.AI.Accounting,
+.Financial, .Forms, .Common). Removidos, e o csproj ficou sem nenhuma exclusao.
+
+Suite completa (run interrompido aos 97% pelo host travar, contagem estavel):
+  antes: 199 falhas unicas / depois: 121 falhas unicas
+  78 testes consertados, 0 regressoes novas.

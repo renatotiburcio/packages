@@ -1,4 +1,4 @@
-﻿/* ============================================================================
+/* ============================================================================
  * XForge Docs — Tailwind v4 entry point
  *
  * This file contains ONLY:
@@ -18,9 +18,9 @@
 @source "../**/*.cshtml";
 @source "../../XForge.DesignSystem.Docs.Shared/**/*.razor";
 @source "../../XForge.DesignSystem.Docs.Shared/**/*.cs";
-@source "../../XForge.DesignSystem/**/*.razor";
-@source "../../XForge.DesignSystem/**/*.cs";
-@source "../../XForge.DesignSystem/**/*.razor.cs";
+@source "../../../../src/XForge.DesignSystem/**/*.razor";
+@source "../../../../src/XForge.DesignSystem/**/*.cs";
+@source "../../../../src/XForge.DesignSystem/**/*.razor.cs";
 
 /* ============================================================================
  * TAILWIND v4 THEME — values used to generate utility classes
