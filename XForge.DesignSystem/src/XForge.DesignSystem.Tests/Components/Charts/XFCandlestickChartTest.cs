@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.Charts;
+using XForge.DesignSystem.Components.Charts;
 
 namespace XForge.DesignSystem.Tests.Components.Charts;
 

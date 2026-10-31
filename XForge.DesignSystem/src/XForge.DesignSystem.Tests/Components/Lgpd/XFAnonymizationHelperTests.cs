@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.Lgpd;
+using XForge.DesignSystem.Components.Lgpd;
 
 namespace XForge.DesignSystem.Tests.Components.Lgpd;
 

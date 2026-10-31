@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
-namespace XForge.Components.Base;
+namespace XForge.DesignSystem.Components.Base;
 
 /// <summary>
 /// Queue of actions to be executed after the next render.

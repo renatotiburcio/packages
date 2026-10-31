@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.DataGrid;
+using XForge.DesignSystem.Components.DataGrid;
 
 namespace XForge.DesignSystem.Tests.Components.DataGrid;
 

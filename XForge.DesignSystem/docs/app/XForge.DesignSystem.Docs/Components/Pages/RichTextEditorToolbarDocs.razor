@@ -1,0 +1,379 @@
+@page "/components/rich-text-editor-toolbar"
+@using XForge.DesignSystem.Components.Editors
+@using XForge.DesignSystem.Components.Layout
+@using XForge.DesignSystem.Components.Typography
+@using XForge.DesignSystem.Components.DataDisplay.Card
+@using XForge.DesignSystem.Components.DataDisplay.Badge
+@using XForge.DesignSystem.Components.Shared
+@using XForge.DesignSystem.Docs.Shared.Contracts
+@using XForge.DesignSystem.Docs.Shared.Navigation
+@using XForge.DesignSystem.Docs.Shared.Components
+@using XForge.DesignSystem.Core.Primitives
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFRichTextEditorToolbar" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("27 botoes", "27 buttons")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("27 botoes de toolbar para o editor rico de texto.",
+                               "27 toolbar buttons for the rich text editor.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFRichTextEditorToolbar fornece um conjunto completo de 27 botoes de formatacao, insercao e acoes para o editor de texto rico. Cada botao e um componente independente que pode ser combinado sob demanda.",
+                               "XFRichTextEditorToolbar provides a complete set of 27 formatting, insertion and action buttons for the rich text editor. Each button is an independent component that can be combined as needed.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== METADATA ===== -->
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        <!-- ===== OVERVIEW / PURPOSE / WHEN TO USE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+        </XFStack>
+
+        <!-- ===== EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Toolbar basica", "1. Basic toolbar"),
+                T("Toolbar com botoes de formatacao de texto.", "Toolbar with text formatting buttons."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Toolbar completa", "2. Full toolbar"),
+                T("Toolbar com todos os 27 botoes disponiveis.", "Toolbar with all 27 available buttons."),
+                ExFull(), CodeFull)
+
+            @Example(T("3. Toolbar customizada", "3. Custom toolbar"),
+                T("Toolbar com apenas botoes selecionados.", "Toolbar with only selected buttons."),
+                ExCustom(), CodeCustom)
+        </XFStack>
+
+        <!-- ===== BUTTONS LIST ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Botoes disponiveis", "Available Buttons"), @<div>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Formatacao de texto", "Text Formatting")</XFTypography>
+                    @NameValueTable(TextFormatButtons, T("Botao", "Button"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Alinhamento", "Alignment")</XFTypography>
+                    @NameValueTable(AlignmentButtons, T("Botao", "Button"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Fonte", "Font")</XFTypography>
+                    @NameValueTable(FontButtons, T("Botao", "Button"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Insercao", "Insertion")</XFTypography>
+                    @NameValueTable(InsertButtons, T("Botao", "Button"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Lista e indentacao", "List & Indent")</XFTypography>
+                    @NameValueTable(ListIndentButtons, T("Botao", "Button"), T("Comando", "Command"))
+
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Historico e extras", "History & Extras")</XFTypography>
+                    @NameValueTable(HistoryExtraButtons, T("Botao", "Button"), T("Comando", "Command"))
+                </XFStack>
+            </div>)
+        </XFStack>
+
+        <!-- ===== API ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API: XFRichTextEditorToolbar", @<div>@ApiTable(ToolbarApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Descricao", "Description"))</div>)
+        </XFStack>
+
+        <!-- ===== ACCESSIBILITY ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 3)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Acao", "Action"))</div>)
+        </XFStack>
+
+        <!-- ===== FAQ / CHANGELOG ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+    private string ProductLabelText => "XFRichTextEditorToolbar";
+    private string PageTitleText => "RichTextEditor Toolbar";
+    private string PageStatusText => T("Stable", "Stable");
+
+    // ==================== HERO ====================
+    private RenderFragment HeroPreview() => @<div class="flex items-center justify-center rounded-lg border border-border-light bg-surface-50 p-8">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="4" Alignment="XFAlignment.Center">
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Toolbar com 27 botoes para editor rico", "Toolbar with 27 buttons for rich text editor")</XFTypography>
+        </XFStack>
+    </div>;
+
+    // ==================== QUICK FACTS ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("27 botoes", "27 buttons"), T("Conjunto completo de formatacao, insercao e acoes.", "Complete set of formatting, insertion and actions."), "bars"),
+        new(T("Componentes modulares", "Modular components"), T("Cada botao e um componente independente.", "Each button is an independent component."), "puzzle-piece"),
+        new(T("WAI-ARIA", "WAI-ARIA"), T("role=toolbar com navegacao por teclado.", "role=toolbar with keyboard navigation."), "universal-access"),
+        new(T("Componivel", "Composable"), T("Combine apenas os botoes necessarios.", "Combine only the buttons you need."), "layer-group")
+    ];
+
+    // ==================== METADATA ====================
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFRichTextEditorToolbar"),
+        new("Namespace", "XForge.Components.Editors"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Editors"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=toolbar, roving tabindex, aria-pressed, aria-label.", "role=toolbar, roving tabindex, aria-pressed, aria-label.")),
+        new("Theme support", T("Light e dark via CSS variables.", "Light and dark via CSS variables."))
+    ];
+
+    // ==================== OVERVIEW ====================
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("27 componentes", "27 components"), T("Cada funcao da toolbar e um componente Blazor independente.", "Each toolbar function is an independent Blazor component."), "bars"),
+        new(T("Componivel", "Composable"), T("Monte a toolbar exatamente como necessario.", "Build the toolbar exactly as needed."), "puzzle-piece"),
+        new(T("Acessivel", "Accessible"), T("Container com role=toolbar e navegacao roving tabindex.", "Container with role=toolbar and roving tabindex navigation."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Editor de texto", "Text editor"), T("Toolbar padrao para XFRichTextEditor.", "Standard toolbar for XFRichTextEditor."), "pen"),
+        new(T("Formatacao", "Formatting"), T("Negrito, italico, sublinhado, tachado, alinhamento.", "Bold, italic, underline, strikethrough, alignment."), "text-height"),
+        new(T("Insercao", "Insertion"), T("Links, imagens, tabelas, regras horizontais.", "Links, images, tables, horizontal rules."), "square-plus")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Tooltbars feitas com HTML manual sem acessibilidade.", "Toolbars built with manual HTML without accessibility."), "xmark"),
+        new(T("Depois", "After"), T("27 componentes acessiveis e componiveis.", "27 accessible and composable components."), "check"),
+        new(T("Flexibilidade", "Flexibility"), T("Use apenas os botoes que seu editor precisa.", "Use only the buttons your editor needs."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("CMS", "CMS"), T("Editor de conteudo com formatacao completa.", "Content editor with full formatting."), "pen"),
+        new(T("Email", "Email"), T("Editor de email com formatacao de texto.", "Email editor with text formatting."), "envelope")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Editores simples", "Simple editors"), T("Para edicao basica de texto, use XFTextInput.", "For basic text editing, use XFTextInput."), "xmark"),
+        new(T("Editores de codigo", "Code editors"), T("Para edicao de codigo, use componente de editor de codigo.", "For code editing, use code editor component."), "triangle-exclamation")
+    ];
+
+    // ==================== EXAMPLES ====================
+    private RenderFragment ExBasic() => @<div class="flex flex-col gap-4">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Toolbar com botoes de formatacao", "Toolbar with formatting buttons")</XFTypography>
+        </XFStack>
+    </div>;
+
+    private string CodeBasic => @"<XFRichTextEditorToolbar>
+    <XFRichTextEditorBold />
+    <XFRichTextEditorItalic />
+    <XFRichTextEditorUnderline />
+    <XFRichTextEditorStrikeThrough />
+</XFRichTextEditorToolbar>";
+
+    private RenderFragment ExFull() => @<div class="flex flex-col gap-4">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Toolbar completa com todos os 27 botoes", "Full toolbar with all 27 buttons")</XFTypography>
+        </XFStack>
+    </div>;
+
+    private string CodeFull => @"<XFRichTextEditorToolbar>
+    <!-- Formatacao de texto -->
+    <XFRichTextEditorBold />
+    <XFRichTextEditorItalic />
+    <XFRichTextEditorUnderline />
+    <XFRichTextEditorStrikeThrough />
+
+    <!-- Links -->
+    <XFRichTextEditorLink />
+    <XFRichTextEditorUnlink />
+
+    <!-- Listas -->
+    <XFRichTextEditorOrderedList />
+    <XFRichTextEditorUnorderedList />
+
+    <!-- Historico -->
+    <XFRichTextEditorUndo />
+    <XFRichTextEditorRedo />
+
+    <!-- Alinhamento -->
+    <XFRichTextEditorAlignLeft />
+    <XFRichTextEditorAlignCenter />
+    <XFRichTextEditorAlignRight />
+    <XFRichTextEditorAlignJustify />
+
+    <!-- Fonte -->
+    <XFRichTextEditorFontFamily />
+    <XFRichTextEditorFontSize />
+    <XFRichTextEditorFontColor />
+    <XFRichTextEditorBackColor />
+
+    <!-- Insercao -->
+    <XFRichTextEditorInsertImage />
+    <XFRichTextEditorInsertTable />
+    <XFRichTextEditorInsertHorizontalRule />
+
+    <!-- Indentacao -->
+    <XFRichTextEditorIndent />
+    <XFRichTextEditorOutdent />
+
+    <!-- Extras -->
+    <XFRichTextEditorFormatBlock />
+    <XFRichTextEditorBlockquote />
+    <XFRichTextEditorViewSource />
+</XFRichTextEditorToolbar>";
+
+    private RenderFragment ExCustom() => @<div class="flex flex-col gap-4">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Toolbar customizada com botoes selecionados", "Custom toolbar with selected buttons")</XFTypography>
+        </XFStack>
+    </div>;
+
+    private string CodeCustom => @"<XFRichTextEditorToolbar>
+    <XFRichTextEditorBold />
+    <XFRichTextEditorItalic />
+    <XFRichTextEditorUnderline />
+    <XFRichTextEditorAlignLeft />
+    <XFRichTextEditorAlignCenter />
+    <XFRichTextEditorAlignRight />
+    <XFRichTextEditorLink />
+    <XFRichTextEditorInsertImage />
+</XFRichTextEditorToolbar>";
+
+    // ==================== BUTTONS LIST ====================
+    private IReadOnlyList<NameValueRow> TextFormatButtons => [
+        new("XFRichTextEditorBold", T("Aplica negrito ao texto selecionado.", "Applies bold to selected text.")),
+        new("XFRichTextEditorItalic", T("Aplica italico ao texto selecionado.", "Applies italic to selected text.")),
+        new("XFRichTextEditorUnderline", T("Aplica sublinhado ao texto selecionado.", "Applies underline to selected text.")),
+        new("XFRichTextEditorStrikeThrough", T("Aplica tachado ao texto selecionado.", "Applies strikethrough to selected text."))
+    ];
+
+    private IReadOnlyList<NameValueRow> AlignmentButtons => [
+        new("XFRichTextEditorAlignLeft", T("Alinha o texto a esquerda.", "Aligns text to the left.")),
+        new("XFRichTextEditorAlignCenter", T("Centraliza o texto.", "Centers text.")),
+        new("XFRichTextEditorAlignRight", T("Alinha o texto a direita.", "Aligns text to the right.")),
+        new("XFRichTextEditorAlignJustify", T("Justifica o texto.", "Justifies text."))
+    ];
+
+    private IReadOnlyList<NameValueRow> FontButtons => [
+        new("XFRichTextEditorFontFamily", T("Seleciona a familia da fonte.", "Selects font family.")),
+        new("XFRichTextEditorFontSize", T("Seleciona o tamanho da fonte.", "Selects font size.")),
+        new("XFRichTextEditorFontColor", T("Seleciona a cor do texto.", "Selects text color.")),
+        new("XFRichTextEditorBackColor", T("Seleciona a cor de fundo do texto.", "Selects text background color."))
+    ];
+
+    private IReadOnlyList<NameValueRow> InsertButtons => [
+        new("XFRichTextEditorInsertImage", T("Insere uma imagem no editor.", "Inserts an image in the editor.")),
+        new("XFRichTextEditorInsertTable", T("Insere uma tabela no editor.", "Inserts a table in the editor.")),
+        new("XFRichTextEditorInsertHorizontalRule", T("Insere uma regra horizontal.", "Inserts a horizontal rule.")),
+        new("XFRichTextEditorLink", T("Insere ou edita um link.", "Inserts or edits a link.")),
+        new("XFRichTextEditorUnlink", T("Remove um link existente.", "Removes an existing link."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ListIndentButtons => [
+        new("XFRichTextEditorOrderedList", T("Cria uma lista ordenada.", "Creates an ordered list.")),
+        new("XFRichTextEditorUnorderedList", T("Cria uma lista nao ordenada.", "Creates an unordered list.")),
+        new("XFRichTextEditorIndent", T("Increase a indentacao do paragrafo.", "Increases paragraph indentation.")),
+        new("XFRichTextEditorOutdent", T("Diminui a indentacao do paragrafo.", "Decreases paragraph indentation."))
+    ];
+
+    private IReadOnlyList<NameValueRow> HistoryExtraButtons => [
+        new("XFRichTextEditorUndo", T("Desfaz a ultima acao.", "Undoes the last action.")),
+        new("XFRichTextEditorRedo", T("Refaz a ultima acao desfeita.", "Redoes the last undone action.")),
+        new("XFRichTextEditorFormatBlock", T("Aplica formato de bloco (H1-H6, p, pre).", "Applies block format (H1-H6, p, pre).")),
+        new("XFRichTextEditorBlockquote", T("Insere ou remove bloco de citacao.", "Inserts or removes blockquote.")),
+        new("XFRichTextEditorViewSource", T("Alterna entre visualizacao HTML e rich text.", "Toggles between HTML and rich text view."))
+    ];
+
+    // ==================== API ====================
+    private IReadOnlyList<ApiRow> ToolbarApiRows => [
+        new("ChildContent", "RenderFragment", "-", T("Botoes da toolbar.", "Toolbar buttons.")),
+        new("Disabled", "bool", "false", T("Desabilita todos os botoes.", "Disables all buttons.")),
+        new("AriaLabel", "string?", @"""Editor de texto""", T("Aria-label da toolbar.", "Toolbar aria-label."))
+    ];
+
+    // ==================== EVENTS ====================
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("CommandExecuted", T("Dispara apos executar um comando de formatacao.", "Fires after executing a formatting command."))
+    ];
+
+    // ==================== ACCESSIBILITY ====================
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("role=toolbar", T("Container com semantica WAI-ARIA.", "Container with WAI-ARIA semantics."), "universal-access"),
+        new("Roving tabindex", T("Navegacao por setas entre botoes.", "Arrow key navigation between buttons."), "keyboard"),
+        new("aria-pressed", T("Botoes toggle recebem aria-pressed.", "Toggle buttons receive aria-pressed."), "tag"),
+        new("aria-label", T("Cada botao tem aria-label descritivo.", "Each button has descriptive aria-label."), "heading"),
+        new("Keyboard shortcuts", T("Atalhos de teclado para cada acao.", "Keyboard shortcuts for each action."), "keyboard"),
+        new("Focus visible", T("Indicador visual de foco para navegacao por teclado.", "Visual focus indicator for keyboard navigation."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre botoes da toolbar.", "Navigates between toolbar buttons.")),
+        new("ArrowRight / ArrowDown", T("Move foco para o proximo botao.", "Moves focus to the next button.")),
+        new("ArrowLeft / ArrowUp", T("Move foco para o botao anterior.", "Moves focus to the previous button.")),
+        new("Home", T("Move foco para o primeiro botao.", "Moves focus to the first button.")),
+        new("End", T("Move foco para o ultimo botao.", "Moves focus to the last button.")),
+        new("Enter / Space", T("Ativa o botao focado.", "Activates the focused button."))
+    ];
+
+    // ==================== FAQ ====================
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Preciso usar todos os 27 botoes?", "Do I need to use all 27 buttons?"), T("Nao, cada botao e independente. Inclua apenas os que seu editor precisa.", "No, each button is independent. Include only what your editor needs.")),
+        new(T("A toolbar funciona sem o editor?", "Does the toolbar work without the editor?"), T("Sim, a toolbar funciona independente. Conecte ao editor via eventos.", "Yes, the toolbar works independently. Connect to the editor via events.")),
+        new(T("Posso adicionar botoes customizados?", "Can I add custom buttons?"), T("Sim, use ChildContent para injetar componentes adicionais na toolbar.", "Yes, use ChildContent to inject additional components into the toolbar."))
+    ];
+
+    // ==================== CHANGELOG ====================
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-30", T("Documentacao inicial da toolbar com 27 botoes.", "Initial toolbar documentation with 27 buttons."))
+    ];
+
+    // ==================== HELPERS ====================
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6 pb-2"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="flex flex-col"><div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int cols) => @<XFGrid Cols="1" Md="@Math.Min(cols, 2)" Lg="@cols" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string h1, string h2) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@h1</XFTableCell><XFTableCell Header="true">@h2</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var r in rows) { <XFTableRow><XFTableCell><XFCode Text="@r.Name" /></XFTableCell><XFTableCell>@r.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var r in rows) { <XFTableRow><XFTableCell><XFCode Text="@r.Name" /></XFTableCell><XFTableCell>@r.Type</XFTableCell><XFTableCell><XFCode Text="@r.DefaultValue" /></XFTableCell><XFTableCell>@r.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

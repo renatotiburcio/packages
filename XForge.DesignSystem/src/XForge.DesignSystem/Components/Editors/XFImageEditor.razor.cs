@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Editors
+namespace XForge.DesignSystem.Components.Editors
 {
     public partial class XFImageEditor : XForgeComponentBase
     {

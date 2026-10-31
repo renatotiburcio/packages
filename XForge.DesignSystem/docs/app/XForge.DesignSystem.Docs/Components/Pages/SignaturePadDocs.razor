@@ -1,0 +1,189 @@
+@page "/forms/signature-pad"
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="@T("Signature Pad", "Signature Pad")"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSignaturePad" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Canvas", "Canvas")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Assinatura", "Signature")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Formularios", "Forms")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">@T("Captura de assinatura para contratos, aprovacao e fluxos operacionais.", "Signature capture for contracts, approval and operational workflows.")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("XFSignaturePad permite capturar assinaturas digitais via mouse, caneta ou toque usando um canvas HTML5. Suporta undo, clear, readonly, required e export como base64. Ideal para contratos, ordens de pagamento, recebimento de mercadoria e aprovacao de despesas.", "XFSignaturePad allows capturing digital signatures via mouse, pen or touch using an HTML5 canvas. Supports undo, clear, readonly, required and base64 export. Ideal for contracts, payment orders, goods receipt and expense approval.")</XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts) { @Tile(item) }</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section(T("Blazor Server e Blazor WebAssembly", "Blazor Server and Blazor WebAssembly"), @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Canvas de assinatura indisponivel durante prerender.", "Renders base HTML. Signature canvas unavailable during prerender.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-signaturepad.js — registra instancia do SignaturePad no canvas, gerencia eventos mouse/touch e expoe metodos clear/undo/export.", "JS file: xf-signaturepad.js — registers SignaturePad instance on canvas, manages mouse/touch events and exposes clear/undo/export methods.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: OnAfterRenderAsync.", "When loaded: OnAfterRenderAsync.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Prerender seguro: try/catch para InvalidOperationException e JSDisconnectedException.", "Prerender safe: try/catch for InvalidOperationException and JSDisconnectedException.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor Server", "Blazor Server Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop via SignalR com latencia. Captura de tracos pode ter resposta mais lenta.", "JS interop via SignalR with latency. Stroke capture may have slower response.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor WebAssembly", "Blazor WebAssembly Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop direto sem latencia de rede. Disponivel apos carregamento do WASM.", "Direct JS interop with no network latency. Available after WASM load.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Preview renderizado", "Live Preview"), T("Pad de assinatura com toolbar e label.", "Signature pad with toolbar and label."), SignaturePreview(), SignatureCode)
+            @Example(T("Variacoes", "Variations"), T("Com label, sem toolbar, readonly.", "With label, without toolbar, readonly."), VariationsPreview(), VariationsCode)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFSignaturePad Label="@T("Assinatura do cliente", "Client signature")" HelperText="@T("Assine usando mouse, caneta ou toque.", "Sign using mouse, pen or touch.")" Width="600" Height="180" />
+    </XFStack>;
+
+    private RenderFragment SignaturePreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFSignaturePad Label="@T("Assinatura do responsavel", "Responsible person signature")" HelperText="@T("Assine no campo abaixo.", "Sign in the field below.")" Required="true" RequiredText="@T("Assinatura obrigatoria.", "Signature is required.")" />
+    </XFStack>;
+
+    private RenderFragment VariationsPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFSignaturePad Label="@T("Sem toolbar", "Without toolbar")" ShowToolbar="false" Width="500" Height="120" />
+        <XFSignaturePad Label="@T("Readonly", "Readonly")" ReadOnly="true" HelperText="@T("Campo somente leitura.", "Read-only field.")" />
+    </XFStack>;
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro","Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao","Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private string SignatureCode => @"<XFSignaturePad Label=""Assinatura do responsavel""
+    HelperText=""Assine no campo abaixo.""
+    Required=""true""
+    RequiredText=""Assinatura obrigatoria."" />";
+
+    private string VariationsCode => @"<XFSignaturePad Label=""Sem toolbar"" ShowToolbar=""false"" />
+<XFSignaturePad Label=""Readonly"" ReadOnly=""true"" />";
+
+    private IReadOnlyList<DocTile> QuickFacts => [new(T("Canvas HTML5", "HTML5 Canvas"), T("Renderiza em canvas com suporte a touch.", "Renders on canvas with touch support."), "pen"), new(T("JS Interop", "JS Interop"), T("Modulo JS para registro, undo e clear.", "JS module for registration, undo and clear."), "code"), new(T("Base64", "Base64"), T("Exporta assinatura como string base64.", "Exports signature as base64 string."), "file-export")];
+    private IReadOnlyList<NameValueRow> MetadataRows => [new("Component", "XFSignaturePad"), new("Namespace", "XForge.DesignSystem.Components.Forms.SignaturePad"), new("Package", "XForge.DesignSystem"), new("Category", T("Formularios / Assinatura", "Forms / Signature")), new("Status", T("Estavel", "Stable")), new("Accessibility", T("aria-label no canvas.", "aria-label on canvas."))];
+    private IReadOnlyList<DocTile> OverviewItems => [new(T("Captura digital", "Digital capture"), T("Assinatura via mouse, caneta ou toque.", "Signature via mouse, pen or touch."), "pen"), new(T("Toolbar integrada", "Integrated toolbar"), T("Undo e Clear com helper text.", "Undo and Clear with helper text."), "sliders"), new(T("Required", "Required"), T("Validacao de campo obrigatorio.", "Required field validation."), "circle-check")];
+    private IReadOnlyList<DocTile> PurposeItems => [new(T("Assinatura digital", "Digital signature"), T("Substitui papel em aprovacoes.", "Replaces paper in approvals."), "pen"), new(T("Evidencia", "Evidence"), T("Prova visual de concordancia.", "Visual proof of agreement."), "shield-check")];
+    private IReadOnlyList<DocTile> ProblemItems => [new(T("Antes", "Before"), T("Integracao manual de canvas e JS.", "Manual canvas and JS integration."), "xmark"), new(T("Depois", "After"), T("Componente encapsulado com Blazor.", "Encapsulated component with Blazor."), "check")];
+    private IReadOnlyList<DocTile> UseItems => [new(T("Contratos", "Contracts"), T("Assinatura de contratos e termos.", "Signing contracts and terms."), "file-lines"), new(T("Aprovacao", "Approval"), T("Assinatura em ordens de pagamento.", "Signing payment orders."), "circle-check"), new(T("Recebimento", "Receipt"), T("Assinatura de recebimento de mercadoria.", "Signing goods receipt."), "box-archive")];
+    private IReadOnlyList<DocTile> AvoidItems => [new(T("Assinatura critica", "Critical signature"), T("Para validade juridica use certificado digital.", "For legal validity use digital certificate."), "xmark")];
+    private IReadOnlyList<DocTile> AnatomyItems => [new("Canvas", T("Area principal de desenho com suporte a touch.", "Main drawing area with touch support."), "pen"), new("Label", T("Texto descritivo acima do canvas.", "Descriptive text above canvas."), "font"), new("Toolbar", T("Botoes de undo e clear com helper text.", "Undo and clear buttons with helper text."), "sliders"), new("HelperText", T("Texto de orientacao abaixo da toolbar.", "Guidance text below toolbar."), "circle-info"), new("RequiredIndicator", T("Mensagem de campo obrigatorio quando vazio.", "Required field message when empty."), "triangle-exclamation")];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [new(T("Feedback visual", "Visual feedback"), T("Mostra tracos em tempo real no canvas.", "Shows strokes in real-time on canvas."), "eye"), new(T("Simplicidade", "Simplicity"), T("Canvas limpo com toolbar opcional.", "Clean canvas with optional toolbar."), "minimize"), new(T("Acessibilidade", "Accessibility"), T("aria-label no canvas e navegacao por teclado.", "aria-label on canvas and keyboard navigation."), "universal-access")];
+    private IReadOnlyList<NameValueRow> KeyboardRows => [new("Ctrl+Z", T("Desfaz ultimo traco (undo).", "Undoes the last stroke (undo).")), new("Ctrl+Delete", T("Limpa todo o canvas (clear).", "Clears the entire canvas (clear)."))];
+    private IReadOnlyList<DocTile> AccessibilityItems => [new(T("aria-label", "aria-label"), T("Canvas tem label acessivel.", "Canvas has accessible label."), "universal-access")];
+    private IReadOnlyList<DocTile> ResponsivenessItems => [new(T("Width fluido", "Fluid width"), T("Canvas se adapta ao container.", "Canvas adapts to container."), "mobile-screen")];
+    private IReadOnlyList<DocTile> PerformanceItems => [new(T("Lazy JS", "Lazy JS"), T("Modulo JS carregado sob demanda.", "JS module loaded on demand."), "bolt"), new(T("Cleanup", "Cleanup"), T("DisposeAsync limpa recursos.", "DisposeAsync cleans up resources."), "shield-check")];
+    private IReadOnlyList<DocTile> ScenarioItems => [new("ERP", T("Assinatura em contratos e aprovacoes.", "Signing contracts and approvals."), "briefcase"), new(T("Financeiro", "Finance"), T("Assinatura em ordens de pagamento.", "Signing payment orders."), "chart-line-up")];
+    private IReadOnlyList<DocTile> BestPracticeItems => [new(T("Helper text", "Helper text"), T("Oriente o usuario sobre o campo.", "Guide the user about the field."), "circle-check"), new(T("Required", "Required"), T("Marque como required quando obrigatorio.", "Mark as required when mandatory."), "circle-check")];
+    private IReadOnlyList<DocTile> AntiPatternItems => [new(T("Sem validacao", "No validation"), T("Use Required para campos obrigatorios.", "Use Required for mandatory fields."), "xmark")];
+    private IReadOnlyList<NameValueRow> TestingRows => [new("Unit", T("Cobre render, label, toolbar, readonly, required, width, height, pen.", "Covers render, label, toolbar, readonly, required, width, height, pen."))];
+    private IReadOnlyList<NameValueRow> TokenRows => [new("canvas", T("w-full rounded-lg border border-border-light bg-white.", "w-full rounded-lg border border-border-light bg-white.")), new("toolbar", T("flex items-center justify-between gap-2.", "flex items-center justify-between gap-2.")), new("toolButton", T("px-3 py-1.5 text-xs font-medium rounded-md.", "px-3 py-1.5 text-xs font-medium rounded-md."))];
+    private IReadOnlyList<DocTile> ThemeItems => [new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"), new("data-brand", T("Cor da caneta acompanha marca ativa.", "Pen color follows active brand."), "swatchbook")];
+    private IReadOnlyList<NameValueRow> LimitationRows => [new("Touch", T("Latencia em Blazor Server via SignalR.", "Latency in Blazor Server via SignalR.")), new("Export", T("Base64; conversao PNG no servidor necessaria.", "Base64; PNG conversion on server required."))];
+    private IReadOnlyList<DocTile> RelatedComponentItems => [new("XFInput", T("Campos de formulario complementares.", "Complementary form fields."), "keyboard")];
+    private IReadOnlyList<NameValueRow> FaqRows => [new(T("Exporta como imagem?", "Exports as image?"), T("Exporta como base64; converta para PNG no servidor.", "Exports as base64; convert to PNG on server.")), new(T("Funciona em mobile?", "Works on mobile?"), T("Sim; suporta touch nativo.", "Yes; supports native touch."))];
+    private IReadOnlyList<NameValueRow> ChangelogRows => [new("2026-05-26", T("Pagina refeita no padrao enterprise com API real.", "Page rebuilt in the enterprise standard with real API."))];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("Value", "string?", "null", T("Base64 da assinatura.", "Base64 of the signature.")),
+        new("ValueChanged", "EventCallback<string?>", "default", T("Binding two-way do Value.", "Two-way binding of Value.")),
+        new("Change", "EventCallback<string?>", "default", T("Disparado ao finalizar traco.", "Fired on stroke end.")),
+        new("Label", "string?", "null", T("Label acima do canvas.", "Label above canvas.")),
+        new("AriaLabel", "string", "\"Campo de assinatura\"", T("Label acessivel do canvas.", "Accessible label of canvas.")),
+        new("HelperText", "string", T("\"Assine usando mouse...\"", "\"Sign using mouse...\""), T("Texto de ajuda abaixo do canvas.", "Help text below canvas.")),
+        new("ClearLabel", "string", "\"Limpar\"", T("Label do botao limpar.", "Clear button label.")),
+        new("UndoLabel", "string", "\"Desfazer\"", T("Label do botao desfazer.", "Undo button label.")),
+        new("RequiredText", "string", T("\"Assinatura obrigatoria.\"", "\"Signature required.\""), T("Mensagem de required.", "Required message.")),
+        new("Width", "int", "720", T("Largura do canvas em pixels.", "Canvas width in pixels.")),
+        new("Height", "int", "220", T("Altura do canvas em pixels.", "Canvas height in pixels.")),
+        new("PenWidth", "double", "3.2", T("Largura da caneta.", "Pen width.")),
+        new("SmoothingDistance", "double", "1.8", T("Suavizacao do traco.", "Stroke smoothing.")),
+        new("PenColor", "string", "\"#111827\"", T("Cor da caneta.", "Pen color.")),
+        new("BackgroundColor", "string", "\"#ffffff\"", T("Cor de fundo do canvas.", "Canvas background color.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read only.")),
+        new("Required", "bool", "false", T("Campo obrigatorio.", "Required field.")),
+        new("ShowToolbar", "bool", "true", T("Mostra toolbar com undo/clear.", "Shows toolbar with undo/clear."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [new("Change", T("Disparado apos cada traco com base64.", "Fired after each stroke with base64.")), new("ValueChanged", T("Binding two-way do Value.", "Two-way binding of Value."))];
+    private IReadOnlyList<NameValueRow> MethodRows => [new("ClearAsync", T("Limpa toda a assinatura.", "Clears the entire signature.")), new("UndoAsync", T("Desfaz o ultimo traco.", "Undoes the last stroke."))];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

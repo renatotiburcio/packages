@@ -1,0 +1,440 @@
+@page "/feedback/overview"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="Core Open Source" Title="Feedback Overview" Status="Category standard" Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <div class="grid gap-6">
+                    <div class="flex flex-wrap gap-2">
+                        <XFBadge Text="System states" Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" />
+                        <XFBadge Text="Async UX" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" />
+                        <XFBadge Text="Accessible feedback" Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            Feedback transforma estados do sistema em comunicacao clara, acionavel e acessivel.
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            A categoria Feedback existe para padronizar mensagens, progresso, carregamento, confirmacoes
+                            e recuperacao de erro em produtos enterprise. Ela reduz incerteza, protege fluxos criticos,
+                            comunica risco sem depender apenas de cor e preserva performance com renderizacoes leves,
+                            sem layouts instaveis.
+                        </XFTypography>
+                    </div>
+
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <div class="grid gap-3">
+                            @foreach (var item in HeroFacts)
+                            {
+                                @InfoTile(item)
+                            }
+                        </div>
+                    </div>
+                </div>
+            </ChildContent>
+        </XFCard>
+
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+            <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">Blazor Server e Blazor WebAssembly</XFTypography></Header>
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                    <XFTable Striped="true" Hoverable="true" Compact="true">
+                        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                        <XFTableBody>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                            <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                        </XFTableBody>
+                    </XFTable>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Overview" Description="Feedback cobre comunicacao de estado, espera, progresso e resposta a eventos sem transformar cada pagina em uma colecao de mensagens improvisadas." Items="OverviewItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Philosophy" Description="Cada mensagem deve responder o que aconteceu, o que muda para o usuario e qual proximo passo existe." Items="PhilosophyItems" />
+            <XForgeCategoryOverviewSection Title="Category Objectives" Items="ObjectiveItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewComponentTable Rows="ComponentRows" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Visual Language" Items="VisualLanguageItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="UX Standards" Items="UxStandardItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Accessibility Standards" Items="AccessibilityItems" />
+            <XForgeCategoryOverviewSection Title="Responsiveness Standards" Items="ResponsiveItems" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Theme Standards" Items="ThemeItems" />
+            <XForgeCategoryOverviewNameDescriptionTable Title="Design Tokens"
+                                                        NameHeader="Token Group"
+                                                        DescriptionHeader="Purpose"
+                                                        CodeName="true"
+                                                        Rows="TokenRows" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Common Patterns" Items="PatternItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Enterprise Scenarios" Items="ScenarioItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewExampleGallery Examples="Examples" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewSection Title="Documentation Standards" Items="DocumentationItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Anti-patterns" Items="AntiPatternItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Migration Guidance" Items="MigrationItems" Columns="3" />
+            <XForgeCategoryOverviewSection Title="Best Practices" Items="BestPracticeItems" Columns="3" />
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            <XForgeCategoryOverviewNameDescriptionTable Title="Related Categories"
+                                                        NameHeader="Category"
+                                                        DescriptionHeader="Relationship"
+                                                        Rows="RelatedCategories" />
+        </XFStack>
+    </XFStack>
+
+    <XForgeDocsPageStandard ComponentName="FeedbackOverviewDocs" IsOverview="true" />
+</XForgeDocsShell>
+
+@code {
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+
+    private static RenderFragment HeroPreview() => @<div class="grid gap-4">
+        <XFAlert Title="Conciliacao concluida"
+                 Text="381 lancamentos processados com 2 divergencias para revisao."
+                 Tone="XFSemanticColor.Success"
+                 Variant="XFAlertVariant.Soft" />
+        <XFProgress Label="Exportacao fiscal" Value="72" Max="100" Color="XFProgressColor.Primary" ShowValue="true" />
+        <div class="grid gap-3 md:grid-cols-3">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Fila critica</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">12 alertas</XFTypography>
+                    <XFBadge Text="Revisar" Color="XFBadgeColor.Warning" />
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">SLA medio</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">76%</XFTypography>
+                    <XFProgressRing Value="76" Max="100" Color="XFProgressColor.Success" ShowValue="true" />
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Carregamento</XFTypography>
+                    <div class="mt-2 grid gap-2">
+                        <XFSkeleton Size="XFExtendedSize.Sm" />
+                        <XFSkeleton Size="XFExtendedSize.Xs" />
+                    </div>
+                </ChildContent>
+            </XFCard>
+        </div>
+    </div>;
+
+    private RenderFragment InfoTile(XForgeCategoryOverviewItem item) => @<XForgeCategoryOverviewTile Item="item" />;
+
+    private IReadOnlyList<XForgeCategoryOverviewExample> Examples =>
+    [
+        new("Operational status stack", "Alertas com severidade, texto acionavel e progresso deterministico para processamento fiscal.", StatusStackPreview(), StatusStackCode),
+        new("Loading without layout shift", "Skeleton preserva a estrutura esperada enquanto dados de ERP carregam.", SkeletonPreview(), SkeletonCode),
+        new("Review queue progress", "Progress e ProgressRing comunicam lote, SLA e risco sem bloquear o operador.", ReviewQueuePreview(), ReviewQueueCode)
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> HeroFacts =
+    [
+        new("Objetivo enterprise", "Comunicar estado, risco e proximo passo sem interromper trabalho desnecessariamente.", "message-exclamation"),
+        new("Acessibilidade", "Live regions, contraste e foco preservam entendimento em fluxos criticos.", "universal-access"),
+        new("Performance", "Skeleton, progress e mensagens estaveis evitam layout shift e ruido visual.", "bolt")
+    ];
+
+    private static RenderFragment StatusStackPreview() => @<div class="grid gap-3">
+        <XFAlert Title="Pendencia fiscal encontrada"
+                 Text="A NF-e 94381 precisa de revisao antes do fechamento."
+                 Tone="XFSemanticColor.Warning"
+                 Variant="XFAlertVariant.Soft"
+                  Live="XFAriaLive.Assertive">
+            <Actions>
+                <XFButton Text="Revisar" Size="XFExtendedSize.Sm" />
+                <XFButton Text="Ignorar por agora" Size="XFExtendedSize.Sm" Variant="XFButtonVariant.Outline" />
+            </Actions>
+        </XFAlert>
+        <XFProgress Label="Validacao do lote" Value="68" Max="100" Color="XFProgressColor.Warning" ShowValue="true" />
+    </div>;
+
+    private static RenderFragment SkeletonPreview() => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+        <ChildContent>
+            <div class="grid gap-4">
+                <div class="flex items-center gap-3">
+                    <XFSkeleton Shape="XFSkeletonShape.Avatar" Size="XFExtendedSize.Sm" />
+                    <div class="grid flex-1 gap-2">
+                        <XFSkeleton Size="XFExtendedSize.Sm" />
+                        <XFSkeleton Size="XFExtendedSize.Xs" />
+                    </div>
+                </div>
+                <XFSkeleton Shape="XFSkeletonShape.Rectangle" Size="XFExtendedSize.Sm" />
+            </div>
+        </ChildContent>
+    </XFCard>;
+
+    private static RenderFragment ReviewQueuePreview() => @<div class="grid gap-3 md:grid-cols-3">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+            <ChildContent>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">Fila</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">128 itens</XFTypography>
+                <XFProgress Value="42" Max="100" Color="XFProgressColor.Info" AriaLabel="Progresso da fila de revisao" />
+            </ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+            <ChildContent>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">SLA</XFTypography>
+                <div class="mt-2 flex items-center gap-3">
+                    <XFProgressRing Value="76" Max="100" Color="XFProgressColor.Success" ShowValue="true" />
+                    <XFBadge Text="No prazo" Color="XFBadgeColor.Success" />
+                </div>
+            </ChildContent>
+        </XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+            <ChildContent>
+                <XFAlert Title="Risco baixo" Text="Sem bloqueio para continuar o lote." Tone="XFSemanticColor.Success" Variant="XFAlertVariant.Subtle" />
+            </ChildContent>
+        </XFCard>
+    </div>;
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> OverviewItems =
+    [
+        new("System state", "Comunica sucesso, aviso, erro, progresso e espera com semantica consistente.", "circle-info"),
+        new("User recovery", "Mostra o proximo passo quando algo falha ou requer decisao.", "arrows-rotate"),
+        new("Async clarity", "Mantem o usuario orientado durante operacoes longas.", "clock"),
+        new("Enterprise risk", "Diferencia informacao, bloqueio, alerta e risco operacional.", "shield-check"),
+        new("Architecture", "Centraliza feedback em componentes, servicos e providers reutilizaveis.", "layer-group"),
+        new("Performance", "Evita spinners infinitos, layout shift e updates ruidosos.", "gauge-high")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> PhilosophyItems =
+    [
+        new("Clareza antes de decoracao", "A mensagem deve explicar impacto e acao, nao apenas colorir a tela.", "message-exclamation"),
+        new("Semantica visivel", "Cor, texto, icone e aria precisam contar a mesma historia.", "eye"),
+        new("Progresso honesto", "Use progresso determinado quando houver percentual real e indeterminado quando nao houver.", "chart-line-up"),
+        new("Menos interrupcao", "Alertas persistentes, toasts e dialogs devem respeitar urgencia e contexto.", "bell")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ObjectiveItems =
+    [
+        new("Standardization", "Unificar severidade, tom, live region, progressos e placeholders.", "check"),
+        new("Recoverability", "Dar caminhos claros para revisar, tentar novamente ou cancelar.", "arrow-rotate-left"),
+        new("Observability", "Expor estados de operacoes sem depender de logs ou refresh manual.", "eye"),
+        new("A11y by default", "Alertas e progresso usam roles e aria compatveis com leitores de tela.", "universal-access"),
+        new("Workflow continuity", "Feedback nao deve roubar foco sem motivo nem bloquear trabalho paralelo.", "route"),
+        new("Low noise", "Evitar repeticao, duplicidade de mensagens e animacoes excessivas.", "volume-xmark")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewComponentRow> ComponentRows =
+    [
+        new("XFAlert", "Mensagem contextual persistente.", "Confirmar, avisar ou explicar erro.", "Pendencias fiscais, bloqueios de aprovacao e status de integracao.", "High", "Medium"),
+        new("XFToast", "Notificacao temporaria via provider.", "Confirmar eventos nao bloqueantes.", "Upload concluido, registro salvo, job enfileirado.", "High", "High"),
+        new("XFDialog", "Interrupcao modal para decisao critica.", "Confirmar acao destrutiva ou capturar decisao.", "Cancelar fechamento, aprovar risco, excluir documento.", "High", "High"),
+        new("XFProgress", "Barra de progresso linear.", "Mostrar operacao por percentual ou indeterminada.", "Importacao, exportacao, conciliacao e sincronizacao.", "High", "Medium"),
+        new("XFProgressRing", "Progresso radial compacto.", "Exibir SLA, score ou etapa em cards.", "KPI operacional, fila e progresso por lote.", "High", "Medium"),
+        new("XFSkeleton", "Placeholder estrutural.", "Carregamento sem layout shift.", "Cards, tabelas e resumos antes da API responder.", "Medium", "Low"),
+        new("XFSkeletonTable", "Placeholder de tabela.", "Carregamento de grids densos.", "Listas fiscais, pedidos, produtos e clientes.", "Medium", "Medium"),
+        new("XFChat", "Feedback conversacional.", "Conversas assistidas e historico operacional.", "Atendimento, suporte interno e copilotos.", "High", "High"),
+        new("XFLottie", "Animacao controlada.", "Estados ilustrativos e microinteracoes.", "Onboarding, vazio ou sucesso com motion reduzido.", "Medium", "Medium"),
+        new("XFSplashScreen", "Estado inicial de carregamento.", "Bootstrap de aplicativo.", "ERP carregando tenant, tema, permissoes e recursos.", "Medium", "Medium")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> VisualLanguageItems =
+    [
+        new("Severity ladder", "Info, success, warning e danger devem ter contraste e peso coerentes.", "triangle-exclamation"),
+        new("Persistent vs transient", "Alertas ficam no fluxo; toasts confirmam eventos temporarios.", "bell-ring"),
+        new("Progress affordance", "Barras indicam processo linear; rings indicam progresso compacto ou KPI.", "chart-line-up"),
+        new("Placeholder structure", "Skeleton deve parecer o conteudo final, sem virar decoracao.", "rectangles-mixed"),
+        new("Icon consistency", "Icones reforcam severidade e acao sem substituir texto.", "sparkles"),
+        new("Motion restraint", "Animacao deve orientar, nunca competir com dados criticos.", "bolt")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> UxStandardItems =
+    [
+        new("Actionable copy", "Erro bom diz causa, impacto e proximo passo.", "file-lines"),
+        new("Priority", "Use dialog para decisao critica, alert para contexto e toast para confirmacao.", "diagram-project"),
+        new("No dead ends", "Falhas precisam oferecer tentar novamente, revisar ou suporte.", "arrow-rotate-left"),
+        new("Stable dimensions", "Loading nao deve mudar largura de cards, botoes ou tabelas.", "arrows-minimize"),
+        new("Batch feedback", "Agrupe mensagens repetidas em resumo quando houver muitos eventos.", "list-ul"),
+        new("Human timing", "Toasts devem durar o suficiente e evitar sumir com informacao critica.", "clock")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> AccessibilityItems =
+    [
+        new("Live regions", "Status nao critico usa polite; bloqueio e erro urgente usa assertive.", "speaker"),
+        new("Keyboard", "Acoes em alertas e dialogs preservam Tab, Enter, Escape e foco visivel.", "keyboard"),
+        new("Contrast", "Texto de severidade precisa passar AA em claro e escuro.", "eye"),
+        new("Reduced motion", "Skeleton, progress e lottie respeitam preferencias de movimento.", "gauge-high")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ResponsiveItems =
+    [
+        new("Mobile placement", "Toasts e dialogs devem caber em viewport pequena sem cobrir a acao principal.", "mobile-screen"),
+        new("Wrapping actions", "Acoes de alerta quebram linha sem perder hierarquia.", "arrows-maximize"),
+        new("Dense grids", "Skeleton table deve preservar colunas ou compactar com criterio.", "table-cells"),
+        new("Touch targets", "Dismiss, retry e action buttons mantem alvo minimo.", "hand-pointer")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ThemeItems =
+    [
+        new("Token inheritance", "Componentes leem cores do tema e do brand ativo no shell.", "swatchbook"),
+        new("Dark mode", "Estados usam tokens de surface/text/status, nunca hex fixo.", "moon"),
+        new("Brand safety", "Primary comunica acao do produto; warning/danger comunicam risco real.", "paintbrush"),
+        new("High contrast", "Severidade combina texto, icone e cor para nao depender de uma dimensao.", "shield-check")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewNameDescription> TokenRows =
+    [
+        new("Colors", "Status semanticos: info, success, warning, danger, primary, neutral e contraste."),
+        new("Typography", "Titulos curtos, corpo explicativo e captions para metadados de processo."),
+        new("Radius", "Alertas, toasts e skeletons usam radius coerente com cards e superficies."),
+        new("Elevation", "Toasts e dialogs usam sombra para camada; alertas in-flow evitam excesso."),
+        new("Spacing", "Gaps separam titulo, texto, acoes e progresso sem compactar demais."),
+        new("Borders", "Outline/ring indicam severidade, foco e limites de superficie."),
+        new("Motion", "Shimmer, pulse e transicoes curtas respeitam motion-reduce.")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> PatternItems =
+    [
+        new("Inline alert", "Mensagem contextual perto do dado ou formulario afetado.", "message-exclamation"),
+        new("Async toast", "Confirmacao temporaria apos salvar, exportar ou enfileirar job.", "bell"),
+        new("Blocking dialog", "Decisao critica com consequencia clara.", "window-restore"),
+        new("Determinate progress", "Percentual real para importacao, exportacao e conciliacao.", "chart-line-up"),
+        new("Skeleton scaffold", "Reserva espaco para conteudo esperado antes da API responder.", "rectangles-mixed"),
+        new("Status summary", "Agrupa multiplos avisos em um resumo navegavel.", "list-ul")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> ScenarioItems =
+    [
+        new("Financeiro", "Conciliacao, fechamento e aprovacao precisam de progresso e erro recuperavel.", "money-bill"),
+        new("Fiscal", "Validacao de NF-e exige warnings assertivos e trilha de pendencias.", "calculator"),
+        new("Estoque", "Importacao de lote usa progress, skeleton e resumo de divergencias.", "box-archive"),
+        new("RH", "Aprovacoes usam alertas persistentes e dialogs para decisoes sensiveis.", "users"),
+        new("CRM", "Toasts confirmam follow-up e alertas sinalizam SLA vencido.", "briefcase"),
+        new("AI workflows", "Agentes precisam explicar etapa, risco, fonte e progresso de execucao.", "sparkles")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> DocumentationItems =
+    [
+        new("Severity", "Documentar quando usar info, success, warning, danger e neutral.", "swatchbook"),
+        new("Live behavior", "Informar role, aria-live e impacto para leitores de tela.", "speaker"),
+        new("Actions", "Exemplos devem mostrar retry, review, dismiss e cancel quando aplicavel.", "arrow-rotate-left"),
+        new("Loading", "Mostrar skeleton, progress determinado e indeterminado.", "arrows-rotate"),
+        new("Providers", "Toast, dialog e page progress devem documentar servicos e registro DI.", "gear"),
+        new("Examples", "Usar cenarios ERP reais e snippets copiaveis.", "code")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> AntiPatternItems =
+    [
+        new("Spinner infinito", "Nao esconder operacao longa sem contexto, percentual ou alternativa.", "arrows-rotate"),
+        new("Erro generico", "Evite 'algo deu errado' sem causa, impacto ou acao.", "circle-xmark"),
+        new("Cor sem texto", "Warning em amarelo sem texto acessivel falha em contraste e semantica.", "triangle-exclamation"),
+        new("Toast critico", "Nao coloque decisao irreversivel em notificacao temporaria.", "bell"),
+        new("Skeleton decorativo", "Nao use placeholder que nao corresponde ao layout final.", "rectangles-mixed"),
+        new("Focus loss", "Dialogs e dismiss nao podem jogar foco para o topo da pagina.", "bullseye")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> MigrationItems =
+    [
+        new("div.alert local", "Migrar para XFAlert com Intent, Variant, Live e Actions.", "message-exclamation"),
+        new("window.alert", "Migrar para XFDialog quando houver decisao ou bloqueio.", "window-restore"),
+        new("toast manual", "Migrar para XFToastService e XFToastProvider.", "bell-ring"),
+        new("progress CSS", "Migrar para XFProgress ou XFProgressRing com aria adequado.", "chart-line-up"),
+        new("placeholder solto", "Migrar para XFSkeleton, XFSkeletonGroup ou XFSkeletonTable.", "rectangles-mixed"),
+        new("loading global", "Migrar para XFPageProgressProvider quando o processo for de pagina.", "gauge-high")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewItem> BestPracticeItems =
+    [
+        new("Escolha o canal certo", "Toast confirma, alert contextualiza, dialog interrompe, progress orienta.", "check"),
+        new("Escreva para acao", "Mensagem boa reduz suporte e retrabalho.", "file-lines"),
+        new("Preserve foco", "Apos fechar ou concluir, foco volta para a acao que iniciou o fluxo.", "bullseye"),
+        new("Agrupe ruido", "Muitas mensagens viram resumo, nao avalanche visual.", "list-ul"),
+        new("Teste com tema escuro", "Feedback semanticamente forte pode quebrar contraste se usar cor fixa.", "moon"),
+        new("Meça render", "Skeletons e toasts em massa nao devem degradar grids e dashboards.", "gauge-high")
+    ];
+
+    private static readonly IReadOnlyList<XForgeCategoryOverviewNameDescription> RelatedCategories =
+    [
+        new("Forms", "Validacao, erros de campo e submit async usam alertas, progress e skeleton."),
+        new("Display", "Tabelas e cards precisam de loading, empty state, error state e refresh feedback."),
+        new("Overlays", "Dialog, drawer e popover hospedam decisoes e mensagens contextuais."),
+        new("Navigation", "Mudancas de rota e etapas usam progresso, status e foco restaurado."),
+        new("Layout", "Shell recebe toast provider, page progress e regioes live globais."),
+        new("AI", "Agentes comerciais reutilizam feedback para explicar execucao, risco e fontes.")
+    ];
+
+    private const string StatusStackCode = """
+<XFAlert Title="Pendencia fiscal encontrada"
+         Text="A NF-e 94381 precisa de revisao antes do fechamento."
+         Tone="XFSemanticColor.Warning"
+         Variant="XFAlertVariant.Soft"
+         Live="XFAriaLive.Assertive">
+    <Actions>
+        <XFButton Text="Revisar" Size="XFExtendedSize.Sm" />
+        <XFButton Text="Ignorar por agora"
+                  Size="XFExtendedSize.Sm"
+                  Variant="XFButtonVariant.Outline" />
+    </Actions>
+</XFAlert>
+
+<XFProgress Label="Validacao do lote"
+            Value="68"
+            Max="100"
+            Color="XFProgressColor.Warning"
+            ShowValue="true" />
+""";
+
+    private const string SkeletonCode = """
+<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg">
+    <div class="grid gap-4">
+        <div class="flex items-center gap-3">
+            <XFSkeleton Shape="XFSkeletonShape.Avatar" Size="XFExtendedSize.Sm" />
+            <div class="grid flex-1 gap-2">
+                <XFSkeleton Size="XFExtendedSize.Sm" />
+                <XFSkeleton Size="XFExtendedSize.Xs" />
+            </div>
+        </div>
+        <XFSkeleton Shape="XFSkeletonShape.Rectangle" Size="XFExtendedSize.Sm" />
+    </div>
+</XFCard>
+""";
+
+    private const string ReviewQueueCode = """
+<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+    <XFTypography Variant="XFTypographyVariant.Body2"
+                  Color="XFTypographyColor.Muted">
+        Fila
+    </XFTypography>
+    <XFTypography Variant="XFTypographyVariant.H4"
+                  Weight="XFTypographyWeight.Semibold">
+        128 itens
+    </XFTypography>
+    <XFProgress Value="42"
+                Max="100"
+                Color="XFProgressColor.Info"
+                AriaLabel="Progresso da fila de revisao" />
+</XFCard>
+""";
+}

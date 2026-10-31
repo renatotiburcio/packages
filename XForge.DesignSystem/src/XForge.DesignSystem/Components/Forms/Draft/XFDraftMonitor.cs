@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 
-namespace XForge.Components.Forms.Draft;
+namespace XForge.DesignSystem.Components.Forms.Draft;
 
 /// <summary>
 /// Monitors form draft state (in-progress edits not yet submitted).

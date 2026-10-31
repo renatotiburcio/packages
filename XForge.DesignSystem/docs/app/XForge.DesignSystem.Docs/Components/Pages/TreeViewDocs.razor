@@ -1,0 +1,473 @@
+@page "/display/tree-view"
+@page "/display/treeview"
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.Forms.TextInput
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFTreeView" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Selecao, checkboxes, drag-and-drop e filtragem", "Selection, checkboxes, drag-and-drop and filtering")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Arvore hierarquica interativa com selecao, drag-and-drop e filtragem.",
+                               "Interactive hierarchical tree with selection, drag-and-drop and filtering.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente de visualizacao em arvore para centros de custo, menus, permissoes e estruturas operacionais. Suporte a selecao unica/multipla, checkboxes com cascata, drag-and-drop, filtragem por texto e lazy loading.",
+                               "Tree view component for cost centers, menus, permissions and operational structures. Supports single/multi selection, cascading checkboxes, drag-and-drop, text filtering and lazy loading.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Arvore com nos pais e filhos, selecao e expansao.", "Tree with parent and child nodes, selection and expansion."), ExBasic(), Code1)
+            @Example(T("2. Com Checkboxes", "2. With Checkboxes"), T("Checkboxes com selecao cascata e estados indeterminados.", "Checkboxes with cascading selection and indeterminate states."), ExCheckboxes(), Code2)
+            @Example(T("3. Multi-Selecao", "3. Multi-Selection"), T("Selecao multipla de nos com SelectionMode.Multiple.", "Multiple node selection with SelectionMode.Multiple."), ExMultiSelect(), Code3)
+            @Example(T("4. Filtragem por Texto", "4. Text Filtering"), T("Filtragem de nos por texto com expansao automatica dos resultados.", "Node filtering by text with automatic expansion of results."), ExFiltered(), Code4)
+            @Example(T("5. Drag-and-Drop", "5. Drag-and-Drop"), T("Arrastar e soltar nos entre posicoes na arvore.", "Drag and drop nodes between positions in the tree."), ExDragDrop(), Code5)
+            @Example(T("6. Node Template Customizado", "6. Custom Node Template"), T("Template customizado para exibir nos com icones e descricoes.", "Custom template for displaying nodes with icons and descriptions."), ExCustomTemplate(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFTreeView", "XFTreeView");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private static readonly IReadOnlyList<XFTreeNode> Nodes = [ new() { Id = "financeiro", Text = "Financeiro", Children = [
+        new() { Id = "contas-pagar", Text = "Contas a pagar" },
+        new() { Id = "conciliacao", Text = "Conciliacao" }
+    ]}, new() { Id = "fiscal", Text = "Fiscal" } ];
+
+    private static readonly IReadOnlyList<string> Expanded = ["financeiro"];
+    private static readonly IReadOnlyList<string> Selected = ["conciliacao"];
+    private static readonly IReadOnlyList<string> Checked = ["contas-pagar"];
+    private string FilterTextValue = "";
+
+    private static readonly IReadOnlyList<XFTreeNode> NodesWithDescriptions = [ new() { Id = "financeiro", Text = "Financeiro", Description = "Modulo financeiro completo", Children = [
+        new() { Id = "contas-pagar", Text = "Contas a pagar", Description = "Gestao de fornecedores" },
+        new() { Id = "conciliacao", Text = "Conciliacao", Description = "Conciliacao bancaria" }
+    ]}, new() { Id = "fiscal", Text = "Fiscal", Description = "Obrigacoes fiscais" } ];
+
+    private static readonly IReadOnlyList<XFTreeNode> NodesWithIcons = [ new() { Id = "financeiro", Text = "Financeiro", Description = "Modulo financeiro", Children = [
+        new() { Id = "contas-pagar", Text = "Contas a pagar" },
+        new() { Id = "contas-receber", Text = "Contas a receber" }
+    ]}, new() { Id = "fiscal", Text = "Fiscal" }, new() { Id = "estoque", Text = "Estoque", Description = "Gestao de estoque" } ];
+
+    private static readonly IReadOnlyList<string> DragExpanded = ["financeiro"];
+    private static readonly IReadOnlyList<XFTreeNode> DragNodes = [ new() { Id = "financeiro", Text = "Financeiro", Children = [
+        new() { Id = "contas-pagar", Text = "Contas a pagar" },
+        new() { Id = "conciliacao", Text = "Conciliacao" }
+    ]}, new() { Id = "fiscal", Text = "Fiscal" }, new() { Id = "estoque", Text = "Estoque" } ];
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTreeView Items="@Nodes" ExpandedIds="@Expanded" SelectedIds="@Selected" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Arvore hierarquica", "Hierarchical tree"), T("Nos pais e filhos com expansao recursiva.", "Parent and child nodes with recursive expansion."), "sitemap"),
+        new(T("Selecao e checkboxes", "Selection and checkboxes"), T("Selecao unica/multipla e checkboxes com cascata.", "Single/multi selection and cascading checkboxes."), "check-double"),
+        new(T("Drag-and-drop", "Drag-and-drop"), T("Arrastar e soltar entre posicoes da arvore.", "Drag and drop between tree positions."), "up-down-left-right")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFTreeView"),
+        new("Namespace", "XForge.DesignSystem.Components.DataDisplay.TreeView"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Data Display / Tree View"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=tree, role=treeitem, aria-expanded, aria-selected, aria-checked, aria-level, aria-disabled, aria-busy.", "role=tree, role=treeitem, aria-expanded, aria-selected, aria-checked, aria-level, aria-disabled, aria-busy.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Arvore hierarquica", "Hierarchical tree"), T("Exibe nos pais e filhos com indentacao visual.", "Displays parent and child nodes with visual indentation."), "sitemap"),
+        new(T("Selecao", "Selection"), T("Selecao unica ou multipla de nos.", "Single or multiple node selection."), "check"),
+        new(T("Checkboxes", "Checkboxes"), T("Checkboxes com selecao cascata (pai/filho).", "Checkboxes with cascading selection (parent/child)."), "square-check")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Menus", "Menus"), T("Navegacao em estruturas de menus hierarquicas.", "Navigation in hierarchical menu structures."), "bars"),
+        new(T("Permissoes", "Permissions"), T("Gerenciamento de permissoes com checkboxes.", "Permission management with checkboxes."), "lock"),
+        new(T("Centros de custo", "Cost centers"), T("Estrutura hierarquica de centros de custo.", "Hierarchical cost center structure."), "building")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Listas planas sem hierarquia visual.", "Flat lists without visual hierarchy."), "xmark"),
+        new(T("Depois", "After"), T("Arvore com indentacao, expansao e selecao.", "Tree with indentation, expansion and selection."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=tree, aria-expanded, aria-selected, navegacao por teclado.", "role=tree, aria-expanded, aria-selected, keyboard navigation."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Menus de navegacao", "Navigation menus"), T("Menus com submenus e multi-level.", "Menus with submenus and multi-level."), "bars"),
+        new(T("Estruturas de dados", "Data structures"), T("Hierarquias de centros de custo, categorias, permissoes.", "Hierarchies of cost centers, categories, permissions."), "database")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Listas simples", "Simple lists"), T("Use XFList ou XFTable para listas sem hierarquia.", "Use XFList or XFTable for lists without hierarchy."), "list"),
+        new(T("Navegacao por abas", "Tab navigation"), T("Use XFTabs para navegacao entre abas.", "Use XFTabs for tab navigation."), "folder")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Container", T("Wrapper com role=tree e aria-multiselectable.", "Wrapper with role=tree and aria-multiselectable."), "square"),
+        new("Node", T("Cada no com role=treeitem e aria-level.", "Each node with role=treeitem and aria-level."), "circle"),
+        new("Toggle", T("Botao de expansao/recolhimento com chevron.", "Expand/collapse button with chevron."), "chevron-right"),
+        new("Checkbox", T("Checkbox opcional com estado indeterminado.", "Optional checkbox with indeterminate state."), "square-check"),
+        new("Label", T("Texto do no e descricao opcional.", "Node text and optional description."), "font"),
+        new("Indent", T("Espacamento horizontal por nivel de profundidade.", "Horizontal spacing by depth level."), "arrows-left-right")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Hierarquia visual", "Visual hierarchy"), T("Indentacao clara por nivel de profundidade.", "Clear indentation by depth level."), "layers"),
+        new(T("Interatividade", "Interactivity"), T("Expansao, selecao e drag-and-drop fluidos.", "Fluid expansion, selection and drag-and-drop."), "hand-pointer"),
+        new(T("Acessibilidade", "Accessibility"), T("role=tree, aria-*, navegacao por teclado completa.", "role=tree, aria-*, complete keyboard navigation."), "universal-access")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFTreeView Items="@Nodes" ExpandedIds="@Expanded" SelectedIds="@Selected" />;
+
+    private RenderFragment ExCheckboxes() => @<XFTreeView Items="@Nodes" ExpandedIds="@Expanded" AllowCheckBoxes="true" CheckedIds="@Checked" />;
+
+    private RenderFragment ExMultiSelect() => @<XFTreeView Items="@Nodes" ExpandedIds="@Expanded" SelectedIds="@Selected" SelectionMode="XFTreeViewSelectionMode.Multiple" />;
+
+    private RenderFragment ExFiltered() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTextInput @bind-Value="FilterTextValue" Placeholder="@T("Filtrar nos...", "Filter nodes...")" />
+        <XFTreeView Items="@Nodes" FilterText="@FilterTextValue" />
+    </XFStack>;
+
+    private RenderFragment ExDragDrop() => @<XFTreeView Items="@DragNodes" ExpandedIds="@DragExpanded" AllowDrag="true" AllowDrop="true" />;
+
+    private RenderFragment ExCustomTemplate() => @<XFTreeView Items="@NodesWithDescriptions" ExpandedIds="@Expanded" NodeTemplate="CustomNode" />;
+
+    private RenderFragment CustomNode(XFTreeNode node) => @<div class="flex items-center gap-2">
+        <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded bg-primary/10 text-primary text-xs font-bold">@node.Text[0]</span>
+        <span class="flex flex-col min-w-0">
+            <span class="font-medium truncate">@node.Text</span>
+            @if (!string.IsNullOrWhiteSpace(node.Description))
+            {
+                <span class="text-xs text-text-muted truncate">@node.Description</span>
+            }
+        </span>
+    </div>;
+
+    private const string Code1 = @"<XFTreeView Items=""@Nodes"" ExpandedIds=""@Expanded"" SelectedIds=""@Selected"" />";
+    private const string Code2 = @"<XFTreeView Items=""@Nodes"" ExpandedIds=""@Expanded"" AllowCheckBoxes=""true"" CheckedIds=""@Checked"" />";
+    private const string Code3 = @"<XFTreeView Items=""@Nodes"" ExpandedIds=""@Expanded"" SelectedIds=""@Selected"" SelectionMode=""XFTreeViewSelectionMode.Multiple"" />";
+    private const string Code4 = @"<XFTextInput @bind-Value=""@FilterText"" Placeholder=""Filtrar nos..."" />
+<XFTreeView Items=""@Nodes"" FilterText=""@FilterText"" />";
+    private const string Code5 = @"<XFTreeView Items=""@Nodes"" ExpandedIds=""@Expanded"" AllowDrag=""true"" AllowDrop=""true"" />";
+    private const string Code6 = @"<XFTreeView Items=""@Nodes"" ExpandedIds=""@Expanded"" NodeTemplate=""CustomNode"" />
+
+@code {
+    private RenderFragment CustomNode(XFTreeNode node) => @<div class=""flex items-center gap-2"">
+        <span class=""inline-flex h-6 w-6 shrink-0 items-center justify-center rounded bg-primary/10 text-primary text-xs font-bold"">@node.Text[0]</span>
+        <span class=""flex flex-col min-w-0"">
+            <span class=""font-medium truncate"">@node.Text</span>
+            @if (!string.IsNullOrWhiteSpace(node.Description))
+            {
+                <span class=""text-xs text-text-muted truncate"">@node.Description</span>
+            }
+        </span>
+    </div>;
+}";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Items", "IReadOnlyList<XFTreeNode>?", "null", T("Nos da arvore.", "Tree nodes.")),
+        new("ExpandedIds", "IReadOnlyList<string>", "[]", T("IDs dos nos expandidos.", "IDs of expanded nodes.")),
+        new("SelectedIds", "IReadOnlyList<string>", "[]", T("IDs dos nos selecionados.", "IDs of selected nodes.")),
+        new("CheckedIds", "IReadOnlyList<string>", "[]", T("IDs dos nos marcados com checkbox.", "IDs of nodes checked with checkbox.")),
+        new("SelectionMode", "XFTreeViewSelectionMode", "Single", T("None, Single ou Multiple.", "None, Single or Multiple.")),
+        new("AllowCheckBoxes", "bool", "false", T("Exibe checkboxes nos nos.", "Shows checkboxes on nodes.")),
+        new("AllowDrag", "bool", "false", T("Permite arrastar nos.", "Allows dragging nodes.")),
+        new("AllowDrop", "bool", "false", T("Permite soltar nos.", "Allows dropping nodes.")),
+        new("AllowCheckChildren", "bool", "true", T("Permite marcar filhos em cascata.", "Allows cascading check to children.")),
+        new("AllowCheckParents", "bool", "true", T("Atualiza estado do pai automaticamente.", "Updates parent state automatically.")),
+        new("FilterText", "string?", "null", T("Texto para filtrar nos.", "Text to filter nodes.")),
+        new("FilterPredicate", "Func<XFTreeNode, string, bool>?", "null", T("Funcao customizada de filtragem.", "Custom filter function.")),
+        new("ExpandFilteredMatches", "bool", "true", T("Expande nos que combinam com o filtro.", "Expands nodes matching the filter.")),
+        new("NodeTemplate", "RenderFragment<XFTreeNode>?", "null", T("Template customizado para nos.", "Custom template for nodes.")),
+        new("Size", "XFSize", "Md", T("Sm, Md, Lg.", "Sm, Md, Lg.")),
+        new("Variant", "XFContainerVariant", "Surface", T("Plain, Soft ou Surface.", "Plain, Soft or Surface.")),
+        new("ExpandOnNodeClick", "bool", "true", T("Expande ao clicar no no.", "Expands on node click.")),
+        new("SelectOnNodeClick", "bool", "true", T("Seleciona ao clicar no no.", "Selects on node click.")),
+        new("Visible", "bool", "true", T("Visibilidade do componente.", "Component visibility.")),
+        new("EmptyText", "string", T("\"Nenhum item para exibir.\"", "\"No items to display.\""), T("Texto quando nao ha nos.", "Text when there are no nodes.")),
+        new("ExpandItemLabel", "string", T("\"Expandir item\"", "\"Expand item\""), T("Label do botao de expansao.", "Expand button label.")),
+        new("CollapseItemLabel", "string", T("\"Recolher item\"", "\"Collapse item\""), T("Label do botao de recolhimento.", "Collapse button label.")),
+        new("CheckLabel", "string", T("\"Marcar\"", "\"Check\""), T("Label do checkbox desmarcado.", "Unchecked checkbox label.")),
+        new("UncheckLabel", "string", T("\"Desmarcar\"", "\"Uncheck\""), T("Label do checkbox marcado.", "Checked checkbox label.")),
+        new("IndeterminateLabel", "string", T("\"Parcialmente marcado\"", "\"Partially checked\""), T("Label do checkbox indeterminado.", "Indeterminate checkbox label.")),
+        new("DragLabel", "string", T("\"Arrastar\"", "\"Drag\""), T("Label de acessibilidade para arrastar.", "Accessibility label for dragging.")),
+        new("DropBeforeLabel", "string", T("\"Soltar antes\"", "\"Drop before\""), T("Label para soltar antes do no.", "Label to drop before node.")),
+        new("DropInsideLabel", "string", T("\"Soltar dentro\"", "\"Drop inside\""), T("Label para soltar dentro do no.", "Label to drop inside node.")),
+        new("DropAfterLabel", "string", T("\"Soltar depois\"", "\"Drop after\""), T("Label para soltar depois do no.", "Label to drop after node."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ExpandedIdsChanged", T("Retorna IDs dos nos expandidos apos alteracao.", "Returns IDs of expanded nodes after change.")),
+        new("SelectedIdsChanged", T("Retorna IDs dos nos selecionados apos alteracao.", "Returns IDs of selected nodes after change.")),
+        new("CheckedIdsChanged", T("Retorna IDs dos nos marcados apos alteracao.", "Returns IDs of checked nodes after change.")),
+        new("NodeSelected", T("Disparado quando um no e selecionado. Passa XFTreeNodeEventArgs.", "Fired when a node is selected. Passes XFTreeNodeEventArgs.")),
+        new("NodeExpanded", T("Disparado quando um no e expandido. Passa XFTreeNodeEventArgs.", "Fired when a node is expanded. Passes XFTreeNodeEventArgs.")),
+        new("NodeCollapsed", T("Disparado quando um no e recolhido. Passa XFTreeNodeEventArgs.", "Fired when a node is collapsed. Passes XFTreeNodeEventArgs.")),
+        new("NodeChecked", T("Disparado quando um no e marcado. Passa XFTreeNodeEventArgs.", "Fired when a node is checked. Passes XFTreeNodeEventArgs.")),
+        new("NodeUnchecked", T("Disparado quando um no e desmarcado. Passa XFTreeNodeEventArgs.", "Fired when a node is unchecked. Passes XFTreeNodeEventArgs.")),
+        new("OnDragStart", T("Disparado quando o arraste comeca. Passa XFTreeDragEventArgs.", "Fired when drag starts. Passes XFTreeDragEventArgs.")),
+        new("OnDrop", T("Disparado quando o no e solto. Passa XFTreeDropEventArgs.", "Fired when node is dropped. Passes XFTreeDropEventArgs.")),
+        new("OnLoadChildren", T("Disparado para lazy loading de filhos. Passa XFTreeLoadChildrenEventArgs.", "Fired for lazy loading of children. Passes XFTreeLoadChildrenEventArgs."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=tree", "role=tree"), T("Container principal usa role=tree.", "Main container uses role=tree."), "sitemap"),
+        new(T("role=treeitem", "role=treeitem"), T("Cada no usa role=treeitem com aria-level.", "Each node uses role=treeitem with aria-level."), "circle"),
+        new(T("aria-expanded", "aria-expanded"), T("Indica se o no esta expandido ou recolhido.", "Indicates whether node is expanded or collapsed."), "chevron-right"),
+        new(T("aria-selected", "aria-selected"), T("Indica se o no esta selecionado.", "Indicates whether node is selected."), "check"),
+        new(T("aria-checked", "aria-checked"), T("true, false ou mixed para checkboxes.", "true, false or mixed for checkboxes."), "square-check"),
+        new(T("aria-disabled", "aria-disabled"), T("Indica nos desabilitados.", "Indicates disabled nodes."), "ban")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("ArrowDown", T("Seleciona o proximo no visivel.", "Selects the next visible node.")),
+        new("ArrowUp", T("Seleciona o no anterior visivel.", "Selects the previous visible node.")),
+        new("ArrowRight", T("Expande o no selecionado (se tiver filhos).", "Expands the selected node (if it has children).")),
+        new("ArrowLeft", T("Recolhe o no selecionado (se expandido).", "Collapses the selected node (if expanded).")),
+        new("Home", T("Seleciona o primeiro no da arvore.", "Selects the first node in the tree.")),
+        new("End", T("Seleciona o ultimo no visivel da arvore.", "Selects the last visible node in the tree.")),
+        new("Space", T("Alterna checkbox (quando AllowCheckBoxes=true).", "Toggles checkbox (when AllowCheckBoxes=true)."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("Arvore ocupa 100% do container pai.", "Tree occupies 100% of parent container."), "maximize"),
+        new(T("Tamanho responsivo", "Responsive size"), T("Sm para mobile, Md para desktop.", "Sm for mobile, Md for desktop."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Render leve", "Light render"), T("Renderizar por RenderFragment sem wrappers desnecessarios.", "Renders via RenderFragment without unnecessary wrappers."), "feather"),
+        new(T("Filtragem em memoria", "In-memory filtering"), T("Filtragem por texto feita no servidor com LINQ.", "Text filtering done on server with LINQ."), "filter")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Menus ERP", "ERP menus"), T("Arvore de navegacao de modulos e sub-modulos.", "Navigation tree of modules and sub-modules."), "bars"),
+        new(T("Permissoes RBAC", "RBAC permissions"), T("Arvore de permissoes com checkboxes em cascata.", "Permission tree with cascading checkboxes."), "lock"),
+        new(T("Centros de custo", "Cost centers"), T("Hierarquia de centros de custo com drag-and-drop.", "Cost center hierarchy with drag-and-drop."), "building")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("TreeView + Input", "TreeView + Input"), T("Input para filtragem de nos结合TreeView.", "Input for node filtering combined with TreeView."), "filter"),
+        new(T("TreeView + Card", "TreeView + Card"), T("Arvore dentro de XFCard para contexto.", "Tree inside XFCard for context."), "square"),
+        new(T("TreeView + Template", "TreeView + Template"), T("Template customizado com icones e descricoes.", "Custom template with icons and descriptions."), "paintbrush")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Ids estaveis", "Stable IDs"), T("Use IDs unicos e estaveis para ExpandedIds, SelectedIds.", "Use unique and stable IDs for ExpandedIds, SelectedIds."), "fingerprint"),
+        new(T("Lazy loading", "Lazy loading"), T("Use OnLoadChildren para nos com muitos filhos.", "Use OnLoadChildren for nodes with many children."), "clock"),
+        new(T("Filtragem", "Filtering"), T("Use FilterText结合FilterPredicate para filtragem customizada.", "Use FilterText combined with FilterPredicate for custom filtering."), "magnifying-glass"),
+        new(T("Variant Surface", "Variant Surface"), T("Use Surface para borda visivel, Plain para listas compactas.", "Use Surface for visible border, Plain for compact lists."), "swatchbook")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Muitos niveis", "Too many levels"), T("Evite mais de 5 niveis de profundidade.", "Avoid more than 5 levels of depth."), "xmark"),
+        new(T("Sem IDs", "No IDs"), T("Nao usar IDs fixos quebrarao bindings.", "Not using fixed IDs will break bindings."), "ban"),
+        new(T("Drag sem drop", "Drag without drop"), T("AllowDrag sem AllowDrop e confuso para o usuario.", "AllowDrag without AllowDrop is confusing for users."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("container", T("grid gap-1 rounded-lg border border-border-light bg-bg-surface p-2.", "grid gap-1 rounded-lg border border-border-light bg-bg-surface p-2.")),
+        new("item", T("flex min-w-0 items-center gap-1 rounded-md outline-none transition-all.", "flex min-w-0 items-center gap-1 rounded-md outline-none transition-all.")),
+        new("toggle", T("inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md.", "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md.")),
+        new("checkbox", T("inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border.", "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border.")),
+        new("selected", T("bg-primary/10 text-primary ring-1 ring-primary/18.", "bg-primary/10 text-primary ring-1 ring-primary/18."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, expand/collapse, select, check, drag/drop, filter.", "Render, props, expand/collapse, select, check, drag/drop, filter tests.")),
+        new("Accessibility", T("role=tree, role=treeitem, aria-expanded, aria-selected, aria-checked, aria-level.", "role=tree, role=treeitem, aria-expanded, aria-selected, aria-checked, aria-level."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Static SSR", T("Drag-and-drop requer modo interativo.", "Drag-and-drop requires interactive mode.")),
+        new("Lazy loading", T("OnLoadChildren requer manipulacao manual do estado.", "OnLoadChildren requires manual state handling.")),
+        new("Filtragem", T("Filtragem e feita em memoria, nao recomendado para 10k+ nos.", "Filtering is done in memory, not recommended for 10k+ nodes."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFList", T("Lista simples sem hierarquia.", "Simple list without hierarchy."), "list"),
+        new("XFTable", T("Tabela de dados.", "Data table."), "table"),
+        new("XFBreadcrumb", T("Navegacao por caminho.", "Path navigation."), "turn-up")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("TreeView vs List?", "TreeView vs List?"), T("TreeView = hierarquico com expand/collapse. List = simples e linear.", "TreeView = hierarchical with expand/collapse. List = simple and linear.")),
+        new(T("Como filtrar nos?", "How to filter nodes?"), T("Use FilterText e opcionalmente FilterPredicate.", "Use FilterText and optionally FilterPredicate.")),
+        new(T("Lazy loading funciona como?", "How does lazy loading work?"), T("Use OnLoadChildren para carregar filhos sob demanda.", "Use OnLoadChildren to load children on demand.")),
+        new(T("Drag-and-drop funciona no SSR?", "Does drag-and-drop work on SSR?"), T("Nao. Requer modo interativo (Server ou WebAssembly).", "No. Requires interactive mode (Server or WebAssembly)."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina refeita no padrao enterprise com 3 exemplos renderizados.", "Page rewritten in enterprise standard with 3 rendered examples.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes e 6 exemplos.", "Refactored to AppShellDocs pattern with 26 sections and 6 examples."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

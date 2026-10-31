@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Pivot
+namespace XForge.DesignSystem.Components.Pivot
 {
     public partial class XFPivotGrid : XForgeComponentBase
     {

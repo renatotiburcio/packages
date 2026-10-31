@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Gantt
+namespace XForge.DesignSystem.Components.Gantt
 {
     public partial class XFGanttAdvanced : XForgeComponentBase
     {

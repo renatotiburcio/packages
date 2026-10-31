@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.DataGrid
+namespace XForge.DesignSystem.Components.DataGrid
 {
     public partial class XFDataGridAdvanced : XForgeComponentBase
     {

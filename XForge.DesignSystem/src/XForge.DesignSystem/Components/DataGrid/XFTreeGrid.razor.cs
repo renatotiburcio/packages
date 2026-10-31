@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.DataGrid
+namespace XForge.DesignSystem.Components.DataGrid
 {
     public partial class XFTreeGrid : XForgeComponentBase
     {

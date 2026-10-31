@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
-namespace XForge.Components.Base;
+namespace XForge.DesignSystem.Components.Base;
 
 public class XFXFBaseButton : ComponentBase
 {

@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Charts
+namespace XForge.DesignSystem.Components.Charts
 {
     public partial class XFRadarChart : XForgeComponentBase
     {

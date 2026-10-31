@@ -1,4 +1,4 @@
-﻿using XForge.Components.Base;
+using XForge.DesignSystem.Components.Base;
 using FluentAssertions;
 using Xunit;
 

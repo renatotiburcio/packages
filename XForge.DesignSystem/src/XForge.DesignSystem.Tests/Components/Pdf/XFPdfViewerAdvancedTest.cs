@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.Pdf;
+using XForge.DesignSystem.Components.Pdf;
 
 namespace XForge.DesignSystem.Tests.Components.Pdf;
 

@@ -1,0 +1,739 @@
+@page "/layout/sidebar"
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        @* ==================== HEADER ==================== *@
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSidebar" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Navegação contextual", "Contextual navigation")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Shell slot", "Shell slot")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Três variantes", "Three variants")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Navegação contextual do app ativo, com seções e itens hierárquicos.",
+                               "Contextual navigation of the active app, with sections and hierarchical items.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFSidebar é o painel lateral do shell enterprise que mostra a navegação do app ativo. Ele suporta variantes Persistent, Mini e Drawer, com slots para cabeçalho, conteúdo e rodapé, e controla Expanded para retrair ou expandir.",
+                               "XFSidebar is the enterprise shell side panel that shows the active app navigation. It supports Persistent, Mini and Drawer variants, with header, content and footer slots, and controls Expanded to collapse or expand.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts) { @Tile(item) }</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @* ==================== 1. METADATA ==================== *@
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @* ==================== 2. BLAZOR SERVER / WASM ==================== *@
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições. Transições de Expanded via CSS.", "Works without restrictions. Expanded transitions via CSS.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições em ambos os modos.", "Works without restrictions in both modes.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependências JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente não utiliza JavaScript interop. É puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderização.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: Expanded/Collapsed e animações de transição (duration-300) funcionam via CSS sem latência.", "Blazor Server: Expanded/Collapsed and transition animations (duration-300) work via CSS without latency.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: mesmo comportamento. Sem diferença perceptível entre modos.", "Blazor WebAssembly: same behavior. No noticeable difference between modes.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Variant Drawer: posicionamento fixed funciona identicamente em ambos os modos.", "Drawer variant: fixed positioning works identically in both modes.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Exemplos de uso", "Usage Examples")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFCode Text="@InteractiveServerExample" Language="razor" Title="InteractiveServer" Variant="XFCodeVariant.Block" Copyable="true" />
+                    <XFCode Text="@InteractiveWasmExample" Language="razor" Title="InteractiveWebAssembly" Variant="XFCodeVariant.Block" Copyable="true" />
+                    <XFCode Text="@InteractiveAutoExample" Language="razor" Title="InteractiveAuto" Variant="XFCodeVariant.Block" Copyable="true" />
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        @* ==================== 3. OVERVIEW ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 4. VARIANTS & STATES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 5. VISUAL HIERARCHY & DESIGN ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        @* ==================== 6-14. EXAMPLES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Sidebar básica Persistent", "1. Basic Persistent sidebar"),
+                T("Sidebar com cabeçalho, navegação e rodapé.", "Sidebar with header, navigation and footer."),
+                BasicPreview(), BasicCode)
+
+            @Example(T("2. Sidebar com navegação", "2. Sidebar with navigation"),
+                T("Itens de navegação interativos com ícones.", "Interactive navigation items with icons."),
+                NavItemsPreview(), NavItemsCode)
+
+            @Example(T("3. Sidebar Expanded=false", "3. Sidebar Expanded=false"),
+                T("Sidebar retraída com apenas o cabeçalho visível.", "Collapsed sidebar with only the header visible."),
+                CollapsedPreview(), CollapsedCode)
+
+            @Example(T("4. Sidebar Variant Mini", "4. Sidebar Variant Mini"),
+                T("Modo compacto com apenas ícones (20rem de largura).", "Compact mode with icons only (20rem width)."),
+                MiniPreview(), MiniCode)
+
+            @Example(T("5. Sidebar Variant Drawer", "5. Sidebar Variant Drawer"),
+                T("Drawer sobreposto com ContainerRelative para conteúdo.", "Overlay drawer with ContainerRelative for content."),
+                DrawerPreview(), DrawerCode)
+
+            @Example(T("6. Sidebar com Footer de ações", "6. Sidebar with action footer"),
+                T("Rodapé com botões de ação e informações.", "Footer with action buttons and info."),
+                FooterPreview(), FooterCode)
+
+            @Example(T("7. Sidebar com AriaLabel customizado", "7. Sidebar with custom AriaLabel"),
+                T("Nome acessível personalizado para a navegação.", "Custom accessible name for navigation."),
+                AriaLabelPreview(), AriaLabelCode)
+
+            @Example(T("8. Sidebar com ContainerRelative", "8. Sidebar with ContainerRelative"),
+                T("Drawer posicionado relative ao container pai.", "Drawer positioned relative to parent container."),
+                ContainerRelativePreview(), ContainerRelativeCode)
+
+            @Example(T("9. Sidebar enterprise completa", "9. Complete enterprise sidebar"),
+                T("Sidebar completa no XFAppShell com todas as variantes.", "Full sidebar in XFAppShell with all variants."),
+                EnterprisePreview(), EnterpriseCode)
+        </XFStack>
+
+        @* ==================== 16. API ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Métodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Método", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 17. ACCESSIBILITY & KEYBOARD ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegação enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 18. RESPONSIVENESS & PERFORMANCE ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 19. ENTERPRISE SCENARIOS & PATTERNS ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Exemplos de integração", "Integration Examples"), @<div>@TileGrid(IntegrationItems, 2)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        @* ==================== 20. TOKENS, THEMING, SECURITY, TESTING ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+        </XFStack>
+
+        @* ==================== EXTRA: LIMITATIONS, MIGRATION, RELATED, FAQ, CHANGELOG ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migração", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Sidebar", "Sidebar");
+    private string PageStatusText => T("Documentação completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    // ==================== BLAZOR SECTION EXAMPLES ====================
+    private string InteractiveServerExample => @"@page ""/erp/financeiro/dashboard""
+@rendermode InteractiveServer
+<XFSidebar>
+    <Header><XFTypography Weight=""Bold"">Financeiro</XFTypography></Header>
+    <ChildContent>
+        <div class=""px-3 py-2"">Dashboard</div>
+        <div class=""px-3 py-2"">Contas a pagar</div>
+    </ChildContent>
+</XFSidebar>";
+
+    private string InteractiveWasmExample => @"@page ""/erp/financeiro/dashboard""
+@rendermode InteractiveWebAssembly
+<XFSidebar>
+    <Header><XFTypography Weight=""Bold"">Financeiro</XFTypography></Header>
+    <ChildContent>
+        <div class=""px-3 py-2"">Dashboard</div>
+        <div class=""px-3 py-2"">Contas a pagar</div>
+    </ChildContent>
+</XFSidebar>";
+
+    private string InteractiveAutoExample => @"@page ""/erp/financeiro/dashboard""
+@rendermode InteractiveAuto
+<XFSidebar>
+    <Header><XFTypography Weight=""Bold"">Financeiro</XFTypography></Header>
+    <ChildContent>
+        <div class=""px-3 py-2"">Dashboard</div>
+        <div class=""px-3 py-2"">Contas a pagar</div>
+    </ChildContent>
+</XFSidebar>";
+
+    // ==================== HERO PREVIEW ====================
+    private RenderFragment HeroPreview() => @<div class="h-72 w-56 border-r border-border-light bg-bg-surface">
+        <div class="h-12 border-b border-border-light px-4 flex items-center"><XFTypography Weight="XFTypographyWeight.Bold">@T("Financeiro", "Finance")</XFTypography></div>
+        <div class="p-3 text-sm"><div class="rounded bg-primary/10 px-3 py-2 text-primary font-semibold mb-1">@T("Dashboard", "Dashboard")</div><div class="px-3 py-2 text-text-secondary">@T("Contas a pagar", "Accounts payable")</div><div class="px-3 py-2 text-text-secondary">@T("Contas a receber", "Accounts receivable")</div><div class="px-3 py-2 text-text-secondary">@T("Conciliação", "Reconciliation")</div></div>
+    </div>;
+
+    // ==================== EXAMPLE PREVIEWS ====================
+    private RenderFragment BasicPreview() => @<div class="h-56 w-60 border-r border-border-light bg-bg-surface flex flex-col">
+        <div class="h-12 border-b border-border-light px-4 flex items-center"><XFTypography Weight="XFTypographyWeight.Bold">@T("Financeiro", "Finance")</XFTypography></div>
+        <div class="flex-1 p-3 text-sm"><div class="px-3 py-2 text-text-secondary">@T("Dashboard", "Dashboard")</div><div class="px-3 py-2 text-text-secondary">@T("Contas a pagar", "Accounts payable")</div><div class="px-3 py-2 text-text-secondary">@T("Contas a receber", "Accounts receivable")</div></div>
+        <div class="p-3 border-t border-border-light text-xs text-text-secondary">@T("v2.4.0", "v2.4.0")</div>
+    </div>;
+
+    private RenderFragment NavItemsPreview() => @<div class="h-56 w-60 border-r border-border-light bg-bg-surface flex flex-col">
+        <div class="h-12 border-b border-border-light px-4 flex items-center gap-2"><XFTypography Weight="XFTypographyWeight.Bold">@T("Fiscal", "Tax")</XFTypography><span class="inline-flex h-5 items-center rounded-full bg-danger/10 px-2 text-xs font-medium text-danger">3</span></div>
+        <div class="flex-1 p-3 text-sm"><div class="rounded bg-primary/10 px-3 py-2 text-primary font-semibold mb-1">@T("NF-e emitidas", "Invoices issued")</div><div class="px-3 py-2 text-text-secondary">@T("SPED Fiscal", "SPED Tax")</div><div class="px-3 py-2 text-text-secondary">@T("Obrigações acessórias", "Ancillary obligations")</div></div>
+    </div>;
+
+    private RenderFragment CollapsedPreview() => @<div class="h-56 w-60 border-r border-border-light bg-bg-surface flex flex-col">
+        <div class="h-12 border-b border-border-light px-4 flex items-center"><XFTypography Weight="XFTypographyWeight.Bold">@T("Financeiro", "Finance")</XFTypography></div>
+    </div>;
+
+    private RenderFragment MiniPreview() => @<div class="h-56 w-20 border-r border-border-light bg-bg-surface flex flex-col items-center pt-4 gap-4">
+        <div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary"><span class="text-lg">D</span></div>
+        <div class="h-10 w-10 rounded-lg bg-surface-100 flex items-center justify-center text-text-secondary"><span class="text-lg">P</span></div>
+        <div class="h-10 w-10 rounded-lg bg-surface-100 flex items-center justify-center text-text-secondary"><span class="text-lg">R</span></div>
+    </div>;
+
+    private RenderFragment DrawerPreview() => @<div class="h-56 w-60 border border-border-light bg-bg-surface shadow-2xl flex flex-col relative">
+        <div class="h-12 border-b border-border-light px-4 flex items-center"><XFTypography Weight="XFTypographyWeight.Bold">@T("Drawer", "Drawer")</XFTypography></div>
+        <div class="flex-1 p-3 text-sm"><div class="px-3 py-2 text-text-secondary">@T("Item 1", "Item 1")</div><div class="px-3 py-2 text-text-secondary">@T("Item 2", "Item 2")</div><div class="px-3 py-2 text-text-secondary">@T("Item 3", "Item 3")</div></div>
+    </div>;
+
+    private RenderFragment FooterPreview() => @<div class="h-64 w-60 border-r border-border-light bg-bg-surface flex flex-col">
+        <div class="h-12 border-b border-border-light px-4 flex items-center"><XFTypography Weight="XFTypographyWeight.Bold">@T("Estoque", "Inventory")</XFTypography></div>
+        <div class="flex-1 p-3 text-sm"><div class="px-3 py-2 text-text-secondary">@T("Produtos", "Products")</div><div class="px-3 py-2 text-text-secondary">@T("Movimentações", "Movements")</div></div>
+        <div class="p-3 border-t border-border-light text-xs flex justify-between"><span class="text-text-secondary">@T("Última atualização:", "Last update:")</span><span class="text-text-primary font-medium">@T("10/06 14:30", "06/10 2:30 PM")</span></div>
+    </div>;
+
+    private RenderFragment AriaLabelPreview() => @<div class="h-48 w-60 border-r border-border-light bg-bg-surface flex flex-col">
+        <div class="h-12 border-b border-border-light px-4 flex items-center"><XFTypography Weight="XFTypographyWeight.Bold">@T("Configurações", "Settings")</XFTypography></div>
+        <div class="flex-1 p-3 text-sm"><div class="px-3 py-2 text-text-secondary">@T("Perfil", "Profile")</div><div class="px-3 py-2 text-text-secondary">@T("Preferências", "Preferences")</div></div>
+    </div>;
+
+    private RenderFragment ContainerRelativePreview() => @<div class="h-48 w-60 border border-border-light bg-bg-surface shadow-lg flex flex-col relative">
+        <div class="h-12 border-b border-border-light px-4 flex items-center"><XFTypography Weight="XFTypographyWeight.Bold">@T("Drawer relativo", "Relative drawer")</XFTypography></div>
+        <div class="flex-1 p-3 text-sm"><div class="px-3 py-2 text-text-secondary">@T("Conteúdo do drawer.", "Drawer content.")</div></div>
+    </div>;
+
+    private RenderFragment EnterprisePreview() => @<div class="h-80 w-60 border-r border-border-light bg-bg-surface flex flex-col">
+        <div class="h-12 border-b border-border-light px-4 flex items-center justify-between"><XFTypography Weight="XFTypographyWeight.Bold">@T("Financeiro", "Finance")</XFTypography><span class="text-xs text-text-secondary">@T("Expandido", "Expanded")</span></div>
+        <div class="flex-1 p-3 text-sm">
+            <div class="flex items-center justify-between rounded bg-primary/10 px-3 py-2 text-primary font-semibold mb-1"><span>@T("Dashboard", "Dashboard")</span><span class="inline-flex h-5 items-center rounded-full bg-primary/10 px-2 text-xs">12</span></div>
+            <div class="flex items-center justify-between px-3 py-2 text-text-secondary"><span>@T("Contas a pagar", "Accounts payable")</span><span class="inline-flex h-5 items-center rounded-full bg-danger/10 px-2 text-xs text-danger">4</span></div>
+            <div class="flex items-center justify-between px-3 py-2 text-text-secondary"><span>@T("Contas a receber", "Accounts receivable")</span><span class="text-xs text-text-secondary">R$ 256k</span></div>
+            <div class="px-3 py-2 text-text-secondary">@T("Conciliação", "Reconciliation")</div>
+        </div>
+        <div class="p-3 border-t border-border-light text-xs text-text-secondary">@T("Usuário: João Silva • Financeiro", "User: John Doe • Finance")</div>
+    </div>;
+
+    // ==================== CODE STRINGS ====================
+    private string BasicCode => T("""
+<XFSidebar>
+    <Header>
+        <XFTypography Weight="Bold">Financeiro</XFTypography>
+    </Header>
+    <ChildContent>
+        <div class="px-3 py-2">Dashboard</div>
+        <div class="px-3 py-2">Contas a pagar</div>
+        <div class="px-3 py-2">Contas a receber</div>
+    </ChildContent>
+    <Footer>
+        <span class="text-xs text-text-secondary">v2.4.0</span>
+    </Footer>
+</XFSidebar>
+""", """
+<XFSidebar>
+    <Header>
+        <XFTypography Weight="Bold">Finance</XFTypography>
+    </Header>
+    <ChildContent>
+        <div class="px-3 py-2">Dashboard</div>
+        <div class="px-3 py-2">Accounts payable</div>
+        <div class="px-3 py-2">Accounts receivable</div>
+    </ChildContent>
+    <Footer>
+        <span class="text-xs text-text-secondary">v2.4.0</span>
+    </Footer>
+</XFSidebar>
+""");
+
+    private string NavItemsCode => T("""
+<XFSidebar>
+    <Header>
+        <XFTypography Weight="Bold">Fiscal</XFTypography>
+        <span class="inline-flex h-5 items-center rounded-full bg-danger/10 px-2 text-xs font-medium text-danger">3</span>
+    </Header>
+    <ChildContent>
+        <div class="rounded bg-primary/10 px-3 py-2 text-primary font-semibold mb-1">NF-e emitidas</div>
+        <div class="px-3 py-2">SPED Fiscal</div>
+        <div class="px-3 py-2">Obrigações acessórias</div>
+    </ChildContent>
+</XFSidebar>
+""", """
+<XFSidebar>
+    <Header>
+        <XFTypography Weight="Bold">Tax</XFTypography>
+        <span class="inline-flex h-5 items-center rounded-full bg-danger/10 px-2 text-xs font-medium text-danger">3</span>
+    </Header>
+    <ChildContent>
+        <div class="rounded bg-primary/10 px-3 py-2 text-primary font-semibold mb-1">Invoices issued</div>
+        <div class="px-3 py-2">SPED Tax</div>
+        <div class="px-3 py-2">Ancillary obligations</div>
+    </ChildContent>
+</XFSidebar>
+""");
+
+    private string CollapsedCode => T("""
+<XFSidebar Expanded="false">
+    <Header>
+        <XFTypography Weight="Bold">Financeiro</XFTypography>
+    </Header>
+</XFSidebar>
+""", """
+<XFSidebar Expanded="false">
+    <Header>
+        <XFTypography Weight="Bold">Finance</XFTypography>
+    </Header>
+</XFSidebar>
+""");
+
+    private string MiniCode => T("""
+<XFSidebar Variant="XFSidebarVariant.Mini">
+    <Header>
+        <span class="text-lg font-bold">D</span>
+    </Header>
+    <ChildContent>
+        <div class="flex flex-col items-center gap-2">
+            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-100">P</span>
+            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-100">R</span>
+        </div>
+    </ChildContent>
+</XFSidebar>
+""", """
+<XFSidebar Variant="XFSidebarVariant.Mini">
+    <Header>
+        <span class="text-lg font-bold">D</span>
+    </Header>
+    <ChildContent>
+        <div class="flex flex-col items-center gap-2">
+            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-100">P</span>
+            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-100">R</span>
+        </div>
+    </ChildContent>
+</XFSidebar>
+""");
+
+    private string DrawerCode => T("""
+<XFSidebar Variant="XFSidebarVariant.Drawer" Expanded="true">
+    <Header>
+        <XFTypography Weight="Bold">Drawer</XFTypography>
+    </Header>
+    <ChildContent>
+        <div class="px-3 py-2">Item 1</div>
+        <div class="px-3 py-2">Item 2</div>
+        <div class="px-3 py-2">Item 3</div>
+    </ChildContent>
+</XFSidebar>
+""", """
+<XFSidebar Variant="XFSidebarVariant.Drawer" Expanded="true">
+    <Header>
+        <XFTypography Weight="Bold">Drawer</XFTypography>
+    </Header>
+    <ChildContent>
+        <div class="px-3 py-2">Item 1</div>
+        <div class="px-3 py-2">Item 2</div>
+        <div class="px-3 py-2">Item 3</div>
+    </ChildContent>
+</XFSidebar>
+""");
+
+    private string FooterCode => T("""
+<XFSidebar>
+    <Header>
+        <XFTypography Weight="Bold">Estoque</XFTypography>
+    </Header>
+    <ChildContent>
+        <div class="px-3 py-2">Produtos</div>
+        <div class="px-3 py-2">Movimentações</div>
+    </ChildContent>
+    <Footer>
+        <div class="flex justify-between text-xs">
+            <span class="text-text-secondary">Última atualização:</span>
+            <span class="text-text-primary font-medium">10/06 14:30</span>
+        </div>
+    </Footer>
+</XFSidebar>
+""", """
+<XFSidebar>
+    <Header>
+        <XFTypography Weight="Bold">Inventory</XFTypography>
+    </Header>
+    <ChildContent>
+        <div class="px-3 py-2">Products</div>
+        <div class="px-3 py-2">Movements</div>
+    </ChildContent>
+    <Footer>
+        <div class="flex justify-between text-xs">
+            <span class="text-text-secondary">Last update:</span>
+            <span class="text-text-primary font-medium">06/10 2:30 PM</span>
+        </div>
+    </Footer>
+</XFSidebar>
+""");
+
+    private string AriaLabelCode => T("""
+<XFSidebar AriaLabel="Configurações do sistema">
+    <Header>
+        <XFTypography Weight="Bold">Configurações</XFTypography>
+    </Header>
+    <ChildContent>
+        <div class="px-3 py-2">Perfil</div>
+        <div class="px-3 py-2">Preferências</div>
+    </ChildContent>
+</XFSidebar>
+""", """
+<XFSidebar AriaLabel="System settings">
+    <Header>
+        <XFTypography Weight="Bold">Settings</XFTypography>
+    </Header>
+    <ChildContent>
+        <div class="px-3 py-2">Profile</div>
+        <div class="px-3 py-2">Preferences</div>
+    </ChildContent>
+</XFSidebar>
+""");
+
+    private string ContainerRelativeCode => T("""
+<div style="position: relative; overflow: hidden;">
+    <XFSidebar Variant="XFSidebarVariant.Drawer" ContainerRelative="true">
+        <Header>
+            <XFTypography Weight="Bold">Drawer relativo</XFTypography>
+        </Header>
+        <ChildContent>
+            <div class="px-3 py-2">Conteúdo</div>
+        </ChildContent>
+    </XFSidebar>
+</div>
+""", """
+<div style="position: relative; overflow: hidden;">
+    <XFSidebar Variant="XFSidebarVariant.Drawer" ContainerRelative="true">
+        <Header>
+            <XFTypography Weight="Bold">Relative drawer</XFTypography>
+        </Header>
+        <ChildContent>
+            <div class="px-3 py-2">Content</div>
+        </ChildContent>
+    </XFSidebar>
+</div>
+""");
+
+    private string EnterpriseCode => T("""
+<XFSidebar Expanded="true">
+    <Header>
+        <div class="flex items-center justify-between w-full">
+            <XFTypography Weight="Bold">Financeiro</XFTypography>
+            <span class="text-xs text-text-secondary">Expandido</span>
+        </div>
+    </Header>
+    <ChildContent>
+        <div class="flex items-center justify-between rounded bg-primary/10 px-3 py-2 text-primary font-semibold mb-1">
+            <span>Dashboard</span>
+            <span class="inline-flex h-5 items-center rounded-full bg-primary/10 px-2 text-xs">12</span>
+        </div>
+        <div class="flex items-center justify-between px-3 py-2">
+            <span>Contas a pagar</span>
+            <span class="inline-flex h-5 items-center rounded-full bg-danger/10 px-2 text-xs text-danger">4</span>
+        </div>
+        <div class="flex items-center justify-between px-3 py-2">
+            <span>Contas a receber</span>
+            <span class="text-xs text-text-secondary">R$ 256k</span>
+        </div>
+        <div class="px-3 py-2">Conciliação</div>
+    </ChildContent>
+    <Footer>
+        <span class="text-xs text-text-secondary">Usuário: João Silva • Financeiro</span>
+    </Footer>
+</XFSidebar>
+""", """
+<XFSidebar Expanded="true">
+    <Header>
+        <div class="flex items-center justify-between w-full">
+            <XFTypography Weight="Bold">Finance</XFTypography>
+            <span class="text-xs text-text-secondary">Expanded</span>
+        </div>
+    </Header>
+    <ChildContent>
+        <div class="flex items-center justify-between rounded bg-primary/10 px-3 py-2 text-primary font-semibold mb-1">
+            <span>Dashboard</span>
+            <span class="inline-flex h-5 items-center rounded-full bg-primary/10 px-2 text-xs">12</span>
+        </div>
+        <div class="flex items-center justify-between px-3 py-2">
+            <span>Accounts payable</span>
+            <span class="inline-flex h-5 items-center rounded-full bg-danger/10 px-2 text-xs text-danger">4</span>
+        </div>
+        <div class="flex items-center justify-between px-3 py-2">
+            <span>Accounts receivable</span>
+            <span class="text-xs text-text-secondary">R$ 256k</span>
+        </div>
+        <div class="px-3 py-2">Reconciliation</div>
+    </ChildContent>
+    <Footer>
+        <span class="text-xs text-text-secondary">User: John Doe • Finance</span>
+    </Footer>
+</XFSidebar>
+""");
+
+    // ==================== HELPERS ====================
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== DATA ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Slot do shell", "Shell slot"), T("XFSidebar é o slot Sidebar do XFAppShell.", "XFSidebar is the Sidebar slot of XFAppShell."), "layer-group"),
+        new(T("Três variantes", "Three variants"), T("Persistent, Mini e Drawer para diferentes espaços.", "Persistent, Mini and Drawer for different spaces."), "sliders"),
+        new(T("Retrátil", "Collapsible"), T("Expanded controla visibilidade do conteúdo.", "Expanded controls content visibility."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFSidebar"),
+        new("Namespace", "XForge.DesignSystem.Components.Layout.Shell"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Layout / Shell"),
+        new("Status", T("Estável", "Stable"))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Navegação contextual", "Contextual navigation"), T("Mostra módulos e páginas do app ativo.", "Shows modules and pages of the active app."), "bars"),
+        new(T("Três slots", "Three slots"), T("Header, ChildContent e Footer para composição.", "Header, ChildContent and Footer for composition."), "layer-group"),
+        new(T("Variantes", "Variants"), T("Persistent (padrão), Mini (ícones) e Drawer (overlay).", "Persistent (default), Mini (icons) and Drawer (overlay)."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Hierarquia", "Hierarchy"), T("Organiza navegação do app por seções e páginas.", "Organizes app navigation by sections and pages."), "route"),
+        new(T("Contexto do app", "App context"), T("Altera conteúdo conforme app ativo no rail.", "Changes content according to active app in rail."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Sidebars duplicadas sem variante nem controle.", "Duplicated sidebars without variant or control."), "xmark"),
+        new(T("Depois", "After"), T("Contrato único com Variant, Expanded e slots.", "One contract with Variant, Expanded and slots."), "check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new("ERP", T("Módulos do app ativo: Dashboard, Contas, Relatórios.", "Active app modules: Dashboard, Accounts, Reports."), "briefcase"),
+        new(T("Docs", "Docs"), T("Índice de seções e páginas.", "Section and page index."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Navegação global", "Global navigation"), T("Use Rail para navegação entre apps.", "Use Rail for navigation between apps."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("aside com aria-label e layout flex vertical.", "aside with aria-label and vertical flex layout."), "code"),
+        new("Header", T("Slot para título do módulo.", "Slot for module title."), "tag"),
+        new("ChildContent", T("Slot para itens de navegação.", "Slot for navigation items."), "sparkles"),
+        new("Footer", T("Slot para ações ou info do módulo.", "Slot for actions or module info."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Borda direita", "Right border"), T("Separa sidebar do conteúdo.", "Separates sidebar from content."), "code"),
+        new(T("Header destacado", "Highlighted header"), T("Título do módulo em destaque.", "Module title highlighted."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Um app por sidebar", "One app per sidebar"), T("Sidebar pertence ao app ativo.", "Sidebar belongs to the active app."), "circle-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Persistent", T("Visível por padrão, não sobrepõe conteúdo.", "Visible by default, does not overlay content.")),
+        new("Mini", T("Apenas ícones, largura reduzida (20rem).", "Icons only, reduced width (20rem).")),
+        new("Drawer", T("Overlay sobre conteúdo com backdrop.", "Overlay on content with backdrop."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Expanded=true", T("Sidebar expandida com conteúdo visível.", "Sidebar expanded with visible content.")),
+        new("Expanded=false", T("Sidebar retraída, apenas cabeçalho visível.", "Sidebar collapsed, only header visible."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Header", "RenderFragment?", "null", T("Slot de cabeçalho.", "Header slot.")),
+        new("ChildContent", "RenderFragment?", "null", T("Slot de navegação.", "Navigation slot.")),
+        new("Footer", "RenderFragment?", "null", T("Slot de rodapé.", "Footer slot.")),
+        new("Expanded", "bool", "true", T("Conteúdo expandido ou retraído.", "Content expanded or collapsed.")),
+        new("Variant", "XFSidebarVariant", "Persistent", T("Persistent, Mini ou Drawer.", "Persistent, Mini or Drawer.")),
+        new("AriaLabel", "string?", "\"Navegação secundária\"", T("Nome acessível.", "Accessible name.")),
+        new("ContainerRelative", "bool", "false", T("Drawer com posicionamento absolute vs fixed.", "Drawer with absolute vs fixed positioning.")),
+        new("HeaderClass", "string", "\"h-16 px-4...\"", T("Classes do wrapper do cabeçalho.", "Header wrapper classes.")),
+        new("ContentClass", "string", "\"flex-1...\"", T("Classes do wrapper do conteúdo.", "Content wrapper classes.")),
+        new("FooterClass", "string", "\"p-3 border-t...\"", T("Classes do wrapper do rodapé.", "Footer wrapper classes."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("-", T("XFSidebar não dispara eventos.", "XFSidebar does not fire events."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("-", T("XFSidebar não expõe métodos públicos.", "XFSidebar exposes no public methods."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Aria-label", "Aria-label"), T("Nome acessível configurável.", "Configurable accessible name."), "universal-access"),
+        new(T("Semântica aside", "Aside semantics"), T("Renderiza como aside.", "Renders as aside."), "tag"),
+        new(T("Aria-expanded", "Aria-expanded"), T("Reflete estado Expanded para leitores de tela.", "Reflects Expanded state for screen readers."), "circle-check")
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [
+        new(T("Tab order", "Tab order"), T("Itens de navegação participam da ordem de tab.", "Navigation items participate in tab order."), "keyboard"),
+        new(T("Escape", "Escape"), T("Drawer pode ser fechado com Escape via backdrop.", "Drawer can be closed with Escape via backdrop."), "keyboard")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre itens da sidebar.", "Navigates between sidebar items.")),
+        new("Shift+Tab", T("Navega em ordem reversa.", "Navigates in reverse order.")),
+        new("Enter/Space", T("Ativa item de navegação.", "Activates navigation item.")),
+        new("Escape", T("Fecha drawer (quando implementado).", "Closes drawer (when implemented)."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Drawer em mobile", "Drawer on mobile"), T("Use Variant Drawer para telas pequenas.", "Use Drawer variant for small screens."), "mobile-screen"),
+        new(T("Mini em desktop", "Mini on desktop"), T("Use Variant Mini para economizar espaço.", "Use Mini variant to save space."), "desktop")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Render leve", "Light render"), T("Apenas aside com slots. Sem JS interop.", "Just aside with slots. No JS interop."), "bolt"),
+        new(T("Transição CSS", "CSS transition"), T("Animações de Expanded via duration-300.", "Expanded animations via duration-300."), "sparkles")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new("ERP", T("Sidebar do Financeiro com módulos e badges.", "Finance sidebar with modules and badges."), "briefcase"),
+        new(T("Fiscal", "Tax"), T("Sidebar com NF-e, SPED e obrigações.", "Sidebar with invoices, SPED and obligations."), "calculator"),
+        new(T("Estoque", "Inventory"), T("Sidebar com produtos e movimentações.", "Sidebar with products and movements."), "boxes-stacked"),
+        new(T("Configurações", "Settings"), T("Sidebar de preferências do sistema.", "System preferences sidebar."), "gear")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("XFAppShell", T("Slot Sidebar do shell.", "Shell Sidebar slot."), "layer-group"),
+        new("XFRail", T("Navegação de apps complementar.", "Complementary app navigation."), "bars-staggered"),
+        new("XFBadge", T("Use badges para contadores.", "Use badges for counters."), "tag"),
+        new("XFTypography", T("Títulos e textos dentro dos slots.", "Titles and text inside slots."), "text")
+    ];
+
+    private IReadOnlyList<DocTile> IntegrationItems => [
+        new("XFAppShell", T("Sidebar aninhada no slot Sidebar do shell.", "Sidebar nested in the Sidebar slot of the shell."), "layer-group"),
+        new("XFRail", T("Rail seleciona app; Sidebar mostra navegação.", "Rail selects app; Sidebar shows navigation."), "bars-staggered")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Uma sidebar por app", "One sidebar per app"), T("Não misture navegação de apps diferentes.", "Do not mix navigation from different apps."), "circle-check"),
+        new(T("Expanded padrão true", "Expanded default true"), T("Sidebar começa expandida por padrão.", "Sidebar starts expanded by default."), "circle-check"),
+        new(T("Drawer em mobile", "Drawer on mobile"), T("Use Variant Drawer em resoluções menores.", "Use Drawer variant at smaller resolutions."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sidebar global", "Global sidebar"), T("Use Rail para navegação global, não sidebar.", "Use Rail for global navigation, not sidebar."), "xmark"),
+        new(T("Sidebar sem header", "Sidebar without header"), T("Sempre forneça um Header com o nome do módulo.", "Always provide a Header with the module name."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("bg-bg-surface, text-text-primary, border-border-light.", "bg-bg-surface, text-text-primary, border-border-light.")),
+        new("spacing", T("w-60 (Persistent), w-20 (Mini), p-3.", "w-60 (Persistent), w-20 (Mini), p-3.")),
+        new("transition", T("duration-300 ease-out para Expanded.", "duration-300 ease-out for Expanded."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Cores seguem tema ativo via tokens.", "Colors follow active theme via tokens."), "moon")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [
+        new(T("Sem XSS", "No XSS"), T("Slots são render fragments seguros.", "Slots are safe render fragments."), "shield-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes com variantes, Expanded e slots.", "Tests with variants, Expanded and slots.")),
+        new("Accessibility", T("Testes de aria-label e aria-expanded.", "Tests for aria-label and aria-expanded.")),
+        new("Snapshot", T("Snapshots para Persistent, Mini e Drawer.", "Snapshots for Persistent, Mini and Drawer."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Transição", T("Animação de Expanded via CSS width, não via transform.", "Expanded animation via CSS width, not transform.")),
+        new("Drawer backdrop", T("Backdrop do drawer deve ser implementado externamente.", "Drawer backdrop must be implemented externally."))
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("Sidebar local", "Local sidebar"), T("Troque divs laterais por XFSidebar.", "Replace side divs with XFSidebar."), "arrow-rotate-left"),
+        new(T("Menu vertical", "Vertical menu"), T("Migre menus verticais para slots do XFSidebar.", "Migrate vertical menus to XFSidebar slots."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFAppShell", T("Shell que hospeda a Sidebar.", "Shell that hosts the Sidebar."), "layer-group"),
+        new("XFRail", T("Navegação de apps complementar.", "Complementary app navigation."), "bars-staggered"),
+        new("XFBadge", T("Contadores nos itens da sidebar.", "Counters on sidebar items."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Drawer fecha com Escape?", "Does Drawer close with Escape?"), T("Sim, quando implementado com backdrop e handler de tecla.", "Yes, when implemented with backdrop and key handler.")),
+        new(T("Mini mostra tooltip?", "Does Mini show tooltip?"), T("Mini é apenas visual; tooltips requerem implementação externa.", "Mini is visual only; tooltips require external implementation.")),
+        new(T("Expanded afeta performance?", "Does Expanded affect performance?"), T("Não, é apenas toggle de classe CSS width.", "No, it's just a CSS width class toggle.")),
+        new(T("Posso ter múltiplas sidebars?", "Can I have multiple sidebars?"), T("Sim, mas apenas uma por app no contexto do shell.", "Yes, but only one per app in the shell context."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Página refeita com acentuação pt-BR correta, UTF-8 e 9 exemplos reais.", "Page rebuilt with correct pt-BR accentuation, UTF-8 and 9 real examples.")),
+        new("2026-05-26", T("Página criada no padrão enterprise.", "Page created in enterprise standard."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
-namespace XForge.Components.Base;
+namespace XForge.DesignSystem.Components.Base;
 
 /// <summary>
 /// Base for components needing theme/RTL/breakpoint cascade.

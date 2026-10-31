@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.Maps;
+using XForge.DesignSystem.Components.Maps;
 
 namespace XForge.DesignSystem.Tests.Components.Maps;
 

@@ -1,0 +1,49 @@
+﻿@using XForge.DesignSystem.Core.Primitives
+<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg" AreaRestricted="false">
+    <Header>
+        <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@Title</XFTypography>
+    </Header>
+    <ChildContent>
+        @if (Description is not null)
+        {
+            <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Muted">@Description</XFTypography>
+        }
+
+        <XFTable Size="XFSize.Sm" Striped="true">
+            <XFTableHeader>
+                <XFTableRow>
+                    <XFTableCell Header="true">Component</XFTableCell>
+                    <XFTableCell Header="true">Purpose</XFTableCell>
+                    <XFTableCell Header="true">Main use case</XFTableCell>
+                    <XFTableCell Header="true">Enterprise use case</XFTableCell>
+                    <XFTableCell Header="true">A11y</XFTableCell>
+                    <XFTableCell Header="true">Complexity</XFTableCell>
+                </XFTableRow>
+            </XFTableHeader>
+            <XFTableBody>
+                @foreach (var row in Rows)
+                {
+                    <XFTableRow>
+                        <XFTableCell><XFCode Text="@row.Component" /></XFTableCell>
+                        <XFTableCell>@row.Purpose</XFTableCell>
+                        <XFTableCell>@row.MainUse</XFTableCell>
+                        <XFTableCell>@row.EnterpriseUse</XFTableCell>
+                        <XFTableCell>@row.Accessibility</XFTableCell>
+                        <XFTableCell>@row.Complexity</XFTableCell>
+                    </XFTableRow>
+                }
+            </XFTableBody>
+        </XFTable>
+    </ChildContent>
+</XFCard>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Components Included";
+
+    [Parameter]
+    public string? Description { get; set; }
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<XForgeCategoryOverviewComponentRow> Rows { get; set; } = [];
+}

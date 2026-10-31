@@ -1,0 +1,420 @@
+@page "/tokens/motion"
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="@T("Tokens de Motion", "Motion Tokens")"
+                 Status="@T("Documentação completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        @* ==================== HEADER ==================== *@
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Design Tokens" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Transições", "Transitions")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Curvas", "Easing")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Acessibilidade", "Accessibility")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Durações e curvas para transições consistentes e respeitosas com acessibilidade.",
+                               "Durations and easing for transitions that are consistent and accessibility-respectful.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Os tokens de motion do XForge definem durações (100ms a 700ms) e curvas de easing como Tailwind utilities. Eles garantem animações consistentes em hover, focus, loading, expand/collapse e transições de tema, com suporte a prefers-reduced-motion.",
+                               "XForge motion tokens define durations (100ms to 700ms) and easing curves as Tailwind utilities. They ensure consistent animations in hover, focus, loading, expand/collapse and theme transitions, with prefers-reduced-motion support.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts) { @Tile(item) }</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @* ==================== 1. METADATA ==================== *@
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @* ==================== 2. BLAZOR SERVER / WASM ==================== *@
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependências JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Tokens de motion são CSS puro. Não utilizam JavaScript interop. Funcionam identicamente em todos os modos de renderização.", "Motion tokens are pure CSS. They do not use JavaScript interop. They work identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: sem latência adicional para tokens CSS.", "Blazor Server: no additional latency for CSS tokens.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: aplicados diretamente pelo navegador.", "Blazor WebAssembly: applied directly by the browser.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        @* ==================== 3. OVERVIEW ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 4. VARIANTS & STATES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Token", "Token"), T("Valor", "Value"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 5. VISUAL HIERARCHY & DESIGN ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        @* ==================== 6-12. EXAMPLES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Durações de transição", "1. Transition durations"),
+                T("5 níveis de duração para diferentes contextos.", "5 duration levels for different contexts."),
+                DurationPreview(), DurationCode)
+
+            @Example(T("2. Hover e focus", "2. Hover and focus"),
+                T("duration-100 a duration-200 para micro-interações.", "duration-100 to duration-200 for micro-interactions."),
+                HoverFocusPreview(), HoverFocusCode)
+
+            @Example(T("3. Expand e collapse", "3. Expand and collapse"),
+                T("duration-300 para animações de conteúdo.", "duration-300 for content animations."),
+                ExpandCollapsePreview(), ExpandCollapseCode)
+
+            @Example(T("4. Transição de tema", "4. Theme transition"),
+                T("Troca de tema usa transition-colors duration-300.", "Theme switch uses transition-colors duration-300."),
+                ThemeTransitionPreview(), ThemeTransitionCode)
+
+            @Example(T("5. Curvas de easing", "5. Easing curves"),
+                T("ease-in, ease-out e ease-in-out.", "ease-in, ease-out and ease-in-out."),
+                EasingPreview(), EasingCode)
+
+            @Example(T("6. Reduced motion", "6. Reduced motion"),
+                T("transition-none respeita prefers-reduced-motion.", "transition-none respects prefers-reduced-motion."),
+                ReducedMotionPreview(), ReducedMotionCode)
+
+            @Example(T("7. GPU-friendly animations", "7. GPU-friendly animations"),
+                T("transition-transform e transition-opacity rodam em GPU.", "transition-transform and transition-opacity run on GPU."),
+                GpuAnimationPreview(), GpuAnimationCode)
+        </XFStack>
+
+        @* ==================== 13. API ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 14. ACCESSIBILITY & KEYBOARD ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegação enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 15. RESPONSIVENESS & PERFORMANCE ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 16. ENTERPRISE SCENARIOS & PATTERNS ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        @* ==================== 17. TOKENS, THEMING, SECURITY, TESTING ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+        </XFStack>
+
+        @* ==================== EXTRA ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migração", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="h-16 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center transition-all duration-100 hover:bg-primary hover:text-white cursor-pointer"><span class="text-xs font-medium">100ms</span></div>
+            <div class="h-16 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center transition-all duration-200 hover:bg-primary hover:text-white cursor-pointer"><span class="text-xs font-medium">200ms</span></div>
+            <div class="h-16 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center transition-all duration-300 hover:bg-primary hover:text-white cursor-pointer"><span class="text-xs font-medium">300ms</span></div>
+            <div class="h-16 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center transition-all duration-500 hover:bg-primary hover:text-white cursor-pointer"><span class="text-xs font-medium">500ms</span></div>
+        </div>
+        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Passe o mouse sobre cada caixa para ver a transição.", "Hover over each box to see the transition.")</XFTypography>
+    </XFStack>;
+
+    private RenderFragment DurationPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-100 hover:bg-primary hover:text-white cursor-pointer">100ms</div>
+            <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-200 hover:bg-primary hover:text-white cursor-pointer">200ms</div>
+            <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-300 hover:bg-primary hover:text-white cursor-pointer">300ms</div>
+            <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-500 hover:bg-primary hover:text-white cursor-pointer">500ms</div>
+            <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-700 hover:bg-primary hover:text-white cursor-pointer">700ms</div>
+        </XFStack>
+    </XFStack>;
+
+    private RenderFragment HoverFocusPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFButton Text="@T("Hover rápido", "Fast hover")" Class="transition-all duration-100" />
+        <XFButton Text="@T("Hover normal", "Normal hover")" Class="transition-all duration-200" />
+        <XFButton Text="@T("Hover suave", "Smooth hover")" Class="transition-all duration-300" />
+    </XFStack>;
+
+    private RenderFragment ExpandCollapsePreview() => @<div class="rounded-lg border border-border-light overflow-hidden">
+        <div class="bg-surface-50 px-4 py-2 text-xs font-semibold cursor-pointer transition-all duration-300 hover:bg-surface-100">@T("Clique para expandir — duration-300", "Click to expand — duration-300")</div>
+        <div class="px-4 py-3 text-xs text-text-secondary transition-all duration-300">@T("Conteúdo expandido com transição suave de 300ms.", "Expanded content with smooth 300ms transition.")</div>
+    </div>;
+
+    private RenderFragment ThemeTransitionPreview() => @<div class="rounded-lg border border-border-light p-4 transition-colors duration-300">
+        <XFTypography Variant="XFTypographyVariant.Body1">@T("Transição de cor suave ao trocar tema.", "Smooth color transition when switching theme.")</XFTypography>
+    </div>;
+
+    private RenderFragment EasingPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-300 ease-in hover:bg-primary hover:text-white cursor-pointer">ease-in</div>
+        <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-300 ease-out hover:bg-primary hover:text-white cursor-pointer">ease-out</div>
+        <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-300 ease-in-out hover:bg-primary hover:text-white cursor-pointer">ease-in-out</div>
+    </XFStack>;
+
+    private RenderFragment ReducedMotionPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-all duration-300 hover:bg-primary hover:text-white">Com animação</div>
+        <div class="rounded bg-surface-100 px-4 py-2 text-xs transition-none">Sem animação</div>
+    </XFStack>;
+
+    private RenderFragment GpuAnimationPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-transform duration-200 hover:scale-110 cursor-pointer">transform</div>
+        <div class="rounded bg-primary/10 px-4 py-2 text-xs transition-opacity duration-200 hover:opacity-50 cursor-pointer">opacity</div>
+    </XFStack>;
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">Token</XFTableCell><XFTableCell Header="true">Valor</XFTableCell><XFTableCell Header="true">@T("Uso", "Usage")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private string DurationCode => @"<div class=""transition-all duration-100"">100ms</div>
+<div class=""transition-all duration-200"">200ms</div>
+<div class=""transition-all duration-300"">300ms</div>
+<div class=""transition-all duration-500"">500ms</div>
+<div class=""transition-all duration-700"">700ms</div>";
+
+    private string HoverFocusCode => @"<XFButton Text=""Rápido"" Class=""transition-all duration-100"" />
+<XFButton Text=""Normal"" Class=""transition-all duration-200"" />
+<XFButton Text=""Suave"" Class=""transition-all duration-300"" />";
+
+    private string ExpandCollapseCode => @"<div class=""transition-all duration-300"">
+    Conteúdo expansível
+</div>";
+
+    private string ThemeTransitionCode => @"<div class=""transition-colors duration-300"">
+    Transição suave ao trocar tema
+</div>";
+
+    private string EasingCode => @"<div class=""transition-all duration-300 ease-in"">ease-in</div>
+<div class=""transition-all duration-300 ease-out"">ease-out</div>
+<div class=""transition-all duration-300 ease-in-out"">ease-in-out</div>";
+
+    private string ReducedMotionCode => @"<!-- Com animação -->
+<div class=""transition-all duration-300"">Animado</div>
+
+<!-- Sem animação (prefers-reduced-motion) -->
+<div class=""transition-none"">Estático</div>";
+
+    private string GpuAnimationCode => @"<!-- GPU-friendly: transform -->
+<div class=""transition-transform duration-200 hover:scale-110"">
+    Transform
+</div>
+
+<!-- GPU-friendly: opacity -->
+<div class=""transition-opacity duration-200 hover:opacity-50"">
+    Opacity
+</div>";
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("5 durações", "5 durations"), T("100ms, 200ms, 300ms, 500ms, 700ms.", "100ms, 200ms, 300ms, 500ms, 700ms."), "clock"),
+        new(T("3 curvas", "3 easings"), T("ease-in, ease-out, ease-in-out.", "ease-in, ease-out, ease-in-out."), "bezier-curve"),
+        new(T("Reduced motion", "Reduced motion"), T("Respeita prefers-reduced-motion.", "Respects prefers-reduced-motion."), "universal-access")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Category", T("Design Tokens / Motion", "Design Tokens / Motion")),
+        new("Package", "XForge.DesignSystem"),
+        new("Status", T("Estável", "Stable"))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Durações", "Durations"), T("5 níveis de duração para diferentes contextos.", "5 duration levels for different contexts."), "clock"),
+        new(T("Curvas de easing", "Easing curves"), T("ease-in para saída, ease-out para entrada, ease-in-out para transição.", "ease-in for exit, ease-out for entry, ease-in-out for transition."), "bezier-curve"),
+        new(T("Reduced motion", "Reduced motion"), T("transition-none quando prefers-reduced-motion está ativo.", "transition-none when prefers-reduced-motion is active."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Feedback visual", "Visual feedback"), T("Hover e foco precisam de transição rápida.", "Hover and focus need fast transitions."), "hand-pointer"),
+        new(T("Fluidez", "Fluidity"), T("Animações suaves melhoram percepção de qualidade.", "Smooth animations improve perceived quality."), "sparkles"),
+        new(T("Acessibilidade", "Accessibility"), T("Respeitar preferências do usuário.", "Respect user preferences."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Durações arbitrárias e sem fallback de reduced-motion.", "Arbitrary durations without reduced-motion fallback."), "xmark"),
+        new(T("Depois", "After"), T("Tokens padronizados com suporte a acessibilidade.", "Standardized tokens with accessibility support."), "check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Hover/Focus", "Hover/Focus"), T("duration-100 a duration-200 para micro-interações.", "duration-100 to duration-200 for micro-interactions."), "hand-pointer"),
+        new(T("Expand/Collapse", "Expand/Collapse"), T("duration-300 para animações de conteúdo.", "duration-300 for content animations."), "arrows-up-down"),
+        new(T("Tema", "Theme"), T("duration-300 para troca de tema.", "duration-300 for theme switching."), "moon")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Animação longa demais", "Too long animation"), T("Nada acima de 700ms em UI interativa.", "Nothing above 700ms in interactive UI."), "xmark"),
+        new(T("Animação em tudo", "Animation on everything"), T("Não anime elementos estáticos.", "Do not animate static elements."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("transition-property", T("Propriedade CSS a animar (all, transform, opacity, colors).", "CSS property to animate (all, transform, opacity, colors)."), "code"),
+        new("transition-duration", T("Duração da transição (100ms-700ms).", "Transition duration (100ms-700ms)."), "clock"),
+        new("transition-timing-function", T("Curva de easing (ease-in, ease-out, ease-in-out).", "Easing curve (ease-in, ease-out, ease-in-out)."), "bezier-curve")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Velocidade perceptível", "Perceptible speed"), T("Transições rápidas para micro-interações.", "Fast transitions for micro-interactions."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Rápido e fluido", "Fast and fluid"), T("Transições devem ser rápidas o suficiente para parecer instantâneas.", "Transitions should be fast enough to feel instant."), "circle-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("duration-100", "100ms"),
+        new("duration-200", "200ms"),
+        new("duration-300", "300ms"),
+        new("duration-500", "500ms"),
+        new("duration-700", "700ms"),
+        new("ease-in", T("Curva de entrada.", "Entry curve.")),
+        new("ease-out", T("Curva de saída.", "Exit curve.")),
+        new("ease-in-out", T("Curva de transição.", "Transition curve."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Transição aplicada.", "Transition applied.")),
+        new("Reduced", T("transition-none desativa animações.", "transition-none disables animations."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("duration-100", "100ms", "-", T("Hover, focus, toggle.", "Hover, focus, toggle.")),
+        new("duration-200", "200ms", "-", T("Hover em botões.", "Hover on buttons.")),
+        new("duration-300", "300ms", "-", T("Tema, expand/collapse.", "Theme, expand/collapse.")),
+        new("duration-500", "500ms", "-", T("Entrada de conteúdo.", "Content entry.")),
+        new("duration-700", "700ms", "-", T("Animações longas.", "Long animations."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [ new("-", T("Tokens de motion não disparam eventos.", "Motion tokens do not fire events.")) ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("prefers-reduced-motion", "prefers-reduced-motion"), T("Desativa animações quando o usuário prefere.", "Disables animations when user prefers."), "universal-access"),
+        new(T("Transição none", "Transition none"), T("transition-none remove todas as transições.", "transition-none removes all transitions."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [
+        new(T("Foco com transição", "Focus with transition"), T("Transition no focus melhora feedback visual.", "Transition on focus improves visual feedback."), "keyboard")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [ new("Tab", T("Navega entre elementos interativos.", "Navigates between interactive items.")) ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Viewport independente", "Viewport independent"), T("Durações são fixas; não dependem do viewport.", "Durations are fixed; they don't depend on viewport."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("GPU-friendly", "GPU-friendly"), T("transition-transform e transition-opacity rodam em GPU.", "transition-transform and transition-opacity run on GPU."), "bolt"),
+        new(T("Layout-safe", "Layout-safe"), T("Animar transform/opacity não causa reflow.", "Animating transform/opacity does not cause reflow."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new("ERP", T("Hover em botões e linhas de tabela.", "Hover on buttons and table rows."), "briefcase"),
+        new(T("Dashboard", "Dashboard"), T("Transições de filtros e gráficos.", "Filter and chart transitions."), "chart-line-up")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("XFButton", T("Hover usa transition-all duration-200.", "Hover uses transition-all duration-200."), "circle-check"),
+        new("XFDialog", T("Entrada usa transition-all duration-300.", "Entry uses transition-all duration-300."), "window-restore")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Rápido para micro", "Fast for micro"), T("Use duration-100/200 para hover e focus.", "Use duration-100/200 for hover and focus."), "circle-check"),
+        new(T("Respeitar reduced-motion", "Respect reduced-motion"), T("Sempre use transition-none como fallback.", "Always use transition-none as fallback."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Animar layout", "Animate layout"), T("Não anime width/height; use transform.", "Do not animate width/height; use transform."), "xmark"),
+        new(T("Ignorar reduced-motion", "Ignore reduced-motion"), T("Sempre respeite a preferência do usuário.", "Always respect user preference."), "xmark")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("transition-*", T("Classes Tailwind para transições.", "Tailwind classes for transitions.")),
+        new("duration-*", T("Classes Tailwind para durações.", "Tailwind classes for durations.")),
+        new("ease-*", T("Classes Tailwind para curvas.", "Tailwind classes for easing curves."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Transição de tema usa duration-300.", "Theme transition uses duration-300."), "moon")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [ new(T("Sem XSS", "No XSS"), T("Tokens são CSS puro.", "Tokens are pure CSS."), "shield-check") ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [ new("Reduced motion", T("Testes verificam transition-none quando prefers-reduced-motion.", "Tests verify transition-none when prefers-reduced-motion.")) ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [ new("Animações complexas", T("Animações com keyframes requerem CSS customizado.", "Keyframe animations require custom CSS.")) ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("Hardcoded transitions", "Hardcoded transitions"), T("Substitua valores fixos por tokens.", "Replace fixed values with tokens."), "arrow-rotate-left")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new(T("Tokens de cores", "Color tokens"), T("Cores mudam durante transições.", "Colors change during transitions."), "palette"),
+        new(T("Tokens de sombra", "Shadow tokens"), T("Sombras podem ser animadas.", "Shadows can be animated."), "layer-group")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual duração para hover?", "Which duration for hover?"), T("100ms a 200ms para feedback imediato.", "100ms to 200ms for immediate feedback.")),
+        new(T("E se o usuário tiver reduced-motion?", "What if user has reduced-motion?"), T("Use transition-none para desativar.", "Use transition-none to disable."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Página refeita com acentuação pt-BR correta, 7 exemplos e seções enterprise completas.", "Page rebuilt with correct pt-BR accentuation, 7 examples and complete enterprise sections.")),
+        new("2026-05-26", T("Página criada no padrão enterprise.", "Page created in enterprise standard."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

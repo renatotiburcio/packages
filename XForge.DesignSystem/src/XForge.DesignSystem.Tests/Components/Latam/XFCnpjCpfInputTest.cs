@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.Latam;
+using XForge.DesignSystem.Components.Latam;
 
 namespace XForge.DesignSystem.Tests.Components.Latam;
 

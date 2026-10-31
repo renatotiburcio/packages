@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script>
+        // Early theme/brand detection - applies BEFORE CSS loads to prevent flash
+        (function() {
+            var theme = localStorage.getItem('xf-theme');
+            if (theme === 'dark' || theme === 'light') {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            var brand = localStorage.getItem('xf-brand') || localStorage.getItem('xf-nav-brand');
+            if (brand) {
+                var brandValue = brand.startsWith('brand-') ? brand : 'brand-' + brand;
+                document.documentElement.setAttribute('data-brand', brandValue);
+            }
+        })();
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>XForge.DesignSystem.Docs</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="./_content/XForge.DesignSystem/css/xf-designsystem.css" rel="stylesheet" />
+    <link href="./_content/XForge.DesignSystem/css/xf-select.css" rel="stylesheet" />
+    <link href="./_content/XForge.DesignSystem/css/xf-scrollbar.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <script src="./_content/XForge.DesignSystem/js/xf-theme.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-nav-state.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-tooltip.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-focus-trap.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-dialog.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-popover.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-one-time-input.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-splitter.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-split-button.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-select.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-signature-pad.js"></script>
+    <script src="./_content/XForge.DesignSystem/js/xf-animate.js"></script>
+    <style>
+        /* Loading page theme support */
+        .xf-loading-bg { background: var(--loading-bg, #f8fafc); }
+        .xf-loading-card { background: var(--loading-card-bg, #ffffff); }
+        .xf-loading-spinner { border-color: var(--loading-spinner-track, #e2e8f0); }
+        .xf-loading-spinner-active { border-right-color: var(--color-primary, #3b82f6); border-top-color: var(--color-primary, #3b82f6); }
+        .xf-loading-icon { background: var(--color-primary, #3b82f6); color: var(--color-primary-contrast, #ffffff); }
+        .xf-loading-title { color: var(--loading-title, #1e293b); }
+        .xf-loading-subtitle { color: var(--loading-subtitle, #94a3b8); }
+        .xf-loading-pattern { opacity: 0.03; }
+
+        /* Default light theme loading colors */
+        :root {
+            --loading-bg: #f8fafc;
+            --loading-card-bg: #ffffff;
+            --loading-spinner-track: #e2e8f0;
+            --loading-title: #1e293b;
+            --loading-subtitle: #94a3b8;
+        }
+
+        /* Dark theme loading colors */
+        :root[data-theme="dark"] {
+            --loading-bg: #09090b;
+            --loading-card-bg: #18181b;
+            --loading-spinner-track: #3f3f46;
+            --loading-title: #f8fafc;
+            --loading-subtitle: #71717a;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="fixed inset-0 z-[9999] flex items-center justify-center xf-loading-bg" style="background-image: radial-gradient(circle at 30% 40%, color-mix(in oklab, var(--color-primary, #3b82f6) 25%, transparent) 0%, transparent 50%), radial-gradient(circle at 70% 60%, color-mix(in oklab, var(--color-primary, #3b82f6) 20%, transparent) 0%, transparent 50%), radial-gradient(circle at 50% 80%, color-mix(in oklab, var(--color-primary, #3b82f6) 12%, transparent) 0%, transparent 45%);">
+            <div class="absolute inset-0 xf-loading-pattern" style="background-image: url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%23000000%22 fill-opacity=%221%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+            <div class="relative flex min-w-[280px] flex-col items-center rounded-2xl p-12 shadow-xl xf-loading-card">
+                <div class="relative mb-6 h-16 w-16">
+                    <div class="absolute inset-0 rounded-full border-4 xf-loading-spinner"></div>
+                    <div class="absolute inset-0 animate-spin rounded-full border-4 border-transparent xf-loading-spinner-active" style="animation-duration: 1.2s;"></div>
+                </div>
+                <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg shadow-lg xf-loading-icon" style="box-shadow: 0 4px 14px color-mix(in oklab, var(--color-primary, #3b82f6) 30%, transparent);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 17l6-6 4 4 8-8" />
+                        <path d="M14 7h7v7" />
+                    </svg>
+                </div>
+                <div class="text-center">
+                    <h3 class="mb-1 text-sm font-semibold xf-loading-title">Carregando XForge</h3>
+                    <p class="text-xs uppercase tracking-wide xf-loading-subtitle">Aguarde um momento...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui" style="display: none;">
+        <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+            <div class="flex w-full max-w-sm flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-2xl dark:border-slate-700/50 dark:bg-slate-800">
+                <div class="relative mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                    <div class="absolute inset-0 animate-ping rounded-full border border-red-500/50"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                </div>
+                <h3 id="error-title" class="mb-2 text-lg font-bold text-slate-900 dark:text-white">Ops, algo deu errado...</h3>
+                <p id="error-message" class="mb-6 text-sm text-slate-500 dark:text-slate-400">A aplicacao encontrou um erro critico. Tentando reestabelecer conexao...</p>
+                <div class="mb-6 w-full rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/50">
+                    <div class="mb-1 flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400">
+                        <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                        </svg>
+                        <span class="text-sm font-medium">Recarregando automaticamente:</span>
+                    </div>
+                    <div class="text-4xl font-black tabular-nums tracking-tight text-slate-800 dark:text-slate-200">
+                        <span id="error-countdown">10</span><span class="ml-1 text-lg font-medium text-slate-400">seg</span>
+                    </div>
+                </div>
+                <div class="flex w-full gap-3">
+                    <button class="dismiss w-full rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600" onclick="stopCountdown()">Sair</button>
+                    <a href="" class="reload flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700">Recarregar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        let countdownTimer;
+        let countdownValue = 10;
+        let isOfflineMode = false;
+
+        function stopCountdown() {
+            if (countdownTimer) clearInterval(countdownTimer);
+            document.getElementById('error-countdown').innerText = 'Parado';
+        }
+
+        function startCountdown() {
+            countdownValue = 10;
+            document.getElementById('error-countdown').innerText = countdownValue;
+            if (countdownTimer) clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                countdownValue--;
+                if (countdownValue <= 0) {
+                    clearInterval(countdownTimer);
+                    location.reload();
+                } else {
+                    document.getElementById('error-countdown').innerText = countdownValue;
+                }
+            }, 1000);
+        }
+
+        const errorUi = document.getElementById('blazor-error-ui');
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.attributeName === 'style') {
+                    if (errorUi.style.display !== 'none' && !isOfflineMode) {
+                        document.getElementById('error-title').innerText = 'Ops, algo deu errado...';
+                        document.getElementById('error-message').innerText = 'A aplicacao encontrou um erro critico. Tentando reestabelecer conexao...';
+                        startCountdown();
+                    } else if (errorUi.style.display === 'none') {
+                        stopCountdown();
+                    }
+                }
+            });
+        });
+        observer.observe(errorUi, { attributes: true });
+
+        window.addEventListener('offline', () => {
+            isOfflineMode = true;
+            document.getElementById('error-title').innerText = 'Sem Conexao';
+            document.getElementById('error-message').innerText = 'Sua internet caiu. A aplicacao voltara automaticamente quando a conexao for reestabelecida.';
+            errorUi.style.display = 'block';
+            startCountdown();
+        });
+
+        window.addEventListener('online', () => {
+            if (isOfflineMode) {
+                isOfflineMode = false;
+                errorUi.style.display = 'none';
+                stopCountdown();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,949 @@
+@page "/navigation/menu"
+@page "/components/menu"
+
+@inject XForgeDocsLanguageService LanguageService
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.Layout
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO CARD ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFMenu" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("WAI-ARIA", "WAI-ARIA")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Navegação", "Navigation")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Menu de Navegação acessível e data-driven.", "Accessible and data-driven navigation menu.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("7 variantes, 3 tamanhos, 3 modos de exibição, 6 tons ativos, colapsavel, aninhamento, templates, badges, seções e touch target 44px WCAG AAA.",
+                               "7 variants, 3 sizes, 3 display modes, 6 active tones, collapsible, nesting, templates, badges, sections and 44px WCAG AAA touch target.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        <!-- ===== METADATA ===== -->
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependências JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente não utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no Cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <!-- ===== OVERVIEW / PURPOSE / WHEN ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 12 MANDATORY EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Básico", "1. Basic"),
+                T("Menu data-driven vertical simples com itens do ERP.", "Simple vertical data-driven menu with ERP items."),
+                ExBasico(), CodeBasico)
+
+            @Example(T("2. Tamanhos", "2. Sizes"),
+                T("Sm (44px), Md (48px) e Lg (56px) — touch target otimizado.", "Sm (44px), Md (48px) and Lg (56px) — optimized touch target."),
+                ExTamanhos(), CodeTamanhos)
+
+            @Example(T("3. Variantes", "3. Variants"),
+                T("7 variantes: Surface, Plain, Soft, TopNav, Dropdown, Sidebar, DarkSidebar.", "7 variants: Surface, Plain, Soft, TopNav, Dropdown, Sidebar, DarkSidebar."),
+                ExVariantes(), CodeVariantes)
+
+            @Example(T("4. Modo de exibição", "4. Display Mode"),
+                T("IconAndText, IconOnly e TextOnly.", "IconAndText, IconOnly and TextOnly."),
+                ExDisplayMode(), CodeDisplayMode)
+
+            @Example(T("5. Tons ativos", "5. Active Tones"),
+                T("6 tons de cor para item selecionado: Primary, Secondary, Success, Warning, Danger, Neutral.", "6 color tones for selected item: Primary, Secondary, Success, Warning, Danger, Neutral."),
+                ExActiveTone(), CodeActiveTone)
+
+            @Example(T("6. Orientação", "6. Orientation"),
+                T("Vertical e Horizontal (XFOrientation).", "Vertical and Horizontal (XFOrientation)."),
+                ExOrientacao(), CodeOrientacao)
+
+            @Example(T("7. Colapsável", "7. Collapsible"),
+                T("Menu lateral colapsavel com botao toggle.", "Collapsible sidebar menu with toggle button."),
+                ExCollapsible(), CodeCollapsible)
+
+            @Example(T("8. Expansão", "8. Expansion"),
+                T("Modo multipla vs única expansao, itens com Children.", "Multiple vs single expansion mode, items with Children."),
+                ExExpansao(), CodeExpansao)
+
+            @Example(T("9. Templates", "9. Templates"),
+                T("ItemTemplate global para renderizacao custom.", "Global ItemTemplate for custom rendering."),
+                ExTemplates(), CodeTemplates)
+
+            @Example(T("10. Badges e Seções", "10. Badges and Sections"),
+                T("Badges com tons diferentes, Kind=Section e Kind=Separator.", "Badges with different tones, Kind=Section and Kind=Separator."),
+                ExBadgesEseções(), CodeBadgesEseções)
+
+            @Example(T("11. Dark Sidebar", "11. Dark Sidebar"),
+                T("Variante DarkSidebar com seções, badges e Descrições.", "DarkSidebar variant with sections, badges and descriptions."),
+                ExDarkSidebar(), CodeDarkSidebar)
+
+            @Example(T("12. Cenário enterprise", "12. Enterprise Scenario"),
+                T("Sidebar ERP completa com XFMenuItem: módulos, filhos, badges, Descrições e icones.", "Full ERP sidebar with XFMenuItem: modules, children, badges, descriptions and icons."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <!-- ===== API / EVENTS ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <!-- ===== DESIGN / RESPONSIVENESS / PERFORMANCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 3)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== ACCESSIBILITY / KEYBOARD ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <!-- ===== ENTERPRISE / COMPOSITION / BEST PRACTICES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <!-- ===== TOKENS / THEMES / SECURITY / TESTING ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, T("Categoria", "Category"), T("Tokens", "Tokens"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestRows, T("Tipo", "Type"), T("Cobertura", "Coverage"))</div>)
+        </XFStack>
+
+        <!-- ===== LIMITATIONS / MIGRATION / RELATED / FAQ / CHANGELOG ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Detalhe", "Detail"))</div>)
+            @Section(T("Notas de migração", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Menu", "Menu");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+
+    private RenderFragment SvgIcon(string name) => builder => builder.AddMarkupContent(0, XFSvgIcons.MarkupWithSize(name, 18).Value);
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+
+    // ─── Helpers ───
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // ═══════════════════════════════════════════
+    //  HERO
+    // ═══════════════════════════════════════════
+    private string? HeroSelectedId = "financeiro";
+
+    private IReadOnlyList<XFMenuItem> HeroItems => [
+        new() { Id = "fiscal", Text = T("Fiscal", "Fiscal"), Icon = SvgIcon("file-invoice"), Badge = "12", BadgeTone = XFSemanticColor.Warning },
+        new() { Id = "estoque", Text = T("Estoque", "Inventory"), Icon = SvgIcon("boxes-stacked") },
+        new() { Id = "financeiro", Text = T("Financeiro", "Financial"), Icon = SvgIcon("money-bill-trend-up"), Badge = "3", BadgeTone = XFSemanticColor.Danger },
+        new() { Id = "Contabil", Text = T("Contabil", "Accounting"), Icon = SvgIcon("calculator") }
+    ];
+
+    private RenderFragment HeroPreview() => @<div class="flex flex-col gap-4">
+        <div class="overflow-hidden rounded-lg border border-border-light bg-bg-surface">
+            <div class="flex items-center justify-between border-b border-border-light bg-surface-50/80 px-5 py-3">
+                <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@T("Menu ERP - Módulos", "ERP Menu - Modules")</XFTypography>
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Ativo", "Active")" />
+            </div>
+            <div class="p-3">
+                <XFMenu Items="@HeroItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@HeroSelectedId"
+                        SelectedIdChanged="id => HeroSelectedId = id" />
+            </div>
+        </div>
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  STATIC DATA
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("7 variantes", "7 variants"), T("Surface, Plain, Soft, TopNav, Dropdown, Sidebar, DarkSidebar.", "Surface, Plain, Soft, TopNav, Dropdown, Sidebar, DarkSidebar."), "layer-group"),
+        new(T("3 tamanhos touch", "3 touch sizes"), T("Sm=44px, Md=48px, Lg=56px — WCAG AAA.", "Sm=44px, Md=48px, Lg=56px — WCAG AAA."), "maximize"),
+        new(T("6 tons ativos", "6 active tones"), T("Primary, Secondary, Success, Warning, Danger, Neutral.", "Primary, Secondary, Success, Warning, Danger, Neutral."), "palette")
+    ];
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFMenu"),
+        new("Namespace", "XForge.DesignSystem.Components.Navigation.Menu"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Navigation / Menu"),
+        new("Status", T("Estável", "Stable")),
+        new("Accessibility", T("nav role=tree/menubar, aria-expanded, aria-selected, aria-level, touch target 44px AAA.", "nav role=tree/menubar, aria-expanded, aria-selected, aria-level, 44px AAA touch target.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Data-Driven", "Data-Driven"), T("Aceita IReadOnlyList de XFMenuItem — sem child content.", "Accepts IReadOnlyList of XFMenuItem — no child content."), "database"),
+        new(T("Hierarquia", "Hierarchy"), T("Filhos aninhados via Children, expansão múltipla ou única.", "Nested children via Children, multiple or single expansion."), "sitemap"),
+        new(T("Templates", "Templates"), T("ItemTemplate global e Template por item.", "Global ItemTemplate and per-item Template."), "code")
+    ];
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Navegação ERP", "ERP Navigation"), T("Módulos, submódulos e telas do sistema.", "System modules, submodules and screens."), "compass"),
+        new(T("Sidebar colapsável", "Collapsible Sidebar"), T("Maximizar área de conteúdo em desktop.", "Maximize content area on desktop."), "columns-3"),
+        new(T("Dropdown contextual", "Contextual Dropdown"), T("Menus de ação e navegação contextual.", "Action menus and contextual navigation."), "chevron-down")
+    ];
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Menus hardcoded com HTML, sem navegação por teclado.", "Hardcoded menus with HTML, no keyboard navigation."), "xmark"),
+        new(T("Depois", "After"), T("Data-driven com WAI-ARIA, templates e 7 variantes.", "Data-driven with WAI-ARIA, templates and 7 variants."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("Consistência visual entre todas as navegações do ERP.", "Visual consistency across all ERP navigations."), "shield-check")
+    ];
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Sidebar do ERP", "ERP Sidebar"), T("Navegação principal entre módulos e telas.", "Main navigation between modules and screens."), "sidebar"),
+        new(T("Top navigation", "Top navigation"), T("Barra de navegação horizontal no topo.", "Horizontal navigation bar at the top."), "grip-horizontal"),
+        new(T("Menu dropdown", "Dropdown menu"), T("Menus de ação em tabelas e cards.", "Action menus in tables and cards."), "caret-down")
+    ];
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Breadcrumb", "Breadcrumb"), T("Use XFBreadcrumb para hierarquia de rota simples.", "Use XFBreadcrumb for simple route hierarchy."), "xmark"),
+        new(T("Tabs", "Tabs"), T("Use XFTabs para alternância de visões em mesma tela.", "Use XFTabs for switching views on the same screen."), "triangle-exclamation")
+    ];
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("nav", T("Container semântico com role=tree ou role=menubar.", "Semantic container with role=tree or role=menubar."), "code"),
+        new("XFMenuItem", T("Item data-driven com Id, Text, Icon, Badge, Children.", "Data-driven item with Id, Text, Icon, Badge, Children."), "square"),
+        new(T("Section", "Section"), T("Cabeçalho de agrupamento com Kind=Section.", "Group header with Kind=Section."), "heading"),
+        new(T("Separator", "Separator"), T("Linha divisória com Kind=Separator.", "Dividing line with Kind=Separator."), "minus"),
+        new(T("Filhos", "Children"), T("Itens aninhados com hierarquia via Children.", "Nested items with hierarchy via Children."), "sitemap"),
+        new(T("Badge", "Badge"), T("Indicador numérico ou texto com BadgeTone.", "Numeric or text indicator with BadgeTone."), "tag")
+    ];
+
+    // ═══════════════════════════════════════════
+    //  1. BASICO
+    // ═══════════════════════════════════════════
+    private string? SelectedBasicoId = "financeiro";
+
+    private IReadOnlyList<XFMenuItem> BasicoItems => [
+        new() { Id = "fiscal", Text = T("Fiscal", "Fiscal"), Icon = SvgIcon("file-invoice") },
+        new() { Id = "estoque", Text = T("Estoque", "Inventory"), Icon = SvgIcon("boxes-stacked") },
+        new() { Id = "financeiro", Text = T("Financeiro", "Financial"), Icon = SvgIcon("money-bill-trend-up") },
+        new() { Id = "Contabil", Text = T("Contabil", "Accounting"), Icon = SvgIcon("calculator") }
+    ];
+
+    private RenderFragment ExBasico() => @<div class="max-w-xs">
+        <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId"
+                SelectedIdChanged="id => SelectedBasicoId = id" />
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  2. TAMANHOS
+    // ═══════════════════════════════════════════
+    private RenderFragment ExTamanhos() => @<div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Sm (44px)" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                    @T("Compacto — dashboards com muitos KPIs.", "Compact — dashboards with many KPIs.")
+                </XFTypography>
+            </div>
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Sm" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Md (48px)" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                    @T("padrão — maioria dos cenários ERP.", "Default — most ERP scenários.")
+                </XFTypography>
+            </div>
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Lg (56px)" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                    @T("Touch-first — tablets, kiosks, POS.", "Touch-first — tablets, kiosks, POS.")
+                </XFTypography>
+            </div>
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Lg" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  3. VARIANTES
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<XFMenuItem> TextOnlyItems => [
+        new() { Id = "fiscal", Text = T("Fiscal", "Fiscal") },
+        new() { Id = "estoque", Text = T("Estoque", "Inventory") },
+        new() { Id = "financeiro", Text = T("Financeiro", "Financial") },
+        new() { Id = "Contabil", Text = T("Contabil", "Accounting") }
+    ];
+
+    private RenderFragment ExVariantes() => @<div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Surface" />
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Plain" />
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Plain"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Soft" />
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Soft"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="TopNav" />
+            <div class="max-w-md">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.TopNav"
+                        Orientation="XFOrientation.Horizontal" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Dropdown" />
+            <div class="max-w-xs">
+                <XFMenu Items="@TextOnlyItems" Size="XFSize.Md" Variant="XFMenuVariant.Dropdown"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.TextOnly"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Sidebar" />
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Sidebar"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="DarkSidebar" />
+            <div class="max-w-xs rounded-lg bg-gray-900 p-3">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.DarkSidebar"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  4. DISPLAY MODE
+    // ═══════════════════════════════════════════
+    private RenderFragment ExDisplayMode() => @<div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="IconAndText" />
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="IconOnly" />
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconOnly"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="TextOnly" />
+            <div class="max-w-xs">
+                <XFMenu Items="@TextOnlyItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.TextOnly"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  5. ACTIVE TONES
+    // ═══════════════════════════════════════════
+    private RenderFragment ExActiveTone() => @<div class="flex flex-col gap-5">
+        @foreach (var tone in new[] { XFSemanticColor.Primary, XFSemanticColor.Secondary, XFSemanticColor.Success, XFSemanticColor.Warning, XFSemanticColor.Danger, XFSemanticColor.Neutral })
+        {
+            var toneName = tone.ToString();
+            var toneItems = new List<XFMenuItem> {
+                new() { Id = "fiscal", Text = T("Fiscal", "Fiscal"), Icon = SvgIcon("file-invoice") },
+                new() { Id = "estoque", Text = T("Estoque", "Inventory"), Icon = SvgIcon("boxes-stacked") },
+                new() { Id = "financeiro", Text = T("Financeiro", "Financial"), Icon = SvgIcon("money-bill-trend-up") },
+                new() { Id = "Contabil", Text = T("Contabil", "Accounting"), Icon = SvgIcon("calculator") }
+            };
+            <div class="flex flex-col gap-2">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@toneName" />
+                <div class="max-w-xs">
+                    <XFMenu Items="@toneItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                            Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                            ActiveTone="@tone" SelectedId="@SelectedBasicoId" />
+                </div>
+            </div>
+        }
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  6. ORIENTACAO
+    // ═══════════════════════════════════════════
+    private RenderFragment ExOrientacao() => @<div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="XFOrientation.Vertical" />
+            <div class="max-w-xs">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="XFOrientation.Horizontal" />
+            <div class="max-w-lg">
+                <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.TopNav"
+                        Orientation="XFOrientation.Horizontal" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  7. COLAPSÁVEL
+    // ═══════════════════════════════════════════
+    private bool CollapsibleExpanded = true;
+
+    private RenderFragment ExCollapsible() => @<div class="max-w-xs">
+        <div class="mb-3">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Colapsavel", "Collapsible")" />
+        </div>
+        <div class="rounded-lg border border-border-light bg-bg-surface">
+            <XFMenu Items="@BasicoItems" Size="XFSize.Md" Variant="XFMenuVariant.Sidebar"
+                    Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                    ActiveTone="XFSemanticColor.Primary" Collapsible="true"
+                    Expanded="@CollapsibleExpanded" ExpandedChanged="v => CollapsibleExpanded = v"
+                    SelectedId="@SelectedBasicoId" />
+        </div>
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  8. EXPANSAO
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<XFMenuItem> ExpansionItems => [
+        new() {
+            Id = "fiscal-group", Text = T("Fiscal", "Fiscal"), Icon = SvgIcon("file-invoice"), Expanded = true,
+            Children = [
+                new() { Id = "fiscal-nfe", Text = "NF-e" },
+                new() { Id = "fiscal-nfce", Text = "NFC-e" },
+                new() { Id = "fiscal-cte", Text = "CT-e" }
+            ]
+        },
+        new() {
+            Id = "estoque-group", Text = T("Estoque", "Inventory"), Icon = SvgIcon("boxes-stacked"),
+            Children = [
+                new() { Id = "estoque-Produtos", Text = T("Produtos", "Products") },
+                new() { Id = "estoque-Entrada", Text = T("Entradas", "Entries") }
+            ]
+        },
+        new() { Id = "financeiro", Text = T("Financeiro", "Financial"), Icon = SvgIcon("money-bill-trend-up") }
+    ];
+
+    private IReadOnlyList<string> ExpandedIds = new List<string> { "fiscal-group" };
+
+    private RenderFragment ExExpansao() => @<div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Text="@T("Multipla expansao", "Multiple expansion")" />
+            <div class="max-w-xs">
+                <XFMenu Items="@ExpansionItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" Multiple="true"
+                        ExpandedIds="@ExpandedIds" ExpandedIdsChanged="ids => ExpandedIds = ids"
+                        SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Text="@T("única expansao", "Single expansion")" />
+            <div class="max-w-xs">
+                <XFMenu Items="@ExpansionItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                        Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                        ActiveTone="XFSemanticColor.Primary" Multiple="false"
+                        SelectedId="@SelectedBasicoId" />
+            </div>
+        </div>
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  9. TEMPLATES
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<XFMenuItem> TemplateItems => [
+        new() { Id = "fiscal", Text = T("Fiscal", "Fiscal"), Icon = SvgIcon("file-invoice"), Badge = "12", BadgeTone = XFSemanticColor.Warning },
+        new() { Id = "estoque", Text = T("Estoque", "Inventory"), Icon = SvgIcon("boxes-stacked"), Badge = "OK", BadgeTone = XFSemanticColor.Success },
+        new() { Id = "financeiro", Text = T("Financeiro", "Financial"), Icon = SvgIcon("money-bill-trend-up"), Badge = "3", BadgeTone = XFSemanticColor.Danger }
+    ];
+
+    private RenderFragment<XFMenuItem> CustomItemTemplate => item => @<div class="flex items-center gap-3">
+        <span class="text-sm font-medium">@item.Text</span>
+        @if (!string.IsNullOrWhiteSpace(item.Badge))
+        {
+            <span class="ml-auto inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">@item.Badge</span>
+        }
+    </div>;
+
+    private RenderFragment ExTemplates() => @<div class="max-w-xs">
+        <XFMenu Items="@TemplateItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                Orientation="XFOrientation.Vertical" ActiveTone="XFSemanticColor.Primary"
+                ItemTemplate="@CustomItemTemplate" SelectedId="@SelectedBasicoId" />
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  10. BADGES E seções
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<XFMenuItem> BadgesSectionsItems => [
+        new() { Kind = XFMenuItemKind.Section, Text = T("Módulos", "Modules") },
+        new() { Id = "fiscal", Text = T("Fiscal", "Fiscal"), Icon = SvgIcon("file-invoice"), Badge = "12", BadgeTone = XFSemanticColor.Warning },
+        new() { Id = "estoque", Text = T("Estoque", "Inventory"), Icon = SvgIcon("boxes-stacked"), Badge = "OK", BadgeTone = XFSemanticColor.Success },
+        new() { Kind = XFMenuItemKind.Separator },
+        new() { Kind = XFMenuItemKind.Section, Text = T("Financeiro", "Financial") },
+        new() { Id = "Contas-Pagar", Text = T("Contas a Pagar", "Accounts Payable"), Icon = SvgIcon("file-invoice-dollar"), Badge = "5", BadgeTone = XFSemanticColor.Danger },
+        new() { Id = "Contas-Receber", Text = T("Contas a Receber", "Accounts Receivable"), Icon = SvgIcon("hand-holding-dollar"), Badge = "8", BadgeTone = XFSemanticColor.Primary }
+    ];
+
+    private RenderFragment ExBadgesEseções() => @<div class="max-w-xs">
+        <XFMenu Items="@BadgesSectionsItems" Size="XFSize.Md" Variant="XFMenuVariant.Surface"
+                Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  11. DARK SIDEBAR
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<XFMenuItem> DarkSidebarItems => [
+        new() { Kind = XFMenuItemKind.Section, Text = T("Principal", "Main") },
+        new() { Id = "fiscal", Text = T("Fiscal", "Fiscal"), Icon = SvgIcon("file-invoice"), Description = T("NF-e, NFC-e, CT-e", "NF-e, NFC-e, CT-e"), Badge = "12", BadgeTone = XFSemanticColor.Warning },
+        new() { Id = "estoque", Text = T("Estoque", "Inventory"), Icon = SvgIcon("boxes-stacked"), Description = T("Produtos, Entradas, saídas", "Products, entries, exits") },
+        new() { Kind = XFMenuItemKind.Separator },
+        new() { Kind = XFMenuItemKind.Section, Text = T("Financeiro", "Financial") },
+        new() { Id = "financeiro", Text = T("Financeiro", "Financial"), Icon = SvgIcon("money-bill-trend-up"), Description = T("Fluxo de Caixa, Bancos", "Cash flow, banks"), Badge = "3", BadgeTone = XFSemanticColor.Danger },
+        new() { Id = "Contabil", Text = T("Contabil", "Accounting"), Icon = SvgIcon("calculator"), Description = T("lançamentos, Balancetes", "Entries, trial balances") }
+    ];
+
+    private RenderFragment ExDarkSidebar() => @<div class="max-w-xs rounded-lg bg-gray-900 p-3">
+        <XFMenu Items="@DarkSidebarItems" Size="XFSize.Md" Variant="XFMenuVariant.DarkSidebar"
+                Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" />
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  12. ENTERPRISE
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<XFMenuItem> EnterpriseItems => [
+        new() { Kind = XFMenuItemKind.Section, Text = T("operações", "Operations") },
+        new() {
+            Id = "fiscal-group", Text = T("Fiscal", "Fiscal"), Icon = SvgIcon("file-invoice"), Badge = "12", BadgeTone = XFSemanticColor.Warning, Expanded = true,
+            Children = [
+                new() { Id = "fiscal-nfe", Text = "NF-e", Description = T("Nota Fiscal Eletronica", "Electronic Invoice") },
+                new() { Id = "fiscal-nfce", Text = "NFC-e", Description = T("Cupom Fiscal Eletronico", "Electronic Receipt") },
+                new() { Id = "fiscal-cte", Text = "CT-e", Description = T("Conhecimento de Transporte", "Transport Knowledge") },
+                new() { Id = "fiscal-mdfe", Text = "MDF-e", Description = T("Manifesto de Documentos", "Document Manifest") }
+            ]
+        },
+        new() {
+            Id = "estoque-group", Text = T("Estoque", "Inventory"), Icon = SvgIcon("boxes-stacked"), Badge = "OK", BadgeTone = XFSemanticColor.Success,
+            Children = [
+                new() { Id = "estoque-Produtos", Text = T("Produtos", "Products") },
+                new() { Id = "estoque-Entradas", Text = T("Entradas", "Entries") },
+                new() { Id = "estoque-saídas", Text = T("saídas", "Exits") },
+                new() { Id = "estoque-inventário", Text = T("inventário", "Stock Take") }
+            ]
+        },
+        new() { Kind = XFMenuItemKind.Separator },
+        new() { Kind = XFMenuItemKind.Section, Text = T("Financeiro", "Financial") },
+        new() {
+            Id = "financeiro-group", Text = T("Financeiro", "Financial"), Icon = SvgIcon("money-bill-trend-up"), Badge = "3", BadgeTone = XFSemanticColor.Danger,
+            Children = [
+                new() { Id = "fin-Pagar", Text = T("Contas a Pagar", "Accounts Payable") },
+                new() { Id = "fin-Receber", Text = T("Contas a Receber", "Accounts Receivable") },
+                new() { Id = "fin-Bancos", Text = T("Bancos", "Banks") },
+                new() { Id = "fin-conciliação", Text = T("conciliação", "Reconciliation") }
+            ]
+        },
+        new() {
+            Id = "Contabil-group", Text = T("Contabil", "Accounting"), Icon = SvgIcon("calculator"),
+            Children = [
+                new() { Id = "Contabil-lançamentos", Text = T("lançamentos", "Journal Entries") },
+                new() { Id = "Contabil-Balancete", Text = T("Balancete", "Trial Balance") },
+                new() { Id = "Contabil-dre", Text = "DRE" }
+            ]
+        },
+        new() { Kind = XFMenuItemKind.Separator },
+        new() { Kind = XFMenuItemKind.Section, Text = T("Pessoal", "People") },
+        new() {
+            Id = "rh-group", Text = "RH", Icon = SvgIcon("users"), Badge = "156", BadgeTone = XFSemanticColor.Primary,
+            Children = [
+                new() { Id = "rh-funcionários", Text = T("funcionários", "Employees") },
+                new() { Id = "rh-admissão", Text = T("admissão", "Hiring") },
+                new() { Id = "rh-demissão", Text = T("demissão", "Termination") }
+            ]
+        },
+        new() { Id = "Folha", Text = T("Folha de Pagamento", "Payroll"), Icon = SvgIcon("money-check-dollar"), Description = T("Processamento mensal", "Monthly processing"), Badge = T("Pendente", "Pending"), BadgeTone = XFSemanticColor.Warning }
+    ];
+
+    private RenderFragment ExEnterprise() => @<div class="max-w-xs rounded-lg border border-border-light bg-bg-surface">
+        <div class="border-b border-border-light px-4 py-3">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("building", 16))</span>
+                <div>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">XForge ERP</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Tech Solutions S.A.", "Tech Solutions Inc")</XFTypography>
+                </div>
+            </div>
+        </div>
+        <div class="p-2">
+            <XFMenu Items="@EnterpriseItems" Size="XFSize.Md" Variant="XFMenuVariant.Sidebar"
+                    Orientation="XFOrientation.Vertical" DisplayMode="XFMenuDisplayMode.IconAndText"
+                    ActiveTone="XFSemanticColor.Primary" SelectedId="@SelectedBasicoId" Multiple="true" />
+        </div>
+    </div>;
+
+    // ═══════════════════════════════════════════
+    //  API TABLE
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Items", "IReadOnlyList\x3C\x46MenuItem\x3E", "[]", T("Colecao de itens do menu (data-driven).", "Menu items collection (data-driven).")),
+        new("SelectedId", "string?", "null", T("ID do item selecionado.", "Currently selected item ID.")),
+        new("SelectedIdChanged", "EventCallback\x3Cstring?\x3E", "\u2014", T("Dispara ao mudar selecao.", "Fires when selection changes.")),
+        new("ExpandedIds", "IReadOnlyList\x3Cstring\x3E", "[]", T("IDs dos itens expandidos.", "Controlled expanded item IDs.")),
+        new("ExpandedIdsChanged", "EventCallback\x3CIReadOnlyList\x3Cstring\x3E\x3E", "\u2014", T("Dispara ao mudar expansao.", "Fires when expansion changes.")),
+        new("ItemClicked", "EventCallback\x3CXFMenuItemEventArgs\x3E", "\u2014", T("Dispara ao clicar em item.", "Fires when any item is clicked.")),
+        new("ItemTemplate", "RenderFragment\x3CXFMenuItem\x3E?", "null", T("Template custom para todos os itens.", "Custom template for all items.")),
+        new("Orientation", "XFOrientation", "Vertical", T("Layout Vertical ou Horizontal.", "Vertical or Horizontal layout.")),
+        new("Variant", "XFMenuVariant", "Surface", T("Variante visual.", "Visual variant.")),
+        new("Size", "XFSize", "Md", T("Altura e padding dos itens.", "Item height and padding.")),
+        new("DisplayMode", "XFMenuDisplayMode", "IconAndText", T("O que exibir: icone, texto ou ambos.", "What to show: icon, text, or both.")),
+        new("ActiveTone", "XFSemanticColor", "Primary", T("Cor do item selecionado.", "Color tone for selected items.")),
+        new("Multiple", "bool", "true", T("Permite multiplos grupos expandidos.", "Allow multiple expanded groups.")),
+        new("Collapsible", "bool", "false", T("Mostra botao toggle.", "Show toggle button for collapse/expand.")),
+        new("Expanded", "bool", "true", T("Se o menu esta expandido (modo colapsavel).", "Whether menu is expanded (collapsible mode).")),
+        new("ExpandedChanged", "EventCallback\x3Cbool\x3E", "\u2014", T("Dispara ao mudar estado de expansao.", "Fires when expand state changes.")),
+        new("ShowArrows", "bool", "true", T("Mostra setas de expand/collapse.", "Show expand/collapse arrows.")),
+        new("ExpandOnItemClick", "bool", "true", T("Expande grupos ao clicar.", "Auto-expand groups on click.")),
+        new("SelectOnItemClick", "bool", "true", T("Seleciona itens ao clicar.", "Auto-select items on click.")),
+        new("AriaLabel", "string?", "\"Menu\"", T("Label ARIA do elemento nav.", "ARIA label for the nav element.")),
+        new("EmptyText", "string", "\"No items to display.\"", T("Texto quando lista esta vazia.", "Text when items list is empty.")),
+        new("ToggleLabel", "string", "\"Toggle menu\"", T("Label ARIA do botao toggle.", "ARIA label for toggle button.")),
+        new("ToggleExpandedLabel", "string?", "null", T("Label quando expandido.", "ARIA label when expanded.")),
+        new("ToggleCollapsedLabel", "string?", "null", T("Label quando colapsado.", "ARIA label when collapsed."))
+    ];
+
+    // ═══════════════════════════════════════════
+    //  EVENTS
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("SelectedIdChanged", T("Muda item selecionado.", "Fires when selected item changes.")),
+        new("ExpandedIdsChanged", T("Muda IDs expandidos.", "Fires when expanded IDs change.")),
+        new("ItemClicked", T("Clique em qualquer item (XFMenuItemEventArgs).", "Click on any item (XFMenuItemEventArgs).")),
+        new("ExpandedChanged", T("Muda estado de expansão do menu.", "Fires when menu expand state changes."))
+    ];
+
+    // ═══════════════════════════════════════════
+    //  DESIGN PRINCIPLES
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Data-Driven", "Data-Driven"), T("IReadOnlyList de XFMenuItem — serializável, testável, programático.", "IReadOnlyList of XFMenuItem — serializable, testable, programmatic."), "database"),
+        new(T("Consistência", "Consistency"), T("Mesmos tokens, tamanhos e tons em todas as instâncias.", "Same tokens, sizes and tones across all instances."), "arrows-rotate"),
+        new(T("Acessibilidade", "Accessibility"), T("WAI-ARIA tree/menubar, roving tabindex, touch 44px.", "WAI-ARIA tree/menubar, roving tabindex, 44px touch."), "universal-access")
+    ];
+
+    // ═══════════════════════════════════════════
+    //  RESPONSIVENESS
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Touch 44px", "44px touch"), T("Todos os itens têm min-h-[44px] para WCAG AAA.", "All items have min-h-[44px] for WCAG AAA."), "hand-pointer"),
+        new(T("Colapsável", "Collapsible"), T("Modo colapsável para mobile e telas estreitas.", "Collapsible mode for mobile and narrow screens."), "mobile-screen"),
+        new(T("IconOnly", "IconOnly"), T("Modo compacto para telas muito estreitas.", "Compact mode for very narrow screens."), "minimize")
+    ];
+
+    // ═══════════════════════════════════════════
+    //  PERFORMANCE
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Sem JS", "No JS"), T("Navegação por teclado em C# puro, sem interop.", "Keyboard navigation in pure C#, no interop."), "bolt"),
+        new(T("Render leve", "Light render"), T("SVG inline para ícones. Sem dependências externas.", "Inline SVG for icons. No external dependencies."), "feather"),
+        new(T("Data-driven", "Data-driven"), T("IReadOnlyList evita re-renders desnecessários.", "IReadOnlyList avoids unnecessary re-renders."), "code")
+    ];
+
+    // ═══════════════════════════════════════════
+    //  ENTERPRISE
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new("ERP", T("Sidebar principal com módulos, submódulos e badges.", "Main sidebar with modules, submodules and badges."), "briefcase"),
+        new("CRM", T("Navegação de módulos CRM com seções e separadores.", "CRM module navigation with sections and separators."), "users"),
+        new("Dashboard", T("TopNav com links rápidos e dropdowns.", "TopNav with quick links and dropdowns."), "chart-line-up")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("XFSidebar", T("Menu dentro de XFSidebar para layout lateral.", "Menu inside XFSidebar for side layout."), "sidebar"),
+        new("XFCard", T("Menu dentro de XFCard para contexto visual.", "Menu inside XFCard for visual context."), "layer-group"),
+        new("XFDrawer", T("Menu no drawer para navegação mobile.", "Menu in drawer for mobile navigation."), "bars")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Máximo 8-10 itens", "Max 8-10 items"), T("Mais que 10 itens causa overload cognitivo.", "More than 10 items causes cognitive overload."), "circle-check"),
+        new(T("Agrupar por função", "Group by function"), T("Use Kind=Section para separar módulos relacionados.", "Use Kind=Section to separate related modules."), "layer-group"),
+        new(T("Sempre aria-label", "Always aria-label"), T("XFMenu deve ter AriaLabel para leitores de tela.", "XFMenu should have AriaLabel for screen readers."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Muitos itens", "Too many items"), T("Mais de 10 itens sem agrupamento. Use Kind=Section.", "More than 10 items without grouping. Use Kind=Section."), "triangle-exclamation"),
+        new(T("Sem children", "No children"), T("Não aninhe mais de 3 níveis de profundidade.", "Do not nest more than 3 levels deep."), "xmark"),
+        new(T("Menu para ações", "Menu for actions"), T("Toolbar é para ações densas. Menu é para navegação.", "Toolbar is for dense actions. Menu is for navigation."), "circle")
+    ];
+
+    // ═══════════════════════════════════════════
+    //  TOKENS / THEMES / SECURITY / TESTING
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("bg-bg-surface, bg-surface-50, text-primary, text-text-secondary, border-border-light.", "bg-bg-surface, bg-surface-50, text-primary, text-text-secondary, border-border-light.")),
+        new("spacing", T("gap-1, px-3/4, py-1.5/2.5/3. Touch: min-h-[44px].", "gap-1, px-3/4, py-1.5/2.5/3. Touch: min-h-[44px].")),
+        new("borders", T("border-border-light para separadores. ring-border-focus para foco.", "border-border-light for separators. ring-border-focus for focus."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("Light", T("Tema claro com fundo surface e bordas suaves.", "Light theme with surface background and soft borders."), "sun"),
+        new("Dark", T("Tema escuro com fundo escuro e bordas claras.", "Dark theme with dark background and light borders."), "moon")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [
+        new(T("Sem XSS", "No XSS"), T("Itens são classes C# puras, não HTML bruto.", "Items are plain C# classes, not raw HTML."), "shield-check"),
+        new(T("Sem JS interop", "No JS interop"), T("Sem risco de injeção via JavaScript.", "No risk of injection via JavaScript."), "lock")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestRows => [
+        new("Renderização", T("Testes com itens, variantes, tamanhos, orientação, templates.", "Tests with items, variants, sizes, orientation, templates.")),
+        new("Acessibilidade", T("Verificação de role, aria-expanded, aria-selected, aria-level.", "Verification of role, aria-expanded, aria-selected, aria-level.")),
+        new("Interação", T("Testes de clique, teclado (Arrow, Home, End, Enter, Space).", "Click and keyboard tests (Arrow, Home, End, Enter, Space).")),
+        new("Snapshot", T("Snapshots para light e dark theme.", "Snapshots for light and dark theme."))
+    ];
+
+    // ═══════════════════════════════════════════
+    //  LIMITATIONS / MIGRATION
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("Máximo 3 níveis", "Max 3 levels"), T("Aninhamento profundo dificulta navegação por teclado.", "Deep nesting makes keyboard navigation difficult.")),
+        new(T("Sem drag-and-drop", "No drag-and-drop"), T("Menu não suporta reordenação de itens via drag.", "Menu doesn't support item reordering via drag.")),
+        new(T("Sem animação", "No animation"), T("Expansão/colapso é imediato, sem transição.", "Expand/collapse is immediate, no transition."))
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("Nav hardcoded", "Hardcoded nav"), T("Troque ul/li por XFMenu com IReadOnlyList de XFMenuItem.", "Replace ul/li with XFMenu using IReadOnlyList of XFMenuItem."), "arrow-rotate-left"),
+        new(T("Sidebar duplicada", "Duplicated sidebar"), T("Centralize sidebar no XFMenu data-driven.", "Centralize sidebar in data-driven XFMenu."), "sidebar")
+    ];
+
+    // ═══════════════════════════════════════════
+    //  ACCESSIBILITY
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("WAI-ARIA", T("nav role=tree/menubar, aria-expanded, aria-selected, aria-level, aria-current.", "nav role=tree/menubar, aria-expanded, aria-selected, aria-level, aria-current."), "universal-access"),
+        new(T("Touch 44px", "44px touch"), T("min-h-[44px] em todos os itens (WCAG 2.5.8 AAA).", "min-h-[44px] on all items (WCAG 2.5.8 AAA)."), "hand-pointer"),
+        new(T("Foco AAA", "AAA focus"), T("focus-visible ring 40% primary mix.", "focus-visible ring 40% primary mix."), "eye"),
+        new(T("Descrições", "Descriptions"), T("Texto secundario acessível por screen readers.", "Secondary text accessible by screen readers."), "eye-slash")
+    ];
+
+    // ═══════════════════════════════════════════
+    //  KEYBOARD
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("ArrowDown", T("Proximo item visivel.", "Next visible item.")),
+        new("ArrowUp", T("Item visivel anterior.", "Previous visible item.")),
+        new("ArrowRight", T("Horizontal: proximo. Vertical: expande grupo.", "Horizontal: next. Vertical: expand group.")),
+        new("ArrowLeft", T("Horizontal: anterior. Vertical: colapsa grupo.", "Horizontal: previous. Vertical: collapse group.")),
+        new("Home", T("Primeiro item.", "First item.")),
+        new("End", T("Ultimo item.", "Last item.")),
+        new("Enter / Space", T("Ativa item focado.", "Activate focused item."))
+    ];
+
+    // ═══════════════════════════════════════════
+    //  RELATED
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFBreadcrumb", T("Hierarquia de rota.", "Route hierarchy."), "route"),
+        new("XFTabs", T("Visoes alternativas.", "Alternative views."), "layer-group"),
+        new("XFSidebar", T("Container de sidebar.", "Sidebar Container."), "sidebar")
+    ];
+
+    // ═══════════════════════════════════════════
+    //  FAQ
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Por que data-driven e não child content?", "Why data-driven and not child content?"), T("XFMenuItem e uma classe C# pura, não um componente Razor. Permite serializacao, testes e geracao programatica.", "XFMenuItem is a plain C# class, not a Razor component. Enables serialization, testing and programmatic generation.")),
+        new(T("Como usar icones?", "How to use icons?"), T("Atribua RenderFragment ao Icon: SvgIcon(\"nome-do-icone\").", "Assign RenderFragment to Icon: SvgIcon(\"icon-name\").")),
+        new(T("Qual a diferenca entre Kind=Section e Kind=Separator?", "What is the difference between Kind=Section and Kind=Separator?"), T("Section e um cabecalho de texto. Separator e uma linha divisoria.", "Section is a text header. Separator is a dividing line."))
+    ];
+
+    // ═══════════════════════════════════════════
+    //  CHANGELOG
+    // ═══════════════════════════════════════════
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-05-27", T("API data-driven com IReadOnlyList de XFMenuItem, 12 exemplos, documentacao completa.", "Data-driven API with IReadOnlyList of XFMenuItem, 12 examples, full documentation."))
+    ];
+
+    // ═══════════════════════════════════════════
+    //  CODE STRINGS
+    // ═══════════════════════════════════════════
+    private string CodeBasico => T(
+        "\x3C!-- Definir itens no code-béind -->\nprivate IReadOnlyList\x3CXFMenuItem\x3E MenuItems = [\n    new() { Id = \"fiscal\", Text = \"Fiscal\", Icon = SvgIcon(\"file-invoice\") },\n    new() { Id = \"estoque\", Text = \"Estoque\", Icon = SvgIcon(\"boxes-stacked\") },\n    new() { Id = \"financeiro\", Text = \"Financeiro\", Icon = SvgIcon(\"money-bill-trend-up\") },\n    new() { Id = \"Contabil\", Text = \"Contabil\", Icon = SvgIcon(\"calculator\") }\n];\n\n\x3CXFMenu Items=\"@MenuItems\" Size=\"XFSize.Md\"\n    Variant=\"XFMenuVariant.Surface\" Orientation=\"XFOrientation.Vertical\"\n    DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    SelectedIdChanged=\"id => SelectedId = id\" />",
+        "\x3C!-- Define items in code-béind -->\nprivate IReadOnlyList\x3CXFMenuItem\x3E MenuItems = [\n    new() { Id = \"fiscal\", Text = \"Fiscal\", Icon = SvgIcon(\"file-invoice\") },\n    new() { Id = \"estoque\", Text = \"Estoque\", Icon = SvgIcon(\"boxes-stacked\") },\n    new() { Id = \"financeiro\", Text = \"Financeiro\", Icon = SvgIcon(\"money-bill-trend-up\") },\n    new() { Id = \"Contabil\", Text = \"Contabil\", Icon = SvgIcon(\"calculator\") }\n];\n\n\x3CXFMenu Items=\"@MenuItems\" Size=\"XFSize.Md\"\n    Variant=\"XFMenuVariant.Surface\" Orientation=\"XFOrientation.Vertical\"\n    DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    SelectedIdChanged=\"id => SelectedId = id\" />");
+
+    private string CodeTamanhos => T(
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Sm\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    SelectedIdChanged=\"id => SelectedId = id\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    SelectedIdChanged=\"id => SelectedId = id\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Lg\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    SelectedIdChanged=\"id => SelectedId = id\" /\x3E",
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Sm\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    SelectedIdChanged=\"id => SelectedId = id\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    SelectedIdChanged=\"id => SelectedId = id\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Lg\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    SelectedIdChanged=\"id => SelectedId = id\" /\x3E");
+
+    private string CodeVariantes => T(
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Plain\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Soft\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.TopNav\"\n    Orientation=\"XFOrientation.Horizontal\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Dropdown\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Sidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.DarkSidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E",
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Plain\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Soft\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.TopNav\"\n    Orientation=\"XFOrientation.Horizontal\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Dropdown\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Sidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.DarkSidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E");
+
+    private string CodeDisplayMode => T(
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconOnly\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.TextOnly\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E",
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconOnly\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.TextOnly\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E");
+
+    private string CodeActiveTone => T(
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Secondary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Success\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Warning\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Danger\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Neutral\" SelectedId=\"@SelectedId\" /\x3E",
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Secondary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Success\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Warning\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Danger\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Neutral\" SelectedId=\"@SelectedId\" /\x3E");
+
+    private string CodeOrientacao => T(
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.TopNav\"\n    Orientation=\"XFOrientation.Horizontal\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E",
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.TopNav\"\n    Orientation=\"XFOrientation.Horizontal\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\" /\x3E");
+
+    private string CodeCollapsible => T(
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Sidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    Collapsible=\"true\" Expanded=\"@IsExpanded\"\n    ExpandedChanged=\"v => IsExpanded = v\" /\x3E",
+        "\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Sidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    Collapsible=\"true\" Expanded=\"@IsExpanded\"\n    ExpandedChanged=\"v => IsExpanded = v\" /\x3E");
+
+    private string CodeExpansao => T(
+        "// Itens com Children\nnew() {\n    Id = \"fiscal\", Text = \"Fiscal\", Icon = SvgIcon(\"file-invoice\"),\n    Children = [\n        new() { Id = \"nfe\", Text = \"NF-e\" },\n        new() { Id = \"nfce\", Text = \"NFC-e\" }\n    ]\n}\n\n// Múltiplos expandidos\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Sidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    Multiple=\"true\" ExpandedIds=\"@ExpandedIds\"\n    ExpandedIdsChanged=\"ids => ExpandedIds = ids\" /\x3E\n\n// Único expandido\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Sidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    Multiple=\"false\" /\x3E",
+        "// Items with Children\nnew() {\n    Id = \"fiscal\", Text = \"Fiscal\", Icon = SvgIcon(\"file-invoice\"),\n    Children = [\n        new() { Id = \"nfe\", Text = \"NF-e\" },\n        new() { Id = \"nfce\", Text = \"NFC-e\" }\n    ]\n}\n\n// Multiple expanded\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Sidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    Multiple=\"true\" ExpandedIds=\"@ExpandedIds\"\n    ExpandedIdsChanged=\"ids => ExpandedIds = ids\" /\x3E\n\n// Single expanded\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Sidebar\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    Multiple=\"false\" /\x3E");
+
+    private string CodeTemplates => T(
+        "// Template global\nprivate RenderFragment\x3CXFMenuItem\x3E MyTemplate => item =>\n    @\x3Cdiv class=\"flex items-center gap-3\"\x3E\n        @item.Text\n    \x3C/div\x3E;\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    ItemTemplate=\"@MyTemplate\" /\x3E",
+        "// Global template\nprivate RenderFragment\x3CXFMenuItem\x3E MyTemplate => item =>\n    @\x3Cdiv class=\"flex items-center gap-3\"\x3E\n        @item.Text\n    \x3C/div\x3E;\n\n\x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\" Variant=\"XFMenuVariant.Surface\"\n    Orientation=\"XFOrientation.Vertical\" DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    ItemTemplate=\"@MyTemplate\" /\x3E");
+
+    private string CodeBadgesEseções => T(
+        "// seção e separador\nnew() { Kind = XFMenuItemKind.Section, Text = \"Módulos\" },\nnew() { Id = \"fiscal\", Text = \"Fiscal\", Badge = \"12\",\n    BadgeTone = XFSemanticColor.Warning },\nnew() { Kind = XFMenuItemKind.Separator },\nnew() { Kind = XFMenuItemKind.Section, Text = \"Financeiro\" },",
+        "// Section and separator\nnew() { Kind = XFMenuItemKind.Section, Text = \"Modules\" },\nnew() { Id = \"fiscal\", Text = \"Fiscal\", Badge = \"12\",\n    BadgeTone = XFSemanticColor.Warning },\nnew() { Kind = XFMenuItemKind.Separator },\nnew() { Kind = XFMenuItemKind.Section, Text = \"Financial\" },");
+
+    private string CodeDarkSidebar => T(
+        "\x3Cdiv class=\"rounded-lg bg-gray-900 p-3\"\x3E\n    \x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\"\n        Variant=\"XFMenuVariant.DarkSidebar\"\n        Orientation=\"XFOrientation.Vertical\"\n        DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n        ActiveTone=\"XFSemanticColor.Primary\"\n        SelectedId=\"@SelectedId\" /\x3E\n\x3C/div\x3E",
+        "\x3Cdiv class=\"rounded-lg bg-gray-900 p-3\"\x3E\n    \x3CXFMenu Items=\"@Items\" Size=\"XFSize.Md\"\n        Variant=\"XFMenuVariant.DarkSidebar\"\n        Orientation=\"XFOrientation.Vertical\"\n        DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n        ActiveTone=\"XFSemanticColor.Primary\"\n        SelectedId=\"@SelectedId\" /\x3E\n\x3C/div\x3E");
+
+    private string CodeEnterprise => T(
+        "// XFMenuItem com filhos aninhados\nnew() {\n    Id = \"fiscal\", Text = \"Fiscal\", Icon = SvgIcon(\"file-invoice\"),\n    Badge = \"12\", BadgeTone = XFSemanticColor.Warning,\n    Children = [\n        new() { Id = \"nfe\", Text = \"NF-e\",\n            Description = \"Nota Fiscal Eletronica\" },\n        new() { Id = \"nfce\", Text = \"NFC-e\" }\n    ]\n}\n\n\x3CXFMenu Items=\"@EnterpriseItems\" Size=\"XFSize.Md\"\n    Variant=\"XFMenuVariant.Sidebar\" Orientation=\"XFOrientation.Vertical\"\n    DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    Multiple=\"true\" ExpandedIds=\"@ExpandedIds\"\n    ExpandedIdsChanged=\"ids => ExpandedIds = ids\" /\x3E",
+        "// XFMenuItem with nested children\nnew() {\n    Id = \"fiscal\", Text = \"Fiscal\", Icon = SvgIcon(\"file-invoice\"),\n    Badge = \"12\", BadgeTone = XFSemanticColor.Warning,\n    Children = [\n        new() { Id = \"nfe\", Text = \"NF-e\",\n            Description = \"Electronic Invoice\" },\n        new() { Id = \"nfce\", Text = \"NFC-e\" }\n    ]\n}\n\n\x3CXFMenu Items=\"@EnterpriseItems\" Size=\"XFSize.Md\"\n    Variant=\"XFMenuVariant.Sidebar\" Orientation=\"XFOrientation.Vertical\"\n    DisplayMode=\"XFMenuDisplayMode.IconAndText\"\n    ActiveTone=\"XFSemanticColor.Primary\" SelectedId=\"@SelectedId\"\n    Multiple=\"true\" ExpandedIds=\"@ExpandedIds\"\n    ExpandedIdsChanged=\"ids => ExpandedIds = ids\" /\x3E");
+}

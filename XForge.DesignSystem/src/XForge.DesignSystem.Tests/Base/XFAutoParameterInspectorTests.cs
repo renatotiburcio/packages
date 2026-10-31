@@ -1,6 +1,6 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.AspNetCore.Components;
-using XForge.Components.Base;
+using XForge.DesignSystem.Components.Base;
 using FluentAssertions;
 using Xunit;
 

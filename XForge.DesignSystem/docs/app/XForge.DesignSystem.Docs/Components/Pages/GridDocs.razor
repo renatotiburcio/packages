@@ -1,0 +1,852 @@
+@page "/layout/grid"
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        @* ==================== HEADER ==================== *@
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFGrid" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Grade CSS", "CSS Grid")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Layout responsivo", "Responsive layout")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Contêiner de células", "Cell container")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Sistema de grade CSS Grid para layouts responsivos, dashboards e composições complexas.",
+                               "CSS Grid system for responsive layouts, dashboards and complex compositions.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFGrid é o componente de grade do XForge. Ele encapsula CSS Grid com parâmetros fortemente tipados para colunas, gaps, alinhamento e fluxo. Suporta breakpoints responsivos (Sm, Md, Lg, Xl) e enumerações semânticas para Flow, AlignItems e JustifyItems.",
+                               "XFGrid is the XForge grid component. It wraps CSS Grid with strongly-typed parameters for columns, gaps, alignment and flow. Supports responsive breakpoints (Sm, Md, Lg, Xl) and semantic enumerations for Flow, AlignItems and JustifyItems.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts) { @Tile(item) }</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @* ==================== 1. METADATA ==================== *@
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @* ==================== 2. BLAZOR SERVER / WASM ==================== *@
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependências JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente não utiliza JavaScript interop. É puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderização.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: renderização é feita no servidor. CSS Grid é aplicado via classes Tailwind.", "Blazor Server: rendering is done on the server. CSS Grid is applied via Tailwind classes.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: renderização é feita no cliente. Mesmo comportamento visual.", "Blazor WebAssembly: rendering is done on the client. Same visual behavior.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Exemplos de uso", "Usage Examples")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFCode Text="@InteractiveServerExample" Language="razor" Title="InteractiveServer" Variant="XFCodeVariant.Block" Copyable="true" />
+                    <XFCode Text="@InteractiveWasmExample" Language="razor" Title="InteractiveWebAssembly" Variant="XFCodeVariant.Block" Copyable="true" />
+                    <XFCode Text="@InteractiveAutoExample" Language="razor" Title="InteractiveAuto" Variant="XFCodeVariant.Block" Copyable="true" />
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        @* ==================== 3. OVERVIEW ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 4. VARIANTS & STATES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 5. VISUAL HIERARCHY & DESIGN ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        @* ==================== 6-14. EXAMPLES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Grade básica 3 colunas", "1. Basic 3-column grid"),
+                T("Grid com 3 colunas iguais e gap padrão.", "Grid with 3 equal columns and default gap."),
+                Basic3ColPreview(), Basic3ColCode)
+
+            @Example(T("2. Grade responsiva", "2. Responsive grid"),
+                T("Cols=1 no mobile, 2 no tablet, 4 no desktop.", "Cols=1 on mobile, 2 on tablet, 4 on desktop."),
+                ResponsivePreview(), ResponsiveCode)
+
+            @Example(T("3. Dashboard com cards", "3. Dashboard with cards"),
+                T("Layout de dashboard com 4 cards em 2 colunas.", "Dashboard layout with 4 cards in 2 columns."),
+                DashboardPreview(), DashboardCode)
+
+            @Example(T("4. Grade com gaps customizados", "4. Custom gap grid"),
+                T("RowGap e ColumnGap com tokens XFSizeToken.", "RowGap and ColumnGap with XFSizeToken tokens."),
+                CustomGapPreview(), CustomGapCode)
+
+            @Example(T("5. Alinhamento centralizado", "5. Centered alignment"),
+                T("AlignItems=Center e JustifyItems=Center.", "AlignItems=Center and JustifyItems=Center."),
+                CenteredAlignPreview(), CenteredAlignCode)
+
+            @Example(T("6. Fluxo em coluna", "6. Column flow"),
+                T("Flow=Column para empilhamento vertical.", "Flow=Column for vertical stacking."),
+                ColumnFlowPreview(), ColumnFlowCode)
+
+            @Example(T("7. Grade densa", "7. Dense grid"),
+                T("Flow=Dense para preenchimento automático de lacunas.", "Flow=Dense for automatic gap filling."),
+                DensePreview(), DenseCode)
+
+            @Example(T("8. Lateral com sidebar", "8. Sidebar layout"),
+                T("Grid 12 colunas com área principal e sidebar.", "12-column grid with main area and sidebar."),
+                SidebarLayoutPreview(), SidebarLayoutCode)
+
+            @Example(T("9. FullWidth com formulário", "9. FullWidth form"),
+                T("FullWidth=true com formulário em 2 colunas.", "FullWidth=true with 2-column form."),
+                FullWidthFormPreview(), FullWidthFormCode)
+        </XFStack>
+
+        @* ==================== 16. API ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Métodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Método", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 17. ACCESSIBILITY & KEYBOARD ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegação enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 18. RESPONSIVENESS & PERFORMANCE ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 19. ENTERPRISE SCENARIOS & PATTERNS ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Exemplos de integração", "Integration Examples"), @<div>@TileGrid(IntegrationItems, 2)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        @* ==================== 20. TOKENS, THEMING, SECURITY, TESTING ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+        </XFStack>
+
+        @* ==================== EXTRA: LIMITATIONS, MIGRATION, RELATED, FAQ, CHANGELOG ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migração", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Grid", "Grid");
+    private string PageStatusText => T("Documentação completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    // ==================== BLAZOR SECTION EXAMPLES ====================
+    private string InteractiveServerExample => @"@page ""/erp/financeiro/dashboard""
+@rendermode InteractiveServer
+<XFGrid Cols=""3"" Gap=""4"">
+    <XFCard><ChildContent><XFTypography>Card 1</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Card 2</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Card 3</XFTypography></ChildContent></XFCard>
+</XFGrid>";
+
+    private string InteractiveWasmExample => @"@page ""/erp/financeiro/dashboard""
+@rendermode InteractiveWebAssembly
+<XFGrid Cols=""3"" Gap=""4"">
+    <XFCard><ChildContent><XFTypography>Card 1</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Card 2</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Card 3</XFTypography></ChildContent></XFCard>
+</XFGrid>";
+
+    private string InteractiveAutoExample => @"@page ""/erp/financeiro/dashboard""
+@rendermode InteractiveAuto
+<XFGrid Cols=""3"" Gap=""4"">
+    <XFCard><ChildContent><XFTypography>Card 1</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Card 2</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Card 3</XFTypography></ChildContent></XFCard>
+</XFGrid>";
+
+    // ==================== HERO PREVIEW ====================
+    private RenderFragment HeroPreview() => @<XFGrid Cols="3" Gap="4">
+        <XFCard Variant="XFCardVariant.Filled"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Weight="XFTypographyWeight.Semibold">@T("Vendas", "Sales")</XFTypography><XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Bold">R$ 124.500</XFTypography></XFStack></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Weight="XFTypographyWeight.Semibold">@T("Pedidos", "Orders")</XFTypography><XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Bold">384</XFTypography></XFStack></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Filled"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Weight="XFTypographyWeight.Semibold">@T("Clientes", "Customers")</XFTypography><XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Bold">1.205</XFTypography></XFStack></ChildContent></XFCard>
+    </XFGrid>;
+
+    // ==================== EXAMPLE PREVIEWS ====================
+    private RenderFragment Basic3ColPreview() => @<XFGrid Cols="3" Gap="4">
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Coluna 1", "Column 1")</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Coluna 2", "Column 2")</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body1">@T("Coluna 3", "Column 3")</XFTypography></ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment ResponsivePreview() => @<XFGrid Cols="1" Sm="2" Md="3" Lg="4" Gap="4">
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">Mobile: 1</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">Sm: 2</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">Md: 3</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">Lg: 4</XFTypography></ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment DashboardPreview() => @<XFGrid Cols="1" Md="2" Gap="4">
+        <XFCard><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Weight="XFTypographyWeight.Semibold">@T("Faturamento mensal", "Monthly revenue")</XFTypography><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Bold">R$ 482.000</XFTypography><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Success">@T("+ 12% vs mês anterior", "+ 12% vs previous month")</XFTypography></XFStack></ChildContent></XFCard>
+        <XFCard><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Weight="XFTypographyWeight.Semibold">@T("Notas fiscais emitidas", "Invoices issued")</XFTypography><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Bold">1.847</XFTypography><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Success">@T("+ 8% vs mês anterior", "+ 8% vs previous month")</XFTypography></XFStack></ChildContent></XFCard>
+        <XFCard><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Weight="XFTypographyWeight.Semibold">@T("Contas a pagar", "Accounts payable")</XFTypography><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Bold">R$ 128.300</XFTypography><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Danger">@T("Vencimento: 15/06/2026", "Due: 06/15/2026")</XFTypography></XFStack></ChildContent></XFCard>
+        <XFCard><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Weight="XFTypographyWeight.Semibold">@T("Contas a receber", "Accounts receivable")</XFTypography><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Bold">R$ 256.700</XFTypography><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Warning">@T("3 em atraso", "3 overdue")</XFTypography></XFStack></ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment CustomGapPreview() => @<XFGrid Cols="2" RowGap="6" ColumnGap="4">
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">@T("RowGap=6, ColumnGap=4", "RowGap=6, ColumnGap=4")</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">@T("Espaçamento customizado", "Custom spacing")</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">@T("Entre linhas e colunas", "Between rows and columns")</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">@T("Controle granular", "Granular control")</XFTypography></ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment CenteredAlignPreview() => @<XFGrid Cols="2" AlignItems="XFGridItems.Center" JustifyItems="XFGridItems.Center" Gap="4">
+        <XFCard Padding="XFPadding.Xl"><ChildContent><XFTypography Weight="XFTypographyWeight.Semibold">@T("Centralizado", "Centered")</XFTypography></ChildContent></XFCard>
+        <XFCard Padding="XFPadding.Xl"><ChildContent><XFTypography Weight="XFTypographyWeight.Semibold">@T("Alinhado ao centro", "Center aligned")</XFTypography></ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment ColumnFlowPreview() => @<XFGrid Cols="3" Flow="XFGridFlow.Column" Gap="4">
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">A</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">B</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">C</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">D</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">E</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">F</XFTypography></ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment DensePreview() => @<XFGrid Cols="4" Flow="XFGridFlow.Dense" Gap="4">
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">1</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">2</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">3</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">4</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">5</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">6</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">7</XFTypography></ChildContent></XFCard>
+        <XFCard><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">8</XFTypography></ChildContent></XFCard>
+    </XFGrid>;
+
+    private RenderFragment SidebarLayoutPreview() => @<XFGrid Cols="12" Gap="4">
+        <div class="col-span-12 lg:col-span-8"><XFCard Padding="XFPadding.Lg"><ChildContent><XFTypography Weight="XFTypographyWeight.Semibold">@T("Área principal (8 colunas)", "Main area (8 columns)")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Conteúdo principal do módulo.", "Main module content.")</XFTypography></ChildContent></XFCard></div>
+        <div class="col-span-12 lg:col-span-4"><XFCard Padding="XFPadding.Lg"><ChildContent><XFTypography Weight="XFTypographyWeight.Semibold">@T("Sidebar (4 colunas)", "Sidebar (4 columns)")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Filtros e ações rápidas.", "Filters and quick actions.")</XFTypography></ChildContent></XFCard></div>
+    </XFGrid>;
+
+    private RenderFragment FullWidthFormPreview() => @<XFGrid Cols="2" FullWidth="true" Gap="4">
+        <XFCard><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Variant="XFTypographyVariant.Caption">@T("Nome", "Name")</XFTypography><XFTypography Variant="XFTypographyVariant.Body1">João Silva</XFTypography></XFStack></ChildContent></XFCard>
+        <XFCard><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Variant="XFTypographyVariant.Caption">@T("CPF", "SSN")</XFTypography><XFTypography Variant="XFTypographyVariant.Body1">123.456.789-00</XFTypography></XFStack></ChildContent></XFCard>
+        <XFCard><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Variant="XFTypographyVariant.Caption">@T("E-mail", "E-mail")</XFTypography><XFTypography Variant="XFTypographyVariant.Body1">joao@empresa.com</XFTypography></XFStack></ChildContent></XFCard>
+        <XFCard><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Variant="XFTypographyVariant.Caption">@T("Telefone", "Phone")</XFTypography><XFTypography Variant="XFTypographyVariant.Body1">(11) 99999-0000</XFTypography></XFStack></ChildContent></XFCard>
+    </XFGrid>;
+
+    // ==================== CODE STRINGS ====================
+    private string Basic3ColCode => T("""
+<XFGrid Cols="3" Gap="4">
+    <XFCard>
+        <ChildContent>
+            <XFTypography>Coluna 1</XFTypography>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFTypography>Coluna 2</XFTypography>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFTypography>Coluna 3</XFTypography>
+        </ChildContent>
+    </XFCard>
+</XFGrid>
+""", """
+<XFGrid Cols="3" Gap="4">
+    <XFCard>
+        <ChildContent>
+            <XFTypography>Column 1</XFTypography>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFTypography>Column 2</XFTypography>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFTypography>Column 3</XFTypography>
+        </ChildContent>
+    </XFCard>
+</XFGrid>
+""");
+
+    private string ResponsiveCode => T("""
+<XFGrid Cols="1" Sm="2" Md="3" Lg="4" Gap="4">
+    <XFCard><ChildContent><XFTypography>Mobile: 1</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Sm: 2</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Md: 3</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Lg: 4</XFTypography></ChildContent></XFCard>
+</XFGrid>
+""", """
+<XFGrid Cols="1" Sm="2" Md="3" Lg="4" Gap="4">
+    <XFCard><ChildContent><XFTypography>Mobile: 1</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Sm: 2</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Md: 3</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Lg: 4</XFTypography></ChildContent></XFCard>
+</XFGrid>
+""");
+
+    private string DashboardCode => T("""
+<XFGrid Cols="1" Md="2" Gap="4">
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Weight="Semibold">Faturamento mensal</XFTypography>
+                <XFTypography Variant="H4" Weight="Bold">R$ 482.000</XFTypography>
+                <XFTypography Color="Success">+ 12% vs mês anterior</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Weight="Semibold">Notas fiscais emitidas</XFTypography>
+                <XFTypography Variant="H4" Weight="Bold">1.847</XFTypography>
+                <XFTypography Color="Success">+ 8% vs mês anterior</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Weight="Semibold">Contas a pagar</XFTypography>
+                <XFTypography Variant="H4" Weight="Bold">R$ 128.300</XFTypography>
+                <XFTypography Color="Danger">Vencimento: 15/06/2026</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Weight="Semibold">Contas a receber</XFTypography>
+                <XFTypography Variant="H4" Weight="Bold">R$ 256.700</XFTypography>
+                <XFTypography Color="Warning">3 em atraso</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+</XFGrid>
+""", """
+<XFGrid Cols="1" Md="2" Gap="4">
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Weight="Semibold">Monthly revenue</XFTypography>
+                <XFTypography Variant="H4" Weight="Bold">R$ 482,000</XFTypography>
+                <XFTypography Color="Success">+ 12% vs previous month</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Weight="Semibold">Invoices issued</XFTypography>
+                <XFTypography Variant="H4" Weight="Bold">1,847</XFTypography>
+                <XFTypography Color="Success">+ 8% vs previous month</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Weight="Semibold">Accounts payable</XFTypography>
+                <XFTypography Variant="H4" Weight="Bold">R$ 128,300</XFTypography>
+                <XFTypography Color="Danger">Due: 06/15/2026</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Weight="Semibold">Accounts receivable</XFTypography>
+                <XFTypography Variant="H4" Weight="Bold">R$ 256,700</XFTypography>
+                <XFTypography Color="Warning">3 overdue</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+</XFGrid>
+""");
+
+    private string CustomGapCode => T("""
+<XFGrid Cols="2" RowGap="6" ColumnGap="4">
+    <XFCard><ChildContent><XFTypography>RowGap=6, ColumnGap=4</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Espaçamento customizado</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Entre linhas e colunas</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Controle granular</XFTypography></ChildContent></XFCard>
+</XFGrid>
+""", """
+<XFGrid Cols="2" RowGap="6" ColumnGap="4">
+    <XFCard><ChildContent><XFTypography>RowGap=6, ColumnGap=4</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Custom spacing</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Between rows and columns</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>Granular control</XFTypography></ChildContent></XFCard>
+</XFGrid>
+""");
+
+    private string CenteredAlignCode => T("""
+<XFGrid Cols="2" AlignItems="XFGridItems.Center" JustifyItems="XFGridItems.Center" Gap="4">
+    <XFCard Padding="XFPadding.Xl">
+        <ChildContent>
+            <XFTypography Weight="Semibold">Centralizado</XFTypography>
+        </ChildContent>
+    </XFCard>
+    <XFCard Padding="XFPadding.Xl">
+        <ChildContent>
+            <XFTypography Weight="Semibold">Alinhado ao centro</XFTypography>
+        </ChildContent>
+    </XFCard>
+</XFGrid>
+""", """
+<XFGrid Cols="2" AlignItems="XFGridItems.Center" JustifyItems="XFGridItems.Center" Gap="4">
+    <XFCard Padding="XFPadding.Xl">
+        <ChildContent>
+            <XFTypography Weight="Semibold">Centered</XFTypography>
+        </ChildContent>
+    </XFCard>
+    <XFCard Padding="XFPadding.Xl">
+        <ChildContent>
+            <XFTypography Weight="Semibold">Center aligned</XFTypography>
+        </ChildContent>
+    </XFCard>
+</XFGrid>
+""");
+
+    private string ColumnFlowCode => T("""
+<XFGrid Cols="3" Flow="XFGridFlow.Column" Gap="4">
+    <XFCard><ChildContent><XFTypography>A</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>B</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>C</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>D</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>E</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>F</XFTypography></ChildContent></XFCard>
+</XFGrid>
+""", """
+<XFGrid Cols="3" Flow="XFGridFlow.Column" Gap="4">
+    <XFCard><ChildContent><XFTypography>A</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>B</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>C</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>D</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>E</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>F</XFTypography></ChildContent></XFCard>
+</XFGrid>
+""");
+
+    private string DenseCode => T("""
+<XFGrid Cols="4" Flow="XFGridFlow.Dense" Gap="4">
+    <XFCard><ChildContent><XFTypography>1</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>2</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>3</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>4</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>5</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>6</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>7</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>8</XFTypography></ChildContent></XFCard>
+</XFGrid>
+""", """
+<XFGrid Cols="4" Flow="XFGridFlow.Dense" Gap="4">
+    <XFCard><ChildContent><XFTypography>1</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>2</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>3</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>4</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>5</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>6</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>7</XFTypography></ChildContent></XFCard>
+    <XFCard><ChildContent><XFTypography>8</XFTypography></ChildContent></XFCard>
+</XFGrid>
+""");
+
+    private string SidebarLayoutCode => T("""
+<XFGrid Cols="12" Gap="4">
+    <div class="col-span-12 lg:col-span-8">
+        <XFCard Padding="XFPadding.Lg">
+            <ChildContent>
+                <XFTypography Weight="Semibold">Área principal (8 colunas)</XFTypography>
+                <XFTypography Color="Secondary">Conteúdo principal do módulo.</XFTypography>
+            </ChildContent>
+        </XFCard>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+        <XFCard Padding="XFPadding.Lg">
+            <ChildContent>
+                <XFTypography Weight="Semibold">Sidebar (4 colunas)</XFTypography>
+                <XFTypography Color="Secondary">Filtros e ações rápidas.</XFTypography>
+            </ChildContent>
+        </XFCard>
+    </div>
+</XFGrid>
+""", """
+<XFGrid Cols="12" Gap="4">
+    <div class="col-span-12 lg:col-span-8">
+        <XFCard Padding="XFPadding.Lg">
+            <ChildContent>
+                <XFTypography Weight="Semibold">Main area (8 columns)</XFTypography>
+                <XFTypography Color="Secondary">Main module content.</XFTypography>
+            </ChildContent>
+        </XFCard>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+        <XFCard Padding="XFPadding.Lg">
+            <ChildContent>
+                <XFTypography Weight="Semibold">Sidebar (4 columns)</XFTypography>
+                <XFTypography Color="Secondary">Filters and quick actions.</XFTypography>
+            </ChildContent>
+        </XFCard>
+    </div>
+</XFGrid>
+""");
+
+    private string FullWidthFormCode => T("""
+<XFGrid Cols="2" FullWidth="true" Gap="4">
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Variant="Caption">Nome</XFTypography>
+                <XFTypography>João Silva</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Variant="Caption">CPF</XFTypography>
+                <XFTypography>123.456.789-00</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Variant="Caption">E-mail</XFTypography>
+                <XFTypography>joao@empresa.com</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Variant="Caption">Telefone</XFTypography>
+                <XFTypography>(11) 99999-0000</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+</XFGrid>
+""", """
+<XFGrid Cols="2" FullWidth="true" Gap="4">
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Variant="Caption">Name</XFTypography>
+                <XFTypography>João Silva</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Variant="Caption">SSN</XFTypography>
+                <XFTypography>123.456.789-00</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Variant="Caption">E-mail</XFTypography>
+                <XFTypography>joao@company.com</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+    <XFCard>
+        <ChildContent>
+            <XFStack Orientation="Vertical" Gap="2">
+                <XFTypography Variant="Caption">Phone</XFTypography>
+                <XFTypography>(11) 99999-0000</XFTypography>
+            </XFStack>
+        </ChildContent>
+    </XFCard>
+</XFGrid>
+""");
+
+    // ==================== HELPERS ====================
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== DATA ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("CSS Grid nativo", "Native CSS Grid"), T("Encapsula display:grid com parâmetros tipados.", "Wraps display:grid with typed parameters."), "code"),
+        new(T("Breakpoints responsivos", "Responsive breakpoints"), T("Sm, Md, Lg, Xl para colunas por resolução.", "Sm, Md, Lg, Xl for columns per resolution."), "mobile-screen"),
+        new(T("Enums semânticos", "Semantic enums"), T("Flow, AlignItems, JustifyItems com valores nomeados.", "Flow, AlignItems, JustifyItems with named values."), "layer-group")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFGrid"),
+        new("Namespace", "XForge.DesignSystem.Components.Layout"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Layout"),
+        new("Status", T("Estável", "Stable")),
+        new("Accessibility", T("Renderiza div com role=grid quando aplicável.", "Renders div with role=grid when applicable."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Grade CSS", "CSS Grid"), T("Componente de layout baseado em CSS Grid.", "Layout component based on CSS Grid."), "layer-group"),
+        new(T("Colunas configuráveis", "Configurable columns"), T("Cols de 1 a 12 com breakpoints responsivos.", "Cols from 1 to 12 with responsive breakpoints."), "table-columns"),
+        new(T("Controle de gaps", "Gap control"), T("Gap, RowGap e ColumnGap com tokens.", "Gap, RowGap and ColumnGap with tokens."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Layout consistente", "Consistent layout"), T("Mesmo sistema de grade em todo o ERP.", "Same grid system across the entire ERP."), "table-columns"),
+        new(T("Responsividade", "Responsiveness"), T("Breakpoints Sm, Md, Lg, Xl integrados.", "Integrated Sm, Md, Lg, Xl breakpoints."), "mobile-screen"),
+        new(T("Composição", "Composition"), T("Combine com XFCard, XFStack e outros.", "Combine with XFCard, XFStack and others."), "layer-group")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Grids inline com classes Tailwind espalhadas.", "Inline grids with scattered Tailwind classes."), "xmark"),
+        new(T("Depois", "After"), T("Contrato único com Cols, Gap e breakpoints.", "One contract with Cols, Gap and breakpoints."), "check"),
+        new(T("Manutenção", "Maintenance"), T("Alteração de layout centralizada no componente.", "Layout changes centralized in the component."), "wrench")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new("Dashboard", T("Cards de métricas em grade responsiva.", "Metric cards in responsive grid."), "chart-line-up"),
+        new(T("Formulários", "Forms"), T("Campos organizados em colunas.", "Fields organized in columns."), "file-lines"),
+        new(T("Listas", "Lists"), T("Itens em grid com gaps consistentes.", "Items in grid with consistent gaps."), "list"),
+        new(T("Relatórios", "Reports"), T("Layout de impressão com colunas fixas.", "Print layout with fixed columns."), "file-export")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Layouts aninhados demais", "Over-nested layouts"), T("Evite mais de 3 níveis de grid aninhado.", "Avoid more than 3 levels of nested grid."), "xmark"),
+        new(T("Conteúdo não estruturado", "Unstructured content"), T("Não use grid para conteúdo livre sem hierarquia.", "Do not use grid for free content without hierarchy."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("div com display:grid e classes Tailwind.", "div with display:grid and Tailwind classes."), "code"),
+        new("Cols", T("Número de colunas (1-12).", "Number of columns (1-12)."), "table-columns"),
+        new("Gap", T("Espaçamento entre células.", "Spacing between cells."), "arrows-up-down"),
+        new("ChildContent", T("Conteúdo renderizado dentro da grade.", "Content rendered inside the grid."), "sparkles")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Colunas iguais", "Equal columns"), T("Todas as colunas têm largura igual por padrão.", "All columns have equal width by default."), "table-columns"),
+        new(T("Gaps consistentes", "Consistent gaps"), T("Espaçamento uniforme entre células.", "Uniform spacing between cells."), "arrows-up-down"),
+        new(T("Alinhamento", "Alignment"), T("AlignItems e JustifyItems controlam posicionamento.", "AlignItems and JustifyItems control positioning."), "align-center")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Mobile-first", "Mobile-first"), T("Cols define mobile; breakpoints sobrescrevem.", "Cols defines mobile; breakpoints override."), "mobile-screen"),
+        new(T("Menos é mais", "Less is more"), T("Use o mínimo de colunas necessário.", "Use the minimum number of columns needed."), "circle-check"),
+        new(T("Tokens, não valores", "Tokens, not values"), T("Use XFSizeToken para gaps, não px fixos.", "Use XFSizeToken for gaps, not fixed px."), "code")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Cols=1", T("Uma coluna — layout vertical.", "One column — vertical layout.")),
+        new("Cols=2", T("Duas colunas — formulários.", "Two columns — forms.")),
+        new("Cols=3", T("Três colunas — dashboards.", "Three columns — dashboards.")),
+        new("Cols=4", T("Quatro colunas — catálogos.", "Four columns — catalogs.")),
+        new("Cols=6", T("Seis colunas — calendários.", "Six columns — calendars.")),
+        new("Cols=12", T("Doze colunas — layout total.", "Twelve columns — full layout.")),
+        new("FullWidth=true", T("Ocupa 100% da largura disponível.", "Takes 100% of available width.")),
+        new("FullWidth=false", T("Largura limitada ao container.", "Width limited to container."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Grade renderizada com Cols e Gap.", "Grid rendered with Cols and Gap.")),
+        new(T("Sem conteúdo", "Empty"), T("Grid sem ChildContent renderiza div vazia.", "Grid without ChildContent renders empty div.")),
+        new(T("Responsivo", "Responsive"), T("Breakpoints ajustam colunas por tela.", "Breakpoints adjust columns per screen."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("ChildContent", "RenderFragment?", "null", T("Conteúdo da grade.", "Grid content.")),
+        new("Cols", "int", "1", T("Número de colunas (1-12).", "Number of columns (1-12).")),
+        new("Sm", "int?", "null", T("Colunas no breakpoint sm (>=640px).", "Columns at sm breakpoint (>=640px).")),
+        new("Md", "int?", "null", T("Colunas no breakpoint md (>=768px).", "Columns at md breakpoint (>=768px).")),
+        new("Lg", "int?", "null", T("Colunas no breakpoint lg (>=1024px).", "Columns at lg breakpoint (>=1024px).")),
+        new("Xl", "int?", "null", T("Colunas no breakpoint xl (>=1280px).", "Columns at xl breakpoint (>=1280px).")),
+        new("Gap", "XFSizeToken?", "null", T("Gap entre todas as células.", "Gap between all cells.")),
+        new("RowGap", "XFSizeToken?", "null", T("Gap entre linhas.", "Gap between rows.")),
+        new("ColumnGap", "XFSizeToken?", "null", T("Gap entre colunas.", "Gap between columns.")),
+        new("Flow", "XFGridFlow", "Row", T("Direção do fluxo de itens.", "Item flow direction.")),
+        new("AlignItems", "XFGridItems", "Normal", T("Alinhamento vertical dos itens.", "Vertical item alignment.")),
+        new("JustifyItems", "XFGridItems", "Normal", T("Alinhamento horizontal dos itens.", "Horizontal item alignment.")),
+        new("FullWidth", "bool", "false", T("Ocupa 100% da largura.", "Takes 100% width."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("-", T("XFGrid não dispara eventos. É um componente de layout puro.", "XFGrid does not fire events. It is a pure layout component."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("-", T("XFGrid não expõe métodos públicos.", "XFGrid exposes no public methods."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Div semântica", "Semantic div"), T("Renderiza div com display:grid.", "Renders div with display:grid."), "code"),
+        new(T("Ordem lógica", "Logical order"), T("ChildContent segue ordem do DOM.", "ChildContent follows DOM order."), "arrow-down-a-z"),
+        new(T("Sem marcação ARIA", "No ARIA markup"), T("Layout puro não requer roles ARIA.", "Pure layout does not require ARIA roles."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [
+        new(T("Tab na ordem do DOM", "Tab in DOM order"), T("Itens do grid seguem fluxo natural.", "Grid items follow natural flow."), "keyboard"),
+        new(T("Foco nos filhos", "Focus on children"), T("Tab navega entre elementos filhos.", "Tab navigates between child elements."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre elementos filhos do grid.", "Navigates between grid child elements.")),
+        new("Shift+Tab", T("Navega em ordem reversa.", "Navigates in reverse order.")),
+        new("Enter/Space", T("Ativa elementos focados dentro do grid.", "Activates focused elements inside grid."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("4 breakpoints", "4 breakpoints"), T("Sm, Md, Lg, Xl para controle total.", "Sm, Md, Lg, Xl for total control."), "mobile-screen"),
+        new(T("Mobile-first", "Mobile-first"), T("Cols define base; breakpoints sobrescrevem.", "Cols defines base; breakpoints override."), "arrow-up"),
+        new(T("Container queries", "Container queries"), T("Gaps e Flow independentes do viewport.", "Gaps and Flow independent of viewport."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Render leve", "Light render"), T("Apenas div com CSS grid.", "Just div with CSS grid."), "bolt"),
+        new(T("Sem JS", "No JS"), T("Layout puramente CSS.", "Purely CSS layout."), "code"),
+        new(T("Sem reflows extras", "No extra reflows"), T("Grid nativo do browser.", "Browser native grid."), "gauge-high")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new("Dashboard ERP", T("4 cards de métricas em 2x2.", "4 metric cards in 2x2."), "chart-line-up"),
+        new(T("Formulário fiscal", "Tax form"), T("Campos em 2 colunas com gaps.", "Fields in 2 columns with gaps."), "file-lines"),
+        new(T("Catálogo de produtos", "Product catalog"), T("3 colunas com imagem e dados.", "3 columns with image and data."), "boxes-stacked"),
+        new(T("Lista de relatórios", "Report list"), T("12 colunas com sidebar filtrada.", "12 columns with filtered sidebar."), "file-export"),
+        new(T("Calendário", "Calendar"), T("7 colunas para dias da semana.", "7 columns for days of week."), "calendar"),
+        new(T("Kanban", "Kanban"), T("4 colunas para status de tarefas.", "4 columns for task statuses."), "table-columns")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("XFCard", T("Cards dentro de células do grid.", "Cards inside grid cells."), "square"),
+        new("XFStack", T("Stack para conteúdo vertical interno.", "Stack for internal vertical content."), "layer-group"),
+        new("XFTypography", T("Textos e títulos dentro dos cells.", "Texts and titles inside cells."), "text"),
+        new("XFButton", T("Botões de ação nos cards.", "Action buttons on cards."), "circle-check"),
+        new(T("div com col-span", "div with col-span"), T("Use col-span para células expandidas.", "Use col-span for expanded cells."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> IntegrationItems => [
+        new("XFAppShell", T("Grid dentro do content area do shell.", "Grid inside shell content area."), "layer-group"),
+        new("XFSidebar", T("Grid com sidebar lateral.", "Grid with side sidebar."), "align-justify"),
+        new("XFAppBar", T("Grid abaixo do AppBar.", "Grid below AppBar."), "window-restore")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Mobile-first", "Mobile-first"), T("Sempre defina Cols base para mobile.", "Always set base Cols for mobile."), "circle-check"),
+        new(T("Gaps consistentes", "Consistent gaps"), T("Use XFSizeToken em vez de valores fixos.", "Use XFSizeToken instead of fixed values."), "arrows-up-down"),
+        new(T("Sem grid infinito", "No infinite grid"), T("Limite a 3 níveis de aninhamento.", "Limit to 3 nesting levels."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Grid dentro de grid infinito", "Infinite grid nesting"), T("Aninhar mais de 3 grids prejudica performance.", "Nesting more than 3 grids hurts performance."), "xmark"),
+        new(T("Cols sem breakpoint", "Cols without breakpoint"), T("Cols=12 sem responsividade quebra mobile.", "Cols=12 without responsive breaks mobile."), "triangle-exclamation"),
+        new(T("Gap diferente em cada célula", "Different gap per cell"), T("Use Gap padrão; gaps locais quebram alinhamento.", "Use standard Gap; local gaps break alignment."), "xmark")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("spacing", T("gap-2, gap-4, gap-6, gap-8 via XFSizeToken.", "gap-2, gap-4, gap-6, gap-8 via XFSizeToken.")),
+        new("sizing", T("w-full quando FullWidth=true.", "w-full when FullWidth=true.")),
+        new("colors", T("Herda cores do tema via Tailwind.", "Inherits theme colors via Tailwind."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Gaps e cores seguem tema ativo.", "Gaps and colors follow active theme."), "moon"),
+        new("data-brand", T("Primary para borders de cards.", "Primary for card borders."), "swatchbook")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [
+        new(T("Sem XSS", "No XSS"), T("ChildContent é Blazor render fragment.", "ChildContent is Blazor render fragment."), "shield-check"),
+        new(T("Sem JS injection", "No JS injection"), T("Componente puramente server-rendered.", "Purely server-rendered component."), "code")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de renderização com Cols e Gap.", "Rendering tests with Cols and Gap.")),
+        new("Responsive", T("Testes de breakpoint Sm/Md/Lg/Xl.", "Breakpoint tests Sm/Md/Lg/Xl.")),
+        new("Snapshot", T("Snapshots para 6 variantes de colunas.", "Snapshots for 6 column variants.")),
+        new("Alignment", T("Testes de AlignItems e JustifyItems.", "Tests for AlignItems and JustifyItems."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("Sem spans por parâmetro", "No span parameter"), T("Col-span requer classe CSS diretamente.", "Col-span requires CSS class directly.")),
+        new(T("Sem grid-template-areas", "No grid-template-areas"), T("Layout areas requer CSS customizado.", "Area layout requires custom CSS.")),
+        new(T("12 colunas máximo", "12 columns max"), T("Não suporta mais de 12 colunas.", "Does not support more than 12 columns."))
+    ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("div class grid", "div class grid"), T("Troque divs com class grid por XFGrid.", "Replace divs with grid class with XFGrid."), "arrow-rotate-left"),
+        new(T("Flexbox layouts", "Flexbox layouts"), T("Migre flexbox repetitivo para XFGrid.", "Migrate repetitive flexbox to XFGrid."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFStack", T("Layout vertical/horizontal alternativo.", "Alternative vertical/horizontal layout."), "layer-group"),
+        new("XFCard", T("Conteúdo dentro das células do grid.", "Content inside grid cells."), "square"),
+        new("XFAppShell", T("Shell que usa grid no layout.", "Shell that uses grid in layout."), "window-restore")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Posso aninhar grids?", "Can I nest grids?"), T("Sim, XFGrid dentro de outro XFGrid em até 3 níveis.", "Yes, XFGrid inside another XFGrid up to 3 levels.")),
+        new(T("Como defino col-span?", "How do I define col-span?"), T("Use div class=\"col-span-2\" dentro do grid.", "Use div class=\"col-span-2\" inside the grid.")),
+        new(T("Qual o gap padrão?", "What is the default gap?"), T("Sem gap por padrão; defina Gap explicitamente.", "No gap by default; set Gap explicitly.")),
+        new(T("FullWidth afeta height?", "Does FullWidth affect height?"), T("Não, controla apenas largura (width: 100%).", "No, only controls width (width: 100%).")),
+        new(T("Posso misturar com XFStack?", "Can I mix with XFStack?"), T("Sim, XFStack dentro de células do grid funciona bem.", "Yes, XFStack inside grid cells works well."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Página refeita com acentuação pt-BR correta, UTF-8 e 9 exemplos com componentes reais.", "Page rebuilt with correct pt-BR accentuation, UTF-8 and 9 real component examples.")),
+        new("2026-06-09", T("Página criada no padrão enterprise com 9 exemplos renderizados.", "Page created in enterprise standard with 9 rendered examples.")),
+        new("2026-05-15", T("XFGrid componente inicial implementado.", "XFGrid initial component implemented."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

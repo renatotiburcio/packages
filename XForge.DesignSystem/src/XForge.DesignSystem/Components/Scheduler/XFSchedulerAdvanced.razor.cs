@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Scheduler
+namespace XForge.DesignSystem.Components.Scheduler
 {
     public partial class XFSchedulerAdvanced : XForgeComponentBase, IAsyncDisposable
     {

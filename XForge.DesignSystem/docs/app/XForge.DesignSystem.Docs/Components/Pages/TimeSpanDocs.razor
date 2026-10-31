@@ -1,0 +1,445 @@
+@page "/forms/time-span"
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.Forms.TimeSpan
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFTimeSpan" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Horas, minutos, segundos e dias", "Hours, minutes, seconds and days")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Entrada de duracao segmentada com steppers, precisao e suporte a dias.",
+                               "Segmented duration input with steppers, precision and day support.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente para captura de duracoes em SLA, jornadas, timers e regras operacionais, com segmentos separados, navegacao por teclado e validacao.",
+                               "Component for capturing durations in SLA, schedules, timers and operational rules, with separated segments, keyboard navigation and validation.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Entrada de duracao sem label, formato HH:mm:ss.", "Duration input without label, HH:mm:ss format."), ExBasic(), Code1)
+            @Example(T("2. Com Label e Helper", "2. With Label and Helper"), T("Label descritivo, helper text e valor inicial.", "Descriptive label, helper text and initial value."), ExWithLabel(), Code2)
+            @Example(T("3. Com Dias", "3. With Days"), T("Segmento de dias ativado para duracoes longas.", "Day segment enabled for long durations."), ExWithDays(), Code3)
+            @Example(T("4. Min e Max", "4. Min and Max"), T("Duracao limitada entre 5 minutos e 2 horas.", "Duration limited between 5 minutes and 2 hours."), ExMinMax(), Code4)
+            @Example(T("5. Variantes e Tamanhos", "5. Variants and Sizes"), T("Outline, Filled, Soft, Ghost e tamanhos Sm, Md, Lg.", "Outline, Filled, Soft, Ghost and sizes Sm, Md, Lg."), ExVariants(), Code5)
+            @Example(T("6. Estados e Acessibilidade", "6. States and Accessibility"), T("ReadOnly, Required e Disabled com start icon.", "ReadOnly, Required and Disabled with start icon."), ExStates(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFTimeSpan", "XFTimeSpan");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTimeSpan Label="SLA de atendimento" Value="@TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(30))" AriaLabel="@T("Duracao do SLA", "SLA duration")" />
+        <XFTimeSpan Label="Jornada de trabalho" ShowDays="true" Value="@TimeSpan.FromDays(1).Add(TimeSpan.FromHours(8))" AriaLabel="@T("Duracao da jornada", "Workday duration")" />
+        <XFTimeSpan Label="Prazo de entrega" Value="@TimeSpan.FromMinutes(45)" Precision="XFTimeSpanPrecision.Minute" ShowSteppers="false" AriaLabel="@T("Prazo de entrega", "Delivery deadline")" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Segmentos separados", "Separated segments"), T("Inputs individuais para dias, horas, minutos e segundos.", "Individual inputs for days, hours, minutes and seconds."), "clock"),
+        new(T("Steppers e teclado", "Steppers and keyboard"), T("Botoes +/- e setas do teclado para ajuste fino.", "+/- buttons and keyboard arrows for fine adjustment."), "keyboard"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFTimeSpan"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.TimeSpan"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Forms / TimeSpan"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=group, aria-label por segmento, aria-disabled, aria-readonly.", "role=group, per-segment aria-label, aria-disabled, aria-readonly.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Entrada segmentada", "Segmented input"), T("Campos numericos separados para cada unidade de tempo.", "Separate numeric fields for each time unit."), "clock"),
+        new(T("Precisao configuravel", "Configurable precision"), T("Minute ou Second, com ou sem dias.", "Minute or Second, with or without days."), "sliders"),
+        new(T("Steppers integrados", "Built-in steppers"), T("Botoes de incremento e decremento com clamping.", "Increment and decrement buttons with clamping."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("SLA", "SLA"), T("Definir prazos de atendimento e resolucao.", "Set response and resolution deadlines."), "stopwatch"),
+        new(T("Jornadas", "Schedules"), T("Capturar duracao de jornadas e turnos.", "Capture workday and shift durations."), "calendar"),
+        new(T("Timers", "Timers"), T("Configurar intervalos e contadores regressivos.", "Configure intervals and countdown timers."), "hourglass-half")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Inputs de texto livre para duracoes, propensos a erros.", "Free-text inputs for durations, prone to errors."), "xmark"),
+        new(T("Depois", "After"), T("Segmentos validados com clamping e navegacao por teclado.", "Validated segments with clamping and keyboard navigation."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=group com aria-label por segmento e steppers.", "role=group with per-segment aria-label and steppers."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Formularios de SLA", "SLA forms"), T("Campos obrigatorios com Min/Max para prazos.", "Required fields with Min/Max for deadlines."), "clipboard-check"),
+        new(T("Configuracoes", "Settings"), T("Duracoes de timeout, intervalos e limites.", "Timeout durations, intervals and limits."), "gear")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Data e hora", "Date and time"), T("Use XFDatePicker para data e hora absoluta.", "Use XFDatePicker for absolute date and time."), "calendar"),
+        new(T("Contador simples", "Simple counter"), T("Use um input numerico para quantidades.", "Use a numeric input for quantities."), "hashtag")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Label", T("Texto descritivo acima do grupo de campos.", "Descriptive text above the field group."), "font"),
+        new("Segments", T("Campos numericos para dias, horas, minutos e segundos.", "Numeric fields for days, hours, minutes and seconds."), "number"),
+        new("Separators", T("Delimitadores visuais entre segmentos (d, :, :).", "Visual delimiters between segments (d, :, :)."), "minus"),
+        new("Steppers", T("Botoes de incremento e decremento (+/-).", "Increment and decrement buttons (+/-)."), "arrows-up-down"),
+        new("Helper/Error", T("Texto auxiliar ou mensagem de validacao abaixo.", "Helper text or validation message below."), "circle-info")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Segmentacao clara", "Clear segmentation"), T("Cada unidade de tempo e um campo independente.", "Each time unit is an independent field."), "object-ungroup"),
+        new(T("Clamp inteligente", "Smart clamping"), T("Horas 0-23, minutos 0-59, segundos 0-59.", "Hours 0-23, minutes 0-59, seconds 0-59."), "shield"),
+        new(T("Acessibilidade nativa", "Native accessibility"), T("role=group, aria-label, navegacao por teclado completa.", "role=group, aria-label, full keyboard navigation."), "universal-access")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTimeSpan Value="@TimeSpan.FromHours(1).Add(TimeSpan.FromMinutes(45))" AriaLabel="Duracao" />
+    </XFStack>;
+
+    private RenderFragment ExWithLabel() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTimeSpan Label="Prazo de entrega" HelperText="Tempo maximo para entrega do pedido." Value="@TimeSpan.FromHours(3)" AriaLabel="Prazo de entrega" />
+    </XFStack>;
+
+    private RenderFragment ExWithDays() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTimeSpan Label="Jornada de trabalho" ShowDays="true" Value="@TimeSpan.FromDays(1).Add(TimeSpan.FromHours(8)).Add(TimeSpan.FromMinutes(30))" AriaLabel="Duracao da jornada" />
+    </XFStack>;
+
+    private RenderFragment ExMinMax() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTimeSpan Label="Intervalo entre processos" Value="@TimeSpan.FromMinutes(15)" Min="@TimeSpan.FromMinutes(5)" Max="@TimeSpan.FromHours(2)" AriaLabel="Intervalo entre processos" HelperText="Minimo 5 min, maximo 2 horas." />
+    </XFStack>;
+
+    private RenderFragment ExVariants() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTimeSpan Variant="XFFormVariant.Outline" Size="XFSize.Sm" Value="@TimeSpan.FromMinutes(30)" AriaLabel="Outline Small" />
+        <XFTimeSpan Variant="XFFormVariant.Filled" Size="XFSize.Md" Value="@TimeSpan.FromMinutes(30)" AriaLabel="Filled Medium" />
+        <XFTimeSpan Variant="XFFormVariant.Soft" Size="XFSize.Lg" Value="@TimeSpan.FromMinutes(30)" AriaLabel="Soft Large" />
+        <XFTimeSpan Variant="XFFormVariant.Ghost" Value="@TimeSpan.FromMinutes(30)" AriaLabel="Ghost Default" />
+    </XFStack>;
+
+    private RenderFragment ExStates() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTimeSpan Label="Somente leitura" ReadOnly="true" Value="@TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(0))" AriaLabel="Duracao somente leitura" />
+        <XFTimeSpan Label="Obrigatorio" Required="true" Value="@TimeSpan.FromHours(1)" AriaLabel="Duracao obrigatoria" HelperText="Campo obrigatorio para prosseguir." />
+        <XFTimeSpan Label="Desabilitado" Disabled="true" Value="@TimeSpan.FromHours(4)" AriaLabel="Duracao desabilitada" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFTimeSpan Value=""@TimeSpan.FromHours(1).Add(TimeSpan.FromMinutes(45))"" AriaLabel=""Duracao"" />";
+    private const string Code2 = @"<XFTimeSpan Label=""Prazo de entrega"" HelperText=""Tempo maximo para entrega do pedido."" Value=""@TimeSpan.FromHours(3)"" AriaLabel=""Prazo de entrega"" />";
+    private const string Code3 = @"<XFTimeSpan Label=""Jornada de trabalho"" ShowDays=""true"" Value=""@TimeSpan.FromDays(1).Add(TimeSpan.FromHours(8)).Add(TimeSpan.FromMinutes(30))"" AriaLabel=""Duracao da jornada"" />";
+    private const string Code4 = @"<XFTimeSpan Label=""Intervalo entre processos"" Value=""@TimeSpan.FromMinutes(15)"" Min=""@TimeSpan.FromMinutes(5)"" Max=""@TimeSpan.FromHours(2)"" AriaLabel=""Intervalo entre processos"" HelperText=""Minimo 5 min, maximo 2 horas."" />";
+    private const string Code5 = @"<XFTimeSpan Variant=""XFFormVariant.Outline"" Size=""XFSize.Sm"" Value=""@TimeSpan.FromMinutes(30)"" AriaLabel=""Outline Small"" />
+<XFTimeSpan Variant=""XFFormVariant.Filled"" Size=""XFSize.Md"" Value=""@TimeSpan.FromMinutes(30)"" AriaLabel=""Filled Medium"" />
+<XFTimeSpan Variant=""XFFormVariant.Soft"" Size=""XFSize.Lg"" Value=""@TimeSpan.FromMinutes(30)"" AriaLabel=""Soft Large"" />
+<XFTimeSpan Variant=""XFFormVariant.Ghost"" Value=""@TimeSpan.FromMinutes(30)"" AriaLabel=""Ghost Default"" />";
+    private const string Code6 = @"<XFTimeSpan Label=""Somente leitura"" ReadOnly=""true"" Value=""@TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(0))"" AriaLabel=""Duracao somente leitura"" />
+<XFTimeSpan Label=""Obrigatorio"" Required=""true"" Value=""@TimeSpan.FromHours(1)"" AriaLabel=""Duracao obrigatoria"" HelperText=""Campo obrigatorio para prosseguir."" />
+<XFTimeSpan Label=""Desabilitado"" Disabled=""true"" Value=""@TimeSpan.FromHours(4)"" AriaLabel=""Duracao desabilitada"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "TimeSpan?", "null", T("Valor atual da duracao.", "Current duration value.")),
+        new("Min", "TimeSpan?", "null", T("Duracao minima permitida.", "Minimum allowed duration.")),
+        new("Max", "TimeSpan?", "null", T("Duracao maxima permitida.", "Maximum allowed duration.")),
+        new("Step", "int", "1", T("Incremento em segundos para setas e steppers.", "Step increment in seconds for arrows and steppers.")),
+        new("Precision", "XFTimeSpanPrecision", "Second", T("Minute ou Second. Define se exibe segundos.", "Minute or Second. Controls whether seconds are shown.")),
+        new("ShowDays", "bool", "false", T("Exibe segmento de dias.", "Shows the day segment.")),
+        new("ShowSteppers", "bool", "true", T("Exibe botoes de incremento/decremento.", "Shows increment/decrement buttons.")),
+        new("Label", "string?", "null", T("Texto descritivo acima do campo.", "Descriptive text above the field.")),
+        new("AriaLabel", "string?", "\"Duracao\"", T("Label acessivel para o grupo de campos.", "Accessible label for the field group.")),
+        new("HelperText", "string?", "null", T("Texto auxiliar abaixo do campo.", "Helper text below the field.")),
+        new("Name", "string?", "null", T("Atributo name para submissao de formulario.", "Name attribute for form submission.")),
+        new("DaysLabel", "string", "\"Dias\"", T("Label acessivel para o segmento de dias.", "Accessible label for the day segment.")),
+        new("HoursLabel", "string", "\"Horas\"", T("Label acessivel para o segmento de horas.", "Accessible label for the hour segment.")),
+        new("MinutesLabel", "string", "\"Minutos\"", T("Label acessivel para o segmento de minutos.", "Accessible label for the minute segment.")),
+        new("SecondsLabel", "string", "\"Segundos\"", T("Label acessivel para o segmento de segundos.", "Accessible label for the second segment.")),
+        new("IncrementLabel", "string", "\"Aumentar\"", T("Label acessivel para o botao de incremento.", "Accessible label for the increment button.")),
+        new("DecrementLabel", "string", "\"Diminuir\"", T("Label acessivel para o botao de decremento.", "Accessible label for the decrement button.")),
+        new("Variant", "XFFormVariant", "Outline", T("Outline, Filled, Soft, Ghost.", "Outline, Filled, Soft, Ghost.")),
+        new("Size", "XFSize", "Md", T("Sm, Md, Lg.", "Sm, Md, Lg.")),
+        new("Tone", "XFSemanticColor", "Default", T("Cor semantica para estado de foco.", "Semantic color for focus state.")),
+        new("ReadOnly", "bool", "false", T("Modo somente leitura.", "Read-only mode.")),
+        new("Required", "bool", "false", T("Campo obrigatorio.", "Required field.")),
+        new("FullWidth", "bool", "true", T("Ocupa 100% da largura disponivel.", "Occupies 100% available width.")),
+        new("Clamp", "bool", "true", T("Mantem valor dentro de Min/Max e previne negativos.", "Keeps value within Min/Max and prevents negatives.")),
+        new("StartIcon", "RenderFragment?", "null", T("Icone exibido antes dos segmentos.", "Icon displayed before the segments."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ValueChanged", T("Disparado quando o valor muda. Use @bind-Value para two-way binding.", "Fired when value changes. Use @bind-Value for two-way binding.")),
+        new("Change", T("Disparado apos ValueChanged, para log ou efeitos colaterais.", "Fired after ValueChanged, for logging or side effects."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=group", "role=group"), T("Grupo de campos com role=group e aria-label.", "Field group with role=group and aria-label."), "universal-access"),
+        new(T("aria-label por segmento", "Per-segment aria-label"), T("Cada input tem aria-label proprio (Dias, Horas, etc.).", "Each input has its own aria-label (Days, Hours, etc.)."), "tag"),
+        new(T("aria-disabled", "aria-disabled"), T("Steppers e inputs desabilitados usam aria-disabled.", "Disabled steppers and inputs use aria-disabled."), "ban"),
+        new(T("aria-readonly", "aria-readonly"), T("Inputs readonly propagam aria-readonly.", "Read-only inputs propagate aria-readonly."), "lock"),
+        new(T("Required indicator", "Required indicator"), T("Asterisco com aria-hidden para indicar obrigatoriedade.", "Asterisk with aria-hidden to indicate required field."), "asterisk"),
+        new(T("touch target", "touch target"), T("Steppers com 20x20px (minimo 44px via padding).", "Steppers at 20x20px (minimum 44px via padding)."), "hand-pointer")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("ArrowUp", T("Incrementa o segmento atual (1 unidade ou Step segundos).", "Increments current segment (1 unit or Step seconds).")),
+        new("ArrowDown", T("Decrementa o segmento atual (1 unidade ou Step segundos).", "Decrements current segment (1 unit or Step seconds).")),
+        new("Tab", T("Move foco para o proximo segmento ou stepper.", "Moves focus to next segment or stepper.")),
+        new("Shift+Tab", T("Move foco para o segmento anterior.", "Moves focus to previous segment.")),
+        new("Escape", T("Restaura valor original do segmento.", "Restores original segment value.")),
+        new("Home", T("Define segmento para valor minimo (0).", "Sets segment to minimum value (0).")),
+        new("End", T("Define segmento para valor maximo.", "Sets segment to maximum value."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("FullWidth padrao", "FullWidth default"), T("Ocupa 100% da largura. Use FullWidth=false para inline.", "Occupies 100% width. Use FullWidth=false for inline."), "maximize"),
+        new(T("Segmentos compactos", "Compact segments"), T("Largura fixa por segmento (w-10) para previsibilidade.", "Fixed width per segment (w-10) for predictability."), "ruler"),
+        new(T("Tamanhos adaptativos", "Adaptive sizes"), T("Sm (h-9) para mobile, Md (h-10) para desktop, Lg (h-12).", "Sm (h-9) for mobile, Md (h-10) for desktop, Lg (h-12)."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# e Tailwind.", "No JavaScript interop. Pure C# and Tailwind."), "bolt"),
+        new(T("Render leve", "Light render"), T("Inputs nativos sem wrappers externos.", "Native inputs without external wrappers."), "feather"),
+        new(T("OnParametersSet", "OnParametersSet"), T("Atualizacao otimizada apenas quando Value muda.", "Optimized update only when Value changes."), "arrows-rotate")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("SLA ERP", "ERP SLA"), T("Prazo de atendimento com Min=15min, Max=4h.", "Response deadline with Min=15min, Max=4h."), "stopwatch"),
+        new(T("Jornada trabalhista", "Labor schedule"), T("Duracao de jornada com ShowDays=true e clamp.", "Workday duration with ShowDays=true and clamp."), "calendar"),
+        new(T("Timer de processo", "Process timer"), T("Intervalo entre etapas com Step=60 (minutos).", "Interval between steps with Step=60 (minutes)."), "hourglass-half"),
+        new(T("Config timeout", "Timeout config"), T("Timeout de sessao com ReadOnly para auditoria.", "Session timeout with ReadOnly for audit."), "lock"),
+        new(T("SLA multicanal", "Multi-channel SLA"), T("Prazos diferentes por canal com Tone variado.", "Different deadlines per channel with varied Tone."), "layers"),
+        new(T("Prazo judicial", "Judicial deadline"), T("Contagem de prazos com ShowDays e Precision=Minute.", "Deadline counting with ShowDays and Precision=Minute."), "gavel")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("TimeSpan + Label", "TimeSpan + Label"), T("Label descritivo acima do grupo de campos.", "Descriptive label above the field group."), "font"),
+        new(T("TimeSpan + Helper", "TimeSpan + Helper"), T("Texto auxiliar com dicas de formato ou limites.", "Helper text with format tips or limits."), "circle-info"),
+        new(T("TimeSpan + Validation", "TimeSpan + Validation"), T("Integracao com EditForm e validacao obrigatoria.", "Integration with EditForm and required validation."), "shield"),
+        new(T("TimeSpan + Card", "TimeSpan + Card"), T("Campo dentro de XFCard para contexto de formulario.", "Field inside XFCard for form context."), "square"),
+        new(T("TimeSpan + Icon", "TimeSpan + Icon"), T("StartIcon para contextualizar o campo.", "StartIcon to contextualize the field."), "tag")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Sempre definir AriaLabel", "Always set AriaLabel"), T("Label acessivel obrigatorio para todos os segmentos.", "Accessible label required for all segments."), "universal-access"),
+        new(T("Usar Min/Max sempre", "Use Min/Max always"), T("Defina limites para evitar valores invalidos.", "Set limits to prevent invalid values."), "shield"),
+        new(T("HelperText para orientacao", "HelperText for guidance"), T("Explique formato, limites e unidades esperadas.", "Explain format, limits and expected units."), "circle-info"),
+        new(T("Clamp=true padrao", "Clamp=true default"), T("Mantenha Clamp ativo para prevenir negativos e overflow.", "Keep Clamp active to prevent negatives and overflow."), "lock")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem AriaLabel", "No AriaLabel"), T("Campo sem label acessivel e inutilizavel por leitores de tela.", "Field without accessible label is unusable by screen readers."), "xmark"),
+        new(T("Sem Min/Max", "Without Min/Max"), T("Permite valores absurdos (999h) sem validacao.", "Allows absurd values (999h) without validation."), "ban"),
+        new(T("Step=0", "Step=0"), T("Step zero desabilita incremento via setas/steppers.", "Step zero disables increment via arrows/steppers."), "triangle-exclamation"),
+        new(T("Muitos campos", "Too many fields"), T("Evite mais de 3 TimeSpan na mesma tela.", "Avoid more than 3 TimeSpan on the same screen."), "ban")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("root", T("flex flex-col gap-1.5 com FullWidth opcional.", "flex flex-col gap-1.5 with optional FullWidth.")),
+        new("label", T("text-sm font-medium leading-5 text-text-primary.", "text-sm font-medium leading-5 text-text-primary.")),
+        new("shell", T("group flex items-center gap-2 rounded-lg border transition-all.", "group flex items-center gap-2 rounded-lg border transition-all.")),
+        new("segment", T("w-10 border-0 bg-transparent text-center outline-none.", "w-10 border-0 bg-transparent text-center outline-none.")),
+        new("separator", T("flex items-center text-text-muted font-medium select-none.", "flex items-center text-text-muted font-medium select-none.")),
+        new("stepper", T("flex h-5 w-5 items-center justify-center rounded border.", "flex h-5 w-5 items-center justify-center rounded border.")),
+        new("helper", T("text-xs leading-5 text-text-secondary.", "text-xs leading-5 text-text-secondary.")),
+        new("error", T("text-xs font-medium leading-5 text-danger.", "text-xs font-medium leading-5 text-danger."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Tone primary acompanha marca ativa.", "Tone primary follows active brand."), "swatchbook"),
+        new("Variant colors", T("Outline, Filled, Soft, Ghost respondem ao tema.", "Outline, Filled, Soft, Ghost respond to theme."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Renderizacao, props, variantes, tamanhos, precisions, dias, steppers.", "Rendering, props, variants, sizes, precisions, days, steppers.")),
+        new("Accessibility", T("role=group, aria-label, aria-disabled, aria-readonly, touch target.", "role=group, aria-label, aria-disabled, aria-readonly, touch target.")),
+        new("Interaction", T("Cliques em steppers, navegacao por teclado, clamping, ValueChanged.", "Stepper clicks, keyboard navigation, clamping, ValueChanged.")),
+        new("Visual", T("Snapshot de variantes, tamanhos e estados (readonly, disabled, required).", "Snapshot of variants, sizes and states (readonly, disabled, required)."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Negativos", T("Valores negativos nao sao suportados. Minimo e 0:00:00.", "Negative values are not supported. Minimum is 0:00:00.")),
+        new("Precision", T("Apenas Minute e Second. Sem suporte a milissegundos.", "Only Minute and Second. No millisecond support.")),
+        new("Dias", T("ShowDays aumenta a complexidade do layout. Use com moderacao.", "ShowDays increases layout complexity. Use sparingly.")),
+        new("Max Days", T("MaxDays limitado a 999 por restricao de input number.", "MaxDays limited to 999 by input number constraint."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFInput", T("Entrada de texto generica.", "Generic text input."), "i-cursor"),
+        new("XFNumberInput", T("Entrada numerica com incremento.", "Numeric input with increment."), "hashtag"),
+        new("XFSelect", T("Selecao de opcoes.", "Option select."), "caret-down"),
+        new("XFTimePicker", T("Selecao de horario com relogio.", "Clock-based time selection."), "clock")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("TimeSpan vs Input?", "TimeSpan vs Input?"), T("TimeSpan segmenta em campos separados com validacao por unidade.", "TimeSpan segments into separate fields with per-unit validation.")),
+        new(T("Como bindear o valor?", "How to bind the value?"), T("Use @bind-Value para two-way binding ou Value + ValueChanged.", "Use @bind-Value for two-way binding or Value + ValueChanged.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop necessario.", "Yes. No JavaScript interop required.")),
+        new(T("Precision Minute vs Second?", "Precision Minute vs Second?"), T("Minute oculta o segmento de segundos. Second exibe todos.", "Minute hides the seconds segment. Second shows all.")),
+        new(T("Como resetar o valor?", "How to reset value?"), T("Atribua null ao Value ou use um botao de reset externo.", "Assign null to Value or use an external reset button.")),
+        new(T("Clamp impede negativos?", "Clamp prevents negatives?"), T("Sim. Clamp=true (padrao) mantem valor >= 0 e dentro de Min/Max.", "Yes. Clamp=true (default) keeps value >= 0 and within Min/Max.")),
+        new(T("Funciona com EditForm?", "Works with EditForm?"), T("Sim. Suporta ValueExpression para validacao via DataAnnotations.", "Yes. Supports ValueExpression for DataAnnotations validation."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-12", T("Pagina refeita no padrao enterprise com 6 exemplos renderizados e 26 secoes.", "Page rewritten in enterprise standard with 6 rendered examples and 26 sections."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

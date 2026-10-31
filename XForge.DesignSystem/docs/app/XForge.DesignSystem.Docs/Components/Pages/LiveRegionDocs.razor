@@ -1,0 +1,322 @@
+@page "/components/live-region"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Form", "Form")"
+                 Title="@T("LiveRegion", "LiveRegion")"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFLiveRegion" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WCAG" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Aria Live" />
+                    </XFStack>
+                    <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                        @T("Regiao ao vivo para acessibilidade (WCAG) com anuncio automatico de mensagens.",
+                           "Live region for accessibility (WCAG) with automatic message announcement.")
+                    </XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                        @T("Elemento aria-live que anuncia mudancas de conteudo para screen readers, essencial para notificacoes e feedback em tempo real.",
+                           "aria-live element that announces content changes for screen readers, essential for notifications and real-time feedback.")
+                    </XFTypography>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Regiao com mensagem.", "Region with message."), ExBasic(), Code1)
+            @Example(T("2. Assertivo", "2. Assertive"), T("Mensagem assertiva para urgencias.", "Assertive message for urgent updates."), ExAssertive(), Code2)
+            @Example(T("3. Enterprise", "3. Enterprise"), T("Notificacoes e status.", "Notifications and status."), ExEnterprise(), Code3)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Form", "Form");
+    private string PageTitleText => T("XFLiveRegion", "XFLiveRegion");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLiveRegion Text="Mensagem para screen readers" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("aria-live", "aria-live"), T("Regiao ao vivo WCAG 2.1.", "WCAG 2.1 live region."), "universal-access"),
+        new(T("Polite/Assertive", "Polite/Assertive"), T("Modos de anuncio.", "Announcement modes."), "volume-high"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFLiveRegion"),
+        new("Namespace", "XForge.DesignSystem.Components.Form.LiveRegion"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Form / LiveRegion"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("WCAG 2.1 SC 4.1.3 - Status Messages. aria-live=polite|assertive.", "WCAG 2.1 SC 4.1.3 - Status Messages. aria-live=polite|assertive.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("aria-live", "aria-live"), T("Regiao que anuncia mudancas.", "Region that announces changes."), "universal-access"),
+        new(T("Polite", "Polite"), T("Anuncia na proxima pausa.", "Announces at next pause."), "volume-low"),
+        new(T("Assertive", "Assertive"), T("Anuncia imediatamente.", "Announces immediately."), "volume-high")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Notificacoes", "Notifications"), T("Anunciar mensagens para screen readers.", "Announce messages to screen readers."), "bell"),
+        new(T("Status", "Status"), T("Informar status de operacoes.", "Inform operation status."), "circle-info"),
+        new(T("Feedback", "Feedback"), T("Feedback de acoes do usuario.", "User action feedback."), "check")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Mudancas silenciosas para screen readers.", "Silent changes for screen readers."), "xmark"),
+        new(T("Depois", "After"), T("Mensagens anunciadas automaticamente.", "Messages announced automatically."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("WCAG 4.1.3 - Status Messages.", "WCAG 4.1.3 - Status Messages."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Notificacoes", "Notifications"), T("Toast, alertas, status.", "Toast, alerts, status."), "bell"),
+        new(T("Form feedback", "Form feedback"), T("Mensagens de validacao.", "Validation messages."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Conteudo visual", "Visual content"), T("Nao use para conteudo visual apenas.", "Do not use for visual-only content."), "triangle-exclamation"),
+        new(T("Muitas mensagens", "Too many messages"), T("Evite spam de announcements.", "Avoid announcement spam."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Text", T("Texto anunciado.", "Announced text."), "font"),
+        new("Assertive", T("Modo polite ou assertive.", "Polite or assertive mode."), "volume-high")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Invisivel", "Invisible"), T("Componente oculto, so anuncia.", "Hidden component, only announces."), "eye-slash"),
+        new(T("Polite padrao", "Polite default"), T("Polite para nao interromper.", "Polite to not interrupt."), "volume-low"),
+        new(T("Assertivo para urgencia", "Assertive for urgency"), T("Assertivo para erros criticos.", "Assertive for critical errors."), "volume-high")
+    ];
+
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLiveRegion Text="Dados salvos com sucesso" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Mensagem anunciada na proxima pausa do screen reader.", "Message announced at screen reader next pause.")
+        </XFTypography>
+    </XFStack>;
+
+    private RenderFragment ExAssertive() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLiveRegion Text="Erro: campo obrigatorio nao preenchido" Assertive="true" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Mensagem anunciada imediatamente, interrompendo o screen reader.", "Message announced immediately, interrupting the screen reader.")
+        </XFTypography>
+    </XFStack>;
+
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLiveRegion Text="3 novas notificacoes" />
+        <XFLiveRegion Text="Operacao concluida com sucesso" />
+        <XFLiveRegion Text="Erro de conexao com o servidor" Assertive="true" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFLiveRegion Text=""Dados salvos com sucesso"" />";
+    private const string Code2 = @"<XFLiveRegion Text=""Erro: campo obrigatorio""
+       Assertive=""true"" />";
+    private const string Code3 = @"<XFLiveRegion Text=""3 novas notificacoes"" />
+<XFLiveRegion Text=""Operacao concluida"" />
+<XFLiveRegion Text=""Erro de conexao"" Assertive=""true"" />";
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Text", "string", "''", T("Texto anunciado pelo screen reader.", "Text announced by screen reader.")),
+        new("Assertive", "bool", "false", T("true = assertive (imediato). false = polite (pausa).", "true = assertive (immediate). false = polite (pause)."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("WCAG 4.1.3", "WCAG 4.1.3"), T("Status Messages - nivel AA.", "Status Messages - level AA."), "universal-access"),
+        new(T("aria-live=polite", "aria-live=polite"), T("Anuncia na proxima pausa.", "Announces at next pause."), "volume-low"),
+        new(T("aria-live=assertive", "aria-live=assertive"), T("Anuncia imediatamente.", "Announces immediately."), "volume-high"),
+        new(T("Screen readers", "Screen readers"), T("NVDA, JAWS, VoiceOver.", "NVDA, JAWS, VoiceOver."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Oculto visualmente", "Visually hidden"), T("Componente nao ocupa espaco.", "Component does not occupy space."), "eye-slash"),
+        new(T("Funciona em todos dispositivos", "Works on all devices"), T("Acessibilidade nativa.", "Native accessibility."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Zero render", "Zero render"), T("Oculto, nao renderiza nada.", "Hidden, renders nothing."), "feather")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Notificacoes", "Notifications"), T("Toast de sucesso/erro.", "Success/error toast."), "bell"),
+        new(T("Form feedback", "Form feedback"), T("Mensagens de validacao.", "Validation messages."), "file-lines"),
+        new(T("Status de operacao", "Operation status"), T("Salvando, concluido, erro.", "Saving, completed, error."), "circle-info")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Polite padrao", "Polite default"), T("Use polite para nao interromper.", "Use polite to not interrupt."), "volume-low"),
+        new(T("Assertivo para erros", "Assertive for errors"), T("Use assertivo para erros criticos.", "Use assertive for critical errors."), "volume-high"),
+        new(T("Texto claro", "Clear text"), T("Mensagens curtas e descritivas.", "Short and descriptive messages."), "font")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Muitas mensagens", "Too many messages"), T("Evite spam de anuncios.", "Avoid announcement spam."), "xmark"),
+        new(T("Sem texto", "No text"), T("Text vazio nao anuncia nada.", "Empty text announces nothing."), "triangle-exclamation"),
+        new(T("Assertivo para tudo", "Assertive for everything"), T("Assertivo interrompe. Use polite.", "Assertive interrupts. Use polite."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("sr-only", T("position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0).", "position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0)."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("N/A", T("Componente acessibilidade sem visibilidade.", "Accessibility component without visibility."), "universal-access")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, Text, Assertive.", "Render, props, Text, Assertive tests.")),
+        new("Accessibility", T("WCAG 4.1.3, aria-live, screen reader.", "WCAG 4.1.3, aria-live, screen reader."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Text", T("Text vazio nao produz anuncio.", "Empty text produces no announcement.")),
+        new("Screen reader", T("So funciona com screen reader ativo.", "Only works with active screen reader."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFToast", T("Notificacao visual.", "Visual notification."), "bell"),
+        new("XFAlert", T("Mensagem inline.", "Inline message."), "circle-info"),
+        new("XFValidationMessage", T("Mensagem de erro.", "Error message."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("LiveRegion vs Toast?", "LiveRegion vs Toast?"), T("LiveRegion = para screen readers. Toast = visual.", "LiveRegion = for screen readers. Toast = visual.")),
+        new(T("Polite vs Assertive?", "Polite vs Assertive?"), T("Polite = pausa. Assertive = imediato.", "Polite = pause. Assertive = immediate.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-30", T("Pagina criada no padrao enterprise com 3 exemplos.", "Page created in enterprise standard with 3 examples."))
+    ];
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

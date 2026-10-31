@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Maps
+namespace XForge.DesignSystem.Components.Maps
 {
     public partial class XFMapsAdvanced : XForgeComponentBase
     {

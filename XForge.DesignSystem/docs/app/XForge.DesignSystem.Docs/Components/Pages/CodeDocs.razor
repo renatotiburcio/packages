@@ -1,0 +1,361 @@
+@using XForge.DesignSystem.Core.Primitives
+@page "/display/code"
+@using Microsoft.AspNetCore.Components.Web
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="Code"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <div class="space-y-6">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFCode" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Inline", "Inline")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Block", "Block")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Copyable", "Copyable")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">@T("Exibicao de codigo com copia, tons semanticos e apresentacao consistente.","Code display with copy, semantic tones and consistent presentation.")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">@T("XFCode exibe trechos de codigo inline ou em bloco com header, linguagem, copia para clipboard e tons visuais. Ideal para documentacao, logs, configs e respostas de API.","XFCode displays inline or block code snippets with header, language, clipboard copy and visual tones. Ideal for documentation, logs, configs and API responses.")</XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts){@Tile(item)}</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+        @Section(T("Metadados","Metadata"),@<div>@NameValueTable(MetadataRows,T("Campo","Field"),T("Valor","Value"))</div>)
+
+        @Section(T("Blazor Server e Blazor WebAssembly", "Blazor Server and Blazor WebAssembly"), @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Botao de copia indisponivel durante prerender.", "Renders base HTML. Copy button unavailable during prerender.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-code.js — modulo de clipboard importado sob demanda para copiar texto via navigator.clipboard.writeText.", "JS file: xf-code.js — clipboard module imported on demand to copy text via navigator.clipboard.writeText.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: sob demanda ao clicar no botao de copia.", "When loaded: on demand when clicking the copy button.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Prerender seguro: try/catch para InvalidOperationException e JSDisconnectedException.", "Prerender safe: try/catch for InvalidOperationException and JSDisconnectedException.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor Server", "Blazor Server Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Clipboard via SignalR com latencia. Feedback visual pode demorar.", "Clipboard via SignalR with latency. Visual feedback may be delayed.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor WebAssembly", "Blazor WebAssembly Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Clipboard direto sem latencia. Disponivel apos carregamento do WASM.", "Direct clipboard with no latency. Available after WASM load.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral","Overview"),@<div>@TileGrid(OverviewItems,3)</div>)
+            @Section(T("Proposito","Purpose"),@<div>@TileGrid(PurposeItems,3)</div>)
+            @Section(T("Problema resolvido","Problem Solved"),@<div>@TileGrid(ProblemItems,3)</div>)
+            @Section(T("Quando usar","When To Use"),@<div>@TileGrid(UseItems,2)</div>)
+            @Section(T("Quando nao usar","When Not To Use"),@<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia","Anatomy"),@<div>@TileGrid(AnatomyItems,2)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual","Visual Hierarchy"),@<div>@TileGrid(VisualHierarchyItems,3)</div>)
+            @Section(T("Principios de design","Design Principles"),@<div>@TileGrid(DesignPrincipleItems,3)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("Inline basico","Basic Inline"),T("Codigos inline com tons semanticos em contexto de texto.","Inline codes with semantic tones in text context."),InlineBasicPreview(),InlineBasicCode)
+            @Example(T("Bloco com header","Block with Header"),T("Bloco com linguagem, titulo e botao de copia com icone SVG.","Block with language, title and copy button with SVG icon."),BlockHeaderPreview(),BlockHeaderCode)
+            @Example(T("Tons semanticos inline","Inline Semantic Tones"),T("Neutral, Primary, Success, Warning e Danger.","Neutral, Primary, Success, Warning and Danger."),TonesInlinePreview(),TonesInlineCode)
+            @Example(T("Tons semanticos em bloco","Block Semantic Tones"),T("Blocos com bordas semanticas para feedback visual.","Blocks with semantic borders for visual feedback."),TonesBlockPreview(),TonesBlockCode)
+            @Example(T("Copia com feedback","Copy with Feedback"),T("Botao de copia com icone SVG, feedback visual e reset automatico apos 2.5s.","Copy button with SVG icon, visual feedback and auto-reset after 2.5s."),CopyFeedbackPreview(),CopyFeedbackCode)
+            @Example(T("Quebra de linhas","Line Wrapping"),T("Wrap=true para textos longos em mobile; Wrap=false para scroll horizontal.","Wrap=true for long texts on mobile; Wrap=false for horizontal scroll."),WrapComparisonPreview(),WrapComparisonCode)
+            @Example(T("Bloco sem header","Block Without Header"),T("Bloco minimalista sem linguagem nem titulo.","Minimalist block without language or title."),NoHeaderPreview(),NoHeaderCode)
+            @Example(T("Badges de linguagem","Language Badges"),T("Diferentes linguagens com badge destacado.","Different languages with highlighted badge."),LanguageBadgesPreview(),LanguageBadgesCode)
+            @Example(T("Cenarios ERP","ERP Scenarios"),T("SQL, JSON, XML e configuracoes em contexto administrativo.","SQL, JSON, XML and configs in administrative context."),ErpScenariosPreview(),ErpScenariosCode)
+            @Example(T("Composicao com cards","Card Composition"),T("XFCode dentro de XFCard para dashboards e documentacao.","XFCode inside XFCard for dashboards and documentation."),CardCompositionPreview(),CardCompositionCode)
+            @Example(T("Inline em texto","Inline in Text"),T("Use XFCode inline para referenciar componentes, valores e propriedades em paragrafos.","Use inline XFCode to reference components, values and properties in paragraphs."),InlineInTextPreview(),InlineInTextCode)
+            @Example(T("Highlighter de texto","Text Highlighter"),T("XFHighlighter marca termos de busca em texto com tons semanticos.","XFHighlighter highlights search terms in text with semantic tones."),HighlighterPreview(),HighlighterCode)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes","Variants"),@<div>@NameValueTable(VariantRows,T("Variante","Variant"),T("Caso de uso","Use case"))</div>)
+            @Section(T("Estados","States"),@<div>@NameValueTable(StateRows,T("Estado","State"),T("Comportamento","Behavior"))</div>)
+            @Section("API",@<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos","Events"),@<div>@NameValueTable(EventRows,T("Evento","Event"),T("Comportamento","Behavior"))</div>)
+            @Section(T("Metodos","Methods"),@<div>@NameValueTable(MethodRows,T("Metodo","Method"),T("Comportamento","Behavior"))</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade","Accessibility"),@<div>@TileGrid(AccessibilityItems,2)</div>)
+            @Section(T("Navegacao enterprise por teclado","Enterprise Keyboard Navigation"),@<div>@TileGrid(EnterpriseKeyboardItems,2)</div>)
+            @Section(T("Suporte de teclado","Keyboard Support"),@<div>@NameValueTable(KeyboardRows,T("Tecla","Key"),T("Comportamento","Behavior"))</div>)
+            @Section(T("Responsividade","Responsiveness"),@<div>@TileGrid(ResponsivenessItems,2)</div>)
+            @Section(T("Performance","Performance"),@<div>@TileGrid(PerformanceItems,2)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise","Enterprise Scenarios"),@<div>@TileGrid(ScenarioItems,3)</div>)
+            @Section(T("Padroes de composicao","Composition Patterns"),@<div>@TileGrid(CompositionItems,3)</div>)
+            @Section(T("Exemplos de integracao","Integration Examples"),@<div>@TileGrid(IntegrationItems,2)</div>)
+            @Section(T("Boas praticas de UX","UX Best Practices"),@<div>@TileGrid(BestPracticeItems,2)</div>)
+            @Section(T("Anti-padroes","Anti-patterns"),@<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens",@<div>@NameValueTable(TokenRows,"Token",T("Proposito","Purpose"))</div>)
+            @Section(T("Temas","Theming"),@<div>@TileGrid(ThemeItems,2)</div>)
+            @Section(T("Seguranca","Security Considerations"),@<div>@TileGrid(SecurityItems,2)</div>)
+            @Section(T("Testes","Testing"),@<div>@NameValueTable(TestingRows,T("Cobertura","Coverage"),T("Evidencia","Evidence"))</div>)
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitacoes conhecidas","Known Limitations"),@<div>@NameValueTable(LimitationRows,T("Limitacao","Limitation"),T("Status","Status"))</div>)
+            @Section(T("Notas de migracao","Migration Notes"),@<div>@TileGrid(MigrationItems,2)</div>)
+            @Section(T("Componentes relacionados","Related Components"),@<div>@TileGrid(RelatedComponentItems,3)</div>)
+            @Section("FAQ",@<div>@NameValueTable(FaqRows,T("Pergunta","Question"),T("Resposta","Answer"))</div>)
+            @Section("Changelog",@<div>@NameValueTable(ChangelogRows,T("Versao","Version"),T("Mudanca","Change"))</div>)
+        </XFStack>
+    </div>
+</XForgeDocsShell>
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFCode Text="XFButton" Variant="XFCodeVariant.Inline" />
+            <XFCode Text="XFButtonColor.Primary" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Primary" />
+            <XFCode Text="true" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Success" />
+        </XFStack>
+        <XFCode Text='@T("SELECT * FROM Pedidos WHERE Status = '\''Aprovado'\'' ORDER BY Data DESC;","SELECT * FROM Orders WHERE Status = '\''Approved'\'' ORDER BY Date DESC;")' Title="@T("Consulta SQL","SQL Query")" Language="sql" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+        <XFGrid Cols="1" Md="3" Gap="3">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("API Response","API Response")</XFTypography><div class="mt-2"><XFCode Text='{ "status": "ok", "id": 1234 }' Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Success" /></div></ChildContent></XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Config","Config")</XFTypography><div class="mt-2"><XFCode Text='ConnectionTimeout=30' Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Primary" /></div></ChildContent></XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Warning","Warning")</XFTypography><div class="mt-2"><XFCode Text="Deprecated v2.0" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Warning" /></div></ChildContent></XFCard>
+        </XFGrid>
+    </XFStack>;
+    private RenderFragment InlineBasicPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFCode Text="XFButton" Variant="XFCodeVariant.Inline" />
+            <XFCode Text="@T("Salvar pedido","Save order")" Variant="XFCodeVariant.Inline" />
+            <XFCode Text="true" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Success" />
+        </XFStack>
+    </XFStack>;
+    private RenderFragment TonesInlinePreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFCode Text="Neutral" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Neutral" />
+        <XFCode Text="Primary" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Primary" />
+        <XFCode Text="Success" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Success" />
+        <XFCode Text="Warning" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Warning" />
+        <XFCode Text="Danger" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Danger" />
+    </XFStack>;
+    private RenderFragment BlockHeaderPreview() => @<XFCode Text='@T("{ \"pedido\": 1234, \"status\": \"aprovado\", \"valor\": 84200.50 }","{ \"order\": 1234, \"status\": \"approved\", \"amount\": 84200.50 }")' Title="@T("Resposta da API","API Response")" Language="json" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" Tone="XFSemanticColor.Neutral" />;
+    private string InlineBasicCode => T("""<XFCode Text="XFButton" Variant="XFCodeVariant.Inline" /><XFCode Text="Salvar pedido" Variant="XFCodeVariant.Inline" /><XFCode Text="true" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Success" />""","""<XFCode Text="XFButton" Variant="XFCodeVariant.Inline" /><XFCode Text="Save order" Variant="XFCodeVariant.Inline" /><XFCode Text="true" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Success" />""");
+    private string TonesInlineCode => """<XFCode Text="Neutral" Tone="XFSemanticColor.Neutral" /><XFCode Text="Primary" Tone="XFSemanticColor.Primary" /><XFCode Text="Success" Tone="XFSemanticColor.Success" /><XFCode Text="Warning" Tone="XFSemanticColor.Warning" /><XFCode Text="Danger" Tone="XFSemanticColor.Danger" />""";
+    private string BlockHeaderCode => """<XFCode Text='{ "order": 1234, "status": "approved" }' Title="API Response" Language="json" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />""";
+
+    // TonesBlock
+    private RenderFragment TonesBlockPreview() => @<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <XFCode Text="const config = { theme: 'neutral' }" Title="Neutral" Language="js" Variant="XFCodeVariant.Block" Tone="XFSemanticColor.Neutral" />
+        <XFCode Text="const config = { theme: 'primary' }" Title="Primary" Language="js" Variant="XFCodeVariant.Block" Tone="XFSemanticColor.Primary" />
+        <XFCode Text="const status = 'connected'" Title="Success" Language="js" Variant="XFCodeVariant.Block" Tone="XFSemanticColor.Success" />
+        <XFCode Text="const retries = 3" Title="Warning" Language="js" Variant="XFCodeVariant.Block" Tone="XFSemanticColor.Warning" />
+        <XFCode Text="throw new Error('Connection failed')" Title="Danger" Language="js" Variant="XFCodeVariant.Block" Tone="XFSemanticColor.Danger" />
+    </div>;
+    private string TonesBlockCode => @"<XFCode Text=""const config = { theme: 'neutral' }""
+    Title=""Neutral"" Language=""js"" Variant=""XFCodeVariant.Block""
+    Tone=""XFSemanticColor.Neutral"" />
+
+<XFCode Text=""const config = { theme: 'primary' }""
+    Title=""Primary"" Language=""js"" Variant=""XFCodeVariant.Block""
+    Tone=""XFSemanticColor.Primary"" />
+
+<XFCode Text=""const status = 'connected'""
+    Title=""Success"" Language=""js"" Variant=""XFCodeVariant.Block""
+    Tone=""XFSemanticColor.Success"" />
+
+<XFCode Text=""const retries = 3""
+    Title=""Warning"" Language=""js"" Variant=""XFCodeVariant.Block""
+    Tone=""XFSemanticColor.Warning"" />
+
+<XFCode Text=""throw new Error('Connection failed')""
+    Title=""Danger"" Language=""js"" Variant=""XFCodeVariant.Block""
+    Tone=""XFSemanticColor.Danger"" />";
+
+    // CopyFeedback
+    private RenderFragment CopyFeedbackPreview() => @<div class="space-y-3">
+        <XFCode Text="dotnet add package XForge.DesignSystem --version 2.0.0" Title="@T("Instalacao via CLI","CLI Install")" Language="bash" Variant="XFCodeVariant.Block" Copyable="true" CopyLabel="@T("Copiar comando","Copy command")" CopyText="@T("Copiar","Copy")" CopiedText="@T("Copiado!","Copied!")" Tone="XFSemanticColor.Primary" />
+        <XFCode Text="@_npmInstallCmd" Title="@T("Instalacao NPM","NPM Install")" Language="bash" Variant="XFCodeVariant.Block" Copyable="true" Tone="XFSemanticColor.Success" />
+    </div>;
+    private string CopyFeedbackCode => @"<XFCode Text=""dotnet add package XForge.DesignSystem --version 2.0.0""
+    Title=""Instalacao via CLI"" Language=""bash""
+    Variant=""XFCodeVariant.Block"" Copyable=""true""
+    CopyLabel=""Copiar comando"" CopyText=""Copiar""
+    CopiedText=""Copiado!"" Tone=""XFSemanticColor.Primary"" />
+
+<XFCode Text=""npm install @xforge/design-system""
+    Title=""Instalacao NPM"" Language=""bash""
+    Variant=""XFCodeVariant.Block"" Copyable=""true""
+    Tone=""XFSemanticColor.Success"" />";
+
+    // WrapComparison
+    private RenderFragment WrapComparisonPreview() => @<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="space-y-2"><p class="text-xs font-semibold text-text-muted">Wrap = false</p><XFCode Text="SELECT o.Id, o.Data, c.Nome, c.Email, SUM(i.Quantidade * i.PrecoUnitario) AS Total FROM Pedidos o INNER JOIN Clientes c ON o.ClienteId = c.Id ORDER BY o.Data DESC;" Language="sql" Variant="XFCodeVariant.Block" Wrap="false" /></div>
+        <div class="space-y-2"><p class="text-xs font-semibold text-text-muted">Wrap = true</p><XFCode Text="SELECT o.Id, o.Data, c.Nome, c.Email, SUM(i.Quantidade * i.PrecoUnitario) AS Total FROM Pedidos o INNER JOIN Clientes c ON o.ClienteId = c.Id ORDER BY o.Data DESC;" Language="sql" Variant="XFCodeVariant.Block" Wrap="true" /></div>
+    </div>;
+    private string WrapComparisonCode => @"<!-- Wrap = false -->
+<XFCode Text=""SELECT o.Id, o.Data, c.Nome, c.Email, SUM(i.Quantidade * i.PrecoUnitario) AS Total FROM Pedidos o INNER JOIN Clientes c ON o.ClienteId = c.Id ORDER BY o.Data DESC;""
+    Language=""sql"" Variant=""XFCodeVariant.Block"" Wrap=""false"" />
+
+<!-- Wrap = true -->
+<XFCode Text=""SELECT o.Id, o.Data, c.Nome, c.Email, SUM(i.Quantidade * i.PrecoUnitario) AS Total FROM Pedidos o INNER JOIN Clientes c ON o.ClienteId = c.Id ORDER BY o.Data DESC;""
+    Language=""sql"" Variant=""XFCodeVariant.Block"" Wrap=""true"" />";
+
+    // NoHeader
+    private RenderFragment NoHeaderPreview() => @<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <XFCode Text="Loading..." Variant="XFCodeVariant.Block" />
+        <XFCode Text="Connection established" Variant="XFCodeVariant.Block" Tone="XFSemanticColor.Success" />
+    </div>;
+    private string NoHeaderCode => @"<XFCode Text=""Loading..."" Variant=""XFCodeVariant.Block"" />
+
+<XFCode Text=""Connection established"" Variant=""XFCodeVariant.Block""
+    Tone=""XFSemanticColor.Success"" />";
+
+    // LanguageBadges
+    private RenderFragment LanguageBadgesPreview() => @<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <XFCode Text="SELECT * FROM Users" Language="sql" Variant="XFCodeVariant.Block" Copyable="true" />
+        <XFCode Text='{ "name": "John" }' Language="json" Variant="XFCodeVariant.Block" Copyable="true" />
+        <XFCode Text="<div>...</div>" Language="html" Variant="XFCodeVariant.Block" Copyable="true" />
+        <XFCode Text="const x = 42;" Language="typescript" Variant="XFCodeVariant.Block" Copyable="true" />
+        <XFCode Text="pip install xforge" Language="bash" Variant="XFCodeVariant.Block" Copyable="true" />
+        <XFCode Text="docker compose up -d" Language="docker" Variant="XFCodeVariant.Block" Copyable="true" />
+    </div>;
+    private string LanguageBadgesCode => @"<XFCode Text=""SELECT * FROM Users"" Language=""sql""
+    Variant=""XFCodeVariant.Block"" Copyable=""true"" />
+
+<XFCode Text=""{ """"name"""": """"John"""" }"" Language=""json""
+    Variant=""XFCodeVariant.Block"" Copyable=""true"" />
+
+<XFCode Text=""<div>...</div>"" Language=""html""
+    Variant=""XFCodeVariant.Block"" Copyable=""true"" />
+
+<XFCode Text=""const x = 42;"" Language=""typescript""
+    Variant=""XFCodeVariant.Block"" Copyable=""true"" />
+
+<XFCode Text=""pip install xforge"" Language=""bash""
+    Variant=""XFCodeVariant.Block"" Copyable=""true"" />
+
+<XFCode Text=""docker compose up -d"" Language=""docker""
+    Variant=""XFCodeVariant.Block"" Copyable=""true"" />";
+
+    // ErpScenarios
+    private RenderFragment ErpScenariosPreview() => @<div class="space-y-4">
+        <XFCode Text="@_sqlUpdatePedido" Title="@T("Faturamento","Invoicing")" Language="sql" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" Tone="XFSemanticColor.Primary" />
+        <XFCode Text='<nfe><ide><natOp>Venda</natOp><nNF>12345</nNF></ide></nfe>' Title="@T("NF-e","E-Invoice")" Language="xml" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" Tone="XFSemanticColor.Success" />
+        <XFCode Text='{ "erro": "NCM invalido", "codigo": "E0042" }' Title="@T("Erro","Error")" Language="json" Variant="XFCodeVariant.Block" Copyable="true" Tone="XFSemanticColor.Danger" />
+    </div>;
+    private string ErpScenariosCode => @"<!-- Faturamento -->
+<XFCode Text=""UPDATE Pedidos SET Status = 'Faturado', DataFaturamento = GETDATE() WHERE Id = 42;""
+    Title=""Faturamento"" Language=""sql"" Variant=""XFCodeVariant.Block""
+    Copyable=""true"" Wrap=""true"" Tone=""XFSemanticColor.Primary"" />
+
+<!-- NF-e -->
+<XFCode Text=""<nfe><ide><natOp>Venda</natOp><nNF>12345</nNF></ide></nfe>""
+    Title=""NF-e"" Language=""xml"" Variant=""XFCodeVariant.Block""
+    Copyable=""true"" Wrap=""true"" Tone=""XFSemanticColor.Success"" />
+
+<!-- Erro -->
+<XFCode Text=""{ """"erro"""": """"NCM invalido"""", """"codigo"""": """"E0042"""" }""
+    Title=""Erro"" Language=""json"" Variant=""XFCodeVariant.Block""
+    Copyable=""true"" Tone=""XFSemanticColor.Danger"" />";
+
+    // CardComposition
+    private RenderFragment CardCompositionPreview() => @<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><h3 class="text-sm font-semibold text-text-primary">@T("Conexao do banco","Database Connection")</h3></Header><ChildContent><XFCode Text="Server=localhost;Database=XForgeERP;Trusted_Connection=true;Connection Timeout=30;" Language="connection-string" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></ChildContent></XFCard>
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><h3 class="text-sm font-semibold text-text-primary">@T("Health Check","Health Check")</h3></Header><ChildContent><XFCode Text='{ "status": "healthy", "db": "ok", "uptime": "42d 3h" }' Language="json" Variant="XFCodeVariant.Block" Copyable="true" Tone="XFSemanticColor.Success" /></ChildContent></XFCard>
+    </div>;
+    private string CardCompositionCode => @"<XFCard Variant=""XFCardVariant.Outlined"" Padding=""XFPadding.Lg"">
+    <Header><h3 class=""text-sm font-semibold text-text-primary"">Conexao do banco</h3></Header>
+    <ChildContent>
+        <XFCode Text=""Server=localhost;Database=XForgeERP;Trusted_Connection=true;Connection Timeout=30;""
+            Language=""connection-string"" Variant=""XFCodeVariant.Block""
+            Copyable=""true"" Wrap=""true"" />
+    </ChildContent>
+</XFCard>
+
+<XFCard Variant=""XFCardVariant.Outlined"" Padding=""XFPadding.Lg"">
+    <Header><h3 class=""text-sm font-semibold text-text-primary"">Health Check</h3></Header>
+    <ChildContent>
+        <XFCode Text=""{ """"status"""": """"healthy"""", """"db"""": """"ok"""", """"uptime"""": """"42d 3h"""" }""
+            Language=""json"" Variant=""XFCodeVariant.Block""
+            Copyable=""true"" Tone=""XFSemanticColor.Success"" />
+    </ChildContent>
+</XFCard>";
+
+    // InlineInText
+    private RenderFragment InlineInTextPreview() => @<div class="max-w-2xl space-y-3 text-sm leading-relaxed text-text-primary">
+        <p>@T("Use ","Use ")<XFCode Text="XFButton" Variant="XFCodeVariant.Inline" />@T(" com "," with ")<XFCode Text="Variant=Solid" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Primary" />@T(" e "," and ")<XFCode Text="Color=Primary" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Primary" />@T(" para criar um botao solido."," to create a solid button.")</p>
+        <p>@T("O parametro ","The ")<XFCode Text="OnClick" Variant="XFCodeVariant.Inline" />@T(" recebe um "," receives a ")<XFCode Text="EventCallback" Variant="XFCodeVariant.Inline" Tone="XFSemanticColor.Success" />@T(" e dispara ao clicar."," and fires on click.")</p>
+    </div>;
+    private string InlineInTextCode => T("Use <XFCode Text=\"XFButton\" /> com <XFCode Text=\"Variant=Solid\" /> e <XFCode Text=\"Color=Primary\" />", "Use <XFCode Text=\"XFButton\" /> with <XFCode Text=\"Variant=Solid\" /> and <XFCode Text=\"Color=Primary\" />");
+
+    // Highlighter
+    private RenderFragment HighlighterPreview() => @<div class="space-y-4">
+        <div class="rounded-lg border border-border-light bg-surface-50 p-4 text-sm text-text-primary"><XFHighlighter Text="@T("O componente XFButton suporta Variant, Color, Size e OnClick para interacao completa.","The XFButton component supports Variant, Color, Size and OnClick for complete interaction.")" HighlightedTexts="@(new[] { "XFButton", "Variant", "Color", "OnClick" })" Tone="XFSemanticColor.Primary" /></div>
+        <div class="rounded-lg border border-border-light bg-surface-50 p-4 text-sm text-text-primary"><XFHighlighter Text="@T("Status: Aprovado, Pendente, Rejeitado, Faturado.","Status: Approved, Pending, Rejected, Invoiced.")" HighlightedTexts="@(new[] { "Aprovado", "Approved", "Rejeitado", "Rejected" })" Tone="XFSemanticColor.Danger" /></div>
+    </div>;
+    private string HighlighterCode => @"<XFHighlighter Text=""O componente XFButton suporta Variant, Color, Size e OnClick para interacao completa.""
+    HighlightedTexts=""@(new[] { ""XFButton"", ""Variant"", ""Color"", ""OnClick"" })""
+    Tone=""XFSemanticColor.Primary"" />
+
+<XFHighlighter Text=""Status: Aprovado, Pendente, Rejeitado, Faturado.""
+    HighlightedTexts=""@(new[] { ""Aprovado"", ""Approved"", ""Rejeitado"", ""Rejected"" })""
+    Tone=""XFSemanticColor.Danger"" />";
+
+    private IReadOnlyList<DocTile> QuickFacts => [new(T("Inline e Block","Inline and Block"),T("XFCodeVariant controla apresentacao.","XFCodeVariant controls presentation."),"code"),new(T("Copiavel","Copyable"),T("Copyable=true com JS clipboard interop.","Copyable=true with JS clipboard interop."),"copy"),new(T("Tons semanticos","Semantic Tones"),T("Neutral, Primary, Success, Warning, Danger.","Neutral, Primary, Success, Warning, Danger."),"palette")];
+    private IReadOnlyList<NameValueRow> MetadataRows => [new("Component","XFCode"),new("Namespace","XForge.DesignSystem.Components.DataDisplay.Code"),new("Package","XForge.DesignSystem"),new("Category","DataDisplay / Code"),new("Status",T("Estavel","Stable")),new("Accessibility",T("aria-label, aria-live, tabindex, sr-only feedback.","aria-label, aria-live, tabindex, sr-only feedback."))];
+    private IReadOnlyList<DocTile> OverviewItems => [new(T("Inline","Inline"),T("Tag code com padding, ring, tabindex e tom semantico.","code tag with padding, ring, tabindex and semantic tone."),"code"),new(T("Block","Block"),T("Div com header (linguagem, titulo, copia SVG) e pre/code com tabindex.","Div with header (language, title, SVG copy) and pre/code with tabindex."),"file-code"),new(T("Copyable","Copyable"),T("Botao com icone SVG que copia via JS clipboard com feedback e auto-reset.","Button with SVG icon that copies via JS clipboard with feedback and auto-reset."),"copy")];
+    private IReadOnlyList<DocTile> PurposeItems => [new(T("Documentacao","Documentation"),T("Exibir trechos de codigo com linguagem e copia.","Display code snippets with language and copy."),"book"),new(T("Logs e configs","Logs and configs"),T("Mostrar configuracoes, logs e respostas de API.","Show configurations, logs and API responses."),"terminal"),new(T("Referencia","Reference"),T("Exibir nomes de componentes, parametros e valores.","Display component names, parameters and values."),"tag")];
+    private IReadOnlyList<DocTile> ProblemItems => [new(T("Antes","Before"),T("Tags code sem estilo, sem copia e sem linguagem.","Untagged code without style, copy and language."),"xmark"),new(T("Depois","After"),T("Componente com tons, header, wrap e copia.","Component with tones, header, wrap and copy."),"check")];
+    private IReadOnlyList<DocTile> UseItems => [new("Docs",T("Trechos de codigo em documentacao de componentes.","Code snippets in component documentation."),"book"),new("API",T("Respostas JSON, XML ou texto de APIs.","JSON, XML or text responses from APIs."),"terminal"),new("ERP",T("SQL, configs e scripts em telas administrativas.","SQL, configs and scripts in admin screens."),"briefcase"),new("Logs",T("Mensagens de erro e stack traces.","Error messages and stack traces."),"triangle-exclamation")];
+    private IReadOnlyList<DocTile> AvoidItems => [new(T("Editor de codigo","Code editor"),T("Use Monaco ou CodeMirror para edicao.","Use Monaco or CodeMirror for editing."),"keyboard"),new(T("Syntax highlight","Syntax highlight"),T("XFCode nao faz syntax highlighting; use componente dedicado.","XFCode does not do syntax highlighting; use a dedicated component."),"sparkles")];
+    private IReadOnlyList<DocTile> AnatomyItems => [new("Inline",T("Tag code com rounded-md, px-1.5, font-mono e ring.","code tag with rounded-md, px-1.5, font-mono and ring."),"code"),new("Block",T("Div com border, shadow, header e pre/code.","Div with border, shadow, header and pre/code."),"file-code"),new("Header",T("Linguagem, titulo e botao de copia.",")" + T("Language, title and copy button.","Language, title and copy button.")),"sliders")];
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [new(T("Inline discreto","Discreet inline"),T("Para nomes, valores e referencias inline.","For names, values and inline references."),"text"),new(T("Block completo","Full block"),T("Para trechos multi-linha com header.","For multi-line snippets with header."),"file-code"),new(T("Tom semantico","Semantic tone"),T("Cor indica significado: sucesso, erro, info.","Color indicates meaning: success, error, info."),"palette")];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [new(T("Consistencia","Consistency"),T("Fonte monospace e padding padrao.","Monospace font and standard padding."),"circle-check"),new(T("Copia confiavel","Reliable copy"),T("Clipboard interop com feedback visual.","Clipboard interop with visual feedback."),"copy"),new(T("Legibilidade","Readability"),T("Wrap opcional para telas estreitas.","Optional wrap for narrow screens."),"eye")];
+    private IReadOnlyList<NameValueRow> VariantRows => [new("Inline",T("Tag code compacta para uso em texto.","Compact code tag for use in text.")),new("Block",T("Div com header, pre/code e scroll.","Div with header, pre/code and scroll."))];
+    private IReadOnlyList<NameValueRow> StateRows => [new("Default",T("Texto exibido com tom e estilo padrao.","Text displayed with default tone and style.")),new("Copied",T("WasCopied=true; botao mostra icone check e CopiedText, reset apos 2.5s.","WasCopied=true; button shows check icon and CopiedText, reset after 2.5s.")),new("Disabled",T("Botao de copia desabilitado.","Copy button disabled."))];
+    private IReadOnlyList<ApiRow> ApiRows => [new("Text","string?","null",T("Texto a ser exibido.","Text to be displayed.")),new("Title","string?","null",T("Titulo no header do bloco.","Title in block header.")),new("Language","string?","null",T("Linguagem exibida no header.","Language displayed in header.")),new("Copyable","bool","false",T("Exibe botao de copia.","Displays copy button.")),new("Visible","bool","true",T("Controla visibilidade.","Controls visibility.")),new("Wrap","bool","false",T("Quebra de linha para textos longos.","Line break for long texts.")),new("Variant","XFCodeVariant","Inline",T("Inline ou Block.","Inline or Block.")),new("Tone","XFSemanticColor","Neutral",T("Neutral, Primary, Success, Warning, Danger.","Neutral, Primary, Success, Warning, Danger.")),new("Copied","EventCallback<string>","default",T("Disparado apos copiar com texto copiado.","Fired after copying with copied text.")),new("CopyLabel","string","\"Copy code\"",T("Aria-label do botao de copia.","Copy button aria-label.")),new("CopyText","string","\"Copy\"",T("Texto do botao.","Button text.")),new("CopiedText","string","\"Copied\"",T("Texto apos copiar.","Text after copying."))];
+    private IReadOnlyList<NameValueRow> EventRows => [new("Copied",T("Disparado apos copiar com texto copiado como argumento.","Fired after copying with copied text as argument."))];
+    private IReadOnlyList<NameValueRow> MethodRows => [new("CopyAsync",T("Copia texto para clipboard via JS interop com feedback.","Copies text to clipboard via JS interop with feedback.")),new("DisposeAsync",T("Libera modulo JS e timer de reset.","Releases JS module and reset timer."))];
+    private IReadOnlyList<DocTile> AccessibilityItems => [new("aria-label",T("Botao de copia com CopyLabel dinamico (muda apos copiar).","Copy button with dynamic CopyLabel (changes after copying)."),"universal-access"),new("aria-live",T("Regiao sr-only anuncia CopiedText para screen readers.","sr-only region announces CopiedText to screen readers."),"code"),new("tabindex",T("Inline code e pre recebem tabindex=0 para navegacao por teclado.","Inline code and pre receive tabindex=0 for keyboard navigation."),"keyboard"),new("role",T("Pre com role=region e aria-label descritivo.","Pre with role=region and descriptive aria-label."),"universal-access")];
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [new("Tab",T("Move foco para botao de copia no bloco.","Moves focus to copy button in block."),"keyboard"),new("Enter/Space",T("Ativa copia do texto.","Activates text copy."),"circle-check")];
+    private IReadOnlyList<NameValueRow> KeyboardRows => [new("Tab",T("Foco no inline code (tabindex=0) ou botao de copia quando Copyable=true.","Focus on inline code (tabindex=0) or copy button when Copyable=true.")),new("Enter/Space",T("Copia texto para clipboard com feedback visual e auditivo.","Copies text to clipboard with visual and audio feedback."))];
+    private IReadOnlyList<DocTile> ResponsivenessItems => [new("Wrap",T("Wrap=true quebra linhas longas em mobile.","Wrap=true breaks long lines on mobile."),"mobile-screen"),new("max-h",T("max-h-[28rem] com scroll para blocos longos.","max-h-[28rem] with scroll for long blocks."),"arrows-up-down")];
+    private string _npmInstallCmd => "npm install @xforge/design-system";
+    private string _sqlUpdatePedido => "UPDATE Pedidos SET Status = 'Faturado', DataFaturamento = GETDATE() WHERE Id = @PedidoId;";
+
+    private IReadOnlyList<DocTile> PerformanceItems => [new(T("JS lazy","Lazy JS"),T("Modulo de clipboard carregado apenas ao copiar.","Clipboard module loaded only when copying."),"bolt"),new(T("Dispose","Dispose"),T("Modulo JS liberado em DisposeAsync.","JS module released in DisposeAsync."),"shield-check")];
+    private IReadOnlyList<DocTile> ScenarioItems => [new("Docs",T("Trechos de codigo em documentacao viva.","Code snippets in living documentation."),"book"),new("ERP",T("SQL, JSON e configs em telas administrativas.","SQL, JSON and configs in admin screens."),"briefcase"),new("API",T("Respostas de API com copia em um clique.","API responses with one-click copy."),"terminal"),new("Debug",T("Stack traces e mensagens de erro.","Stack traces and error messages."),"bug"),new("Config",T("Arquivos de configuracao com copia.","Configuration files with copy."),"sliders"),new("Onboarding",T("Snippets para configuracao inicial.","Snippets for initial setup."),"rocket")];
+    private IReadOnlyList<DocTile> CompositionItems => [new("XFMarkdown",T("Code blocks dentro de markdown usam XFCode.","Code blocks inside markdown use XFCode."),"file-code"),new("XFCard",T("Code dentro de card de documentacao.","Code inside documentation card."),"square"),new("XFStack",T("Multiplos inline codes alinhados.","Multiple inline codes aligned."),"layer-group")];
+    private IReadOnlyList<DocTile> IntegrationItems => [new("JS Clipboard",T("Modulo importado sob demanda para copia.","Module imported on demand for copy."),"code"),new("XFMarkdown",T("Markdown renderiza code blocks com XFCode.","Markdown renders code blocks with XFCode."),"file-code")];
+    private IReadOnlyList<DocTile> BestPracticeItems => [new(T("Linguagem","Language"),T("Especifique Language para documentacao clara.","Specify Language for clear documentation."),"circle-check"),new(T("Titulo","Title"),T("Use Title para identificar blocos grandes.","Use Title to identify large blocks."),"tag"),new(T("Wrap","Wrap"),T("Ative Wrap em mobile para evitar scroll horizontal.","Enable Wrap on mobile to avoid horizontal scroll."),"mobile-screen")];
+    private IReadOnlyList<DocTile> AntiPatternItems => [new(T("Syntax highlight","Syntax highlight"),T("Nao use XFCode para syntax highlighting real.","Do not use XFCode for real syntax highlighting."),"xmark"),new(T("Editor","Editor"),T("Nao use XFCode para edicao de codigo.","Do not use XFCode for code editing."),"keyboard")];
+    private IReadOnlyList<NameValueRow> TokenRows => [new("typography",T("font-mono text-sm para bloco, text-[0.875em] para inline.","font-mono text-sm for block, text-[0.875em] for inline.")),new("radius",T("rounded-md (inline), rounded-xl (block).","rounded-md (inline), rounded-xl (block).")),new("borders",T("ring-1 por tom semantico.","ring-1 by semantic tone."))];
+    private IReadOnlyList<DocTile> ThemeItems => [new("data-theme",T("Tons apontam para CSS variables em light/dark.","Tones point to CSS variables in light/dark."),"moon"),new("Branding",T("Primary segue marca ativa.","Primary follows active brand."),"swatchbook")];
+    private IReadOnlyList<DocTile> SecurityItems => [new(T("Sem HTML inseguro","No unsafe HTML"),T("Text e renderizado como texto, nao HTML.","Text is rendered as text, not HTML."),"shield-check"),new(T("Clipboard","Clipboard"),T("Copia apenas Text do componente.","Copies only component Text."),"lock")];
+    private IReadOnlyList<NameValueRow> TestingRows => [new("Unit",T("Testes cobrem Variant, Tone, Copyable, Wrap, Language, Title e Copied event.","Tests cover Variant, Tone, Copyable, Wrap, Language, Title and Copied event.")),new("Snapshot",T("Snapshots para Inline e Block com tons.","Snapshots for Inline and Block with tones."))];
+    private IReadOnlyList<NameValueRow> LimitationRows => [new(T("Syntax highlight","Syntax highlight"),T("Nao faz syntax highlighting de linguagens.","Does not do language syntax highlighting.")),new(T("Edicao","Editing"),T("Componente somente leitura.","Read-only component."))];
+    private IReadOnlyList<DocTile> MigrationItems => [new(T("Tag code","code tag"),T("Troque tags code por XFCode com Variant e Tone.","Replace code tags with XFCode using Variant and Tone."),"arrow-rotate-left"),new(T("Pre manual","Manual pre"),T("Use XFCode Block com Language, Title e Copyable.","Use XFCode Block with Language, Title and Copyable."),"file-code")];
+    private IReadOnlyList<DocTile> RelatedComponentItems => [new("XFMarkdown",T("Use para renderizar markdown com code blocks.","Use to render markdown with code blocks."),"file-code"),new("XFBarcode",T("Use para codigos de barras visuais.","Use for visual barcodes."),"barcode")];
+    private IReadOnlyList<NameValueRow> FaqRows => [new(T("Inline ou Block?","Inline or Block?"),T("Inline para referencias curtas; Block para trechos multi-linha.","Inline for short references; Block for multi-line snippets.")),new(T("Copyable funciona em SSR?","Does Copyable work in SSR?"),T("Nao; requer JS interop para clipboard.","No; requires JS interop for clipboard.")),new(T("Wrap afeta performance?","Does Wrap affect performance?"),T("Nao; e apenas CSS whitespace-pre-wrap.","No; it is only CSS whitespace-pre-wrap."))];
+    private IReadOnlyList<NameValueRow> ChangelogRows => [new("2026-05-29",T("D-085: Refatoracao premium - EN defaults, SVG icons, aria-live, touch 40px, auto-reset 2.5s, 12 exemplos, CSS tokens.","D-085: Premium refactor - EN defaults, SVG icons, aria-live, touch 40px, auto-reset 2.5s, 12 examples, CSS tokens.")),new("2026-05-26",T("Pagina premium com API real, tons semanticos, copia, exemplos ERP e tokens.","Premium page with real API, semantic tones, copy, ERP examples and tokens."))];
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Codigo copiavel","Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items){@Tile(item)}</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items){<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>}</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows){<XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow>}</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro","Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao","Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows){<XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow>}</XFTableBody></XFTable>;
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

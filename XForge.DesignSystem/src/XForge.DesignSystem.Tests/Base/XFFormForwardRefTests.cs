@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using XForge.Components.Base;
+using System.Threading.Tasks;
+using XForge.DesignSystem.Components.Base;
 using FluentAssertions;
 using Xunit;
 

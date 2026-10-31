@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.Gantt;
+using XForge.DesignSystem.Components.Gantt;
 
 namespace XForge.DesignSystem.Tests.Components.Scheduler;
 

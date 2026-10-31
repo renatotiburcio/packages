@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Charts
+namespace XForge.DesignSystem.Components.Charts
 {
     public partial class XFOrgChart : XForgeComponentBase
     {

@@ -1,8 +1,8 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components;
 
-namespace XForge.Components.Base;
+namespace XForge.DesignSystem.Components.Base;
 
 public class XFXFBaseInput<T> : ComponentBase
 {

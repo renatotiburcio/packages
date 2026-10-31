@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Pdf
+namespace XForge.DesignSystem.Components.Pdf
 {
     public partial class XFPdfViewerAdvanced : XForgeComponentBase
     {

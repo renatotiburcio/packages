@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Latam
+namespace XForge.DesignSystem.Components.Latam
 {
     public partial class XFVehiclePlateInput : XForgeComponentBase
     {

@@ -1,0 +1,162 @@
+@page "/components/spreadsheet"
+@using XForge.DesignSystem.Components.Editors
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSpreadsheet" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Componente Spreadsheet do XForge Design System.", "Spreadsheet component of XForge Design System.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Description of Spreadsheet component and its features.", "Description of Spreadsheet component and its features.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadata", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Field", "Field"), T("Value", "Value"))</div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Overview", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Purpose", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problem Solved", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("When To Use", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("When Not To Use", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomy", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Design Principles", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basic", "1. Basic"), T("Basic example of Spreadsheet.", "Basic example of Spreadsheet."), ExBasic(), CodeBasic)
+            @Example(T("2. Advanced", "2. Advanced"), T("Advanced example with custom configurations.", "Advanced example with custom configurations."), ExAdvanced(), CodeAdvanced)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("API Reference", "API Reference"), @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Accessibility", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Keyboard", "Keyboard"), @<div>@NameValueTable(KeyboardRows, T("Key", "Key"), T("Action", "Action"))</div>)
+            @Section(T("FAQ", "FAQ"), @<div>@NameValueTable(FaqRows, T("Question", "Question"), T("Answer", "Answer"))</div>)
+            @Section(T("Changelog", "Changelog"), @<div>@NameValueTable(ChangelogRows, T("Date", "Date"), T("Change", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+    private string ProductLabelText => "XFSpreadsheet";
+    private string PageTitleText => "Spreadsheet";
+    private string PageStatusText => T("Stable", "Stable");
+
+    private RenderFragment HeroPreview() => @<div class="flex items-center justify-center rounded-lg border border-border-light bg-surface-50 p-8">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="4" Alignment="XFAlignment.Center">
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@T("Preview of Spreadsheet component", "Preview of Spreadsheet component")</XFTypography>
+        </XFStack>
+    </div>;
+
+    private RenderFragment ExBasic() => @<div class="flex flex-col gap-4"><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Basic example", "Basic example")</XFTypography></XFStack></div>;
+    private RenderFragment ExAdvanced() => @<div class="flex flex-col gap-4"><XFStack Orientation="XFOrientation.Vertical" Gap="2"><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Advanced example", "Advanced example")</XFTypography></XFStack></div>;
+
+    private string CodeBasic => T("\x3CXFSpreadsheet /\x3E", "\x3CXFSpreadsheet /\x3E");
+    private string CodeAdvanced => T("\x3CXFSpreadsheet Variant=\"\" Color=\"\" /\x3E", "\x3CXFSpreadsheet Variant=\"\" Color=\"\" /\x3E");
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6 pb-2"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="flex flex-col"><div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int cols) => @<XFGrid Cols="1" Md="@Math.Min(cols, 2)" Lg="@cols" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string h1, string h2) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@h1</XFTableCell><XFTableCell Header="true">@h2</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var r in rows) { <XFTableRow><XFTableCell><XFCode Text="@r.Name" /></XFTableCell><XFTableCell>@r.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parameter", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Description", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var r in rows) { <XFTableRow><XFTableCell><XFCode Text="@r.Name" /></XFTableCell><XFTableCell>@r.Type</XFTableCell><XFTableCell><XFCode Text="@r.DefaultValue" /></XFTableCell><XFTableCell>@r.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Native semantics", "Native semantics"), T("Renders semantic HTML with accessibility.", "Renders semantic HTML with accessibility."), "code"),
+        new(T("Enterprise-ready", "Enterprise-ready"), T("Enterprise patterns with i18n and themes.", "Enterprise patterns with i18n and themes."), "building"),
+        new(T("Accessible", "Accessible"), T("Full WAI-ARIA and keyboard navigation support.", "Full WAI-ARIA and keyboard navigation support."), "universal-access"),
+        new(T("Customizable", "Customizable"), T("Extensive parameters for customization.", "Extensive parameters for customization."), "palette")
+    ];
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFSpreadsheet"),
+        new("Namespace", "XForge.Components.Editors"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / General"),
+        new("Status", T("Stable", "Stable")),
+        new("Accessibility", T("aria-label, focus ring, keyboard navigation.", "aria-label, focus ring, keyboard navigation.")),
+        new("Theme support", T("Light, dark, data-brand via tokens.", "Light, dark, data-brand via tokens."))
+    ];
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Spreadsheet Component", "Spreadsheet Component"), T("Component of General category.", "Component of General category."), "square"),
+        new(T("Primary use", "Primary use"), T("User interaction with the interface.", "User interaction with the interface."), "hand-pointer"),
+        new(T("Integration", "Integration"), T("Integrates with other XForge components.", "Integrates with other XForge components."), "puzzle-piece")
+    ];
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Interface", "Interface"), T("Renders Spreadsheet in the user interface.", "Renders Spreadsheet in the user interface."), "window"),
+        new(T("Interaction", "Interaction"), T("Allows user interaction with the system.", "Allows user interaction with the system."), "hand-pointer"),
+        new(T("Data", "Data"), T("Displays and manipulates system data.", "Displays and manipulates system data."), "database")
+    ];
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Before", "Before"), T("Non-standardized components without accessibility.", "Non-standardized components without accessibility."), "xmark"),
+        new(T("After", "After"), T("Standardized, accessible and customizable component.", "Standardized, accessible and customizable component."), "check"),
+        new(T("Reduced risk", "Reduced risk"), T("Accessibility and consistency ensured.", "Accessibility and consistency ensured."), "shield-check")
+    ];
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Forms", "Forms"), T("Use Spreadsheet in forms and controls.", "Use Spreadsheet in forms and controls."), "clipboard-list"),
+        new(T("Data", "Data"), T("Use Spreadsheet to display data.", "Use Spreadsheet to display data."), "database")
+    ];
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Incorrect use", "Incorrect use"), T("Do not use Spreadsheet for unrelated purposes.", "Do not use Spreadsheet for unrelated purposes."), "xmark"),
+        new(T("Accessibility", "Accessibility"), T("Always ensure accessibility when using Spreadsheet.", "Always ensure accessibility when using Spreadsheet."), "triangle-exclamation")
+    ];
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Container", "Container"), T("Root element of Spreadsheet.", "Root element of Spreadsheet."), "square"),
+        new(T("Content", "Content"), T("Internal content of the component.", "Internal content of the component."), "layer-group"),
+        new(T("Visual state", "Visual state"), T("States: disabled, active, loading.", "States: disabled, active, loading."), "eye")
+    ];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Clarity", "Clarity"), T("Clear and intuitive interface.", "Clear and intuitive interface."), "eye"),
+        new(T("Consistency", "Consistency"), T("Consistent patterns with other components.", "Consistent patterns with other components."), "layer-group"),
+        new(T("Accessibility", "Accessibility"), T("Full accessibility support.", "Full accessibility support."), "universal-access")
+    ];
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Rows", "int", "50", T("Rows parameter.", "Rows parameter.")),
+        new("Cols", "int", "26", T("Cols parameter.", "Cols parameter."))
+    ];
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("aria-label", T("Accessible label for screen readers.", "Accessible label for screen readers."), "universal-access"),
+        new("focus-visible", T("Visible focus ring for keyboard navigation.", "Visible focus ring for keyboard navigation."), "eye")
+    ];
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Moves focus to component.", "Moves focus to component.")),
+        new("Enter", T("Activates component.", "Activates component.")),
+        new("Space", T("Activates component.", "Activates component.")),
+        new("Escape", T("Removes focus from component.", "Removes focus from component."))
+    ];
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("How to use Spreadsheet?", "How to use Spreadsheet?"), T("Add the component to your Razor page.", "Add the component to your Razor page.")),
+        new(T("Is it accessible?", "Is it accessible?"), T("Yes, follows WAI-ARIA guidelines.", "Yes, follows WAI-ARIA guidelines."))
+    ];
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-26", T("Initial documentation generated.", "Initial documentation generated."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,0 +1,461 @@
+@page "/tokens/typography"
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Core Open Source", "Core Open Source")"
+                 Title="@T("Tipografia", "Typography")"
+                 Status="@T("Documentação completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        @* ==================== HEADER ==================== *@
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Design Tokens" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Tipografia", "Typography")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Escala tipográfica", "Type scale")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Leitura", "Readability")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Escala tipográfica para leitura, densidade, títulos e interfaces operacionais.",
+                               "Type scale for readability, density, headings and operational interfaces.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Os tokens de tipografia do XForge definem família, tamanho, peso e altura de linha como Tailwind utilities e CSS custom properties. Eles garantem hierarquia visual consistente em títulos, corpo de texto, labels e interfaces operacionais do ERP.",
+                               "XForge typography tokens define family, size, weight and line-height as Tailwind utilities and CSS custom properties. They ensure consistent visual hierarchy in headings, body text, labels and operational ERP interfaces.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">@HeroPreview()</div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">@foreach (var item in QuickFacts) { @Tile(item) }</XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @* ==================== 1. METADATA ==================== *@
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @* ==================== 2. BLAZOR SERVER / WASM ==================== *@
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estático. Interações requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependências JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Tokens de tipografia são CSS puro. Não utilizam JavaScript interop. Funcionam identicamente em todos os modos de renderização.", "Typography tokens are pure CSS. They do not use JavaScript interop. They work identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: sem latência adicional para tokens CSS.", "Blazor Server: no additional latency for CSS tokens.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: aplicados diretamente pelo navegador.", "Blazor WebAssembly: applied directly by the browser.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        @* ==================== 3. OVERVIEW ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 4. VARIANTS & STATES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Uso", "Usage"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 5. VISUAL HIERARCHY & DESIGN ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        @* ==================== 6-12. EXAMPLES ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Escala de títulos", "1. Heading scale"),
+                T("H1 a H6 para hierarquia de conteúdo.", "H1 to H6 for content hierarchy."),
+                HeadingScalePreview(), HeadingScaleCode)
+
+            @Example(T("2. Corpo de texto", "2. Body text"),
+                T("Body1, Body2 e Caption para texto corrido.", "Body1, Body2 and Caption for body text."),
+                BodyTextPreview(), BodyTextCode)
+
+            @Example(T("3. Pesos de fonte", "3. Font weights"),
+                T("Regular, Medium, Semibold e Bold.", "Regular, Medium, Semibold and Bold."),
+                FontWeightPreview(), FontWeightCode)
+
+            @Example(T("4. Cores de texto", "4. Text colors"),
+                T("Primary, Secondary, Muted e Inverse.", "Primary, Secondary, Muted and Inverse."),
+                TextColorPreview(), TextColorCode)
+
+            @Example(T("5. XFTypography component", "5. XFTypography component"),
+                T("Componente XFTypography com todas as variantes.", "XFTypography component with all variants."),
+                TypographyComponentPreview(), TypographyComponentCode)
+
+            @Example(T("6. Densidade em formulários", "6. Density in forms"),
+                T("Tipografia compacta para formulários densos.", "Compact typography for dense forms."),
+                FormDensityPreview(), FormDensityCode)
+
+            @Example(T("7. Dark mode", "7. Dark mode"),
+                T("Cores de texto se adaptam ao tema escuro.", "Text colors adapt to dark theme."),
+                DarkModeTypographyPreview(), DarkModeTypographyCode)
+        </XFStack>
+
+        @* ==================== 13. API ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 14. ACCESSIBILITY & KEYBOARD ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Navegação enterprise por teclado", "Enterprise Keyboard Navigation"), @<div>@TileGrid(EnterpriseKeyboardItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        @* ==================== 15. RESPONSIVENESS & PERFORMANCE ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        @* ==================== 16. ENTERPRISE SCENARIOS & PATTERNS ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        @* ==================== 17. TOKENS, THEMING, SECURITY, TESTING ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Segurança", "Security Considerations"), @<div>@TileGrid(SecurityItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+        </XFStack>
+
+        @* ==================== EXTRA ==================== *@
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Notas de migração", "Migration Notes"), @<div>@TileGrid(MigrationItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.H1" Weight="XFTypographyWeight.Bold">H1 — Título principal</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.H3" Weight="XFTypographyWeight.Semibold">H3 — Subtítulo</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body1">Body1 — Texto de corpo padrão para leitura.</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">Body2 — Texto secundário com cor atenuada.</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Caption — Texto de apoio e labels.</XFTypography>
+    </XFStack>;
+
+    private RenderFragment HeadingScalePreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.H1" Weight="XFTypographyWeight.Bold">H1 — 36px / Bold</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">H2 — 30px / Bold</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.H3" Weight="XFTypographyWeight.Semibold">H3 — 24px / Semibold</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">H4 — 20px / Semibold</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Medium">H5 — 18px / Medium</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.H6" Weight="XFTypographyWeight.Medium">H6 — 16px / Medium</XFTypography>
+    </XFStack>;
+
+    private RenderFragment BodyTextPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.Body1">@T("Body1 — Texto de corpo principal para parágrafos e conteúdo longo. Tamanho 16px com altura de linha confortável.", "Body1 — Main body text for paragraphs and long content. 16px size with comfortable line height.")</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body2">@T("Body2 — Texto secundário para descrições e metadados. Tamanho 14px.", "Body2 — Secondary text for descriptions and metadata. 14px size.")</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Caption">@T("Caption — Texto de apoio para labels, timestamps e notas. Tamanho 12px.", "Caption — Supporting text for labels, timestamps and notes. 12px size.")</XFTypography>
+    </XFStack>;
+
+    private RenderFragment FontWeightPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Normal">Regular (400) — Texto de corpo</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Medium">Medium (500) — Labels e subtítulos</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">Semibold (600) — Títulos e destaque</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Bold">Bold (700) — Títulos principais</XFTypography>
+    </XFStack>;
+
+    private RenderFragment TextColorPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Primary">Primary — Texto principal</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">Secondary — Texto secundário</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Muted">Muted — Texto atenuado</XFTypography>
+        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Inverse" Class="bg-surface-900 rounded px-2 py-1">Inverse — Texto sobre fundo escuro</XFTypography>
+    </XFStack>;
+
+    private RenderFragment TypographyComponentPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@T("XFTypography — Variantes", "XFTypography — Variants")</XFTypography>
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFTypography Variant="XFTypographyVariant.H1">H1</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.H2">H2</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.H3">H3</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.H4">H4</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.H5">H5</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.H6">H6</XFTypography>
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFTypography Variant="XFTypographyVariant.Body1">Body1</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2">Body2</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Caption">Caption</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Overline">Overline</XFTypography>
+        </XFStack>
+    </XFStack>;
+
+    private RenderFragment FormDensityPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Formulário denso", "Dense form")</XFTypography>
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Sm"><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">Label</XFTypography><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Valor</XFTypography></ChildContent></XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Sm"><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">Label</XFTypography><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Valor</XFTypography></ChildContent></XFCard>
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Sm"><ChildContent><XFTypography Variant="XFTypographyVariant.Body2">Label</XFTypography><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Valor</XFTypography></ChildContent></XFCard>
+        </XFStack>
+    </XFStack>;
+
+    private RenderFragment DarkModeTypographyPreview() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="4" Wrap="XFWrap.Wrap">
+        <div class="rounded-lg p-3"><XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Primary">Light: text-primary</XFTypography></div>
+        <div class="rounded-lg bg-surface-900 p-3"><XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Inverse">Dark: text-inverse</XFTypography></div>
+    </XFStack>;
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    private string HeadingScaleCode => @"<XFTypography Variant=""XFTypographyVariant.H1"" Weight=""XFTypographyWeight.Bold"">
+    H1 — Título principal
+</XFTypography>
+<XFTypography Variant=""XFTypographyVariant.H2"" Weight=""XFTypographyWeight.Bold"">
+    H2 — Seção
+</XFTypography>
+<XFTypography Variant=""XFTypographyVariant.H3"" Weight=""XFTypographyWeight.Semibold"">
+    H3 — Subseção
+</XFTypography>
+<XFTypography Variant=""XFTypographyVariant.H4"" Weight=""XFTypographyWeight.Semibold"">
+    H4 — Card title
+</XFTypography>";
+
+    private string BodyTextCode => @"<XFTypography Variant=""XFTypographyVariant.Body1"">
+    Body1 — Texto de corpo principal.
+</XFTypography>
+<XFTypography Variant=""XFTypographyVariant.Body2"">
+    Body2 — Texto secundário.
+</XFTypography>
+<XFTypography Variant=""XFTypographyVariant.Caption"">
+    Caption — Texto de apoio.
+</XFTypography>";
+
+    private string FontWeightCode => @"<XFTypography Weight=""XFTypographyWeight.Normal"">Regular (400)</XFTypography>
+<XFTypography Weight=""XFTypographyWeight.Medium"">Medium (500)</XFTypography>
+<XFTypography Weight=""XFTypographyWeight.Semibold"">Semibold (600)</XFTypography>
+<XFTypography Weight=""XFTypographyWeight.Bold"">Bold (700)</XFTypography>";
+
+    private string TextColorCode => @"<XFTypography Color=""XFTypographyColor.Primary"">Primary</XFTypography>
+<XFTypography Color=""XFTypographyColor.Secondary"">Secondary</XFTypography>
+<XFTypography Color=""XFTypographyColor.Muted"">Muted</XFTypography>
+<XFTypography Color=""XFTypographyColor.Inverse"" Class=""bg-surface-900"">Inverse</XFTypography>";
+
+    private string TypographyComponentCode => @"<XFTypography Variant=""XFTypographyVariant.H4"" Weight=""XFTypographyWeight.Semibold"">
+    Título do card
+</XFTypography>
+<XFTypography Variant=""XFTypographyVariant.Body1"" Color=""XFTypographyColor.Secondary"">
+    Descrição do conteúdo com cor secundária.
+</XFTypography>
+<XFTypography Variant=""XFTypographyVariant.Caption"" Color=""XFTypographyColor.Muted"">
+    Caption com texto atenuado
+</XFTypography>";
+
+    private string FormDensityCode => @"<XFStack Orientation=""XFOrientation.Vertical"" Gap=""3"">
+    <XFCard Padding=""XFPadding.Sm"">
+        <XFTypography Variant=""XFTypographyVariant.Body2"">Label</XFTypography>
+        <XFTypography Variant=""XFTypographyVariant.Caption"" Color=""XFTypographyColor.Muted"">Valor</XFTypography>
+    </XFCard>
+    <XFCard Padding=""XFPadding.Sm"">
+        <XFTypography Variant=""XFTypographyVariant.Body2"">Label</XFTypography>
+        <XFTypography Variant=""XFTypographyVariant.Caption"" Color=""XFTypographyColor.Muted"">Valor</XFTypography>
+    </XFCard>
+</XFStack>";
+
+    private string DarkModeTypographyCode => @"<!-- Light mode -->
+<XFTypography Color=""XFTypographyColor.Primary"">Texto claro</XFTypography>
+
+<!-- Dark mode -->
+<XFTypography Color=""XFTypographyColor.Inverse"">Texto escuro</XFTypography>";
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("7 variantes", "7 variants"), T("H1-H6, Body1, Body2, Caption, Overline.", "H1-H6, Body1, Body2, Caption, Overline."), "font"),
+        new(T("4 pesos", "4 weights"), T("Regular, Medium, Semibold, Bold.", "Regular, Medium, Semibold, Bold."), "bold"),
+        new(T("Dark mode", "Dark mode"), T("Cores de texto se adaptam ao tema.", "Text colors adapt to theme."), "moon")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Category", T("Design Tokens / Tipografia", "Design Tokens / Typography")),
+        new("Package", "XForge.DesignSystem"),
+        new("Status", T("Estável", "Stable"))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Escala de títulos", "Heading scale"), T("H1 a H6 para hierarquia de conteúdo.", "H1 to H6 for content hierarchy."), "heading"),
+        new(T("Corpo de texto", "Body text"), T("Body1, Body2 e Caption para leitura.", "Body1, Body2 and Caption for reading."), "font"),
+        new(T("Pesos e cores", "Weights and colors"), T("4 pesos e 4 cores para flexibilidade.", "4 weights and 4 colors for flexibility."), "bold")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Hierarquia visual", "Visual hierarchy"), T("Títulos e corpo com diferenças claras.", "Headings and body with clear differences."), "heading"),
+        new(T("Legibilidade", "Readability"), T("Tamanhos e alturas de linha otimizados.", "Optimized sizes and line heights."), "eye"),
+        new(T("Densidade", "Density"), T("Tipografia compacta para telas densas.", "Compact typography for dense screens."), "table-cells")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Tamanhos arbitrários e sem hierarquia.", "Arbitrary sizes without hierarchy."), "xmark"),
+        new(T("Depois", "After"), T("Escala consistente com 7 variantes.", "Consistent scale with 7 variants."), "check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Títulos de página", "Page headings"), T("H1 para título principal, H2 para seções.", "H1 for main title, H2 for sections."), "heading"),
+        new(T("Corpo de texto", "Body text"), T("Body1 para parágrafos, Body2 para descrições.", "Body1 for paragraphs, Body2 for descriptions."), "font"),
+        new(T("Labels e captions", "Labels and captions"), T("Caption para texto de apoio.", "Caption for supporting text."), "tag")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Tamanhos hardcoded", "Hardcoded sizes"), T("Não use px direto; use tokens.", "Don't use px directly; use tokens."), "xmark"),
+        new(T("Muitos pesos", "Too many weights"), T("Limite a 4 pesos por interface.", "Limit to 4 weights per interface."), "xmark")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("font-family", T("Família tipográfica (Inter, system-ui).", "Font family (Inter, system-ui)."), "font"),
+        new("font-size", T("Tamanho da fonte (12px-36px).", "Font size (12px-36px)."), "text-height"),
+        new("font-weight", T("Peso da fonte (400-700).", "Font weight (400-700)."), "bold"),
+        new("line-height", T("Altura de linha (1.25-1.75).", "Line height (1.25-1.75)."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems => [
+        new(T("Hierarquia clara", "Clear hierarchy"), T("Diferença visual entre níveis.", "Visual difference between levels."), "heading")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Legibilidade primeiro", "Readability first"), T("Tamanho mínimo de 14px para corpo.", "Minimum 14px size for body text."), "circle-check")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("H1", T("36px / Bold — Título principal.", "36px / Bold — Main title.")),
+        new("H2", T("30px / Bold — Seção.", "30px / Bold — Section.")),
+        new("H3", T("24px / Semibold — Subseção.", "24px / Semibold — Subsection.")),
+        new("H4", T("20px / Semibold — Card title.", "20px / Semibold — Card title.")),
+        new("H5", T("18px / Medium — Subtítulo.", "18px / Medium — Subtitle.")),
+        new("H6", T("16px / Medium — Título menor.", "16px / Medium — Minor title.")),
+        new("Body1", T("16px / Regular — Corpo principal.", "16px / Regular — Main body.")),
+        new("Body2", T("14px / Regular — Corpo secundário.", "14px / Regular — Secondary body.")),
+        new("Caption", T("12px / Regular — Apoio.", "12px / Regular — Supporting."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Tipografia padrão aplicada.", "Default typography applied.")),
+        new("Muted", T("Cor atenuada para texto secundário.", "Muted color for secondary text."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Variant", "XFTypographyVariant", "Body1", T("Variante tipográfica (H1-H6, Body1, Body2, Caption).", "Typography variant (H1-H6, Body1, Body2, Caption).")),
+        new("Weight", "XFTypographyWeight", "Regular", T("Peso da fonte (Regular, Medium, Semibold, Bold).", "Font weight (Regular, Medium, Semibold, Bold).")),
+        new("Color", "XFTypographyColor", "Primary", T("Cor do texto (Primary, Secondary, Muted, Inverse).", "Text color (Primary, Secondary, Muted, Inverse).")),
+        new("Class", "string?", "null", T("Classes CSS adicionais.", "Additional CSS classes."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [ new("-", T("Tokens de tipografia não disparam eventos.", "Typography tokens do not fire events.")) ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("Tamanho mínimo", "Minimum size"), T("14px mínimo para texto de corpo.", "14px minimum for body text."), "universal-access"),
+        new(T("Contraste", "Contrast"), T("Cores de texto seguem WCAG AA.", "Text colors follow WCAG AA."), "eye")
+    ];
+
+    private IReadOnlyList<DocTile> EnterpriseKeyboardItems => [
+        new(T("Foco em links", "Focus on links"), T("Links com outline visível.", "Links with visible outline."), "keyboard")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [ new("Tab", T("Navega entre elementos interativos.", "Navigates between interactive items.")) ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Escala fluida", "Fluid scale"), T("Títulos podem reduzir em telas menores.", "Headings can reduce on smaller screens."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Font loading", "Font loading"), T("Inter via font-display: swap.", "Inter via font-display: swap."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new("ERP", T("Títulos de seção e corpo de formulários.", "Section headings and form body text."), "briefcase"),
+        new(T("Dashboard", "Dashboard"), T("Métricas com Caption e valores com H3.", "Metrics with Caption and values with H3."), "chart-line-up")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("XFCard", T("Título H4 + Body1 + Caption.", "H4 title + Body1 + Caption."), "square"),
+        new("XFDialog", T("Título H3 + Body1 para conteúdo.", "H3 title + Body1 for content."), "window-restore")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Hierarquia clara", "Clear hierarchy"), T("Use H1-H6 em ordem sequencial.", "Use H1-H6 in sequential order."), "circle-check"),
+        new(T("Cor semântica", "Semantic color"), T("Use Color em vez de classes CSS.", "Use Color instead of CSS classes."), "circle-check")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Skip níveis", "Skip levels"), T("Não pule H2 para H4.", "Don't skip from H2 to H4."), "xmark"),
+        new(T("Texto pequeno demais", "Too small text"), T("Evite abaixo de 12px.", "Avoid below 12px."), "xmark")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("font-family", T("Família tipográfica.", "Font family.")),
+        new("font-size-*", T("Tamanhos de fonte.", "Font sizes.")),
+        new("font-weight-*", T("Pesos de fonte.", "Font weights.")),
+        new("line-height-*", T("Alturas de linha.", "Line heights."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Cores de texto se adaptam ao tema.", "Text colors adapt to theme."), "moon")
+    ];
+
+    private IReadOnlyList<DocTile> SecurityItems => [ new(T("Sem XSS", "No XSS"), T("Tokens são CSS puro.", "Tokens are pure CSS."), "shield-check") ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [ new("Visual regression", T("Snapshots verificam hierarquia tipográfica.", "Snapshots verify typographic hierarchy.")) ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [ new("Fontes customizadas", T("Requerem @font-face adicional.", "Require additional @font-face.")) ];
+
+    private IReadOnlyList<DocTile> MigrationItems => [
+        new(T("CSS inline", "Inline CSS"), T("Substitua style=\"\" por tokens.", "Replace style=\"\" with tokens."), "arrow-rotate-left")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new(T("Tokens de cores", "Color tokens"), T("Cores de texto são tokens de cor.", "Text colors are color tokens."), "palette"),
+        new(T("Tokens de espaçamento", "Spacing tokens"), T("Espaçamento entre elementos de texto.", "Spacing between text elements."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual variante para títulos de card?", "Which variant for card titles?"), T("H4 com Weight=Semibold.", "H4 with Weight=Semibold.")),
+        new(T("Como usar cores semânticas?", "How to use semantic colors?"), T("Use Color=XFTypographyColor.Secondary.", "Use Color=XFTypographyColor.Secondary."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Página reescrita do zero com acentuação pt-BR correta, 7 exemplos e seções enterprise completas.", "Page rewritten from scratch with correct pt-BR accentuation, 7 examples and complete enterprise sections.")),
+        new("2026-05-26", T("Seed inicial criado.", "Initial seed created."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

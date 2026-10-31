@@ -1,0 +1,474 @@
+@page "/feedback/lottie"
+@using XForge.DesignSystem.Components.Feedback.Lottie
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFLottie" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("JS interop", "JS interop")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Acessivel", "Accessible")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Animacoes vetoriais Lottie para feedback e estados especiais.",
+                               "Lottie vector animations for feedback and special states.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFLottie renderiza animacoes JSON via lottie-web com controle programatico de reproducao, velocidade, direcao e eventos.",
+                               "XFLottie renders JSON animations via lottie-web with programmatic control of playback, speed, direction and events.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section(T("Blazor Server e Blazor WebAssembly", "Blazor Server and Blazor WebAssembly"), @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Animacao Lottie indisponivel durante prerender.", "Renders base HTML. Lottie animation unavailable during prerender.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-lottie.js — importa lottie-web dinamicamente, cria IJSObjectReference da animacao e expoe metodos play/pause/stop.", "JS file: xf-lottie.js — dynamically imports lottie-web, creates IJSObjectReference of animation and exposes play/pause/stop methods.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: OnAfterRenderAsync.", "When loaded: OnAfterRenderAsync.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Prerender seguro: try/catch para InvalidOperationException e JSDisconnectedException.", "Prerender safe: try/catch for InvalidOperationException and JSDisconnectedException.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor Server", "Blazor Server Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop via SignalR com latencia. Controle de reproducao pode ter resposta mais lenta.", "JS interop via SignalR with latency. Playback control may have slower response.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes Blazor WebAssembly", "Blazor WebAssembly Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop direto sem latencia de rede. Disponivel apos carregamento do WASM.", "Direct JS interop with no network latency. Available after WASM load.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 2)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico — Loading", "1. Basic — Loading"),
+                T("Animacao de loading com autoplay e loop.", "Loading animation with autoplay and loop."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Controle de reproducao", "2. Playback control"),
+                T("Play, Pause e Stop via metodos publicos com ref.", "Play, Pause and Stop via public methods with ref."),
+                ExPlayback(), CodePlayback)
+
+            @Example(T("3. Velocidade e direcao", "3. Speed and direction"),
+                T("Speed=2.0 para rapida, Direction=Backward para reversa.", "Speed=2.0 for fast, Direction=Backward for reverse."),
+                ExSpeedDir(), CodeSpeedDir)
+
+            @Example(T("4. Renderers", "4. Renderers"),
+                T("SVG (padrao), Canvas (performance) e HTML.", "SVG (default), Canvas (performance) and HTML."),
+                ExRenderers(), CodeRenderers)
+
+            @Example(T("5. Eventos", "5. Events"),
+                T("OnLoaded, OnCompleted e OnLoopCompleted.", "OnLoaded, OnCompleted and OnLoopCompleted."),
+                ExEvents(), CodeEvents)
+
+            @Example(T("6. Personagem animado", "6. Animated character"),
+                T("Animacao complexa com multiplos layers e movimento.", "Complex animation with multiple layers and movement."),
+                ExCharacter(), CodeCharacter)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos publicos", "Public methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Descricao", "Description"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, T("Token", "Token"), T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => "Lottie";
+    private string PageStatusText => T("Estavel", "Stable");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // ── Live Examples ──────────────────────────────────────────────
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFLottie Path="/animations/loading.json" AriaLabel="@T("Animacao de loading", "Loading animation")" />
+    </XFStack>;
+
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLottie Path="/animations/loading.json" AriaLabel="Loading" />
+    </XFStack>;
+
+    private RenderFragment ExPlayback() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLottie @ref="_lottiePlayback" Path="/animations/success.json" Autoplay="false" AriaLabel="Success" />
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="2">
+            <XFButton Size="XFExtendedSize.Sm" Color="XFButtonColor.Success" OnClick="@(() => _lottiePlayback.PlayAsync())">
+                <XFTypography Variant="XFTypographyVariant.Caption">@T("Play", "Play")</XFTypography>
+            </XFButton>
+            <XFButton Size="XFExtendedSize.Sm" Color="XFButtonColor.Warning" OnClick="@(() => _lottiePlayback.PauseAsync())">
+                <XFTypography Variant="XFTypographyVariant.Caption">@T("Pause", "Pause")</XFTypography>
+            </XFButton>
+            <XFButton Size="XFExtendedSize.Sm" Color="XFButtonColor.Danger" OnClick="@(() => _lottiePlayback.StopAsync())">
+                <XFTypography Variant="XFTypographyVariant.Caption">@T("Stop", "Stop")</XFTypography>
+            </XFButton>
+        </XFStack>
+    </XFStack>;
+
+    private RenderFragment ExSpeedDir() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="grid grid-cols-2 gap-4">
+            <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Md">
+                <Header><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Speed=2.0</XFTypography></Header>
+                <ChildContent>
+                    <XFLottie Path="/animations/loading.json" Speed="2.0" AriaLabel="Fast" />
+                </ChildContent>
+            </XFCard>
+            <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Md">
+                <Header><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Direction=Backward</XFTypography></Header>
+                <ChildContent>
+                    <XFLottie Path="/animations/loading.json" Direction="XFLottieDirection.Backward" AriaLabel="Reverse" />
+                </ChildContent>
+            </XFCard>
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExRenderers() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <div class="grid grid-cols-3 gap-3">
+            @foreach (var renderer in Enum.GetValues<XFLottieRenderer>())
+            {
+                <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Md">
+                    <Header><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@renderer</XFTypography></Header>
+                    <ChildContent>
+                        <XFLottie Path="/animations/loading.json" Renderer="@(renderer)" AriaLabel="@renderer.ToString()" />
+                    </ChildContent>
+                </XFCard>
+            }
+        </div>
+    </XFStack>;
+
+    private RenderFragment ExEvents() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLottie Path="/animations/success.json"
+            OnLoaded="OnLottieLoaded"
+            OnCompleted="OnLottieCompleted"
+            OnLoopCompleted="OnLottieLoopCompleted"
+            AriaLabel="Success with events" />
+        @if (_lastEvent != null)
+        {
+            <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Md">
+                <ChildContent>
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Ultimo evento", "Last event")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2">@_lastEvent</XFTypography>
+                </ChildContent>
+            </XFCard>
+        }
+    </XFStack>;
+
+    private RenderFragment ExCharacter() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFLottie Path="/animations/character.json" AriaLabel="Character" />
+    </XFStack>;
+
+    // ── Code Strings ───────────────────────────────────────────────
+
+    private string CodeBasic => "<XFLottie Path=\"/animations/loading.json\" />";
+    private string CodePlayback => "<XFLottie @ref=\"_lottie\" Path=\"/animations/success.json\" Autoplay=\"false\" />\n\n@code {\n    private XFLottie _lottie = default!;\n    private async Task Play() => await _lottie.PlayAsync();\n    private async Task Pause() => await _lottie.PauseAsync();\n    private async Task Stop() => await _lottie.StopAsync();\n}";
+    private string CodeSpeedDir => "<XFLottie Path=\"/animations/loading.json\" Speed=\"2.0\" />\n<XFLottie Path=\"/animations/loading.json\" Direction=\"XFLottieDirection.Backward\" />";
+    private string CodeRenderers => "<XFLottie Path=\"/animations/loading.json\" Renderer=\"XFLottieRenderer.Svg\" />\n<XFLottie Path=\"/animations/loading.json\" Renderer=\"XFLottieRenderer.Canvas\" />\n<XFLottie Path=\"/animations/loading.json\" Renderer=\"XFLottieRenderer.Html\" />";
+    private string CodeEvents => "<XFLottie Path=\"/animations/success.json\"\n    OnLoaded=\"OnLottieLoaded\"\n    OnCompleted=\"OnLottieCompleted\"\n    OnLoopCompleted=\"OnLottieLoopCompleted\" />\n\n@code {\n    private string? _lastEvent;\n    private async Task OnLottieLoaded(XFLottieLoadedEventArgs args)\n        => _lastEvent = $\"Loaded: {args.TotalFrames} frames at {args.Framerate}fps\";\n    private async Task OnLottieCompleted()\n        => _lastEvent = \"Completed\";\n    private async Task OnLottieLoopCompleted()\n        => _lastEvent = \"Loop completed\";\n}";
+    private string CodeCharacter => "<XFLottie Path=\"/animations/character.json\" />";
+
+    // ── Event Handlers ─────────────────────────────────────────────
+
+    private XFLottie _lottiePlayback = default!;
+    private string? _lastEvent;
+
+    private async Task OnLottieLoaded(XFLottieLoadedEventArgs args)
+        => _lastEvent = T($"Carregado: {args.TotalFrames} frames", $"Loaded: {args.TotalFrames} frames");
+
+    private async Task OnLottieCompleted()
+        => _lastEvent = T("Completo", "Completed");
+
+    private async Task OnLottieLoopCompleted()
+        => _lastEvent = T("Loop completo", "Loop completed");
+
+    // ── Static Data ────────────────────────────────────────────────
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("3 renderers", "3 renderers"), T("SVG, Canvas e HTML conforme necessidade.", "SVG, Canvas and HTML as needed."), "paint-brush"),
+        new(T("Controle programatico", "Programmatic control"), T("Play, Pause, Stop, GoToFrame, SetSpeed, SetDirection.", "Play, Pause, Stop, GoToFrame, SetSpeed, SetDirection."), "sliders"),
+        new(T("3 eventos", "3 events"), T("OnLoaded, OnCompleted, OnLoopCompleted.", "OnLoaded, OnCompleted, OnLoopCompleted."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFLottie"),
+        new("Namespace", "XForge.DesignSystem.Components.Feedback.Lottie"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", T("Feedback / Lottie", "Feedback / Lottie")),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=img, aria-label", "role=img, aria-label")),
+        new("Theme support", T("Background transparente ou customizado.", "Transparent or custom background."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Animacoes vetoriais", "Vector animations"), T("Renderiza JSON Lottie via lottie-web com JS interop.", "Renders Lottie JSON via lottie-web with JS interop."), "film"),
+        new(T("Controle total", "Full control"), T("Play, Pause, Stop, velocidade, direcao e seek por frame.", "Play, Pause, Stop, speed, direction and frame seek."), "gamepad"),
+        new(T("Acessivel", "Accessible"), T("role=img com aria-label para leitores de tela.", "role=img with aria-label for screen readers."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Feedback visual", "Visual feedback"), T("Estados de carregamento, sucesso, erro e vazio.", "Loading, success, error and empty states."), "eye"),
+        new(T("Engajamento", "Engagement"), T("Micro-interacoes que tornam a interface viva.", "Micro-interactions that make the interface alive."), "sparkles"),
+        new(T("Performance", "Performance"), T("Animacoes leves em JSON vs GIF/MP4 pesados.", "Lightweight JSON animations vs heavy GIF/MP4."), "gauge-high")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("GIFs pesados, sem controle de reproducao, sem acessibilidade.", "Heavy GIFs, no playback control, no accessibility."), "xmark"),
+        new(T("Depois", "After"), T("JSON leve, controle programatico total, role=img acessivel.", "Light JSON, full programmatic control, accessible role=img."), "check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Estados vazios", "Empty states"), T("Tabelas sem dados, buscas sem resultados.", "Tables without data, searches without results."), "inbox"),
+        new(T("Carregamento", "Loading"), T("Skeleton animado, spinner customizado.", "Animated skeleton, custom spinner."), "spinner"),
+        new(T("Feedback de acao", "Action feedback"), T("Confirmacao de salvamento, envio de formulario.", "Save confirmation, form submission."), "circle-check"),
+        new(T("Onboarding", "Onboarding"), T("Tutoriais animados e demonstracoes de produto.", "Animated tutorials and product demos."), "graduation-cap")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Animacoes excessivas", "Excessive animations"), T("Nao use para decoracao — apenas para comunicacao de estado.", "Do not use for decoration — only for state communication."), "ban"),
+        new(T("JSON muito grande", "Very large JSON"), T("Animacoes com muitos layers impactam performance.", "Animations with many layers impact performance."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Container div", "Container div"), T("Elemento raiz com role=img e aria-label.", "Root element with role=img and aria-label."), "square"),
+        new(T("JS interop layer", "JS interop layer"), T("Modulo lottie-web carregado via import() dinamico.", "lottie-web module loaded via dynamic import()."), "code"),
+        new(T("Animation instance", "Animation instance"), T("Referencia IJSObjectReference para controle.", "IJSObjectReference for control."), "gear")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Svg", T("Padrao. Melhor qualidade, escalavel.", "Default. Best quality, scalable.")),
+        new("Canvas", T("Melhor performance para animacoes complexas.", "Better performance for complex animations.")),
+        new("Html", T("Renderer HTML para casos especificos.", "HTML renderer for specific cases."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Playing", T("Animacao em reproducao (Autoplay=true, Paused=false).", "Animation playing (Autoplay=true, Paused=false).")),
+        new("Paused", T("Animacao pausada (Paused=true).", "Animation paused (Paused=true).")),
+        new("Stopped", T("Animacao parada no primeiro frame (StopAsync).", "Animation stopped at first frame (StopAsync).")),
+        new("Completed", T("Animacao finalizada (sem loop).", "Animation completed (no loop)."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Path", "string", "required", T("URL ou caminho do JSON Lottie. Obrigatorio.", "URL or path to Lottie JSON. Required.")),
+        new("Autoplay", "bool", "true", T("Inicia reproducao automaticamente.", "Starts playback automatically.")),
+        new("Loop", "bool", "true", T("Repete infinitamente.", "Loops infinitely.")),
+        new("Speed", "double", "1.0", T("Multiplicador de velocidade.", "Speed multiplier.")),
+        new("Direction", "XFLottieDirection", "Forward", T("Direcao: Forward ou Backward.", "Direction: Forward or Backward.")),
+        new("Renderer", "XFLottieRenderer", "Svg", T("Renderer: Svg, Canvas ou Html.", "Renderer: Svg, Canvas or Html.")),
+        new("Paused", "bool", "false", T("Pausa a animacao.", "Pauses the animation.")),
+        new("BackgroundColor", "string?", "null", T("Cor de fundo do container.", "Container background color.")),
+        new("AriaLabel", "string", "Animacao", T("Label acessivel para leitores de tela.", "Accessible label for screen readers.")),
+        new("ContainerClass", "string?", "null", T("Classe CSS customizada do container.", "Custom container CSS class.")),
+        new("OnLoaded", "EventCallback<XFLottieLoadedEventArgs>", "-", T("Disparado ao carregar a animacao.", "Fired when animation loads.")),
+        new("OnCompleted", "EventCallback", "-", T("Disparado ao completar (sem loop).", "Fired when completed (no loop).")),
+        new("OnLoopCompleted", "EventCallback", "-", T("Disparado ao completar um loop.", "Fired when a loop completes."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("OnLoaded", T("Disparado ao carregar. Fornece TotalFrames, CurrentFrame, FrameRate.", "Fired on load. Provides TotalFrames, CurrentFrame, FrameRate.")),
+        new("OnCompleted", T("Disparado ao completar (animacoes sem loop).", "Fired on completion (non-looping animations).")),
+        new("OnLoopCompleted", T("Disparado ao completar cada iteracao do loop.", "Fired on each loop iteration."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("PlayAsync()", T("Retoma a reproducao da animacao.", "Resumes animation playback.")),
+        new("PauseAsync()", T("Pausa a animacao.", "Pauses the animation.")),
+        new("StopAsync()", T("Para e reseta para o primeiro frame.", "Stops and resets to first frame.")),
+        new("GoToFrameAsync(double, bool)", T("Seek para frame especifico.", "Seeks to specific frame.")),
+        new("SetSpeedAsync(double)", T("Altera a velocidade de reproducao.", "Changes playback speed.")),
+        new("SetDirectionAsync(XFLottieDirection)", T("Altera a direcao de reproducao.", "Changes playback direction."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=img", "role=img"), T("Container usa role=img para semantica de imagem.", "Container uses role=img for image semantics."), "universal-access"),
+        new(T("aria-label", "aria-label"), T("AriaLabel descreve a animacao para leitores de tela.", "AriaLabel describes the animation for screen readers."), "closed-captioning"),
+        new(T("Conteudo decorativo", "Decorative content"), T("Animacoes sao decorativas — AriaLabel comunica o significado.", "Animations are decorative — AriaLabel communicates meaning."), "eye-slash")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Pula o container (nao interativo por padrao).", "Skips the container (not interactive by default)."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Escalavel", "Scalable"), T("SVG escala sem perda de qualidade em qualquer resolucao.", "SVG scales without quality loss at any resolution."), "arrows-left-right"),
+        new(T("Container responsivo", "Responsive container"), T("Ocupa o tamanho do container pai.", "Occupies parent container size."), "expand")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("JSON leve", "Lightweight JSON"), T("Animacoes Lottie sao tipicamente 10x menores que GIF.", "Lottie animations are typically 10x smaller than GIF."), "gauge-high"),
+        new(T("Canvas renderer", "Canvas renderer"), T("Use Canvas para animacoes complexas com muitos layers.", "Use Canvas for complex animations with many layers."), "layer-group"),
+        new(T("Dispose async", "Dispose async"), T("Libera recursos JS ao desmontar o componente.", "Releases JS resources when component unmounts."), "trash")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("ERP loading", "ERP loading"), T("Animacao de loading durante processamento de NF-e.", "Loading animation during NF-e processing."), "file-invoice"),
+        new(T("Dashboard vazio", "Dashboard empty"), T("Animacao quando nao ha dados no painel.", "Animation when no data on the panel."), "chart-bar"),
+        new(T("Onboarding", "Onboarding"), T("Animacoes de tutorial guiado no primeiro acesso.", "Guided tutorial animations on first access."), "graduation-cap"),
+        new(T("Notificacao de sucesso", "Success notification"), T("Animacao de confirmacao apos acao critica.", "Confirmation animation after critical action."), "circle-check"),
+        new(T("Status de sincronizacao", "Sync status"), T("Animacao de sincronizacao entre sistemas.", "Sync animation between systems."), "arrows-rotate"),
+        new(T("Recuperacao de erro", "Error recovery"), T("Animacao amigavel para telas de erro.", "Friendly animation for error screens."), "shield-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Lottie + Card", "Lottie + Card"), T("Animacao dentro de XFCard para contexto visual.", "Animation inside XFCard for visual context."), "square"),
+        new(T("Lottie + Button", "Lottie + Button"), T("Animacao de feedback ao clicar em botao.", "Feedback animation on button click."), "hand-pointer"),
+        new(T("Lottie + Modal", "Lottie + Modal"), T("Animacao centralizada em XFModal para destaque.", "Centered animation in XFModal for emphasis."), "window-maximize"),
+        new(T("Lottie + Toast", "Lottie + Toast"), T("Animacao inline em notificacao toast.", "Inline animation in toast notification."), "bell"),
+        new(T("Lottie + Stepper", "Lottie + Stepper"), T("Animacao de conclusao de etapa no XFStepper.", "Step completion animation in XFStepper."), "list-ol"),
+        new(T("Lottie + Empty State", "Lottie + Empty State"), T("Animacao como placeholder em listas vazias.", "Animation as placeholder in empty lists."), "inbox")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Animacoes curtas", "Short animations"), T("Preferira animacoes de 2-5 segundos para feedback rapido.", "Prefer 2-5 second animations for quick feedback."), "clock"),
+        new(T("Autoplay controlado", "Controlled autoplay"), T("Use Autoplay=true apenas para feedback imediato.", "Use Autoplay=true only for immediate feedback."), "play"),
+        new(T("Loop com cautela", "Loop with caution"), T("Loop infinito apenas para loading — evite para estados finais.", "Infinite loop only for loading — avoid for final states."), "rotate"),
+        new(T("AriaLabel sempre", "AriaLabel always"), T("Sempre forneça AriaLabel descritivo para acessibilidade.", "Always provide descriptive AriaLabel for accessibility."), "universal-access")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("container", T("div com role=img e aria-label.", "div with role=img and aria-label.")),
+        new("renderer", T("svg, canvas ou html conforme Renderer.", "svg, canvas or html per Renderer.")),
+        new("background", T("BackgroundColor ou transparente padrao.", "BackgroundColor or default transparent."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Animacoes JSON sao independentes de tema.", "JSON animations are theme-independent."), "moon"),
+        new("BackgroundColor", T("Use BackgroundColor para adaptar ao tema claro/escuro.", "Use BackgroundColor to adapt to light/dark theme."), "swatchbook")
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Prerender", T("Animacao indisponivel durante prerender no SSR.", "Animation unavailable during prerender in SSR.")),
+        new("JS interop", T("Requer JavaScript — nao funciona em SSR puro.", "Requires JavaScript — does not work in pure SSR.")),
+        new("Arquivo JSON", T("Tamanho do JSON afeta tempo de carregamento.", "JSON size affects loading time.")),
+        new("Path dinamico", T("Mudanca de Path recria a animacao inteira.", "Changing Path recreates the entire animation.")),
+        new("Canvas renderer", T("Canvas nao suporta SVG filters ou textos.", "Canvas does not support SVG filters or text."))
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Decoracao excessiva", "Excessive decoration"), T("Animacoes devem comunicar estado, nao decorar.", "Animations should communicate state, not decorate."), "ban"),
+        new(T("JSON pesado", "Heavy JSON"), T("Evite animacoes com centenas de layers — otimize no After Effects.", "Avoid animations with hundreds of layers — optimize in After Effects."), "triangle-exclamation"),
+        new(T("Sem AriaLabel", "No AriaLabel"), T("Sempre forneça AriaLabel descritivo.", "Always provide descriptive AriaLabel."), "eye-slash")
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFSkeleton", T("Placeholder animado para carregamento.", "Animated placeholder for loading."), "rectangle-list"),
+        new("XFSpinner", T("Indicador de carregamento simples.", "Simple loading indicator."), "spinner"),
+        new("XFTypography", T("Texto semantico para labels.", "Semantic text for labels."), "font")
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("v1.0", T("Componente inicial com Path, Autoplay, Loop, Speed, Direction, Renderer.", "Initial component with Path, Autoplay, Loop, Speed, Direction, Renderer.")),
+        new("v1.1", T("Adicionados eventos OnLoaded, OnCompleted, OnLoopCompleted.", "Added OnLoaded, OnCompleted, OnLoopCompleted events."))
+    ];
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

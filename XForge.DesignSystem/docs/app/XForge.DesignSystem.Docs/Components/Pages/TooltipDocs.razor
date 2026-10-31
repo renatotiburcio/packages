@@ -1,0 +1,665 @@
+@page "/components/tooltip"
+@page "/components/tooltips"
+@using XForge.DesignSystem.Components.Shared
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="Core OSS"
+                 Title="XFTooltip"
+                 Status="Complete docs"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFTooltip" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("4 Posições", "4 Positions")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Dica contextual acessível para ações, status e campos.",
+                               "Accessible contextual hint for actions, status and fields.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFTooltip renderiza dicas em 4 posições, 3 temas, 3 modos de gatilho, delay configurável, seta direcional e fechamento por Escape.",
+                               "XFTooltip renders hints in 4 positions, 3 themes, 3 trigger modes, configurable delay, directional arrow and Escape close.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section(T("Blazor Server e Blazor WebAssembly", "Blazor Server and Blazor WebAssembly"), @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Posicionamento e show/hide indisponíveis durante prerender.", "Renders base HTML. Positioning and show/hide unavailable during prerender.")</XFTableCell></XFTableRow></XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-tooltip.js — gerencia xfTooltip.init/update/show/hide, posicionamento com CollisionPadding e fechamento por Escape.", "JS file: xf-tooltip.js — manages xfTooltip.init/update/show/hide, positioning with CollisionPadding and Escape close.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: OnAfterRenderAsync.", "When loaded: OnAfterRenderAsync.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Prerender seguro: try/catch para InvalidOperationException e JSDisconnectedException.", "Prerender safe: try/catch for InvalidOperationException and JSDisconnectedException.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações Blazor Server", "Blazor Server Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop via SignalR com latência. Posicionamento do tooltip pode ter resposta mais lenta.", "JS interop via SignalR with latency. Tooltip positioning may have slower response.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações Blazor WebAssembly", "Blazor WebAssembly Considerations")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("JS interop direto sem latência de rede. Disponível após carregamento do WASM.", "Direct JS interop with no network latency. Available after WASM load.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <!-- ===== OVERVIEW ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+        @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+        @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+        @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+        @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 10 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Básico", "1. Basic"),
+                T("Tooltip simples em um botão com posição padrão.", "Simple tooltip on a button with default position."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Posições", "2. Positions"),
+                T("4 posições: Top, Right, Bottom e Left.", "4 positions: Top, Right, Bottom and Left."),
+                ExPositions(), CodePositions)
+
+            @Example(T("3. Temas", "3. Themes"),
+                T("3 temas: Dark, Light e Primary.", "3 themes: Dark, Light and Primary."),
+                ExThemes(), CodeThemes)
+
+            @Example(T("4. Gatilhos", "4. Triggers"),
+                T("3 modos: Hover, Focus e HoverFocus.", "3 modes: Hover, Focus and HoverFocus."),
+                ExTriggers(), CodeTriggers)
+
+            @Example(T("5. Delay", "5. Delay"),
+                T("Delay customizado para exibição do tooltip.", "Custom delay for tooltip display."),
+                ExDelay(), CodeDelay)
+
+            @Example(T("6. Setas", "6. Arrows"),
+                T("ShowArrow true/false para seta direcional.", "ShowArrow true/false for directional arrow."),
+                ExArrows(), CodeArrows)
+
+            @Example(T("7. Largura máxima", "7. Max Width"),
+                T("MaxWidth para tooltips com texto longo.", "MaxWidth for tooltips with long text."),
+                ExMaxWidth(), CodeMaxWidth)
+
+            @Example(T("8. Em ícones", "8. On Icons"),
+                T("Tooltips em botões de ícone para ações de toolbar.", "Tooltips on icon buttons for toolbar actions."),
+                ExIcons(), CodeIcons)
+
+            @Example(T("9. Em texto inline", "9. On Inline Text"),
+                T("Tooltips em spans e texto inline para explicações.", "Tooltips on spans and inline text for explanations."),
+                ExInlineText(), CodeInlineText)
+
+            @Example(T("10. Cenário enterprise", "10. Enterprise Scenario"),
+                T("Tooltips em grid de dados com status e indicadores.", "Tooltips on data grid with status and indicators."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos e métodos", "Events and Methods"), @<div>@NameValueTable(EventRows, T("Método", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Copiar código", "Copy code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+            <XFTooltip Text="@T("Salvar registro", "Save record")" Position="XFTooltipPosition.Top">
+                <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm">
+                    @T("Salvar", "Save")
+                </XFButton>
+            </XFTooltip>
+            <XFTooltip Text="@T("Excluir permanentemente", "Delete permanently")" Position="XFTooltipPosition.Bottom" Theme="XFTooltipTheme.Dark">
+                <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Danger" Size="XFExtendedSize.Sm">
+                    @T("Excluir", "Delete")
+                </XFButton>
+            </XFTooltip>
+            <XFTooltip Text="@T("Configurações avançadas", "Advanced settings")" Position="XFTooltipPosition.Right" Theme="XFTooltipTheme.Light">
+                <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm">
+                    @T("Configurações", "Settings")
+                </XFButton>
+            </XFTooltip>
+        </XFStack>
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("WAI-ARIA", "WAI-ARIA"), T("aria-describedby no trigger aponta para o tooltip.", "aria-describedby on trigger points to tooltip."), "universal-access"),
+        new(T("4 posições", "4 positions"), T("Top, Right, Bottom e Left com flip automático.", "Top, Right, Bottom and Left with automatic flip."), "arrows-up-down"),
+        new(T("3 temas", "3 themes"), T("Dark, Light e Primary para diferentes contextos.", "Dark, Light and Primary for different contexts."), "palette")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFTooltip"),
+        new("Namespace", "XForge.DesignSystem.Components.Tooltip"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Tooltip"),
+        new("Status", T("Estável", "Stable")),
+        new("Accessibility", T("aria-describedby, Escape, trigger por hover e foco, touch 44px.", "aria-describedby, Escape, hover and focus trigger, 44px touch.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Dica contextual", "Contextual hint"), T("Explica ações, status e campos sem aumentar a densidade visual.", "Explains actions, status and fields without increasing visual density."), "circle-info"),
+        new(T("Posicionamento automático", "Auto positioning"), T("4 posições com flip e collision padding via JS.", "4 positions with flip and collision padding via JS."), "arrows-up-down"),
+        new(T("3 temas visuais", "3 visual themes"), T("Dark, Light e Primary para diferentes contextos.", "Dark, Light and Primary for different contexts."), "palette")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Ações de toolbar", "Toolbar actions"), T("Explicar botões de ícone sem texto.", "Explain icon buttons without text."), "toolbar"),
+        new(T("Indicadores de status", "Status indicators"), T("Explicar badges e tags coloridos.", "Explain colored badges and tags."), "signal"),
+        new(T("Campos de formulário", "Form fields"), T("Explicar regras de validação ou formato.", "Explain validation rules or format."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Botões sem contexto, ícones ambíguos, campos sem explicação.", "Buttons without context, ambiguous icons, fields without explanation."), "xmark"),
+        new(T("Depois", "After"), T("Tooltips explicam cada elemento sem poluir a interface.", "Tooltips explain each element without polluting the interface."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("aria-describedby e trigger por foco garantem acessibilidade.", "aria-describedby and focus trigger ensure accessibility."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Ações de toolbar", "Toolbar actions"), T("Explicar botões de ícone sem texto.", "Explain icon buttons without text."), "toolbar"),
+        new(T("Indicadores de status", "Status indicators"), T("Explicar badges, tags e indicadores coloridos.", "Explain badges, tags and colored indicators."), "signal"),
+        new(T("Campos de formulário", "Form fields"), T("Explicar regras de validação ou formato.", "Explain validation rules or format."), "file-lines"),
+        new(T("Texto abreviado", "Abbreviated text"), T("Mostrar texto completo quando truncado.", "Show full text when truncated."), "text-width")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Conteúdo interativo", "Interactive content"), T("Tooltips não devem conter botões ou inputs. Use XFPopover.", "Tooltips must not contain buttons or inputs. Use XFPopover."), "xmark"),
+        new(T("Informação essencial", "Essential information"), T("Não esconda informações críticas apenas no tooltip.", "Don't hide critical information only in tooltip."), "triangle-exclamation"),
+        new(T("Texto longo", "Long text"), T("Máximo 1-2 frases. Para texto extenso, use XFPopover.", "Maximum 1-2 sentences. For extensive text, use XFPopover."), "align-left")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new(T("Gatilho (Trigger)", "Trigger"), T("Elemento envolvido (botão, ícone, texto) com aria-describedby.", "Wrapped element (button, icon, text) with aria-describedby."), "hand-pointer"),
+        new(T("Painel (Tooltip)", "Tooltip"), T("Div posicionada com texto, seta direcional e tema.", "Positioned div with text, directional arrow and theme."), "comment"),
+        new(T("Seta (Arrow)", "Arrow"), T("Seta direcional opcional (ShowArrow=true).", "Optional directional arrow (ShowArrow=true)."), "caret-up")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Não invasivo", "Non-invasive"), T("Aparece apenas quando necessário, sem poluição visual.", "Appears only when needed, no visual pollution."), "eye"),
+        new(T("Rápido e leve", "Fast and lightweight"), T("Delay configurável, renderização sob demanda.", "Configurable delay, on-demand rendering."), "bolt"),
+        new(T("Acessível por padrão", "Accessible by default"), T("aria-describedby, Escape e trigger por foco.", "aria-describedby, Escape and focus trigger."), "universal-access")
+    ];
+
+    // === 1. Basic ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTooltip Text="@T("Clique para salvar o registro", "Click to save the record")">
+            <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Md">
+                @T("Salvar", "Save")
+            </XFButton>
+        </XFTooltip>
+    </XFStack>;
+
+    // === 2. Positions ===
+    private RenderFragment ExPositions() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFTooltip Text="@T("Tooltip no topo", "Tooltip on top")" Position="XFTooltipPosition.Top">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm">Top</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Tooltip à direita", "Tooltip on right")" Position="XFTooltipPosition.Right">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm">Right</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Tooltip embaixo", "Tooltip on bottom")" Position="XFTooltipPosition.Bottom">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm">Bottom</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Tooltip à esquerda", "Tooltip on left")" Position="XFTooltipPosition.Left">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm">Left</XFButton>
+        </XFTooltip>
+    </XFStack>;
+
+    // === 3. Themes ===
+    private RenderFragment ExThemes() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFTooltip Text="@T("Tema escuro (padrão)", "Dark theme (default)")" Theme="XFTooltipTheme.Dark">
+            <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm">Dark</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Tema claro", "Light theme")" Theme="XFTooltipTheme.Light">
+            <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm">Light</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Tema primário", "Primary theme")" Theme="XFTooltipTheme.Primary">
+            <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm">Primary</XFButton>
+        </XFTooltip>
+    </XFStack>;
+
+    // === 4. Triggers ===
+    private RenderFragment ExTriggers() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFTooltip Text="@T("Aparece no hover", "Appears on hover")" Trigger="XFTooltipTrigger.Hover">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Info" Size="XFExtendedSize.Sm">Hover</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Aparece no foco", "Appears on focus")" Trigger="XFTooltipTrigger.Focus">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Info" Size="XFExtendedSize.Sm">Focus</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Hover e foco", "Hover and focus")" Trigger="XFTooltipTrigger.HoverFocus">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Info" Size="XFExtendedSize.Sm">HoverFocus</XFButton>
+        </XFTooltip>
+    </XFStack>;
+
+    // === 5. Delay ===
+    private RenderFragment ExDelay() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFTooltip Text="@T("Delay 0ms — imediato", "Delay 0ms — immediate")" Delay="0">
+            <XFButton Variant="XFButtonVariant.Ghost" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm">0ms</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Delay 500ms", "Delay 500ms")" Delay="500">
+            <XFButton Variant="XFButtonVariant.Ghost" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm">500ms</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Delay 1000ms", "Delay 1000ms")" Delay="1000">
+            <XFButton Variant="XFButtonVariant.Ghost" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm">1000ms</XFButton>
+        </XFTooltip>
+    </XFStack>;
+
+    // === 6. Arrows ===
+    private RenderFragment ExArrows() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFTooltip Text="@T("Com seta direcional", "With directional arrow")" ShowArrow="true">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Success" Size="XFExtendedSize.Sm">@T("Com seta", "With arrow")</XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Sem seta", "Without arrow")" ShowArrow="false">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Warning" Size="XFExtendedSize.Sm">@T("Sem seta", "No arrow")</XFButton>
+        </XFTooltip>
+    </XFStack>;
+
+    // === 7. Max Width ===
+    private RenderFragment ExMaxWidth() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFTooltip Text="@T("Este é um tooltip com texto mais longo que demonstra o uso de MaxWidth para controlar a largura máxima do painel de dica.", "This is a tooltip with longer text demonstrating MaxWidth usage to control the maximum width of the hint panel.")" MaxWidth="250px">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Info" Size="XFExtendedSize.Sm">@T("Largura máxima", "Max width")</XFButton>
+        </XFTooltip>
+    </XFStack>;
+
+    // === 8. Icons ===
+    private RenderFragment ExIcons() => @<XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap">
+        <XFTooltip Text="@T("Novo registro", "New record")">
+            <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm">
+                @T("Novo", "New")
+            </XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Editar registro", "Edit record")">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm">
+                @T("Editar", "Edit")
+            </XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Duplicar registro", "Duplicate record")">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Info" Size="XFExtendedSize.Sm">
+                @T("Duplicar", "Duplicate")
+            </XFButton>
+        </XFTooltip>
+        <XFTooltip Text="@T("Excluir registro", "Delete record")">
+            <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Danger" Size="XFExtendedSize.Sm">
+                @T("Excluir", "Delete")
+            </XFButton>
+        </XFTooltip>
+    </XFStack>;
+
+    // === 9. Inline Text ===
+    private RenderFragment ExInlineText() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFTypography Variant="XFTypographyVariant.Body2">
+            @T("O campo ", "The field ")
+            <XFTooltip Text="@T("Código de Regulamentação Fiscal — usado para cálculo de impostos.", "Fiscal Regulation Code — used for tax calculation.")">
+                <span class="cursor-help underline decoration-dotted underline-offset-4">CRF</span>
+            </XFTooltip>
+            @T(" é obrigatório para operações fiscais.", " is required for fiscal operations.")
+        </XFTypography>
+    </XFStack>;
+
+    // === 10. Enterprise ===
+    private RenderFragment ExEnterprise() => @<div class="rounded-lg border border-border-light p-4">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-border-light text-left text-xs text-text-muted">
+                    <th class="px-3 py-2">NF-e</th>
+                    <th class="px-3 py-2">@T("Cliente", "Client")</th>
+                    <th class="px-3 py-2">@T("Valor", "Amount")</th>
+                    <th class="px-3 py-2">@T("Status", "Status")</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b border-border-light">
+                    <td class="px-3 py-2 font-mono">2026/0042</td>
+                    <td class="px-3 py-2">Silva Comércio</td>
+                    <td class="px-3 py-2">R$ 12.450,00</td>
+                    <td class="px-3 py-2">
+                        <XFTooltip Text="@T("Aguardando autorização da SEFAZ", "Waiting for SEFAZ authorization")">
+                            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Pendente", "Pending")" />
+                        </XFTooltip>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="px-3 py-2 font-mono">2026/0043</td>
+                    <td class="px-3 py-2">Tech Solutions</td>
+                    <td class="px-3 py-2">R$ 8.200,00</td>
+                    <td class="px-3 py-2">
+                        <XFTooltip Text="@T("Autorizada em 10/06/2026 às 14:32", "Authorized on 06/10/2026 at 14:32")">
+                            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Autorizada", "Authorized")" />
+                        </XFTooltip>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>;
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === DATA: API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Text", "string", "\"\"", T("Texto do tooltip.", "Tooltip text.")),
+        new("Position", "XFTooltipPosition", "Right", T("Top, Right, Bottom ou Left.", "Top, Right, Bottom or Left.")),
+        new("Theme", "XFTooltipTheme", "Dark", T("Dark, Light, Primary, Success, Info, Warning, Danger.", "Dark, Light, Primary, Success, Info, Warning, Danger.")),
+        new("Trigger", "XFTooltipTrigger", "HoverFocus", T("Hover, Focus ou HoverFocus.", "Hover, Focus or HoverFocus.")),
+        new("Delay", "int", "200", T("Delay de exibição em ms.", "Display delay in ms.")),
+        new("HideDelay", "int", "100", T("Delay de ocultação em ms.", "Hide delay in ms.")),
+        new("ShowArrow", "bool", "true", T("Exibe seta direcional.", "Shows directional arrow.")),
+        new("Multiline", "bool", "false", T("Permite texto em múltiplas linhas.", "Allows multi-line text.")),
+        new("MaxWidth", "string?", "null", T("Largura máxima (ex: \"200px\").", "Maximum width (ex: \"200px\").")),
+        new("ChildContent", "RenderFragment?", "null", T("Elemento gatilho envolvido.", "Wrapped trigger element."))
+    ];
+
+    // === DATA: Accessibility ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("aria-describedby", T("Trigger aponta para o tooltip via aria-describedby.", "Trigger points to tooltip via aria-describedby."), "universal-access"),
+        new("Escape", T("Fecha automaticamente com Escape.", "Automatically closes with Escape."), "arrow-rotate-left"),
+        new(T("Hover e foco", "Hover & focus"), T("Aparece no hover e/ou foco conforme Trigger config.", "Appears on hover and/or focus per Trigger config."), "hand-pointer"),
+        new(T("Touch 44px", "Touch 44px"), T("Gatilho com mínimo 44px para toque.", "Trigger with minimum 44px for touch."), "mobile-screen")
+    ];
+
+    // === DATA: Keyboard ===
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Escape", T("Fecha o tooltip.", "Closes the tooltip.")),
+        new("Tab", T("Move foco para o próximo elemento (tooltip fecha).", "Moves focus to next element (tooltip closes)."))
+    ];
+
+    // === DATA: Responsiveness ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Flip automático", "Auto flip"), T("Se não couber na posição definida, inverte.", "If it doesn't fit in defined position, flips."), "arrows-left-right"),
+        new(T("Collision padding", "Collision padding"), T("Mantém margem da borda da viewport.", "Maintains margin from viewport edge."), "maximize"),
+        new(T("Sem bloqueio de scroll", "No scroll block"), T("Não bloqueia scroll da página.", "Does not block page scroll."), "arrows-up-down")
+    ];
+
+    // === DATA: Performance ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Renderização sob demanda", "On-demand rendering"), T("Tooltip renderizado apenas no gatilho.", "Tooltip rendered only on trigger."), "eye"),
+        new(T("Sem re-render desnecessário", "No unnecessary re-render"), T("Atualiza posição apenas quando necessário.", "Updates position only when needed."), "bolt"),
+        new(T("Prerender seguro", "Prerender safe"), T("try/catch para JS indisponível.", "try/catch for unavailable JS."), "shield-check")
+    ];
+
+    // === DATA: Scenarios ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Toolbar de ações", "Action toolbar"), T("Explicar botões de ícone sem texto.", "Explain icon buttons without text."), "toolbar"),
+        new(T("Status de NF-e", "NF-e status"), T("Explicar status de autorização.", "Explain authorization status."), "file-invoice"),
+        new(T("Indicadores KPI", "KPI indicators"), T("Explicar métricas e cálculos.", "Explain metrics and calculations."), "chart-line"),
+        new(T("Validação de campos", "Field validation"), T("Explicar regras de formato.", "Explain format rules."), "triangle-exclamation"),
+        new(T("Texto truncado", "Truncated text"), T("Mostrar texto completo quando truncado.", "Show full text when truncated."), "text-width"),
+        new(T("Onboarding", "Onboarding"), T("Dicas contextuais para novos usuários.", "Contextual hints for new users."), "route")
+    ];
+
+    // === DATA: Composition ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Tooltip + Badge", "Tooltip + Badge"), T("Explicar badges de status coloridos.", "Explain colored status badges."), "certificate"),
+        new(T("Tooltip + Grid", "Tooltip + Grid"), T("Dicas em células de tabela.", "Hints on table cells."), "table-cells"),
+        new(T("Tooltip + Form", "Tooltip + Form"), T("Explicar campos de formulário.", "Explain form fields."), "file-lines")
+    ];
+
+    // === DATA: Anti-patterns ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Conteúdo interativo", "Interactive content"), T("Tooltips não devem conter botões ou inputs.", "Tooltips must not contain buttons or inputs."), "xmark"),
+        new(T("Informação essencial", "Essential info"), T("Não esconda informações críticas apenas no tooltip.", "Don't hide critical info only in tooltip."), "triangle-exclamation"),
+        new(T("Texto muito longo", "Very long text"), T("Máximo 1-2 frases. Use XFPopover para texto extenso.", "Maximum 1-2 sentences. Use XFPopover for extensive text."), "align-left"),
+        new(T("Delay excessivo", "Excessive delay"), T("Delay muito longo frustra o usuário.", "Too long delay frustrates the user."), "clock")
+    ];
+
+    // === DATA: Related ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFPopover", T("Painel ancorado com conteúdo interativo.", "Anchored panel with interactive content."), "layer-group"),
+        new("XFDrawer", T("Painel lateral para conteúdo extenso.", "Side panel for extensive content."), "window-restore"),
+        new("XFDialog", T("Modal para confirmações.", "Modal for confirmations."), "square"),
+        new("XFDropdownMenu", T("Menu de comandos com gatilho.", "Command menu with trigger."), "caret-down")
+    ];
+
+    // === DATA: Events ===
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ShowAsync()", T("Mostra o tooltip programaticamente.", "Shows tooltip programmatically.")),
+        new("HideAsync()", T("Oculta o tooltip programaticamente.", "Hides tooltip programmatically.")),
+        new("DisposeAsync()", T("Remove listeners e libera recursos.", "Removes listeners and releases resources."))
+    ];
+
+    // === DATA: Best Practices ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Texto curto", "Short text"), T("1-2 frases no máximo. Seja conciso.", "1-2 sentences max. Be concise."), "align-left"),
+        new(T("Delay adequado", "Adequate delay"), T("200ms padrão evita flickering.", "200ms default avoids flickering."), "clock"),
+        new(T("Tema contrastante", "Contrasting theme"), T("Dark em fundo claro, Light em fundo escuro.", "Dark on light background, Light on dark background."), "palette"),
+        new(T("Posição inteligente", "Smart position"), T("Use Right ou Left para economizar espaço vertical.", "Use Right or Left to save vertical space."), "arrows-left-right")
+    ];
+
+    // === DATA: Tokens ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("tooltip-bg", T("Cor de fundo do painel conforme tema.", "Panel background color per theme.")),
+        new("tooltip-text", T("Cor do texto do painel.", "Panel text color.")),
+        new("tooltip-arrow", T("Cor da seta direcional.", "Directional arrow color.")),
+        new("tooltip-shadow", T("Sombra do painel.", "Panel shadow."))
+    ];
+
+    // === DATA: Themes ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook"),
+        new(T("7 temas semânticos", "7 semantic themes"), T("Dark, Light, Primary, Success, Info, Warning, Danger.", "Dark, Light, Primary, Success, Info, Warning, Danger."), "palette")
+    ];
+
+    // === DATA: Testing ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, positions, themes, triggers.", "Render, props, positions, themes, triggers tests.")),
+        new("Accessibility", T("aria-describedby, Escape, trigger, touch 44px.", "aria-describedby, Escape, trigger, 44px touch."))
+    ];
+
+    // === DATA: Limitations ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Prerender", T("Posicionamento indisponível durante prerender.", "Positioning unavailable during prerender.")),
+        new("Conteúdo", T("Somente texto simples. Sem HTML, botões ou inputs.", "Plain text only. No HTML, buttons or inputs.")),
+        new("Blazor Server", T("Posicionamento com latência via SignalR.", "Positioning with latency via SignalR."))
+    ];
+
+    // === DATA: FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Tooltip vs Popover?", "Tooltip vs Popover?"), T("Tooltip = texto simples. Popover = conteúdo interativo.", "Tooltip = simple text. Popover = interactive content.")),
+        new(T("Como mostrar programaticamente?", "How to show programmatically?"), T("Use ShowAsync() via Reference.", "Use ShowAsync() via Reference.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Renderiza HTML base. Posicionamento requer JS.", "Renders base HTML. Positioning requires JS.")),
+        new(T("Quantos temas?", "How many themes?"), T("7 temas: Dark, Light, Primary, Success, Info, Warning, Danger.", "7 themes: Dark, Light, Primary, Success, Info, Warning, Danger."))
+    ];
+
+    // === DATA: Changelog ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-10", T("Documentação enterprise completa: 10 exemplos, API, acessibilidade, cenários.", "Complete enterprise docs: 10 examples, API, accessibility, scenarios.")),
+        new("2026-06-12", T("Refatorada para padrão AppShellDocs com 26 seções.", "Refactored to AppShellDocs pattern with 26 sections."))
+    ];
+
+    // === CODE STRINGS ===
+    private string CodeBasic => @"<XFTooltip Text=""Clique para salvar o registro"">
+    <XFButton Variant=""XFButtonVariant.Solid"" Color=""XFButtonColor.Primary"">
+        Salvar
+    </XFButton>
+</XFTooltip>";
+
+    private string CodePositions => @"<XFTooltip Text=""Tooltip no topo"" Position=""XFTooltipPosition.Top"">
+    <XFButton Text=""Top"" />
+</XFTooltip>
+<XFTooltip Text=""Tooltip à direita"" Position=""XFTooltipPosition.Right"">
+    <XFButton Text=""Right"" />
+</XFTooltip>
+<XFTooltip Text=""Tooltip embaixo"" Position=""XFTooltipPosition.Bottom"">
+    <XFButton Text=""Bottom"" />
+</XFTooltip>
+<XFTooltip Text=""Tooltip à esquerda"" Position=""XFTooltipPosition.Left"">
+    <XFButton Text=""Left"" />
+</XFTooltip>";
+
+    private string CodeThemes => @"<XFTooltip Text=""Tema escuro"" Theme=""XFTooltipTheme.Dark"">
+    <XFButton Text=""Dark"" />
+</XFTooltip>
+<XFTooltip Text=""Tema claro"" Theme=""XFTooltipTheme.Light"">
+    <XFButton Text=""Light"" />
+</XFTooltip>
+<XFTooltip Text=""Tema primário"" Theme=""XFTooltipTheme.Primary"">
+    <XFButton Text=""Primary"" />
+</XFTooltip>";
+
+    private string CodeTriggers => @"<XFTooltip Text=""Aparece no hover"" Trigger=""XFTooltipTrigger.Hover"">
+    <XFButton Text=""Hover"" />
+</XFTooltip>
+<XFTooltip Text=""Aparece no foco"" Trigger=""XFTooltipTrigger.Focus"">
+    <XFButton Text=""Focus"" />
+</XFTooltip>
+<XFTooltip Text=""Hover e foco"" Trigger=""XFTooltipTrigger.HoverFocus"">
+    <XFButton Text=""HoverFocus"" />
+</XFTooltip>";
+
+    private string CodeDelay => @"<XFTooltip Text=""Delay 0ms"" Delay=""0"">
+    <XFButton Text=""0ms"" />
+</XFTooltip>
+<XFTooltip Text=""Delay 500ms"" Delay=""500"">
+    <XFButton Text=""500ms"" />
+</XFTooltip>
+<XFTooltip Text=""Delay 1000ms"" Delay=""1000"">
+    <XFButton Text=""1000ms"" />
+</XFTooltip>";
+
+    private string CodeArrows => @"<XFTooltip Text=""Com seta"" ShowArrow=""true"">
+    <XFButton Text=""Com seta"" />
+</XFTooltip>
+<XFTooltip Text=""Sem seta"" ShowArrow=""false"">
+    <XFButton Text=""Sem seta"" />
+</XFTooltip>";
+
+    private string CodeMaxWidth => @"<XFTooltip Text=""Este é um tooltip com texto mais longo para demonstrar o uso de MaxWidth"" MaxWidth=""250px"">
+    <XFButton Text=""Largura máxima"" />
+</XFTooltip>";
+
+    private string CodeIcons => @"<XFTooltip Text=""Novo registro"">
+    <XFButton Text=""Novo"" />
+</XFTooltip>
+<XFTooltip Text=""Editar registro"">
+    <XFButton Text=""Editar"" />
+</XFTooltip>
+<XFTooltip Text=""Duplicar registro"">
+    <XFButton Text=""Duplicar"" />
+</XFTooltip>
+<XFTooltip Text=""Excluir registro"">
+    <XFButton Text=""Excluir"" />
+</XFTooltip>";
+
+    private string CodeInlineText => @"<XFTooltip Text=""Código de Regulamentação Fiscal"">
+    <span class=""underline decoration-dotted"">CRF</span>
+</XFTooltip>";
+
+    private string CodeEnterprise => @"<XFTooltip Text=""Aguardando autorização da SEFAZ"">
+    <XFBadge Variant=""XFBadgeVariant.Soft"" Color=""XFBadgeColor.Warning"" Text=""Pendente"" />
+</XFTooltip>
+<XFTooltip Text=""Autorizada em 10/06/2026 às 14:32"">
+    <XFBadge Variant=""XFBadgeVariant.Soft"" Color=""XFBadgeColor.Success"" Text=""Autorizada"" />
+</XFTooltip>";
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

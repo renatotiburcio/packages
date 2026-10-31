@@ -1,0 +1,1116 @@
+@page "/overlays/drawer"
+@page "/feedback/drawer"
+@page "/components/drawer"
+@using XForge.DesignSystem.Components.Overlays.Drawer
+@using XForge.DesignSystem.Services
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFDrawer" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("WAI-ARIA", "WAI-ARIA")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Animações", "Animations")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Painel lateral ou inferior com animação, acessibilidade e modal nativos.",
+                               "Side or bottom panel with native animation, accessibility and modal support.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFDrawer renderiza painéis contextuais em 4 posições, 5 tamanhos e 5 tons semânticos. Suporta modal, trap focus, backdrop, responsividade e serviço programático.",
+                               "XFDrawer renders contextual panels in 4 positions, 5 sizes and 5 semantic tones. Supports modal, trap focus, backdrop, responsiveness and programmatic service.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="relative flex min-h-[16rem] overflow-hidden rounded-lg border border-border-light bg-surface-50">
+                            <div class="flex-1 p-4">
+                                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold" Class="mb-2">@T("Lista de pedidos", "Order list")</XFTypography>
+                                <div class="space-y-2">
+                                    <div class="h-8 rounded bg-surface-200/60"></div>
+                                    <div class="h-8 rounded bg-surface-200/60"></div>
+                                    <div class="h-8 rounded bg-surface-200/60"></div>
+                                    <div class="h-8 rounded bg-surface-200/40"></div>
+                                </div>
+                            </div>
+                            <XFDrawer @bind-Open="_heroOpen"
+                                      Title="@T("Detalhes do pedido", "Order details")"
+                                      Description="@T("Resumo operacional", "Operational summary")"
+                                      Placement="XFDrawerPlacement.Right"
+                                      Size="XFOverlaySize.Sm"
+                                      Modal="false">
+                                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                                    @T("Conteúdo do drawer: informações detalhadas do pedido, histórico de movimentações e ações disponíveis.",
+                                       "Drawer content: detailed order info, movement history and available actions.")
+                                </XFTypography>
+                            </XFDrawer>
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observações", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards.", "Works with prerender-safe guards.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restrições.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona com prerender-safe guards no primeiro render.", "Works with prerender-safe guards on first render.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Parcial", "Partial")" /></XFTableCell><XFTableCell>@T("Renderiza HTML base. Focus trap e animações indisponíveis durante prerender.", "Renders base HTML. Focus trap and animations unavailable during prerender.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("JS Interop", "JS Interop")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Arquivo JS: xf-drawer.js — gerencia xfDialog.trap/release para focus trap, animações de entrada/saída e fechamento por clique externo.", "JS file: xf-drawer.js — manages xfDialog.trap/release for focus trap, enter/exit animations and outside-click close.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Quando carrega: OnAfterRenderAsync. Prerender seguro: try/catch para InvalidOperationException e JSDisconnectedException.", "When loaded: OnAfterRenderAsync. Prerender safe: try/catch for InvalidOperationException and JSDisconnectedException.")</XFTypography>
+                </XFStack>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Considerações", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: JS interop via SignalR com latência. Focus trap e animações podem ter resposta mais lenta.", "Blazor Server: JS interop via SignalR with latency. Focus trap and animations may have slower response.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: JS interop direto sem latência de rede. Disponível após carregamento do WASM.", "Blazor WebAssembly: Direct JS interop with no network latency. Available after WASM load.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visão geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Propósito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando não usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Hierarquia visual", "Visual Hierarchy"), @<div>@TileGrid(VisualHierarchyItems, 3)</div>)
+            @Section(T("Princípios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Básico", "1. Basic"),
+                T("XFDrawer simples com Title, Description e ChildContent.", "Simple XFDrawer with Title, Description and ChildContent."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Posições", "2. Positions"),
+                T("4 posições: Right, Left, Top e Bottom.", "4 positions: Right, Left, Top and Bottom."),
+                ExPositions(), CodePositions)
+
+            @Example(T("3. Tamanhos", "3. Sizes"),
+                T("Sm, Md, Lg, Xl e Full — para cada posição.", "Sm, Md, Lg, Xl and Full — for each position."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("4. Tons semânticos", "4. Semantic Tones"),
+                T("5 tons: Default, Primary, Success, Warning e Danger.", "5 tones: Default, Primary, Success, Warning and Danger."),
+                ExTones(), CodeTones)
+
+            @Example(T("5. Não modal", "5. Non-modal"),
+                T("Modal=false permite interação com conteúdo de fundo.", "Modal=false allows interaction with background content."),
+                ExNonModal(), CodeNonModal)
+
+            @Example(T("6. Responsivo", "6. Responsive"),
+                T("ResponsiveBelow transforma drawer lateral em bottom sheet em telas menores.", "ResponsiveBelow transforms side drawer into bottom sheet on smaller screens."),
+                ExResponsive(), CodeResponsive)
+
+            @Example(T("7. Header e Footer", "7. Header & Footer"),
+                T("Header template customizado com ícones e footer com ações.", "Custom header template with icons and footer with actions."),
+                ExHeaderFooter(), CodeHeaderFooter)
+
+            @Example(T("8. Eventos canceláveis", "8. Cancelable Events"),
+                T("Opening e Closing podem ser Cancelados; OnClose dispara após fechar.", "Opening and Closing can be canceled; OnClose fires after close."),
+                ExEvents(), CodeEvents)
+
+            @Example(T("9. Serviço programático", "9. Programmatic Service"),
+                T("XFDrawerService.ShowAsync abre drawers sem markup direto.", "XFDrawerService.ShowAsync opens drawers without direct markup."),
+                ExService(), CodeServicePattern)
+
+            @Example(T("10. Cenário enterprise", "10. Enterprise Scenario"),
+                T("Drawer lateral com dados de NF-e, abas de detalhes e footer com aprovação.", "Side drawer with NF-e data, detail tabs and approval footer."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(PlacementRows, T("Posição", "Position"), T("Uso", "Usage"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API — XFDrawer", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("API — XFDrawerService", "XFDrawerService API"), @<div>@ApiTable(ServiceApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenários enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padrões de composição", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas práticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padrões", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Propósito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidência", "Evidence"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Limitações conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitação", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versão", "Version"), T("Mudança", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFDrawer", "XFDrawer");
+    private string PageStatusText => T("Documentação completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Código copiável", "Copyable code");
+
+    private bool _heroOpen = true;
+    private bool _basicOpen;
+    private bool _nonModalOpen;
+    private bool _responsiveOpen;
+    private bool _hfOpen;
+    private bool _enterpriseOpen;
+
+    private List<PositionExample> PositionExamples { get; } = new[]
+    {
+        XFDrawerPlacement.Right, XFDrawerPlacement.Left,
+        XFDrawerPlacement.Top, XFDrawerPlacement.Bottom
+    }.Select(p => new PositionExample { Placement = p }).ToList();
+
+    private List<SizeExample> SizeExamples { get; } = new[]
+    {
+        XFOverlaySize.Sm, XFOverlaySize.Md, XFOverlaySize.Lg,
+        XFOverlaySize.Xl, XFOverlaySize.Full
+    }.Select(s => new SizeExample { Size = s }).ToList();
+
+    private List<ToneExample> ToneExamples { get; } = new[]
+    {
+        XFSemanticColor.Default, XFSemanticColor.Primary,
+        XFSemanticColor.Success, XFSemanticColor.Warning, XFSemanticColor.Danger
+    }.Select(t => new ToneExample { Tone = t }).ToList();
+
+    private class PositionExample { public XFDrawerPlacement Placement { get; set; } public bool Open { get; set; } }
+    private class SizeExample { public XFOverlaySize Size { get; set; } public bool Open { get; set; } }
+    private class ToneExample { public XFSemanticColor Tone { get; set; } public bool Open { get; set; } }
+
+    private RenderFragment HeroPreview() => @<div class="flex-1 p-4">
+        <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold" Class="mb-2">@T("Lista de pedidos", "Order list")</XFTypography>
+        <div class="space-y-2">
+            <div class="h-8 rounded bg-surface-200/60"></div>
+            <div class="h-8 rounded bg-surface-200/60"></div>
+            <div class="h-8 rounded bg-surface-200/60"></div>
+            <div class="h-8 rounded bg-surface-200/40"></div>
+        </div>
+    </div>;
+
+    // === HERO ===
+    private IReadOnlyList<DocTile> QuickFacts =>
+    [
+        new(T("WAI-ARIA dialog", "WAI-ARIA dialog"), T("role=dialog, aria-modal, aria-labelledby, aria-describedby, trap focus.", "role=dialog, aria-modal, aria-labelledby, aria-describedby, trap focus."), "universal-access"),
+        new(T("4 posições fluidas", "4 fluid positions"), T("Right, Left, Top e Bottom com animação de entrada e saída.", "Right, Left, Top and Bottom with enter/exit animation."), "arrows-up-down"),
+        new(T("Serviço programático", "Programmatic service"), T("XFDrawerService.ShowAsync abre drawers de qualquer lugar.", "XFDrawerService.ShowAsync opens drawers from anywhere."), "code")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows =>
+    [
+        new("Component", "XFDrawer"),
+        new("Namespace", "XForge.DesignSystem.Components.Overlays.Drawer"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Components / Overlays / Drawer"),
+        new("Status", T("Estável", "Stable")),
+        new("Accessibility", T("WAI-ARIA dialog, trap focus, aria-modal, keyboard (Escape), overlay click.", "WAI-ARIA dialog, trap focus, aria-modal, keyboard (Escape), overlay click.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems =>
+    [
+        new(T("Painel contextual", "Contextual panel"), T("Renderiza conteúdo lateral ou inferior mantendo o contexto da página.", "Renders side or bottom content while keeping page context."), "window-restore"),
+        new(T("Animação fluida", "Fluid animation"), T("Transições de entrada e saída com reduced-motion.", "Enter/exit transitions with reduced-motion."), "sparkles"),
+        new(T("Serviço DI", "DI service"), T("XFDrawerService injetável para abrir drawers de qualquer camada.", "Injectable XFDrawerService to open drawers from any layer."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems =>
+    [
+        new(T("Preservar contexto", "Preserve context"), T("Mostrar detalhes sem trocar de tela ou perder a posição na lista.", "Show details without changing screens or losing list position."), "eye"),
+        new(T("Edição contextual", "Contextual editing"), T("Editar registro ao lado da lista principal.", "Edit record next to main list."), "file-lines"),
+        new(T("Filtros e ações", "Filters and actions"), T("Painel lateral para filtros avançados ou ações de aprovação.", "Side panel for advanced filters or approval actions."), "filter")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems =>
+    [
+        new(T("Antes", "Before"), T("Páginas com muitos detalhes ocupando espaço vertical, perdendo contexto da lista.", "Pages with many details taking vertical space, losing list context."), "xmark"),
+        new(T("Depois", "After"), T("Drawer lateral abre ao lado da lista, preservando contexto e scroll.", "Side drawer opens next to the list, preserving context and scroll."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("Trap focus, overlay, Escape e aria-modal garantem acessibilidade.", "Trap focus, overlay, Escape and aria-modal ensure accessibility."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems =>
+    [
+        new(T("Detalhes de registro", "Record details"), T("Abrir drawer ao clicar em linha da tabela para ver detalhes.", "Open drawer on table row click to view details."), "list"),
+        new(T("Formulários laterais", "Side forms"), T("Editar registro sem sair da lista principal.", "Edit record without leaving main list."), "file-lines"),
+        new(T("Filtros avançados", "Advanced filters"), T("Painel de filtros complexos ao lado da grid.", "Complex filter panel next to grid."), "filter"),
+        new(T("Painel de ações", "Action panel"), T("Aprovação, rejeição e comentários em contexto.", "Approval, rejection and comments in context."), "check-circle")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems =>
+    [
+        new(T("Navegação principal", "Primary navigation"), T("Use Sidebar ou Rail para navegação entre apps.", "Use Sidebar or Rail for app navigation."), "route"),
+        new(T("Conteúdo sempre visível", "Always visible content"), T("Use um layout regular se o conteúdo precisa estar sempre visível.", "Use a regular layout if content must always be visible."), "eye"),
+        new(T("Diálogo de confirmação", "Confirmation dialog"), T("Use XFDialog para ações que precisam de confirmação explícita.", "Use XFDialog for actions needing explicit confirmation."), "square"),
+        new(T("Muitos drawers empilhados", "Too many stacked drawers"), T("Não empilhe mais de 2 drawers. Use navegação interna.", "Do not stack more than 2 drawers. Use internal navigation."), "layer-group")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems =>
+    [
+        new(T("Overlay", "Overlay"), T("Fundo semi-transparente com backdrop-blur. Clicar fecha o drawer (CloseOnOverlayClick).", "Semi-transparent background with backdrop-blur. Clicking closes drawer (CloseOnOverlayClick)."), "layer-group"),
+        new(T("Painel (aside)", "Panel (aside)"), T("Elemento aside com role=dialog, aria-modal, trap focus e animação.", "Aside element with role=dialog, aria-modal, trap focus and animation."), "window-restore"),
+        new(T("Header", "Header"), T("Title, Description e botão de fechar. Suporta Header template.", "Title, Description and close button. Supports Header template."), "font"),
+        new(T("Body", "Body"), T("ChildContent com overflow-auto para conteúdo longo.", "ChildContent with overflow-auto for long content."), "layer-group"),
+        new(T("Footer", "Footer"), T("RenderFragment opcional para ações (salvar, cancelar).", "Optional RenderFragment for actions (save, cancel)."), "check-circle")
+    ];
+
+    private IReadOnlyList<DocTile> VisualHierarchyItems =>
+    [
+        new(T("Modal padrão", "Default modal"), T("Overlay backdrop-blur, trap focus, fecha com Escape ou clique no overlay.", "Backdrop-blur overlay, trap focus, closes on Escape or overlay click."), "lock"),
+        new(T("Não modal", "Non-modal"), T("Overlay transparente, pointer-events-none. Permite interação com fundo.", "Transparent overlay, pointer-events-none. Allows background interaction."), "eye"),
+        new(T("Responsivo", "Responsive"), T("Lateral vira bottom sheet em breakpoints configuráveis.", "Side becomes bottom sheet at configurable breakpoints."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems =>
+    [
+        new(T("Preservar contexto", "Preserve context"), T("Drawer abre ao lado, não substitui a tela atual.", "Drawer opens alongside, does not replace current screen."), "eye"),
+        new(T("Touch target AAA", "AAA touch target"), T("Botão de fechar com 44px mínimo (WCAG 2.5.8).", "Close button with 44px minimum (WCAG 2.5.8)."), "hand-pointer"),
+        new(T("Animação com reduced-motion", "Animation with reduced-motion"), T("Transições CSS respeitam prefers-reduced-motion.", "CSS transitions respect prefers-reduced-motion."), "bolt"),
+        new(T("Trap focus", "Trap focus"), T("Foco fica preso dentro do drawer até fechar.", "Focus stays trapped inside drawer until close."), "lock")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="@(() => _basicOpen = !_basicOpen)">
+            @(_basicOpen ? T("Fechar", "Close") : T("Abrir", "Open"))
+        </XFButton>
+        <XFDrawer @bind-Open="_basicOpen"
+                  Title="@T("Detalhes do pedido #4821", "Order details #4821")"
+                  Description="@T("Resumo operacional do pedido", "Operational order summary")"
+                  Placement="XFDrawerPlacement.Right"
+                  Size="XFOverlaySize.Sm"
+                  Modal="false">
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                @T("Conteúdo do drawer: informações detalhadas do pedido, histórico de movimentações e ações disponíveis.",
+                   "Drawer content: detailed order information, movement history and available actions.")
+            </XFTypography>
+        </XFDrawer>
+    </XFStack>;
+
+    private RenderFragment ExPositions() => @<XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+        @foreach (var item in PositionExamples)
+        {
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="@item.Placement.ToString()" />
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@PositionDesc(item.Placement)</XFTypography>
+                    <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="@(() => item.Open = !item.Open)">
+                        @(item.Open ? T("Fechar", "Close") : T("Abrir", "Open"))
+                    </XFButton>
+                </div>
+                <XFDrawer @bind-Open="item.Open"
+                          Title="@($"{T("Posição", "Position")}: {item.Placement}")"
+                          Description="@PositionDesc(item.Placement)"
+                          Placement="@item.Placement"
+                          Size="XFOverlaySize.Sm"
+                          Modal="false">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                        @T($"Drawer na posição {item.Placement}.", $"Drawer at {item.Placement} position.")
+                    </XFTypography>
+                </XFDrawer>
+            </div>
+        }
+    </XFStack>;
+
+    private string PositionDesc(XFDrawerPlacement p) => p switch
+    {
+        XFDrawerPlacement.Right => T("Lateral direita — padrão para detalhes e edição.", "Right side — default for details and editing."),
+        XFDrawerPlacement.Left => T("Lateral esquerda — filtros e navegação.", "Left side — filters and navigation."),
+        XFDrawerPlacement.Top => T("Topo — alertas e notificações.", "Top — alerts and notifications."),
+        _ => T("Rodapé — ações e confirmações.", "Bottom — actions and confirmations.")
+    };
+
+    private RenderFragment ExSizes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+        @foreach (var item in SizeExamples)
+        {
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="@item.Size.ToString()" />
+                    <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@SizeDesc(item.Size)</XFTypography>
+                    <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="@(() => item.Open = !item.Open)">
+                        @(item.Open ? T("Fechar", "Close") : T("Abrir", "Open"))
+                    </XFButton>
+                </div>
+                <XFDrawer @bind-Open="item.Open"
+                          Title="@($"{T("Tamanho", "Size")}: {item.Size}")"
+                          Placement="XFDrawerPlacement.Right"
+                          Size="@item.Size"
+                          Modal="false">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                        @T($"Drawer com tamanho {item.Size}.", $"Drawer with {item.Size} size.")
+                    </XFTypography>
+                </XFDrawer>
+            </div>
+        }
+    </XFStack>;
+
+    private string SizeDesc(XFOverlaySize s) => s switch
+    {
+        XFOverlaySize.Sm => T("Compacto — max-w-sm (384px).", "Compact — max-w-sm (384px)."),
+        XFOverlaySize.Md => T("Padrão — max-w-md (448px).", "Default — max-w-md (448px)."),
+        XFOverlaySize.Lg => T("Largo — max-w-2xl (672px).", "Large — max-w-2xl (672px)."),
+        XFOverlaySize.Xl => T("Extra largo — max-w-4xl (896px).", "Extra large — max-w-4xl (896px)."),
+        _ => T("Tela cheia — w-full.", "Full screen — w-full.")
+    };
+
+    private RenderFragment ExTones() => @<XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+        @foreach (var item in ToneExamples)
+        {
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="@item.Tone.ToString()" />
+                    <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="@(() => item.Open = !item.Open)">
+                        @(item.Open ? T("Fechar", "Close") : T("Abrir", "Open"))
+                    </XFButton>
+                </div>
+                <XFDrawer @bind-Open="item.Open"
+                          Title="@($"{T("Tom", "Tone")}: {item.Tone}")"
+                          Description="@T("Borda e ring com tom semântico", "Border and ring with semantic tone")"
+                          Placement="XFDrawerPlacement.Right"
+                          Size="XFOverlaySize.Sm"
+                          Tone="@item.Tone"
+                          Modal="false">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                        @T($"Tom {item.Tone} — borda e ring coloridos.", $"{item.Tone} tone — colored border and ring.")
+                    </XFTypography>
+                </XFDrawer>
+            </div>
+        }
+    </XFStack>;
+
+    private RenderFragment ExNonModal() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="@(() => _nonModalOpen = !_nonModalOpen)">@T("Toggle", "Toggle")</XFButton>
+        <XFDrawer @bind-Open="_nonModalOpen"
+                  Title="@T("Painel de filtros", "Filter panel")"
+                  Description="@T("Filtros ativos: Maio 2026, Status Autorizada", "Active filters: May 2026, Status Authorized")"
+                  Placement="XFDrawerPlacement.Right"
+                  Size="XFOverlaySize.Sm"
+                  Modal="false">
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                    @T("Este drawer não bloqueia o conteúdo de fundo.", "This drawer does not block background content.")
+                </XFTypography>
+                <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm">
+                    @T("Aplicar filtros", "Apply filters")
+                </XFButton>
+            </XFStack>
+        </XFDrawer>
+    </XFStack>;
+
+    private RenderFragment ExResponsive() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="@(() => _responsiveOpen = !_responsiveOpen)">@T("Toggle", "Toggle")</XFButton>
+        <XFDrawer @bind-Open="_responsiveOpen"
+                  Title="@T("Filtros responsivos", "Responsive filters")"
+                  Description="@T("Adapta posição ao tamanho da tela", "Adapts position to screen size")"
+                  Placement="XFDrawerPlacement.Right"
+                  Size="XFOverlaySize.Lg"
+                  ResponsiveBelow="XFDrawerResponsiveBreakpoint.Md"
+                  Modal="false">
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                @T("Reduza a janela abaixo de 768px para ver o bottom sheet. Abaixo de 640px use ResponsiveBelow=Sm.",
+                   "Resize window below 768px to see the bottom sheet. Below 640px use ResponsiveBelow=Sm.")
+            </XFTypography>
+        </XFDrawer>
+    </XFStack>;
+
+    private RenderFragment ExHeaderFooter() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="@(() => _hfOpen = !_hfOpen)">@T("Toggle", "Toggle")</XFButton>
+        <XFDrawer @bind-Open="_hfOpen"
+                  Placement="XFDrawerPlacement.Right"
+                  Size="XFOverlaySize.Md"
+                  Modal="false">
+            <Header>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("file-invoice", 18))</span>
+                    <div class="min-w-0">
+                        <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("NF-e #001.271", "NF-e #001.271")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Construtora Horizonte LTDA", "Horizon Construction Ltd")</XFTypography>
+                    </div>
+                </div>
+            </Header>
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Valor", "Amount")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">R$ 28.450,00</XFTypography></div>
+                        <div><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Emissão", "Issue date")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2">20/05/2026</XFTypography></div>
+                    </div>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                        @T("12 itens com impostos calculados. Valor total com ICMS, PIS e COFINS.", "12 items with calculated taxes. Total with ICMS, PIS and COFINS.")
+                    </XFTypography>
+                </XFStack>
+            </ChildContent>
+            <Footer>
+                <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Neutral" Size="XFExtendedSize.Sm">@T("Rejeitar", "Reject")</XFButton>
+                <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Success" Size="XFExtendedSize.Sm">@T("Aprovar", "Approve")</XFButton>
+            </Footer>
+        </XFDrawer>
+    </XFStack>;
+
+    private bool _eventsDrawerOpen;
+    private string _lastEvent = "";
+
+    private RenderFragment ExEvents() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div class="flex items-center gap-3">
+            <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm"
+                      OnClick="@(() => _eventsDrawerOpen = true)">
+                @T("Abrir drawer com eventos", "Open drawer with events")
+            </XFButton>
+            @if (!string.IsNullOrEmpty(_lastEvent))
+            {
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@_lastEvent" />
+            }
+        </div>
+        <XFDrawer @bind-Open="_eventsDrawerOpen"
+                  Title="@T("Eventos canceláveis", "Cancelable events")"
+                  Placement="XFDrawerPlacement.Right"
+                  Size="XFOverlaySize.Sm"
+                  Opening="@OnOpening"
+                  Closing="@OnClosing"
+                  OnClose="@(() => _lastEvent = "OnClose fired")">
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+                @T("Feche com X, Escape ou overlay. Os eventos Opening e Closing podem cancelar a ação.",
+                   "Close with X, Escape or overlay. Opening and Closing events can cancel the action.")
+            </XFTypography>
+        </XFDrawer>
+    </XFStack>;
+
+    private Task OnOpening(XFDrawerOpeningEventArgs args)
+    {
+        _lastEvent = "Opening (allowed)";
+        return Task.CompletedTask;
+    }
+
+    private Task OnClosing(XFDrawerClosingEventArgs args)
+    {
+        _lastEvent = $"Closing ({args.Reason})";
+        return Task.CompletedTask;
+    }
+
+    private RenderFragment ExService() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Requer injeção de XFDrawerService", "Requires XFDrawerService injection")" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("O exemplo abaixo mostra o padrão de uso do XFDrawerService via injeção de dependência.",
+               "The example below shows the XFDrawerService usage pattern via dependency injection.")
+        </XFTypography>
+        <XFCode Text="@CodeServicePattern" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+    </XFStack>;
+
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary" Size="XFExtendedSize.Sm" OnClick="@(() => _enterpriseOpen = !_enterpriseOpen)">@T("Toggle", "Toggle")</XFButton>
+        <XFDrawer @bind-Open="_enterpriseOpen"
+                  Placement="XFDrawerPlacement.Right"
+                  Size="XFOverlaySize.Lg"
+                  Modal="false">
+            <Header>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-success/10 text-success" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("check-circle", 18))</span>
+                    <div class="min-w-0">
+                        <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("NF-e #001.271 — Aprovação", "NF-e #001.271 — Approval")</XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Construtora Horizonte LTDA | 20/05/2026", "Horizon Construction Ltd | 05/20/2026")</XFTypography>
+                    </div>
+                </div>
+            </Header>
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <div><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Número", "Number")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">001.271</XFTypography></div>
+                        <div><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Valor", "Amount")</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Weight="XFTypographyWeight.Semibold">R$ 28.450,00</XFTypography></div>
+                        <div><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">ICMS</XFTypography><XFTypography Variant="XFTypographyVariant.Body2">R$ 5.121,00</XFTypography></div>
+                        <div><XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Status", "Status")</XFTypography><XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="@T("Autorizada", "Authorized")" /></div>
+                    </div>
+                    <div>
+                        <XFTypography Variant="XFTypographyVariant.H6" Weight="XFTypographyWeight.Semibold" Class="mb-2">@T("Itens (12)", "Items (12)")</XFTypography>
+                        <XFTable Compact="true" Hoverable="false">
+                            <XFTableHeader>
+                                <XFTableRow>
+                                    <XFTableCell Header="true">@T("Produto", "Product")</XFTableCell>
+                                    <XFTableCell Header="true" Class="text-center">Qtd</XFTableCell>
+                                    <XFTableCell Header="true" Class="text-right">@T("Unit.", "Unit")</XFTableCell>
+                                    <XFTableCell Header="true" Class="text-right">@T("Total", "Total")</XFTableCell>
+                                </XFTableRow>
+                            </XFTableHeader>
+                            <XFTableBody>
+                                <XFTableRow><XFTableCell>Cimento CP-II 50kg</XFTableCell><XFTableCell Class="text-center">200</XFTableCell><XFTableCell Class="text-right">R$ 38,90</XFTableCell><XFTableCell Class="text-right">R$ 7.780,00</XFTableCell></XFTableRow>
+                                <XFTableRow><XFTableCell>Tijolo 6 furos</XFTableCell><XFTableCell Class="text-center">5.000</XFTableCell><XFTableCell Class="text-right">R$ 0,85</XFTableCell><XFTableCell Class="text-right">R$ 4.250,00</XFTableCell></XFTableRow>
+                                <XFTableRow><XFTableCell>Areia média m3</XFTableCell><XFTableCell Class="text-center">30</XFTableCell><XFTableCell Class="text-right">R$ 125,00</XFTableCell><XFTableCell Class="text-right">R$ 3.750,00</XFTableCell></XFTableRow>
+                            </XFTableBody>
+                        </XFTable>
+                    </div>
+                </XFStack>
+            </ChildContent>
+            <Footer>
+                <XFButton Variant="XFButtonVariant.Outline" Color="XFButtonColor.Danger" Size="XFExtendedSize.Sm">@T("Rejeitar NF-e", "Reject NF-e")</XFButton>
+                <XFButton Variant="XFButtonVariant.Solid" Color="XFButtonColor.Success" Size="XFExtendedSize.Sm">@T("Aprovar NF-e", "Approve NF-e")</XFButton>
+            </Footer>
+        </XFDrawer>
+    </XFStack>;
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parâmetro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descrição", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === DATA ===
+    private IReadOnlyList<NameValueRow> PlacementRows =>
+    [
+        new("Right", T("Lateral direita — padrão. Ideal para detalhes e edição.", "Right side — default. Ideal for details and editing.")),
+        new("Left", T("Lateral esquerda — filtros e navegação auxiliar.", "Left side — filters and auxiliary navigation.")),
+        new("Top", T("Topo — alertas, banners e notificações.", "Top — alerts, banners and notifications.")),
+        new("Bottom", T("Rodapé — ações, seletores e confirmações mobile.", "Bottom — actions, selectors and mobile confirmations."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows =>
+    [
+        new("Open", T("Drawer visível com overlay e trap focus.", "Drawer visible with overlay and trap focus.")),
+        new("Closed", T("Drawer removido do DOM após animação de saída.", "Drawer removed from DOM after exit animation.")),
+        new("Opening", T("Animação de entrada ativa. Evento Opening pode cancelar.", "Enter animation active. Opening event can cancel.")),
+        new("Closing", T("Animação de saída ativa. Evento Closing pode cancelar com Reason.", "Exit animation active. Closing event can cancel with Reason."))
+    ];
+
+    private IReadOnlyList<ApiRow> ApiRows =>
+    [
+        new("Open", "bool", "false", T("Estado Aberto/Fechado. Two-way binding.", "Open/closed state. Two-way binding.")),
+        new("OpenChanged", "EventCallback<bool>", "default", T("Disparado quando Open muda.", "Fired when Open changes.")),
+        new("OnClose", "EventCallback", "default", T("Disparado após fechar (D-001).", "Fired after close (D-001).")),
+        new("Opened", "EventCallback", "default", T("Disparado quando animação de entrada termina.", "Fired when enter animation completes.")),
+        new("Closed", "EventCallback", "default", T("Disparado quando animação de saída termina.", "Fired when exit animation completes.")),
+        new("Opening", "Func<XFDrawerOpeningEventArgs, Task>?", "null", T("Antes de abrir. Pode cancelar.", "Before open. Can cancel.")),
+        new("Closing", "Func<XFDrawerClosingEventArgs, Task>?", "null", T("Antes de fechar. Pode cancelar com Reason.", "Before close. Can cancel with Reason.")),
+        new("Title", "string?", "null", T("Título do header.", "Header title.")),
+        new("Description", "string?", "null", T("Descrição do header.", "Header description.")),
+        new("Header", "RenderFragment?", "null", T("Template customizado do header.", "Custom header template.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteúdo principal do drawer.", "Main drawer content.")),
+        new("Footer", "RenderFragment?", "null", T("Rodapé com ações.", "Footer with actions.")),
+        new("Placement", "XFDrawerPlacement", "Right", T("Right, Left, Top ou Bottom.", "Right, Left, Top or Bottom.")),
+        new("Size", "XFOverlaySize", "Md", T("Sm, Md, Lg, Xl ou Full.", "Sm, Md, Lg, Xl or Full.")),
+        new("Tone", "XFSemanticColor", "Default", T("Default, Primary, Success, Warning ou Danger.", "Default, Primary, Success, Warning or Danger.")),
+        new("ResponsiveBelow", "XFDrawerResponsiveBreakpoint", "None", T("None, Sm, Md ou Lg — vira bottom sheet abaixo do breakpoint.", "None, Sm, Md or Lg — becomes bottom sheet below breakpoint.")),
+        new("Modal", "bool", "true", T("Overlay com backdrop. false permite interação com fundo.", "Overlay with backdrop. false allows background interaction.")),
+        new("TrapFocus", "bool", "true", T("Mantém foco dentro do drawer.", "Keeps focus inside drawer.")),
+        new("CloseOnEscape", "bool", "true", T("Fecha ao pressionar Escape.", "Closes on Escape key.")),
+        new("CloseOnOverlayClick", "bool", "true", T("Fecha ao clicar no overlay.", "Closes on overlay click.")),
+        new("ShowCloseButton", "bool", "true", T("Mostra botão X no header.", "Shows X button in header.")),
+        new("CloseLabel", "string", "\"Fechar painel\"", T("Label acessível do botão fechar.", "Accessible close button label.")),
+        new("AnimationDuration", "int", "200", T("Duração da animação em ms.", "Animation duration in ms.")),
+        new("AriaLabel", "string?", "null", T("Label acessível customizado.", "Custom accessible label.")),
+        new("AriaLabelledBy", "string?", "null", T("ID do elemento que descreve o drawer.", "ID of element describing drawer."))
+    ];
+
+    private IReadOnlyList<ApiRow> ServiceApiRows =>
+    [
+        new("ShowAsync", "Task", "—", T("Abre drawer com opções, conteúdo e footer via RenderFragment<XFDrawerController>.", "Opens drawer with options, content and footer via RenderFragment<XFDrawerController>.")),
+        new("XFDrawerOptions.Title", "string?", "null", T("Título do drawer.", "Drawer title.")),
+        new("XFDrawerOptions.Placement", "XFDrawerPlacement", "Right", T("Posição do drawer.", "Drawer position.")),
+        new("XFDrawerOptions.Size", "XFOverlaySize", "Md", T("Tamanho do drawer.", "Drawer size.")),
+        new("XFDrawerOptions.Tone", "XFSemanticColor", "Default", T("Tom semântico.", "Semantic tone.")),
+        new("XFDrawerOptions.Modal", "bool", "true", T("Overlay modal.", "Modal overlay.")),
+        new("XFDrawerOptions.CloseLabel", "string", "\"Fechar painel\"", T("Label acessível.", "Accessible label.")),
+        new("XFDrawerController.CloseAsync", "Task", "—", T("Fecha o drawer programaticamente.", "Closes drawer programmatically."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows =>
+    [
+        new("OnClose", T("Disparado após fechar. D-001 convention.", "Fired after close. D-001 convention.")),
+        new("Opened", T("Disparado quando animação de entrada termina.", "Fired when enter animation completes.")),
+        new("Closed", T("Disparado quando animação de saída termina.", "Fired when exit animation completes.")),
+        new("Opening", T("Antes de abrir. Cancelável via args.Cancel.", "Before open. Cancelable via args.Cancel.")),
+        new("Closing", T("Antes de fechar. Cancelável. Reason: User, Escape, Overlay, Programmatic.", "Before close. Cancelable. Reason: User, Escape, Overlay, Programmatic.")),
+        new("OpenChanged", T("Two-way binding do parâmetro Open.", "Two-way binding for Open parameter."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems =>
+    [
+        new("WAI-ARIA", T("role=dialog, aria-modal, aria-labelledby, aria-describedby no painel aside.", "role=dialog, aria-modal, aria-labelledby, aria-describedby on aside panel."), "universal-access"),
+        new(T("Trap focus", "Trap focus"), T("Foco mantido dentro do drawer via JS interop (xfDialog.trap).", "Focus kept inside drawer via JS interop (xfDialog.trap)."), "lock"),
+        new(T("Overlay click", "Overlay click"), T("Clicar no overlay fecha (CloseOnOverlayClick). Overlay com backdrop-blur.", "Clicking overlay closes (CloseOnOverlayClick). Overlay with backdrop-blur."), "layer-group"),
+        new(T("Escape key", "Escape key"), T("Escape fecha o drawer (CloseOnEscape).", "Escape closes drawer (CloseOnEscape)."), "keyboard"),
+        new(T("Close button", "Close button"), T("Botão X com aria-label customizável. Touch target 44px.", "X button with custom aria-label. 44px touch target."), "hand-pointer"),
+        new(T("Reduced motion", "Reduced motion"), T("Animações respeitam prefers-reduced-motion.", "Animations respect prefers-reduced-motion."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows =>
+    [
+        new("Escape", T("Fecha o drawer (CloseOnEscape=true).", "Closes drawer (CloseOnEscape=true).")),
+        new("Tab", T("Navega entre elementos focáveis dentro do drawer (trap focus).", "Navigates focusable elements inside drawer (trap focus).")),
+        new("Shift+Tab", T("Navega na direção inversa dentro do drawer.", "Navigates in reverse direction inside drawer."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems =>
+    [
+        new(T("4 posições", "4 positions"), T("Right, Left, Top e Bottom adaptam o layout automaticamente.", "Right, Left, Top and Bottom adapt layout automatically."), "arrows-up-down"),
+        new(T("ResponsiveBelow", "ResponsiveBelow"), T("Transforma drawer lateral em bottom sheet em breakpoints configuráveis.", "Transforms side drawer into bottom sheet at configurable breakpoints."), "mobile-screen"),
+        new(T("Overflow auto", "Overflow auto"), T("Body com overflow-auto para conteúdo longo.", "Body with overflow-auto for long content."), "table-cells"),
+        new(T("5 tamanhos", "5 sizes"), T("Sm, Md, Lg, Xl e Full com max-width responsivo.", "Sm, Md, Lg, Xl and Full with responsive max-width."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems =>
+    [
+        new(T("Renderização condicional", "Conditional rendering"), T("Drawer só entra no DOM quando Open=true. Remove após animação de saída.", "Drawer only enters DOM when Open=true. Removed after exit animation."), "bolt"),
+        new(T("Animação CSS", "CSS animation"), T("Transições via Tailwind. Sem JS para animar.", "Transitions via Tailwind. No JS for animation."), "sparkles"),
+        new(T("Backdrop blur", "Backdrop blur"), T("backdrop-blur-sm com GPU acceleration.", "backdrop-blur-sm with GPU acceleration."), "eye"),
+        new(T("Reduced motion", "Reduced motion"), T("motion-reduce:transition-none desabilita animações.", "motion-reduce:transition-none disables animations."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems =>
+    [
+        new("ERP", T("Detalhes de pedido, cliente ou produto ao clicar na grid.", "Order, customer or product details on grid click."), "briefcase"),
+        new(T("Fiscal", "Tax"), T("Detalhes de NF-e com itens, impostos e aprovação.", "NF-e details with items, taxes and approval."), "file-lines"),
+        new(T("Filtros", "Filters"), T("Painel de filtros avançados lateral.", "Advanced side filter panel."), "filter"),
+        new(T("RH", "HR"), T("Detalhes de funcionário ao clicar na tabela.", "Employee details on table click."), "users"),
+        new(T("Financeiro", "Finance"), T("Detalhes de título com histórico e ações.", "Receivable details with history and actions."), "chart-line"),
+        new(T("Configurações", "Settings"), T("Editor de configurações sem sair da lista.", "Settings editor without leaving list."), "sliders")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems =>
+    [
+        new(T("Modal vs Não-modal", "Modal vs Non-modal"), T("Modal=true para ações críticas. Modal=false para filtros.", "Modal=true for critical actions. Modal=false for filters."), "layer-group"),
+        new(T("ResponsiveBelow", "ResponsiveBelow"), T("Use Md ou Lg para adaptar em mobile.", "Use Md or Lg to adapt on mobile."), "mobile-screen"),
+        new(T("Header template", "Header template"), T("Header customizado com ícones e badges.", "Custom header with icons and badges."), "font"),
+        new(T("Footer com ações", "Footer with actions"), T("Footer para botões de aprovação/rejeição.", "Footer for approval/rejection buttons."), "check-circle"),
+        new(T("Tons semânticos", "Semantic tones"), T("Danger para exclusão, Success para aprovação.", "Danger for deletion, Success for approval."), "swatchbook"),
+        new(T("Serviço DI", "DI service"), T("XFDrawerService para abrir de qualquer camada.", "XFDrawerService to open from any layer."), "code")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems =>
+    [
+        new(T("Touch target", "Touch target"), T("Botão de fechar com 44px mínimo (WCAG 2.5.8 AAA).", "Close button with 44px minimum (WCAG 2.5.8 AAA)."), "hand-pointer"),
+        new(T("Sempre fechável", "Always closable"), T("X, Escape e overlay — sempre fornecer pelo menos 2.", "X, Escape and overlay — always provide at least 2."), "eye"),
+        new(T("Header descritivo", "Descriptive header"), T("Title + Description para contexto imediato.", "Title + Description for immediate context."), "font"),
+        new(T("Footer para ações", "Footer for actions"), T("Footer com botões de confirmação/cancelamento.", "Footer with confirmation/cancel buttons."), "check-circle")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems =>
+    [
+        new(T("Drawer como diálogo", "Drawer as dialog"), T("Use XFDialog para confirmações simples. Drawer para conteúdo complexo.", "Use XFDialog for simple confirmations. Drawer for complex content."), "xmark"),
+        new(T("Muitos drawers empilhados", "Too many stacked drawers"), T("Não empilhe mais de 2. Use navegação interna.", "Do not stack more than 2. Use internal navigation."), "layer-group"),
+        new(T("Drawer sem fechar", "Drawer without close"), T("Sempre forneça maneira de fechar: X, Escape, overlay.", "Always provide close: X, Escape, overlay."), "eye-slash"),
+        new(T("Conteúdo crítico no drawer", "Critical content in drawer"), T("Não esconda informações essenciais dentro de drawers.", "Do not hide essential information inside drawers."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows =>
+    [
+        new("overlay", T("bg-surface-950/35, backdrop-blur-sm.", "bg-surface-950/35, backdrop-blur-sm.")),
+        new("panel", T("bg-bg-surface, border, shadow-[0_24px_70px], ring-1.", "bg-bg-surface, border, shadow-[0_24px_70px], ring-1.")),
+        new("typography", T("text-lg font-semibold (title), text-sm text-text-secondary (body).", "text-lg font-semibold (title), text-sm text-text-secondary (body).")),
+        new("radius", T("rounded-xl (panel), rounded-lg (close button).", "rounded-xl (panel), rounded-lg (close button).")),
+        new("spacing", T("px-5 py-4 (header/footer), gap-2 (footer buttons).", "px-5 py-4 (header/footer), gap-2 (footer buttons).")),
+        new("motion", T("transition-transform/opacity ease-out, duration-200.", "transition-transform/opacity ease-out, duration-200."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems =>
+    [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook"),
+        new("Tons semânticos", T("Border e ring com color-mix para cada tom.", "Border and ring with color-mix for each tone."), "eye"),
+        new("Motion", T("Transições respeitam prefers-reduced-motion.", "Transitions respect prefers-reduced-motion."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows =>
+    [
+        new("Unit", T("Render, props, events, a11y, placement, sizes, tones.", "Render, props, events, a11y, placement, sizes, tones.")),
+        new("Accessibility", T("role=dialog, aria-modal, aria-labelledby, trap focus.", "role=dialog, aria-modal, aria-labelledby, trap focus.")),
+        new("Animation", T("Transições de entrada/saída, reduced-motion, duration.", "Enter/exit transitions, reduced-motion, duration."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows =>
+    [
+        new("JS Interop", T("Requer xfDialog.trap/release. Falha graceful durante prerender.", "Requires xfDialog.trap/release. Graceful failure during prerender.")),
+        new(T("Focus trap mobile", "Focus trap mobile"), T("Touch devices podem ter comportamento diferente com trap.", "Touch devices may behave differently with trap.")),
+        new(T("Stacking limit", "Stacking limit"), T("Não suporta mais de 2 drawers empilhados.", "Does not support more than 2 stacked drawers."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems =>
+    [
+        new("XFDialog", T("Diálogo modal para confirmações e ações rápidas.", "Modal dialog for confirmations and quick actions."), "square"),
+        new("XFPopover", T("Popup pequeno contextual.", "Small contextual popup."), "comment"),
+        new("XFSidebar", T("Navegação lateral persistente.", "Persistent side navigation."), "bars"),
+        new("XFSheet", T("Bottom sheet nativo.", "Native bottom sheet."), "window-minimize"),
+        new("XFTabs", T("Conteúdo em abas.", "Tabbed content."), "table-cells"),
+        new("XFDrawerProvider", T("Provider para XFDrawerService.", "Provider for XFDrawerService."), "code")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows =>
+    [
+        new(T("Drawer vs Dialog?", "Drawer vs Dialog?"), T("Drawer para conteúdo complexo e editável. Dialog para confirmações e ações rápidas.", "Drawer for complex and editable content. Dialog for confirmations and quick actions.")),
+        new(T("Como abrir de qualquer lugar?", "How to open from anywhere?"), T("Injete XFDrawerService e chame ShowAsync. Registre XFDrawerProvider no MainLayout.", "Inject XFDrawerService and call ShowAsync. Register XFDrawerProvider in MainLayout.")),
+        new(T("Drawer funciona sem JS?", "Does drawer work without JS?"), T("Sim. Trap focus e animações falham graceful durante prerender. Funciona em todos os modos.", "Yes. Focus trap and animations fail gracefully during prerender. Works in all modes.")),
+        new(T("Modal vs não-modal?", "Modal vs non-modal?"), T("Modal=true bloqueia fundo com overlay. Modal=false permite interação com o conteúdo de fundo.", "Modal=true blocks background with overlay. Modal=false allows interaction with background content."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows =>
+    [
+        new("2026-06-11", T("Acentuação PT-BR corrigida, code strings limpas, hero funcional, seções adicionadas (Propósito, Tokens, Temas, Testes, FAQ, Limitações, Boas práticas).", "PT-BR accent fixes, clean code strings, functional hero, sections added (Purpose, Tokens, Theming, Testing, FAQ, Limitations, Best Practices).")),
+        new("2026-06-02", T("10 exemplos: Básico, Posições, Tamanhos, Tons, Não-modal, Responsivo, Header/Footer, Eventos, Serviço, Enterprise.", "10 examples: Basic, Positions, Sizes, Tones, Non-modal, Responsive, Header/Footer, Events, Service, Enterprise.")),
+        new("2026-05-20", T("Migração inicial do seed.", "Initial seed migration."))
+    ];
+
+    // === CODE STRINGS ===
+    private string CodeBasic => @"<XFDrawer @bind-Open=""_open""
+          Title=""Detalhes do pedido #4821""
+          Description=""Resumo operacional""
+          Placement=""XFDrawerPlacement.Right""
+          Size=""XFOverlaySize.Sm""
+          Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"">
+        Conteúdo do drawer: informações detalhadas do pedido,
+        histórico de movimentações e ações disponíveis.
+    </XFTypography>
+</XFDrawer>
+
+@code {
+    private bool _open;
+}";
+
+    private string CodePositions => @"<XFDrawer @bind-Open=""@rightOpen""
+    Title=""Posição: Right""
+    Description=""Lateral direita — padrão para detalhes e edição.""
+    Placement=""XFDrawerPlacement.Right""
+    Size=""XFOverlaySize.Sm""
+    Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer na posição Right.
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@leftOpen""
+    Title=""Posição: Left""
+    Description=""Lateral esquerda — filtros e navegação.""
+    Placement=""XFDrawerPlacement.Left""
+    Size=""XFOverlaySize.Sm""
+    Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer na posição Left.
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@topOpen""
+    Title=""Posição: Top""
+    Description=""Topo — alertas e notificações.""
+    Placement=""XFDrawerPlacement.Top""
+    Size=""XFOverlaySize.Sm""
+    Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer na posição Top.
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@bottomOpen""
+    Title=""Posição: Bottom""
+    Description=""Rodapé — ações e confirmações.""
+    Placement=""XFDrawerPlacement.Bottom""
+    Size=""XFOverlaySize.Sm""
+    Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer na posição Bottom.
+    </XFTypography>
+</XFDrawer>
+
+@code {
+    private bool rightOpen;
+    private bool leftOpen;
+    private bool topOpen;
+    private bool bottomOpen;
+}";
+
+    private string CodeSizes => @"<XFDrawer @bind-Open=""@smOpen""
+    Title=""Tamanho: Sm"" Placement=""XFDrawerPlacement.Right""
+    Size=""XFOverlaySize.Sm"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer com tamanho Sm — max-w-sm (384px).
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@mdOpen""
+    Title=""Tamanho: Md"" Placement=""XFDrawerPlacement.Right""
+    Size=""XFOverlaySize.Md"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer com tamanho Md — max-w-md (448px).
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@lgOpen""
+    Title=""Tamanho: Lg"" Placement=""XFDrawerPlacement.Right""
+    Size=""XFOverlaySize.Lg"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer com tamanho Lg — max-w-2xl (672px).
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@xlOpen""
+    Title=""Tamanho: Xl"" Placement=""XFDrawerPlacement.Right""
+    Size=""XFOverlaySize.Xl"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer com tamanho Xl — max-w-4xl (896px).
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@fullOpen""
+    Title=""Tamanho: Full"" Placement=""XFDrawerPlacement.Right""
+    Size=""XFOverlaySize.Full"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Drawer com tamanho Full — w-full.
+    </XFTypography>
+</XFDrawer>
+
+@code {
+    private bool smOpen;
+    private bool mdOpen;
+    private bool lgOpen;
+    private bool xlOpen;
+    private bool fullOpen;
+}";
+
+    private string CodeTones => @"<XFDrawer @bind-Open=""@defaultOpen""
+    Title=""Tom: Default"" Description=""Borda e ring com tom semântico""
+    Placement=""XFDrawerPlacement.Right"" Size=""XFOverlaySize.Sm""
+    Tone=""XFSemanticColor.Default"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Tom Default — borda e ring neutros.
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@primaryOpen""
+    Title=""Tom: Primary"" Description=""Borda e ring com tom semântico""
+    Placement=""XFDrawerPlacement.Right"" Size=""XFOverlaySize.Sm""
+    Tone=""XFSemanticColor.Primary"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Tom Primary — borda e ring coloridos.
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@successOpen""
+    Title=""Tom: Success"" Description=""Borda e ring com tom semântico""
+    Placement=""XFDrawerPlacement.Right"" Size=""XFOverlaySize.Sm""
+    Tone=""XFSemanticColor.Success"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Tom Success — borda e ring verdes.
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@warningOpen""
+    Title=""Tom: Warning"" Description=""Borda e ring com tom semântico""
+    Placement=""XFDrawerPlacement.Right"" Size=""XFOverlaySize.Sm""
+    Tone=""XFSemanticColor.Warning"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Tom Warning — borda e ring amarelos.
+    </XFTypography>
+</XFDrawer>
+
+<XFDrawer @bind-Open=""@dangerOpen""
+    Title=""Tom: Danger"" Description=""Borda e ring com tom semântico""
+    Placement=""XFDrawerPlacement.Right"" Size=""XFOverlaySize.Sm""
+    Tone=""XFSemanticColor.Danger"" Modal=""false"">
+    <XFTypography Variant=""XFTypographyVariant.Body2"" Color=""XFTypographyColor.Secondary"">
+        Tom Danger — borda e ring vermelhos.
+    </XFTypography>
+</XFDrawer>
+
+@code {
+    private bool defaultOpen;
+    private bool primaryOpen;
+    private bool successOpen;
+    private bool warningOpen;
+    private bool dangerOpen;
+}";
+
+    private string CodeNonModal => @"<XFDrawer @bind-Open=""_open""
+          Title=""Painel de filtros""
+          Modal=""false"">
+    <XFStack Orientation=""XFOrientation.Vertical"" Gap=""3"">
+        <XFTypography Variant=""XFTypographyVariant.Body2"">
+            Este drawer não bloqueia o conteúdo de fundo.
+        </XFTypography>
+        <XFButton Variant=""XFButtonVariant.Outline"">Aplicar filtros</XFButton>
+    </XFStack>
+</XFDrawer>";
+
+    private string CodeResponsive => @"<XFDrawer Placement=""XFDrawerPlacement.Right""
+          Size=""XFOverlaySize.Lg""
+          ResponsiveBelow=""XFDrawerResponsiveBreakpoint.Md"">
+    <XFTypography>
+        Em telas menores que md vira bottom sheet.
+    </XFTypography>
+</XFDrawer>";
+
+    private string CodeHeaderFooter => @"<XFDrawer @bind-Open=""_open""
+          Placement=""XFDrawerPlacement.Right""
+          Size=""XFOverlaySize.Md"">
+    <Header>
+        <div class=""flex items-center gap-3"">
+            <span class=""inline-flex h-10 w-10 shrink-0 items-center
+                         justify-center rounded-lg bg-primary/10 text-primary"">
+                @((MarkupString)XFSvgIcons.MarkupWithSize(""file-invoice"", 18))
+            </span>
+            <div>
+                <div class=""text-lg font-semibold"">NF-e #001.271</div>
+                <div class=""text-sm text-text-muted"">Construtora Horizonte LTDA</div>
+            </div>
+        </div>
+    </Header>
+    <ChildContent>
+        <XFTypography>12 itens com impostos calculados.</XFTypography>
+    </ChildContent>
+    <Footer>
+        <XFButton Color=""XFButtonColor.Neutral"">Rejeitar</XFButton>
+        <XFButton Color=""XFButtonColor.Success"">Aprovar</XFButton>
+    </Footer>
+</XFDrawer>";
+
+    private string CodeEvents => @"<XFDrawer @bind-Open=""_open""
+          Title=""Eventos canceláveis""
+          Opening=""@OnOpening""
+          Closing=""@OnClosing""
+          OnClose=""@(() => _lastEvent = ""OnClose fired"")"">
+    <XFTypography>Feche com X, Escape ou overlay.</XFTypography>
+</XFDrawer>
+
+@code {
+    private Task OnOpening(XFDrawerOpeningEventArgs args)
+    {
+        _lastEvent = ""Opening (allowed)"";
+        return Task.CompletedTask;
+    }
+
+    private Task OnClosing(XFDrawerClosingEventArgs args)
+    {
+        _lastEvent = $""Closing ({args.Reason})"";
+        return Task.CompletedTask;
+    }
+}";
+
+    private string CodeServicePattern => @"<!-- 1. Registrar no Program.cs -->
+builder.Services.AddScoped<XFDrawerService>();
+
+<!-- 2. Adicionar Provider no MainLayout -->
+<XFDrawerProvider />
+
+<!-- 3. Injetar e usar -->
+@inject XFDrawerService DrawerService
+
+await DrawerService.ShowAsync(
+    new XFDrawerOptions
+    {
+        Title = ""Detalhes"",
+        Size = XFOverlaySize.Lg
+    },
+    controller => builder =>
+        builder.AddContent(0, ""Conteúdo do drawer"")
+);";
+
+    private string CodeEnterprise => @"<XFDrawer @bind-Open=""_open""
+          Placement=""XFDrawerPlacement.Right""
+          Size=""XFOverlaySize.Lg""
+          Modal=""false"">
+    <Header>
+        <div class=""flex items-center gap-3"">
+            <span class=""inline-flex h-10 w-10 shrink-0 items-center
+                         justify-center rounded-lg bg-success/10 text-success"">
+                @((MarkupString)XFSvgIcons.MarkupWithSize(""check-circle"", 18))
+            </span>
+            <div>
+                <div class=""text-lg font-semibold"">NF-e #001.271 — Aprovação</div>
+                <div class=""text-sm text-text-muted"">Construtora Horizonte LTDA</div>
+            </div>
+        </div>
+    </Header>
+    <ChildContent>
+        <div class=""grid grid-cols-4 gap-3"">
+            <div><span class=""text-xs text-text-muted"">Número</span><br/>001.271</div>
+            <div><span class=""text-xs text-text-muted"">Valor</span><br/>R$ 28.450,00</div>
+            <div><span class=""text-xs text-text-muted"">ICMS</span><br/>R$ 5.121,00</div>
+            <div><span class=""text-xs text-text-muted"">Status</span><br/>Autorizada</div>
+        </div>
+    </ChildContent>
+    <Footer>
+        <XFButton Color=""XFButtonColor.Danger"">Rejeitar NF-e</XFButton>
+        <XFButton Color=""XFButtonColor.Success"">Aprovar NF-e</XFButton>
+    </Footer>
+</XFDrawer>";
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.Pivot;
+using XForge.DesignSystem.Components.Pivot;
 
 namespace XForge.DesignSystem.Tests.Components.Pivot;
 

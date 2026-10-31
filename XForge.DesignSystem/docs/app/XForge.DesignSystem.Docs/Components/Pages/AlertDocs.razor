@@ -1,0 +1,584 @@
+@using XForge.DesignSystem.Core.Primitives
+@page "/feedback/alert"
+@page "/feedback/alerts"
+
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFAlert" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("WAI-ARIA", "WAI-ARIA")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Live Region", "Live Region")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Alerta contextual acessivel com live region e 7 intents.", "Contextual accessible alert with live region and 7 intents.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("7 intents, 4 variantes, 3 tamanhos, live region, dismiss, icones, acoes e touch target 44px WCAG AAA.",
+                               "7 intents, 4 variants, 3 sizes, live region, dismiss, icons, actions and 44px WCAG AAA touch target.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 4)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== ALL MANDATORY EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("Alert simples com configuracao padrao.", "Simple alert with default settings."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Tamanhos", "2. Sizes"),
+                T("Sm, Md e Lg — todos com touch target 44px.", "Sm, Md and Lg — all with 44px touch target."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("3. Intents", "3. Intents"),
+                T("7 intents: Info, Success, Warning, Danger, Primary, Secondary, Neutral.", "7 intents: Info, Success, Warning, Danger, Primary, Secondary, Neutral."),
+                ExIntents(), CodeIntents)
+
+            @Example(T("4. Variantes", "4. Variants"),
+                T("4 variantes: Soft, Solid, Outline, Subtle.", "4 variants: Soft, Solid, Outline, Subtle."),
+                ExVariants(), CodeVariants)
+
+            @Example(T("5. Icones", "5. Icons"),
+                T("ShowIcon=true/false e icone padrao por intent.", "ShowIcon=true/false and default icon per intent."),
+                ExIcons(), CodeIcons)
+
+            @Example(T("6. Dismiss", "6. Dismissible"),
+                T("Dismissible=true com OnDismiss callback.", "Dismissible=true with OnDismiss callback."),
+                ExDismiss(), CodeDismiss)
+
+            @Example(T("7. Titulo", "7. Title"),
+                T("Com e sem titulo, com e sem texto.", "With and without title, with and without text."),
+                ExTitle(), CodeTitle)
+
+            @Example(T("8. Acoes", "8. Actions"),
+                T("RenderFragment Actions para botoes customizados.", "Actions RenderFragment for custom buttons."),
+                ExActions(), CodeActions)
+
+            @Example(T("9. Templates", "9. Templates"),
+                T("ChildContent com markup customizado.", "ChildContent with custom markup."),
+                ExTemplates(), CodeTemplates)
+
+            @Example(T("10. ARIA Live", "10. ARIA Live"),
+                T("Polite, Assertive e Off para regioes live.", "Polite, Assertive and Off for live regions."),
+                ExAriaLive(), CodeAriaLive)
+
+            @Example(T("11. StartIcon custom", "11. Custom StartIcon"),
+                T("RenderFragment StartIcon para icones customizados.", "StartIcon RenderFragment for custom icons."),
+                ExCustomIcon(), CodeCustomIcon)
+
+            @Example(T("12. Cenario enterprise", "12. Enterprise scenario"),
+                T("Alertas em contexto ERP com dados realistas.", "Alerts in ERP context with realistic data."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Alert", "Alert");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // ─── Hero ───
+    private RenderFragment HeroPreview() => @<div class="flex flex-col gap-3">
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Success" Variant="XFAlertVariant.Soft" Title="@T("Pagamento confirmado", "Payment confirmed")" Text="@T("NF 001.234 — R$ 12.450,00 creditado em 12/05/2026.", "INV 001.234 — R$ 12,450.00 credited on 05/12/2026.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Warning" Variant="XFAlertVariant.Soft" Title="@T("Estoque baixo", "Low stock")" Text="@T("Produto SKU-4521 abaixo do minimo (3 unidades restantes).", "Product SKU-4521 below minimum (3 units remaining).")" Dismissible="true" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Danger" Variant="XFAlertVariant.Solid" Title="@T("Erro de integracao", "Integration error")" Text="@T("API Sefaz retornou timeout. Tente novamente em 5 minutos.", "Sefaz API returned timeout. Try again in 5 minutes.")" Dismissible="true" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Outline" Text="@T("Nova versao do modulo fiscal disponivel (v3.2.1).", "New fiscal module version available (v3.2.1).")" />
+    </div>;
+
+    // ─── 1. Basic ───
+    private RenderFragment ExBasic() => @<div class="flex flex-col gap-3">
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Text="@T("Esta e uma mensagem informativa padrao.", "This is a default informational message.")" />
+    </div>;
+
+    // ─── 2. Sizes ───
+    private RenderFragment ExSizes() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Sm" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                    @T("Compacto — tabelas densas, dashboards com muitos KPIs.", "Compact — dense tables, dashboards with many KPIs.")
+                </XFTypography>
+            </div>
+            <XFAlert Size="XFSize.Sm" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Text="@T("Alert pequeno para espacos compactos.", "Small alert for compact spaces.")" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Md" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                    @T("Padrao — maioria dos cenarios ERP.", "Default — most ERP scenarios.")
+                </XFTypography>
+            </div>
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Text="@T("Alert medio, tamanho padrao.", "Medium alert, default size.")" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+                <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Lg" />
+                <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                    @T("Touch-first — tablets, kiosks, telas de ponto de venda.", "Touch-first — tablets, kiosks, POS screens.")
+                </XFTypography>
+            </div>
+            <XFAlert Size="XFSize.Lg" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Text="@T("Alert grande para telas touch.", "Large alert for touch screens.")" />
+        </div>
+    </div>;
+
+    // ─── 3. Intents ───
+    private RenderFragment ExIntents() => @<div class="flex flex-col gap-3">
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Title="Info" Text="@T("Intent Info — informativo padrao.", "Intent Info — default informational.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Success" Variant="XFAlertVariant.Soft" Title="Success" Text="@T("Intent Success — operacao concluida.", "Intent Success — operation completed.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Warning" Variant="XFAlertVariant.Soft" Title="Warning" Text="@T("Intent Warning — atencao necessaria.", "Intent Warning — attention needed.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Danger" Variant="XFAlertVariant.Soft" Title="Danger" Text="@T("Intent Danger — erro ou falha critica.", "Intent Danger — critical error or failure.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Primary" Variant="XFAlertVariant.Soft" Title="Primary" Text="@T("Intent Primary — destaque da marca.", "Intent Primary — brand emphasis.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Secondary" Variant="XFAlertVariant.Soft" Title="Secondary" Text="@T("Intent Secondary — complementar.", "Intent Secondary — complementary.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Neutral" Variant="XFAlertVariant.Soft" Title="Neutral" Text="@T("Intent Neutral — neutro, sem cor semantica.", "Intent Neutral — neutral, no semantic color.")" />
+    </div>;
+
+    // ─── 4. Variants ───
+    private RenderFragment ExVariants() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Soft" />
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Title="Soft" Text="@T("Variante Soft — fundo sutil, borda leve.", "Soft variant — subtle background, light border.")" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Solid" />
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Solid" Title="Solid" Text="@T("Variante Solid — fundo colorido, alta visibilidade.", "Solid variant — colored background, high visibility.")" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Outline" />
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Outline" Title="Outline" Text="@T("Variante Outline — borda definida, fundo transparente.", "Outline variant — defined border, transparent background.")" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Subtle" />
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Subtle" Title="Subtle" Text="@T("Variante Subtle — minimalista, borda quase invisivel.", "Subtle variant — minimalist, nearly invisible border.")" />
+        </div>
+    </div>;
+
+    // ─── 5. Icons ───
+    private RenderFragment ExIcons() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">ShowIcon=true (padrao)</XFTypography>
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Success" Variant="XFAlertVariant.Soft" ShowIcon="true" Text="@T("Icone de sucesso visivel.", "Success icon visible.")" />
+        </div>
+        <div class="flex flex-col gap-1">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">ShowIcon=false</XFTypography>
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Warning" Variant="XFAlertVariant.Soft" ShowIcon="false" Text="@T("Sem icone — apenas texto.", "No icon — text only.")" />
+        </div>
+        <div class="flex flex-col gap-1">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">@T("Icones padrao por intent", "Default icons by intent")</XFTypography>
+            <div class="flex flex-col gap-2">
+                <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Text="Info → circle-info" />
+                <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Success" Variant="XFAlertVariant.Soft" Text="Success → circle-check" />
+                <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Warning" Variant="XFAlertVariant.Soft" Text="Warning → triangle-exclamation" />
+                <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Danger" Variant="XFAlertVariant.Soft" Text="Danger → circle-xmark" />
+            </div>
+        </div>
+    </div>;
+
+    // ─── 6. Dismiss ───
+    private bool dismissDemoVisible = true;
+    private RenderFragment ExDismiss() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Dismissible=true com OnDismiss</XFTypography>
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Dismissible="true" Title="@T("Clique no X para dispensar", "Click X to dismiss")" Text="@T("Este alerta pode ser fechado pelo usuario.", "This alert can be closed by the user.")" />
+        </div>
+        <div class="flex flex-col gap-1">
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Dismissible=true com Visible two-way binding</XFTypography>
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Warning" Variant="XFAlertVariant.Soft" Dismissible="true" @bind-Visible="dismissDemoVisible" Title="@T("Alert controlado", "Controlled alert")" Text="@T("Use @bind-Visible para controle programatico.", "Use @bind-Visible for programmatic control.")" />
+            @if (!dismissDemoVisible)
+            {
+                <XFButton Size="XFExtendedSize.Md" Variant="XFButtonVariant.Outline" Color="XFButtonColor.Primary" OnClick="() => dismissDemoVisible = true">
+                    @T("Mostrar alerta novamente", "Show alert again")
+                </XFButton>
+            }
+        </div>
+    </div>;
+
+    // ─── 7. Title ───
+    private RenderFragment ExTitle() => @<div class="flex flex-col gap-3">
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Title="@T("Com titulo e texto", "With title and text")" Text="@T("Subtitulo descritivo abaixo do titulo.", "Descriptive subtitle below the title.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Success" Variant="XFAlertVariant.Soft" Text="@T("Apenas texto, sem titulo.", "Text only, no title.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Warning" Variant="XFAlertVariant.Soft" Title="@T("Apenas titulo", "Title only")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Danger" Variant="XFAlertVariant.Solid" Title="@T("Titulo com variante Solid", "Title with Solid variant")" Text="@T("Solid usa fundo colorido para alta visibilidade.", "Solid uses colored background for high visibility.")" />
+    </div>;
+
+    // ─── 8. Actions ───
+    private RenderFragment ExActions() => @<div class="flex flex-col gap-3">
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Dismissible="true"
+                 Title="@T("Atualizacao disponivel", "Update available")">
+            <ChildContent>@T("Uma nova versao do modulo fiscal esta disponivel.", "A new version of the fiscal module is available.")</ChildContent>
+            <Actions>
+                <XFButton Size="XFExtendedSize.Sm" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary">@T("Atualizar agora", "Update now")</XFButton>
+                <XFButton Size="XFExtendedSize.Sm" Variant="XFButtonVariant.Ghost" Color="XFButtonColor.Secondary">@T("Depois", "Later")</XFButton>
+            </Actions>
+        </XFAlert>
+    </div>;
+
+    // ─── 9. Templates ───
+    private RenderFragment ExTemplates() => @<div class="flex flex-col gap-3">
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Title="@T("Conteudo customizado", "Custom content")">
+            <ChildContent>
+                <div class="flex flex-col gap-2">
+                    <XFTypography Variant="XFTypographyVariant.Body2">
+                        @T("Use ChildContent para inserir markup complexo dentro do alert.", "Use ChildContent to insert complex markup inside the alert.")
+                    </XFTypography>
+                    <div class="flex gap-2">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="v3.2.1" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Estavel", "Stable")" />
+                    </div>
+                </div>
+            </ChildContent>
+        </XFAlert>
+    </div>;
+
+    // ─── 10. ARIA Live ───
+    private RenderFragment ExAriaLive() => @<div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Polite" />
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Live="XFAriaLive.Polite" Text="@T("Live=Polite — leitores de tela anunciam quando ociosos.", "Live=Polite — screen readers announce when idle.")" />
+        </div>
+        <div class="flex flex-col gap-1">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="Assertive" />
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Warning" Variant="XFAlertVariant.Soft" Live="XFAriaLive.Assertive" Text="@T("Live=Assertive — leitores de tela interrompem para anunciar.", "Live=Assertive — screen readers interrupt to announce.")" />
+        </div>
+        <div class="flex flex-col gap-1">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Neutral" Text="Off" />
+            <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Neutral" Variant="XFAlertVariant.Soft" Live="XFAriaLive.Off" Text="@T("Live=Off — leitores de tela ignoram a regiao.", "Live=Off — screen readers ignore the region.")" />
+        </div>
+    </div>;
+
+    // ─── 11. Custom StartIcon ───
+    private RenderFragment ExCustomIcon() => @<div class="flex flex-col gap-3">
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Info" Variant="XFAlertVariant.Soft" Title="@T("Icone customizado", "Custom icon")">
+            <StartIcon>
+                <span class="inline-block h-4 w-4 text-current">@((MarkupString)XFSvgIcons.Markup("bell"))</span>
+            </StartIcon>
+            <ChildContent>@T("Use o parametro StartIcon para substituir o icone padrao por um RenderFragment.", "Use the StartIcon parameter to replace the default icon with a RenderFragment.")</ChildContent>
+        </XFAlert>
+    </div>;
+
+    // ─── 12. Enterprise ───
+    private RenderFragment ExEnterprise() => @<div class="flex flex-col gap-3">
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Success" Variant="XFAlertVariant.Soft" Dismissible="true" Title="@T("Lote fiscal processado", "Fiscal batch processed")">
+            <ChildContent>
+                <div class="flex flex-col gap-1">
+                    <XFTypography Variant="XFTypographyVariant.Body2">@T("248 notas fiscais autorizadas pela SEFAZ em 12/05/2026.", "248 invoices authorized by SEFAZ on 05/12/2026.")</XFTypography>
+                    <div class="flex gap-2 mt-1">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="@T("248 autorizadas", "248 authorized")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("12 pendentes", "12 pending")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Danger" Text="@T("3 rejeitadas", "3 rejected")" />
+                    </div>
+                </div>
+            </ChildContent>
+            <Actions>
+                <XFButton Size="XFExtendedSize.Sm" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary">@T("Ver relatorio", "View report")</XFButton>
+            </Actions>
+        </XFAlert>
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Warning" Variant="XFAlertVariant.Soft" Dismissible="true" Title="@T("Certificado digital expirando", "Digital certificate expiring")" Text="@T("O certificado A1 da empresa Tech Solutions S.A. expira em 15/06/2026. Renove para evitar interrupcao na emissao de NF-e.", "The A1 certificate of Tech Solutions Inc expires on 06/15/2026. Renew to avoid interruption in NF-e issuance.")" />
+        <XFAlert Size="XFSize.Md" Tone="XFSemanticColor.Danger" Variant="XFAlertVariant.Solid" Dismissible="true" Title="@T("Falha na comunicacao SEFAZ", "SEFAZ communication failure")" Text="@T("Servidor da SEFAZ-SP nao respondeu nas ultimas 3 tentativas. Ultimo retorno: Rejeicao 999 — Servico Paralisado.", "SEFAZ-SP server did not respond in last 3 attempts. Last return: Rejection 999 — Service Halted.")" />
+    </div>;
+
+    // ─── Helpers ───
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light bg-surface-50/30 p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // ─── Data ───
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("7 intents", "7 intents"), T("Info, Success, Warning, Danger, Primary, Secondary, Neutral.", "Info, Success, Warning, Danger, Primary, Secondary, Neutral."), "palette"),
+        new(T("4 variantes", "4 variants"), T("Soft, Solid, Outline, Subtle.", "Soft, Solid, Outline, Subtle."), "layer-group"),
+        new(T("Live region", "Live region"), T("Polite, Assertive e Off para leitores de tela.", "Polite, Assertive and Off for screen readers."), "universal-access")
+    ];
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFAlert"), new("Namespace", "XForge.DesignSystem.Components.Feedback.Alert"),
+        new("Package", "XForge.DesignSystem"), new("Category", "Components / Feedback / Alert"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role, aria-live, aria-label, dismiss com aria-label, touch target 44px AAA.", "role, aria-live, aria-label, dismiss with aria-label, 44px AAA touch target.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Intents", "Intents"), T("7 niveis semanticos de severidade e significado.", "7 semantic severity and meaning levels."), "layer-group"),
+        new(T("Variantes", "Variants"), T("Soft, Solid, Outline e Subtle para diferentes contextos.", "Soft, Solid, Outline and Subtle for different contexts."), "palette"),
+        new(T("Acessibilidade", "Accessibility"), T("role alert/status, aria-live, dismiss acessivel.", "role alert/status, aria-live, accessible dismiss."), "universal-access")
+    ];
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Feedback", "Feedback"), T("Informar usuarios sobre acoes, erros e avisos.", "Inform users about actions, errors and warnings."), "circle-info"),
+        new(T("Validacao", "Validation"), T("Resultados de validacao de formularios e processos.", "Form and process validation results."), "shield-check"),
+        new(T("Notificacoes", "Notifications"), T("Alertas de sistema, integracao e seguranca.", "System, integration and security alerts."), "bell")
+    ];
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Mensagens de sucesso", "Success messages"), T("Confirmacao de acoes como salvar, enviar, pagar.", "Confirmation of actions like save, send, pay."), "circle-check"),
+        new(T("Erros e warnings", "Errors and warnings"), T("Falhas de validacao, integracao, regras de negocio.", "Validation, integration, business rule failures."), "triangle-exclamation"),
+        new(T("Status de processo", "Process status"), T("Lotes processados, importacoes, sincronizacoes.", "Processed batches, imports, syncs."), "arrows-rotate")
+    ];
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Muitos alertas", "Too many alerts"), T("Nao exiba mais de 3-4 alertas simultaneamente. Use lista ou painel.", "Do not display more than 3-4 alerts at once. Use list or panel."), "xmark"),
+        new(T("Conteudo de pagina", "Page content"), T("Nao use alert para layout. Use Card ou Section.", "Do not use alert for layout. Use Card or Section."), "triangle-exclamation")
+    ];
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Sem feedback", "No feedback"), T("Usuarios nao sabem se a acao funcionou.", "Users do not know if the action worked."), "xmark"),
+        new(T("Com alerta", "With alert"), T("Feedback imediato com cor semantica e contexto.", "Immediate feedback with semantic color and context."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role alert/status, aria-live para leitores de tela.", "role alert/status, aria-live for screen readers."), "universal-access")
+    ];
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Icon", T("Icone semantico por intent (ShowIcon).", "Semantic icon per intent (ShowIcon)."), "circle-info"),
+        new("Title", T("Titulo opcional em fonte semibold.", "Optional title in semibold font."), "font"),
+        new("Text", T("Texto descritivo do alert.", "Descriptive alert text."), "align-left"),
+        new("Actions", T("Botoes de acao via RenderFragment.", "Action buttons via RenderFragment."), "hand-pointer")
+    ];
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Hierarquia semantica", "Semantic hierarchy"), T("Cor indica severidade: Danger > Warning > Info.", "Color indicates severity: Danger > Warning > Info."), "layers"),
+        new(T("Discrecao", "Discretion"), T("Alerts nao devem dominar a tela. Use com moderacao.", "Alerts should not dominate the screen. Use sparingly."), "eye"),
+        new(T("Acao imediata", "Immediate action"), T("Cada alert deve levar a uma acao clara ou decisao.", "Each alert should lead to a clear action or decision."), "bolt")
+    ];
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("Alert ocupa 100% do container pai.", "Alert occupies 100% of parent container."), "maximize"),
+        new(T("Touch target 44px", "44px touch target"), T("Dismiss button e botoes de acao com 44px minimo.", "Dismiss and action buttons with 44px minimum."), "mobile-screen")
+    ];
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt"),
+        new(T("Render leve", "Light render"), T("Tag div nativa com Tailwind. Sem DOM extra.", "Native div tag with Tailwind. No extra DOM."), "feather")
+    ];
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Lote fiscal", "Fiscal batch"), T("Resultado de processamento de NF-e com totais.", "NF-e processing result with totals."), "file-invoice"),
+        new(T("Certificado digital", "Digital certificate"), T("Alerta de expiracao de certificado A1/A2.", "A1/A2 certificate expiration alert."), "shield-check"),
+        new(T("Integracao SEFAZ", "SEFAZ integration"), T("Falha de comunicacao com timeout e retry.", "Communication failure with timeout and retry."), "plug")
+    ];
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Alert + Button", "Alert + Button"), T("Botoes de acao dentro do alert via Actions.", "Action buttons inside alert via Actions."), "hand-pointer"),
+        new(T("Alert + Badge", "Alert + Badge"), T("Badges para contadores e status inline.", "Badges for inline counters and status."), "tag"),
+        new(T("Alert + Card", "Alert + Card"), T("Alert dentro de XFCard para contexto de pagina.", "Alert inside XFCard for page context."), "square")
+    ];
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Uma mensagem por alert", "One message per alert"), T("Nao combine assuntos diferentes em um alert.", "Do not combine different topics in one alert."), "align-left"),
+        new(T("Texto conciso", "Concise text"), T("Maximo 2 frases. Se mais, use ChildContent.", "Maximum 2 sentences. If more, use ChildContent."), "compress"),
+        new(T("Cor correta", "Correct color"), T("Danger para erros, Warning para avisos, Info para informacoes.", "Danger for errors, Warning for warnings, Info for info."), "palette"),
+        new(T("Dismissible quando possivel", "Dismissible when possible"), T("Permita ao usuario dispensar alerts nao criticos.", "Allow users to dismiss non-critical alerts."), "xmark")
+    ];
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Muitos simultaneos", "Too many at once"), T("Mais de 4 alerts degradam a experiencia.", "More than 4 alerts degrade the experience."), "xmark"),
+        new(T("Sem titulo", "No title"), T("Alerts sem titulo sao confusos.", "Alerts without title are confusing."), "triangle-exclamation"),
+        new(T("Alert como layout", "Alert as layout"), T("Nao use alert para conter conteudo da pagina.", "Do not use alert to contain page content."), "ban")
+    ];
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("border", T("Borda colorida por intent e variante.", "Colored border by intent and variant.")),
+        new("bg", T("Fundo colorido por variante (Solid=preenchido, Soft=transparent).", "Colored background by variant (Solid=filled, Soft=transparent).")),
+        new("text", T("Cor do texto herda da cor do alert.", "Text color inherits from alert color.")),
+        new("shadow", T("Sombra sutil no Solid para profundidade.", "Subtle shadow on Solid for depth.")),
+        new("ring", T("Anel interno no Soft/Outline/Subtle.", "Inner ring on Soft/Outline/Subtle.")),
+        new("px", T("Padding horizontal: Sm=12px, Md=16px, Lg=20px.", "Horizontal padding: Sm=12px, Md=16px, Lg=20px.")),
+        new("py", T("Padding vertical: Sm=8px, Md=12px, Lg=16px.", "Vertical padding: Sm=8px, Md=12px, Lg=16px."))
+    ];
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, variants, intents, dismiss, live region.", "Render, props, variants, intents, dismiss, live region.")),
+        new("Accessibility", T("role alert/status, aria-live, aria-label, dismiss 44px.", "role alert/status, aria-live, aria-label, dismiss 44px."))
+    ];
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("Static SSR", "Static SSR"), T("Interacoes (dismiss) requerem modo interativo.", "Interactions (dismiss) require interactive mode.")),
+        new(T("Max simultaneos", "Max simultaneous"), T("Nao ha limite tecnico, mas UX recomenda 3-4 maximo.", "No technical limit, but UX recommends 3-4 maximum.")),
+        new(T("Animacao", "Animation"), T("Sem animacao de entrada/saida nativa. Use CSS transitions.", "No native enter/exit animation. Use CSS transitions."))
+    ];
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Visible", "bool", "true", T("Controla visibilidade.", "Controls visibility.")),
+        new("VisibleChanged", "EventCallback<bool>", "default", T("Two-way binding da visibilidade.", "Two-way visibility binding.")),
+        new("Tone", "XFSemanticColor", "Info", T("Nivel semantico: Info, Success, Warning, Danger, Primary, Secondary, Neutral.", "Semantic level: Info, Success, Warning, Danger, Primary, Secondary, Neutral.")),
+        new("Variant", "XFAlertVariant", "Soft", T("Estilo visual: Soft, Solid, Outline, Subtle.", "Visual style: Soft, Solid, Outline, Subtle.")),
+        new("Size", "XFSize", "Md", T("Tamanho: Sm, Md, Lg.", "Size: Sm, Md, Lg.")),
+        new("ShowIcon", "bool", "true", T("Mostra icone padrao por intent.", "Shows default icon per intent.")),
+        new("Dismissible", "bool", "false", T("Mostra botao de dismiss.", "Shows dismiss button.")),
+        new("OnDismiss", "EventCallback", "default", T("Evento ao dispensar o alert.", "Event when alert is dismissed.")),
+        new("Live", "XFAriaLive", "Polite", T("Regiao live: Polite, Assertive, Off.", "Live region: Polite, Assertive, Off.")),
+        new("Title", "string?", "null", T("Titulo do alert.", "Alert title.")),
+        new("Text", "string?", "null", T("Texto do alert.", "Alert text.")),
+        new("ChildContent", "RenderFragment?", "null", T("Conteudo customizado.", "Custom content.")),
+        new("StartIcon", "RenderFragment?", "null", T("RenderFragment para icone customizado.", "RenderFragment for custom icon.")),
+        new("Actions", "RenderFragment?", "null", T("RenderFragment para botoes de acao.", "RenderFragment for action buttons.")),
+        new("AriaLabel", "string?", "null", T("Label acessivel do alert.", "Accessible alert label.")),
+        new("DismissLabel", "string?", "null", T("Label personalizado do botao dismiss.", "Custom dismiss button label.")),
+        new("DismissLabelFormat", "string", "\"Close alert {0}\"", T("Formato do label do dismiss.", "Dismiss label format string."))
+    ];
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("VisibleChanged", T("Alterar visibilidade do alert.", "Change alert visibility.")),
+        new("OnDismiss", T("Usuario clicou no botao dismiss.", "User clicked dismiss button."))
+    ];
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("WAI-ARIA", T("role alert (assertive) ou status (polite).", "role alert (assertive) or status (polite)."), "universal-access"),
+        new(T("Live Region", "Live Region"), T("aria-live polito, assertivo ou off.", "aria-live polite, assertive or off."), "tower-broadcast"),
+        new(T("Dismiss acessivel", "Accessible dismiss"), T("aria-label no botao dismiss, touch target 44px.", "aria-label on dismiss button, 44px touch target."), "hand-pointer"),
+        new(T("Icone oculto", "Hidden icon"), T("aria-hidden nos icones decorativos.", "aria-hidden on decorative icons."), "eye-slash")
+    ];
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Move foco para o botao dismiss.", "Moves focus to dismiss button.")),
+        new("Enter / Space", T("Ativa o botao dismiss focado.", "Activates focused dismiss button.")),
+        new("Escape", T("Pode dispensar alert (via handler global).", "May dismiss alert via global handler."))
+    ];
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFToast", T("Notificacao temporaria auto-dismiss.", "Temporary auto-dismiss notification."), "bell"),
+        new("XFModal", T("Dialogo que exige acao do usuario.", "Dialog requiring user action."), "window-maximize"),
+        new("XFBadge", T("Indicador inline de status.", "Inline status indicator."), "tag")
+    ];
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Qual variante usar para erros?", "Which variant for errors?"), T("Solid para alta visibilidade em erros criticos, Soft para warnings, Outline para info.", "Solid for high visibility in critical errors, Soft for warnings, Outline for info.")),
+        new(T("Quantos alertas simultaneos?", "How many simultaneous alerts?"), T("Maximo 3-4 visiveis. Use XFToast para notificacoes de curta duracao.", "Maximum 3-4 visible. Use XFToast for short-lived notifications.")),
+        new(T("Diferenca entre OnDismiss e VisibleChanged?", "Difference between OnDismiss and VisibleChanged?"), T("OnDismiss dispara apenas ao clicar no X. VisibleChanged dispara em qualquer mudanca de visibilidade.", "OnDismiss fires only on X click. VisibleChanged fires on any visibility change."))
+    ];
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-05-27", T("7 intents, 4 variantes, 3 tamanhos, 12 exemplos, live region, dismiss.", "7 intents, 4 variants, 3 sizes, 12 examples, live region, dismiss."))
+    ];
+
+    // ─── Code Strings ───
+    private string CodeBasic => T("\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\"\n    Text=\"Esta e uma mensagem informativa padrao.\" />",
+        "\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\"\n    Text=\"This is a default informational message.\" />");
+    private string CodeSizes => T("\x3CXFAlert Size=\"XFSize.Sm\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Text=\"Alert pequeno para espacos compactos.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Text=\"Alert medio, tamanho padrao.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Lg\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Text=\"Alert grande para telas touch.\" /\x3E",
+        "\x3CXFAlert Size=\"XFSize.Sm\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Text=\"Small alert for compact spaces.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Text=\"Medium alert, default size.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Lg\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Text=\"Large alert for touch screens.\" /\x3E");
+    private string CodeIntents => T("\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Info\" Text=\"Intent Info — informativo padrao.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Success\" Variant=\"XFAlertVariant.Soft\" Title=\"Success\" Text=\"Intent Success — operacao concluida.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Warning\" Variant=\"XFAlertVariant.Soft\" Title=\"Warning\" Text=\"Intent Warning — atencao necessaria.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Danger\" Variant=\"XFAlertVariant.Soft\" Title=\"Danger\" Text=\"Intent Danger — erro ou falha critica.\" /\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Info\" Text=\"Intent Info — default informational.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Success\" Variant=\"XFAlertVariant.Soft\" Title=\"Success\" Text=\"Intent Success — operation completed.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Warning\" Variant=\"XFAlertVariant.Soft\" Title=\"Warning\" Text=\"Intent Warning — attention needed.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Danger\" Variant=\"XFAlertVariant.Soft\" Title=\"Danger\" Text=\"Intent Danger — critical error or failure.\" /\x3E");
+    private string CodeVariants => T("\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Soft\" Text=\"Variante Soft — fundo sutil, borda leve.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Solid\" Title=\"Solid\" Text=\"Variante Solid — fundo colorido, alta visibilidade.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Outline\" Title=\"Outline\" Text=\"Variante Outline — borda definida, fundo transparente.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Subtle\" Title=\"Subtle\" Text=\"Variante Subtle — minimalista, borda quase invisivel.\" /\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Soft\" Text=\"Soft variant — subtle background, light border.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Solid\" Title=\"Solid\" Text=\"Solid variant — colored background, high visibility.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Outline\" Title=\"Outline\" Text=\"Outline variant — defined border, transparent background.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Subtle\" Title=\"Subtle\" Text=\"Subtle variant — minimalist, nearly invisible border.\" /\x3E");
+    private string CodeIcons => T("\x3CXFAlert Size=\"XFSize.Md\" ShowIcon=\"true\" Tone=\"XFSemanticColor.Success\" Variant=\"XFAlertVariant.Soft\" Text=\"Icone de sucesso visivel.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" ShowIcon=\"false\" Tone=\"XFSemanticColor.Warning\" Variant=\"XFAlertVariant.Soft\" Text=\"Sem icone — apenas texto.\" /\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" ShowIcon=\"true\" Tone=\"XFSemanticColor.Success\" Variant=\"XFAlertVariant.Soft\" Text=\"Success icon visible.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" ShowIcon=\"false\" Tone=\"XFSemanticColor.Warning\" Variant=\"XFAlertVariant.Soft\" Text=\"No icon — text only.\" /\x3E");
+    private string CodeDismiss => T("\x3CXFAlert Size=\"XFSize.Md\" Dismissible=\"true\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Clique no X para dispensar\" Text=\"Este alerta pode ser fechado pelo usuario.\" /\x3E\n\n\x3CXFAlert Size=\"XFSize.Md\" Dismissible=\"true\" @bind-Visible=\"isVisible\" Tone=\"XFSemanticColor.Warning\" Variant=\"XFAlertVariant.Soft\" Title=\"Alert controlado\" Text=\"Use @bind-Visible para controle programatico.\" /\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Dismissible=\"true\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Click X to dismiss\" Text=\"This alert can be closed by the user.\" /\x3E\n\n\x3CXFAlert Size=\"XFSize.Md\" Dismissible=\"true\" @bind-Visible=\"isVisible\" Tone=\"XFSemanticColor.Warning\" Variant=\"XFAlertVariant.Soft\" Title=\"Controlled alert\" Text=\"Use @bind-Visible for programmatic control.\" /\x3E");
+    private string CodeTitle => T("\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Titulo\" Text=\"Texto\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Text=\"Apenas texto\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Apenas titulo\" /\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Title\" Text=\"Text\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Text=\"Text only\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Title only\" /\x3E");
+    private string CodeActions => T("\x3CXFAlert Size=\"XFSize.Md\" Dismissible=\"true\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Atualizacao disponivel\"\x3E\n    \x3CChildContent\x3ENova versao do sistema disponivel.\x3C/ChildContent\x3E\n    \x3CActions\x3E\n        \x3CXFButton Size=\"XFExtendedSize.Sm\" Variant=\"XFButtonVariant.Solid\" Color=\"XFButtonColor.Primary\"\x3EAtualizar\x3C/XFButton\x3E\n    \x3C/Actions\x3E\n\x3C/XFAlert\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Dismissible=\"true\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Update available\"\x3E\n    \x3CChildContent\x3ENew version of the system available.\x3C/ChildContent\x3E\n    \x3CActions\x3E\n        \x3CXFButton Size=\"XFExtendedSize.Sm\" Variant=\"XFButtonVariant.Solid\" Color=\"XFButtonColor.Primary\"\x3EUpdate\x3C/XFButton\x3E\n    \x3C/Actions\x3E\n\x3C/XFAlert\x3E");
+    private string CodeTemplates => T("\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Conteudo customizado\"\x3E\n    \x3CChildContent\x3E\n        \x3CXFBadge Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Text=\"v3.2.1\" /\x3E\n    \x3C/ChildContent\x3E\n\x3C/XFAlert\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Title=\"Custom content\"\x3E\n    \x3CChildContent\x3E\n        \x3CXFBadge Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Text=\"v3.2.1\" /\x3E\n    \x3C/ChildContent\x3E\n\x3C/XFAlert\x3E");
+    private string CodeAriaLive => T("\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Live=\"XFAlertLive.Polite\" Text=\"Mensagem polida — leitor anuncia quando pronto.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Warning\" Variant=\"XFAlertVariant.Soft\" Live=\"XFAlertLive.Assertive\" Text=\"Mensagem assertiva — interrompe leitor imediatamente.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Neutral\" Variant=\"XFAlertVariant.Soft\" Live=\"XFAlertLive.Off\" Text=\"Sem live — leitor nao anuncia.\" /\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" Live=\"XFAlertLive.Polite\" Text=\"Polite message — reader announces when ready.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Warning\" Variant=\"XFAlertVariant.Soft\" Live=\"XFAlertLive.Assertive\" Text=\"Assertive message — interrupts reader immediately.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Neutral\" Variant=\"XFAlertVariant.Soft\" Live=\"XFAlertLive.Off\" Text=\"No live — reader does not announce.\" /\x3E");
+    private string CodeCustomIcon => T("\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" ShowIcon=\"false\"\x3E\n    \x3CStartIcon\x3E\n        \x3Cspan\x3E@((MarkupString)XFSvgIcons.Markup(\"bell\"))\x3C/span\x3E\n    \x3C/StartIcon\x3E\n    \x3CChildContent\x3EIcone customizado de notificacao.\x3C/ChildContent\x3E\n\x3C/XFAlert\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Info\" Variant=\"XFAlertVariant.Soft\" ShowIcon=\"false\"\x3E\n    \x3CStartIcon\x3E\n        \x3Cspan\x3E@((MarkupString)XFSvgIcons.Markup(\"bell\"))\x3C/span\x3E\n    \x3C/StartIcon\x3E\n    \x3CChildContent\x3ECustom notification icon.\x3C/ChildContent\x3E\n\x3C/XFAlert\x3E");
+    private string CodeEnterprise => T("\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Success\" Dismissible=\"true\" Variant=\"XFAlertVariant.Soft\" Title=\"Lote fiscal processado\"\x3E\n    \x3CChildContent\x3E248 notas fiscais autorizadas com sucesso.\x3C/ChildContent\x3E\n    \x3CActions\x3E\x3CXFButton Size=\"XFExtendedSize.Sm\" Variant=\"XFButtonVariant.Outline\" Color=\"XFButtonColor.Primary\"\x3EVer relatorio\x3C/XFButton\x3E\x3C/Actions\x3E\n\x3C/XFAlert\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Warning\" Dismissible=\"true\" Variant=\"XFAlertVariant.Soft\" Title=\"Certificado expirando\" Text=\"Certificado A1 vence em 15 dias.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Danger\" Variant=\"XFAlertVariant.Solid\" Dismissible=\"true\" Title=\"Falha SEFAZ\" Text=\"Servidor SEFAZ indisponivel. Tente novamente.\" /\x3E",
+        "\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Success\" Dismissible=\"true\" Variant=\"XFAlertVariant.Soft\" Title=\"Fiscal batch processed\"\x3E\n    \x3CChildContent\x3E248 invoices authorized successfully.\x3C/ChildContent\x3E\n    \x3CActions\x3E\x3CXFButton Size=\"XFExtendedSize.Sm\" Variant=\"XFButtonVariant.Outline\" Color=\"XFButtonColor.Primary\"\x3EView report\x3C/XFButton\x3E\x3C/Actions\x3E\n\x3C/XFAlert\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Warning\" Dismissible=\"true\" Variant=\"XFAlertVariant.Soft\" Title=\"Certificate expiring\" Text=\"A1 certificate expires in 15 days.\" /\x3E\n\x3CXFAlert Size=\"XFSize.Md\" Tone=\"XFSemanticColor.Danger\" Variant=\"XFAlertVariant.Solid\" Dismissible=\"true\" Title=\"SEFAZ failure\" Text=\"SEFAZ server unavailable. Please try again.\" /\x3E");
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.AspNetCore.Components;
 
-namespace XForge.Components.Base;
+namespace XForge.DesignSystem.Components.Base;
 
 /// <summary>
 /// Detects [Parameter] auto-properties at runtime to enable metadata introspection.

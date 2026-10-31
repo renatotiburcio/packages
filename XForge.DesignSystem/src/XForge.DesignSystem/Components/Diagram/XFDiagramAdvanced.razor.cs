@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Components;
 using XForge.DesignSystem.Core.Base;
 
-namespace XForge.Components.Diagram
+namespace XForge.DesignSystem.Components.Diagram
 {
     public partial class XFDiagramAdvanced : XForgeComponentBase
     {

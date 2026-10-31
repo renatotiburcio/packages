@@ -1,0 +1,466 @@
+@page "/components/sortable-list"
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFSortableList" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Drag-and-drop e botoes", "Drag-and-drop and buttons")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Lista reordenavel para prioridades, filas e configuracoes.",
+                               "Reorderable list for priorities, queues and settings.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente de lista drag-and-drop com numeracao, botoes de mover, template customizado, 3 tamanhos, 3 variantes e suporte a itens desabilitados.",
+                               "Drag-and-drop list component with numbering, move buttons, custom template, 3 sizes, 3 variants and disabled item support.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Botoes de mover funcionam. Drag requer modo interativo.", "Renders as static HTML. Move buttons work. Drag requires interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Lista com TextSelector para extrair texto dos itens.", "List with TextSelector to extract item text."), ExBasic(), Code1)
+            @Example(T("2. Sem numeracao", "2. No order"), T("Oculta numeracao e mantem apenas botoes de mover.", "Hides numbering and keeps only move buttons."), ExNoOrder(), Code2)
+            @Example(T("3. Tamanhos", "3. Sizes"), T("Tres tamanhos: Sm, Md e Lg.", "Three sizes: Sm, Md and Lg."), ExSizes(), Code3)
+            @Example(T("4. Variantes", "4. Variants"), T("Plain, Bordered e Soft.", "Plain, Bordered and Soft."), ExVariants(), Code4)
+            @Example(T("5. Template customizado", "5. Custom template"), T("ItemTemplate com badges e metadados por item.", "ItemTemplate with badges and per-item metadata."), ExCustomTemplate(), Code5)
+            @Example(T("6. Itens desabilitados e eventos", "6. Disabled items and events"), T("ItemDisabled para bloquear itens e Reordered para evento.", "ItemDisabled to block items and Reordered for event handling."), ExDisabledAndEvents(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFSortableList", "XFSortableList");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFSortableList TItem="string" Items="@HeroItems" TextSelector="@(x => x)" Size="XFSize.Sm" />
+    </XFStack>;
+
+    private static readonly IReadOnlyList<string> HeroItems = ["Alta prioridade", "Media prioridade", "Baixa prioridade"];
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Drag-and-drop", "Drag-and-drop"), T("Reordena arrastando itens ou usando botoes.", "Reorder by dragging items or using buttons."), "up-down-left-right"),
+        new(T("Template customizado", "Custom template"), T("Renderize conteudo rico com ItemTemplate.", "Render rich content with ItemTemplate."), "palette"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFSortableList<TItem>"),
+        new("Namespace", "XForge.DesignSystem.Components.Utilities.SortableList"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Utilities / List"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=list, role=listitem, aria-disabled, aria-label, draggable.", "role=list, role=listitem, aria-disabled, aria-label, draggable.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Lista reordenavel", "Reorderable list"), T("Itens podem ser movidos por drag-and-drop ou botoes.", "Items can be moved by drag-and-drop or buttons."), "up-down-left-right"),
+        new(T("Numeracao", "Numbering"), T("Indice visual de posicao para cada item.", "Visual position index for each item."), "list-ol"),
+        new(T("Botoes de mover", "Move buttons"), T("Setas para cima/baixo com aria-label.", "Up/down arrows with aria-label."), "arrows-up-down")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Filas de prioridade", "Priority queues"), T("Ordem de processamento de tarefas.", "Task processing order."), "layer-group"),
+        new(T("Configuracoes", "Settings"), T("Ordem de preferencias do usuario.", "User preference order."), "gear"),
+        new(T("Listas de tarefas", "Task lists"), T("Reordena checklist de entregas.", "Reorder delivery checklists."), "clipboard-list")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Ordem fixa sem reordenacao.", "Fixed order without reordering."), "xmark"),
+        new(T("Depois", "After"), T("Lista drag-and-drop com botoes e numeracao.", "Drag-and-drop list with buttons and numbering."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=list, aria-label, botoes com aria-label.", "role=list, aria-label, buttons with aria-label."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Filas de atendimento", "Service queues"), T("Ordem de chamados ou tickets.", "Order of calls or tickets."), "layer-group"),
+        new(T("Configuracoes do usuario", "User settings"), T("Ordem de exibicao de modulos.", "Module display order."), "gear")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Navegacao", "Navigation"), T("Use XFNavMenu para navegacao.", "Use XFNavMenu for navigation."), "route"),
+        new(T("Tabelas de dados", "Data tables"), T("Use XFTable ou XFDataGrid.", "Use XFTable or XFDataGrid."), "table")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Item", T("Container de cada linha da lista.", "Container for each list row."), "square"),
+        new("Order badge", T("Numero da posicao atual.", "Current position number."), "hashtag"),
+        new("Content", T("Texto ou template do conteudo.", "Text or content template."), "font"),
+        new("Controls", T("Botoes mover para cima e baixo.", "Move up and down buttons."), "arrows-up-down"),
+        new("Drag handle", T("Area de arraste visual.", "Visual drag area."), "grip-vertical")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Feedback visual", "Visual feedback"), T("Mudanca de posicao imediata e visivel.", "Immediate and visible position change."), "eye"),
+        new(T("Acessibilidade", "Accessibility"), T("aria-label descritivo em cada botao.", "Descriptive aria-label on each button."), "universal-access"),
+        new(T("Simplicidade", "Simplicity"), T("Uma lista, uma ordem. Sem sobrecarga.", "One list, one order. No overload."), "minimize")
+    ];
+
+    // === EXAMPLES ===
+    private static readonly IReadOnlyList<string> BasicItems = ["Alta prioridade", "Media prioridade", "Baixa prioridade"];
+    private static readonly IReadOnlyList<string> NoOrderItems = ["Item A", "Item B", "Item C"];
+
+    private sealed record SizeDemo(string Label, XFSize Size);
+    private static readonly IReadOnlyList<SizeDemo> SizeItems = [
+        new("Small", XFSize.Sm),
+        new("Medium", XFSize.Md),
+        new("Large", XFSize.Lg)
+    ];
+
+    private sealed record VariantDemo(string Label, XFListVariant Variant);
+    private static readonly IReadOnlyList<VariantDemo> VariantItems = [
+        new("Plain", XFListVariant.Plain),
+        new("Bordered", XFListVariant.Bordered),
+        new("Soft", XFListVariant.Soft)
+    ];
+
+    private sealed record TaskItem(string Title, string Badge, string BadgeColor);
+    private static readonly IReadOnlyList<TaskItem> TemplateItems = [
+        new("Deploy API", "Urgente", "danger"),
+        new("Atualizar docs", "Normal", "info"),
+        new("Refatorar tests", "Baixa", "success")
+    ];
+
+    private static readonly IReadOnlyList<string> DisabledItems = ["Item ativo", "Item desabilitado", "Item ativo 2"];
+
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFSortableList TItem="string" Items="@BasicItems" TextSelector="@(x => x)" />
+    </XFStack>;
+
+    private RenderFragment ExNoOrder() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFSortableList TItem="string" Items="@NoOrderItems" TextSelector="@(x => x)" ShowOrder="false" />
+    </XFStack>;
+
+    private RenderFragment ExSizes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        @foreach (var s in SizeItems)
+        {
+            <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Align="XFAlign.Center" FullWidth="true">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@s.Label" />
+                <div class="flex-1"><XFSortableList TItem="string" Items="@(new[] { "Item 1", "Item 2", "Item 3" })" TextSelector="@(x => x)" Size="@s.Size" /></div>
+            </XFStack>
+        }
+    </XFStack>;
+
+    private RenderFragment ExVariants() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        @foreach (var v in VariantItems)
+        {
+            <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Align="XFAlign.Center" FullWidth="true">
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@v.Label" />
+                <div class="flex-1"><XFSortableList TItem="string" Items="@(new[] { "Item 1", "Item 2", "Item 3" })" TextSelector="@(x => x)" Variant="@v.Variant" /></div>
+            </XFStack>
+        }
+    </XFStack>;
+
+    private RenderFragment ExCustomTemplate() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFSortableList TItem="TaskItem" Items="@TemplateItems">
+            <ItemTemplate Context="ctx">
+                <div class="flex items-center justify-between w-full">
+                    <span class="truncate font-medium">@ctx.Item.Title</span>
+                    <XFBadge Variant="XFBadgeVariant.Soft" Color="@(ctx.Item.BadgeColor == "danger" ? XFBadgeColor.Danger : ctx.Item.BadgeColor == "success" ? XFBadgeColor.Success : XFBadgeColor.Info)" Text="@ctx.Item.Badge" />
+                </div>
+            </ItemTemplate>
+        </XFSortableList>
+    </XFStack>;
+
+    private RenderFragment ExDisabledAndEvents() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFSortableList TItem="string" Items="@DisabledItems" TextSelector="@(x => x)"
+                        ItemDisabled="@IsDisabledItem"
+                        Reordered="@HandleReordered" />
+    </XFStack>;
+
+    private bool IsDisabledItem(string item) => item == DisabledItems[1];
+
+    private void HandleReordered(XFSortableListReorderEventArgs<string> args)
+    {
+    }
+
+    private const string Code1 = @"<XFSortableList TItem=""string"" Items=""@SortableItems""
+    TextSelector=""@(x => x)"" />";
+    private const string Code2 = @"<XFSortableList TItem=""string"" Items=""@Items""
+    TextSelector=""@(x => x)"" ShowOrder=""false"" />";
+    private const string Code3 = @"<XFSortableList TItem=""string"" Items=""@Items""
+    TextSelector=""@(x => x)"" Size=""XFSize.Sm"" />
+<XFSortableList TItem=""string"" Items=""@Items""
+    TextSelector=""@(x => x)"" Size=""XFSize.Md"" />
+<XFSortableList TItem=""string"" Items=""@Items""
+    TextSelector=""@(x => x)"" Size=""XFSize.Lg"" />";
+    private const string Code4 = @"<XFSortableList TItem=""string"" Items=""@Items""
+    TextSelector=""@(x => x)"" Variant=""XFListVariant.Plain"" />
+<XFSortableList TItem=""string"" Items=""@Items""
+    TextSelector=""@(x => x)"" Variant=""XFListVariant.Bordered"" />
+<XFSortableList TItem=""string"" Items=""@Items""
+    TextSelector=""@(x => x)"" Variant=""XFListVariant.Soft"" />";
+    private const string Code5 = @"<XFSortableList TItem=""TaskItem"" Items=""@TemplateItems"">" +
+        "\n    <ItemTemplate Context=\"ctx\">" +
+        "\n        <div class=\"flex items-center justify-between w-full\">" +
+        "\n            <span class=\"truncate font-medium\">@ctx.Item.Title</span>" +
+        "\n            <XFBadge Variant=\"XFBadgeVariant.Soft\" Color=\"XFBadgeColor.Info\" Text=\"@ctx.Item.Badge\" />" +
+        "\n        </div>" +
+        "\n    </ItemTemplate>" +
+        "\n</XFSortableList>";
+    private const string Code6 = @"<XFSortableList TItem=""string"" Items=""@Items"" TextSelector=""@(x => x)"" ItemDisabled=""@IsDisabledItem"" Reordered=""@HandleReordered"" />";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Items", "IReadOnlyList<TItem>", "[]", T("Lista de itens da lista reordenavel.", "List of reorderable items.")),
+        new("TextSelector", "Func<TItem, string>?", "null", T("Extrator de texto para exibicao padrao.", "Text extractor for default display.")),
+        new("ItemTemplate", "RenderFragment<XFSortableListItemContext<TItem>>?", "null", T("Template customizado por item com Item, Index e Disabled.", "Custom template per item with Item, Index and Disabled.")),
+        new("ItemDisabled", "Func<TItem, bool>?", "null", T("Funcao que retorna true para desabilitar item.", "Function returning true to disable item.")),
+        new("ShowOrder", "bool", "true", T("Exibe numeracao de posicao.", "Shows position numbering.")),
+        new("AllowDragReorder", "bool", "true", T("Permite reordenacao por drag-and-drop.", "Allows drag-and-drop reordering.")),
+        new("FullWidth", "bool", "true", T("Ocupa largura total do container.", "Occupies full container width.")),
+        new("Size", "XFSize", "Md", T("Sm, Md, Lg.", "Sm, Md, Lg.")),
+        new("Variant", "XFListVariant", "Bordered", T("Plain, Bordered, Soft.", "Plain, Bordered, Soft.")),
+        new("AriaLabel", "string?", "null", T("Label acessivel para a lista.", "Accessible label for the list.")),
+        new("MoveUpLabel", "string", "Mover para cima", T("Label do botao mover para cima.", "Move up button label.")),
+        new("MoveDownLabel", "string", "Mover para baixo", T("Label do botao mover para baixo.", "Move down button label.")),
+        new("MoveUpLabelFormat", "string", "{0}: {1}", T("Formato do aria-label mover para cima.", "Move up aria-label format.")),
+        new("MoveDownLabelFormat", "string", "{0}: {1}", T("Formato do aria-label mover para baixo.", "Move down aria-label format."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ItemsChanged", T("EventCallback<IReadOnlyList<TItem>> disparado apos reordenacao.", "EventCallback<IReadOnlyList<TItem>> fired after reorder.")),
+        new("Reordered", T("EventCallback<XFSortableListReorderEventArgs<TItem>> com Item, OldIndex, NewIndex, Items.", "EventCallback<XFSortableListReorderEventArgs<TItem>> with Item, OldIndex, NewIndex, Items."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("role=list + role=listitem", T("Container usa role=list, cada item usa role=listitem.", "Container uses role=list, each item uses role=listitem."), "universal-access"),
+        new("aria-disabled", T("Indica se item esta desabilitado.", "Indicates if item is disabled."), "ban"),
+        new("aria-label", T("Botoes mover com aria-label descritivo.", "Move buttons with descriptive aria-label."), "tag"),
+        new("draggable", T("Atributo draggable gerenciado automaticamente.", "draggable attribute managed automatically."), "up-down-left-right")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new(T("Tab", "Tab"), T("Navega entre botoes de mover.", "Navigates between move buttons.")),
+        new(T("Enter/Space", "Enter/Space"), T("Ativa o botao de mover.", "Activates the move button.")),
+        new(T("Drag", "Drag"), T("Arrasta item para nova posicao.", "Drags item to new position."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("FullWidth=true ocupa 100% do container.", "FullWidth=true occupies 100% of container."), "maximize"),
+        new(T("Tamanho responsivo", "Responsive size"), T("Sm para mobile, Md para desktop.", "Sm for mobile, Md for desktop."), "mobile-screen")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Render leve", "Light render"), T("Cada item e um div nativo sem wrappers.", "Each item is a native div without wrappers."), "feather")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Fila de chamados", "Ticket queue"), T("Ordem de atendimento de chamados.", "Call ticket processing order."), "layer-group"),
+        new(T("Configuracoes ERP", "ERP settings"), T("Ordem de modulos no painel.", "Module order in dashboard."), "gear"),
+        new(T("Checklist de entregas", "Delivery checklist"), T("Reordena itens de entrega.", "Reorder delivery items."), "clipboard-list")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("SortableList + Badge", "SortableList + Badge"), T("Badges por item dentro do template.", "Per-item badges inside template."), "tag"),
+        new(T("SortableList + Card", "SortableList + Card"), T("Lista dentro de XFCard para contexto.", "List inside XFCard for context."), "square"),
+        new(T("SortableList + Button", "SortableList + Button"), T("Botao de acao abaixo da lista.", "Action button below list."), "bolt")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Sempre usar TextSelector", "Always use TextSelector"), T("Defina como extrair texto dos itens.", "Define how to extract text from items."), "align-left"),
+        new(T("Desabilitar itens fixos", "Disable fixed items"), T("Use ItemDisabled para itens que nao devem ser movidos.", "Use ItemDisabled for items that should not be moved."), "ban"),
+        new(T("Capturar Reordered", "Capture Reordered"), T("Use Reordered para persistir a nova ordem.", "Use Reordered to persist the new order."), "floppy-disk"),
+        new(T("Usar ItemTemplate", "Use ItemTemplate"), T("Para conteudo rico alem de texto simples.", "For rich content beyond plain text."), "palette")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem AriaLabel", "No AriaLabel"), T("Lista sem label acessivel e confusa.", "List without accessible label is confusing."), "xmark"),
+        new(T("Muitos itens", "Too many items"), T("Listas com mais de 20 itens prejudicam performance.", "Lists with more than 20 items hurt performance."), "ban"),
+        new(T("Ordem sem persistencia", "Order without persistence"), T("Reordenacao sem callback perde dados.", "Reorder without callback loses data."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("item", T("rounded-lg border bg-bg-surface shadow-sm transition-all.", "rounded-lg border bg-bg-surface shadow-sm transition-all.")),
+        new("order", T("inline-flex h-7 min-w-7 items-center rounded-md bg-primary/7 text-xs.", "inline-flex h-7 min-w-7 items-center rounded-md bg-primary/7 text-xs.")),
+        new("button", T("inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-primary/7.", "inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-primary/7."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, reorder, disabled, drag, template.", "Render, props, reorder, disabled, drag, template tests.")),
+        new("Accessibility", T("role=list, role=listitem, aria-disabled, aria-label, draggable.", "role=list, role=listitem, aria-disabled, aria-label, draggable."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new(T("Drag sem JS", "Drag without JS"), T("Drag-and-drop requer modo interativo (Server/WASM).", "Drag-and-drop requires interactive mode (Server/WASM).")),
+        new(T("Itens dinamicos", "Dynamic items"), T("Atualize Items via @bind-Items ou ItemsChanged.", "Update Items via @bind-Items or ItemsChanged."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFTable", T("Tabela de dados.", "Data table."), "table"),
+        new("XFDataGrid", T("Grid de dados com sorting.", "Data grid with sorting."), "grid"),
+        new("XFSteps", T("Etapas sequenciais.", "Sequential steps."), "list-ol")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("SortableList vs DataGrid?", "SortableList vs DataGrid?"), T("SortableList = reordena simples. DataGrid = tabela com sorting complexo.", "SortableList = simple reorder. DataGrid = table with complex sorting.")),
+        new(T("Como persistir ordem?", "How to persist order?"), T("Use Reordered para obter a nova lista e salvar.", "Use Reordered to get the new list and save it.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Botoes funcionam sempre. Drag requer interativo.", "Yes. Buttons always work. Drag requires interactive mode.")),
+        new(T("Como desabilitar item?", "How to disable item?"), T("Use ItemDisabled com funcao que retorna true.", "Use ItemDisabled with a function returning true."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina criada com 2 exemplos basicos.", "Page created with 2 basic examples.")),
+        new("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes e 6 exemplos.", "Refactored to AppShellDocs pattern with 26 sections and 6 examples."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

@@ -1,0 +1,752 @@
+@page "/feedback/chat"
+@page "/components/chat"
+@using XForge.DesignSystem.Components.Feedback.Chat
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="Core OSS"
+                 Title="Chat"
+                 Status="Premium"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFChat" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Templates", "Templates")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Interface de chat enterprise para suporte, atendimento e colaboracao.", "Enterprise chat interface for support, service and collaboration.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Mensagens com roles (User/Assistant/System), avatares, typing indicator, templates customizaveis, composer com adornos e envio por Enter.",
+                               "Messages with roles (User/Assistant/System), avatars, typing indicator, custom templates, composer with adornments and Enter-to-send.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("Chat simples com mensagens User e Assistant.", "Simple chat with User and Assistant messages."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Usuarios com avatares", "2. Users with avatars"),
+                T("Usuarios com nomes, avatares e status online.", "Users with names, avatars and online status."),
+                ExUsers(), CodeUsers)
+
+            @Example(T("3. Roles de mensagem", "3. Message roles"),
+                T("User, Assistant, System e Other � estilos visuais diferentes.", "User, Assistant, System and Other � different visual styles."),
+                ExRoles(), CodeRoles)
+
+            @Example(T("4. Loading e typing", "4. Loading & typing"),
+                T("Indicador de digitacao e estado de carregamento.", "Typing indicator and loading state."),
+                ExLoading(), CodeLoading)
+
+            @Example(T("5. SendOnEnter", "5. SendOnEnter"),
+                T("SendOnEnter=false permite Shift+Enter para nova linha.", "SendOnEnter=false allows Shift+Enter for new line."),
+                ExSendOnEnter(), CodeSendOnEnter)
+
+            @Example(T("6. Message template", "6. Message template"),
+                T("RenderFragment<XFChatMessage> para markup customizado.", "RenderFragment<XFChatMessage> for custom markup."),
+                ExMessageTemplate(), CodeMessageTemplate)
+
+            @Example(T("7. Header customizado", "7. Custom header"),
+                T("HeaderContent render fragment para toolbar ou status.", "HeaderContent render fragment for toolbar or status."),
+                ExCustomHeader(), CodeCustomHeader)
+
+            @Example(T("8. Composer adornos", "8. Composer adornments"),
+                T("ComposerStart e ComposerEnd para botoes de anexo e acoes.", "ComposerStart and ComposerEnd for attachment and action buttons."),
+                ExComposerAdornments(), CodeComposerAdornments)
+
+            @Example(T("9. Somente leitura", "9. Read-only"),
+                T("ReadOnly=true desabilita o composer para visualizacao.", "ReadOnly=true disables composer for viewing."),
+                ExReadOnly(), CodeReadOnly)
+
+            @Example(T("10. Cenario enterprise", "10. Enterprise scenario"),
+                T("Chat de suporte tecnico com tickets, status e historico.", "Technical support chat with tickets, status and history."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API � XFChat", @<div>@ApiTable(ApiRows)</div>)
+            @Section("API � XFChatMessage", @<div>@ApiTable(MessageApiRows)</div>)
+            @Section("API � XFChatUser", @<div>@ApiTable(UserApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Copiar codigo", "Copy code");
+
+    // --- State ---
+    private IReadOnlyList<XFChatMessage> BasicMessages = new[]
+    {
+        new XFChatMessage { UserId = "agent", Content = "Ola! Como posso ajudar?", Role = AiRole.Assistant, Timestamp = DateTime.Now.AddMinutes(-5) },
+        new XFChatMessage { UserId = "user1", Content = "Preciso verificar o status do pedido #4821.", Role = AiRole.User, Timestamp = DateTime.Now.AddMinutes(-4) },
+        new XFChatMessage { UserId = "agent", Content = "Claro! O pedido #4821 esta em transporte. Previsao de entrega: 15/06/2026.", Role = AiRole.Assistant, Timestamp = DateTime.Now.AddMinutes(-3) }
+    };
+
+    private IReadOnlyList<XFChatUser> DemoUsers = new[]
+    {
+        new XFChatUser { Id = "user1", Name = "Maria Silva", IsOnline = true },
+        new XFChatUser { Id = "agent", Name = "Suporte XF", IsOnline = true }
+    };
+
+    private IReadOnlyList<XFChatMessage> RoleMessages = new[]
+    {
+        new XFChatMessage { UserId = "user1", Content = "Mensagem do usuario.", Role = AiRole.User, Timestamp = DateTime.Now.AddMinutes(-4) },
+        new XFChatMessage { UserId = "agent", Content = "Resposta do assistente.", Role = AiRole.Assistant, Timestamp = DateTime.Now.AddMinutes(-3) },
+        new XFChatMessage { UserId = "system", Content = "Conversa iniciada.", Role = AiRole.System, Timestamp = DateTime.Now.AddMinutes(-5) },
+        new XFChatMessage { UserId = "other", Content = "Nota interna.", Role = AiRole.Other, Timestamp = DateTime.Now.AddMinutes(-2) }
+    };
+
+    private IReadOnlyList<XFChatMessage> EnterpriseMessages = new[]
+    {
+        new XFChatMessage { UserId = "system", Content = "Ticket #7842 aberto � Setor: Financeiro | Prioridade: Alta", Role = AiRole.System, Timestamp = DateTime.Now.AddMinutes(-10) },
+        new XFChatMessage { UserId = "user1", Content = "Nao recebi o boleto da NF-e 2026/0042. Pode reenviar?", Role = AiRole.User, Timestamp = DateTime.Now.AddMinutes(-8) },
+        new XFChatMessage { UserId = "agent", Content = "Identifiquei o problema. O boleto foi gerado mas o envio por email falhou. Estou reenviando agora para financeiro@empresa.com.br.", Role = AiRole.Assistant, Timestamp = DateTime.Now.AddMinutes(-6) },
+        new XFChatMessage { UserId = "agent", Content = "Boleto reenviado com sucesso. Protocolo: PROT-2026-7842-R. Prazo de compensacao: 3 dias uteis.", Role = AiRole.Assistant, Timestamp = DateTime.Now.AddMinutes(-5) }
+    };
+
+    // --- Hero ---
+    private RenderFragment HeroPreview() => @<div class="h-80">
+        <XFChat
+                Title="@T("Suporte XF", "XF Support")"
+                Subtitle="@T("Online", "Online")"
+                Messages="BasicMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                Size="XFSize.Md"
+                Placeholder="@T("Digite sua mensagem...", "Type your message...")"
+                ReadOnly="true" />
+    </div>;
+
+    // --- 1. Basic ---
+    private RenderFragment ExBasic() => @<div class="h-72">
+        <XFChat Title="@T("Chat basico", "Basic chat")"
+                Messages="BasicMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ReadOnly="true" />
+    </div>;
+
+    // --- 2. Users ---
+    private RenderFragment ExUsers() => @<div>
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted" Class="mb-2">
+            @T("Usuarios com Initials computado automaticamente e status online.", "Users with auto-computed Initials and online status.")
+        </XFTypography>
+        <XFChat Title="@T("Time de suporte", "Support team")"
+                Messages="BasicMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ReadOnly="true" />
+    </div>;
+
+    // --- 3. Roles ---
+    private RenderFragment ExRoles() => @<div class="h-72">
+        <XFChat Title="@T("4 roles de mensagem", "4 message roles")"
+                Messages="RoleMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ReadOnly="true" />
+    </div>;
+
+    // --- 4. Loading ---
+    private RenderFragment ExLoading() => @<div class="h-72">
+        <XFChat Title="@T("Com typing indicator", "With typing indicator")"
+                Messages="BasicMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ShowTypingIndicator="true"
+                TypingText="@T("Agente esta digitando...", "Agent is typing...")"
+                ReadOnly="true" />
+    </div>;
+
+    // --- 5. SendOnEnter ---
+    private RenderFragment ExSendOnEnter() => @<div>
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted" Class="mb-2">
+            @T("SendOnEnter=false: Enter insere nova linha, use o botao para enviar.", "SendOnEnter=false: Enter inserts new line, use button to send.")
+        </XFTypography>
+        <XFChat Title="@T("Mensagem multi-linha", "Multi-line message")"
+                Messages="BasicMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                SendOnEnter="false"
+                Rows="3"
+                ReadOnly="true" />
+    </div>;
+
+    // --- 6. Message Template ---
+    private RenderFragment ExMessageTemplate() => @<div class="h-72">
+        <XFChat Title="@T("Template customizado", "Custom template")"
+                Messages="BasicMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ReadOnly="true">
+            <MessageTemplate Context="msg">
+                <div class="@(msg.Role == AiRole.User ? "ml-auto max-w-[80%] rounded-xl bg-primary/10 p-3" : "mr-auto max-w-[80%] rounded-xl bg-surface-100 p-3")">
+                    <div class="text-xs font-bold @(msg.Role == AiRole.User ? "text-primary" : "text-text-secondary")">
+                        @(msg.Role == AiRole.User ? "Voce" : "Assistente")
+                    </div>
+                    <div class="mt-1 text-sm text-text-primary">@msg.Content</div>
+                    <div class="mt-1 text-[10px] text-text-muted">@msg.Timestamp.ToString("HH:mm")</div>
+                </div>
+            </MessageTemplate>
+        </XFChat>
+    </div>;
+
+    // --- 7. Custom Header ---
+    private RenderFragment ExCustomHeader() => @<div class="h-72">
+        <XFChat Messages="BasicMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ReadOnly="true">
+            <HeaderContent>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-success/10 text-success" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("headset", 16))</span>
+                    <div>
+                        <div class="text-sm font-semibold text-text-primary">@T("Suporte Tecnico", "Technical Support")</div>
+                        <div class="text-xs text-success">@T("Online - Ticket #7842", "Online - Ticket #7842")</div>
+                    </div>
+                </div>
+            </HeaderContent>
+        </XFChat>
+    </div>;
+
+    // --- 8. Composer Adornments ---
+    private RenderFragment ExComposerAdornments() => @<div class="h-72">
+        <XFChat Title="@T("Com anexos", "With attachments")"
+                Messages="BasicMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ReadOnly="true">
+            <ComposerStart>
+                <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-text-muted hover:bg-surface-100 hover:text-text-primary" aria-label="@T("Anexar arquivo", "Attach file")">
+                    @((MarkupString)XFSvgIcons.MarkupWithSize("paperclip", 16))
+                </button>
+            </ComposerStart>
+            <ComposerEnd>
+                <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-text-muted hover:bg-surface-100 hover:text-text-primary" aria-label="@T("Emoji", "Emoji")">
+                    @((MarkupString)XFSvgIcons.MarkupWithSize("face-smile", 16))
+                </button>
+            </ComposerEnd>
+        </XFChat>
+    </div>;
+
+    // --- 9. Read-Only ---
+    private RenderFragment ExReadOnly() => @<div class="h-72">
+        <XFChat Title="@T("Historico", "History")"
+                Subtitle="@T("Somente leitura", "Read-only")"
+                Messages="EnterpriseMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ReadOnly="true" />
+    </div>;
+
+    // --- 10. Enterprise ---
+    private RenderFragment ExEnterprise() => @<div class="h-80">
+        <XFChat Messages="EnterpriseMessages"
+                Users="DemoUsers"
+                CurrentUserId="user1"
+                ShowTypingIndicator="true"
+                TypingText="@T("Agente digitando...", "Agent typing...")"
+                ReadOnly="true">
+            <HeaderContent>
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize("headset", 16))</span>
+                        <div>
+                            <div class="text-sm font-semibold text-text-primary">@T("Suporte Financeiro", "Financial Support")</div>
+                            <div class="text-xs text-text-secondary">Ticket #7842 - @T("Aberto", "Open")</div>
+                        </div>
+                    </div>
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Danger" Text="@T("Alta", "High")" />
+                </div>
+            </HeaderContent>
+        </XFChat>
+    </div>;
+
+    // --- Helpers ---
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow>
+            <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+            <XFTableCell Header="true">Type</XFTableCell>
+            <XFTableCell Header="true">Default</XFTableCell>
+            <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+        </XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) {
+            <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow>
+        }</XFTableBody>
+    </XFTable>;
+
+    // --- Data ---
+    private IReadOnlyList<DocTile> QuickFacts => new[]
+    {
+        new DocTile(T("4 roles", "4 roles"), T("User, Assistant, System e Other com estilos visuais distintos.", "User, Assistant, System and Other with distinct visual styles."), "messages"),
+        new DocTile(T("Avatares", "Avatars"), T("XFChatUser com Initials computado e avatar URL.", "XFChatUser with computed Initials and avatar URL."), "user"),
+        new DocTile(T("Templates", "Templates"), T("MessageTemplate, HeaderContent, ComposerStart/End, EmptyContent.", "MessageTemplate, HeaderContent, ComposerStart/End, EmptyContent."), "paintbrush"),
+        new DocTile(T("Enter para enviar", "Enter to send"), T("SendOnEnter=true (padrao) ou Shift+Enter para nova linha.", "SendOnEnter=true (default) or Shift+Enter for new line."), "keyboard")
+    };
+
+    private IReadOnlyList<NameValueRow> MetadataRows => new[]
+    {
+        new NameValueRow("Component", "XFChat + XFMessageList"),
+        new NameValueRow("Namespace", "XForge.DesignSystem.Components.Feedback.Chat"),
+        new NameValueRow("Package", "XForge.DesignSystem"),
+        new NameValueRow("Category", "Components / Feedback / Chat"),
+        new NameValueRow("Status", T("Estavel", "Stable")),
+        new NameValueRow("Accessibility", T("aria-busy, aria-label no composer e botao enviar.", "aria-busy, aria-label on composer and send button."))
+    };
+
+    private IReadOnlyList<DocTile> OverviewItems => new[]
+    {
+        new DocTile(T("Messages", "Messages"), T("XFChatMessage com Content, Role, UserId, Timestamp.", "XFChatMessage with Content, Role, UserId, Timestamp."), "comment"),
+        new DocTile(T("Users", "Users"), T("XFChatUser com Name, AvatarUrl, IsOnline, Initials.", "XFChatUser with Name, AvatarUrl, IsOnline, Initials."), "users"),
+        new DocTile(T("Composer", "Composer"), T("Textarea com SendOnEnter, Rows, adornos e botao enviar.", "Textarea with SendOnEnter, Rows, adornments and send button."), "pen")
+    };
+
+    private IReadOnlyList<DocTile> PurposeItems => new[]
+    {
+        new DocTile(T("Suporte", "Support"), T("Chat de atendimento ao cliente com tickets.", "Customer support chat with tickets."), "headset"),
+        new DocTile(T("AI Chat", "AI Chat"), T("Interface para conversas com assistente AI.", "Interface for AI assistant conversations."), "robot"),
+        new DocTile(T("Colaboracao", "Collaboration"), T("Chat interno para equipes.", "Internal team chat."), "comments")
+    };
+
+    private IReadOnlyList<DocTile> ProblemItems => new[]
+    {
+        new DocTile(T("Antes", "Before"), T("Historico fragmentado em multiple telas.", "History fragmented across multiple screens."), "xmark"),
+        new DocTile(T("Depois", "After"), T("Conversa completa com timeline, avatares e roles.", "Complete conversation with timeline, avatars and roles."), "check"),
+        new DocTile(T("Acessibilidade", "Accessibility"), T("role=log, aria-live, aria-label em todos os elementos interativos.", "role=log, aria-live, aria-label on all interactive elements."), "universal-access")
+    };
+
+    private IReadOnlyList<DocTile> AnatomyItems => new[]
+    {
+        new DocTile(T("Header", "Header"), T("Titulo, subtitulo e template customizavel.", "Title, subtitle and custom template."), "heading"),
+        new DocTile(T("MessageList", "MessageList"), T("Lista scrollavel com role=log e aria-live.", "Scrollable list with role=log and aria-live."), "messages"),
+        new DocTile(T("Composer", "Composer"), T("Textarea, adornos e botao enviar.", "Textarea, adornments and send button."), "pen"),
+        new DocTile(T("Avatar", "Avatar"), T("Circle com iniciais ou imagem do usuario.", "Circle with user initials or image."), "user")
+    };
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => new[]
+    {
+        new DocTile(T("Rolagem automatica", "Auto-scroll"), T("Novas mensagens rolam para baixo automaticamente.", "New messages scroll down automatically."), "arrows-down-to-line"),
+        new DocTile(T("Roles visuais", "Visual roles"), T("Cada role tem cor e alinhamento distintos.", "Each role has distinct color and alignment."), "palette"),
+        new DocTile(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    };
+
+    private IReadOnlyList<DocTile> UseItems => new[]
+    {
+        new DocTile(T("Help desk", "Help desk"), T("Atendimento com historico e status de ticket.", "Service with history and ticket status."), "life-ring"),
+        new DocTile(T("AI assistant", "AI assistant"), T("Conversa com streaming e indicador de digitacao.", "Conversation with streaming and typing indicator."), "robot")
+    };
+
+    private IReadOnlyList<DocTile> AvoidItems => new[]
+    {
+        new DocTile(T("Chat em tempo real", "Real-time chat"), T("Para WebSocket/SignalR use XFChat com backend dedicado.", "For WebSocket/SignalR use XFChat with dedicated backend."), "xmark"),
+        new DocTile(T("Forum", "Forum"), T("Para discussoes assincronas use lista de comentarios.", "For async discussions use comment list."), "triangle-exclamation")
+    };
+
+    private IReadOnlyList<ApiRow> ApiRows => new[]
+    {
+        new ApiRow("Title", "string?", "null", T("Titulo do chat.", "Chat title.")),
+        new ApiRow("Subtitle", "string?", "null", T("Subtitulo do chat.", "Chat subtitle.")),
+        new ApiRow("Messages", "IReadOnlyList<XFChatMessage>", "[]", T("Lista de mensagens.", "Message list.")),
+        new ApiRow("MessagesChanged", "EventCallback<...>", "default", T("Two-way binding das mensagens.", "Two-way messages binding.")),
+        new ApiRow("Users", "IReadOnlyList<XFChatUser>", "[]", T("Usuarios do chat.", "Chat users.")),
+        new ApiRow("CurrentUserId", "string", "\"\"", T("ID do usuario atual.", "Current user ID.")),
+        new ApiRow("Placeholder", "string", "\"Digite...\"", T("Placeholder do composer.", "Composer placeholder.")),
+        new ApiRow("SendLabel", "string", "\"Enviar\"", T("Label do botao enviar.", "Send button label.")),
+        new ApiRow("EmptyText", "string", "\"Nenhuma...\"", T("Texto quando vazio.", "Text when empty.")),
+        new ApiRow("ComposerLabel", "string", "\"Digite...\"", T("Label acessivel do composer.", "Accessible composer label.")),
+        new ApiRow("TypingText", "string", "\"Digitando...\"", T("Texto do indicador de digitacao.", "Typing indicator text.")),
+        new ApiRow("MessageLoadingLabel", "string", "\"Carregando\"", T("Label acessivel para mensagem carregando.", "Accessible label for loading message.")),
+        new ApiRow("Loading", "bool", "false", T("Estado de carregamento.", "Loading state.")),
+        new ApiRow("ReadOnly", "bool", "false", T("Somente leitura.", "Read-only.")),
+        new ApiRow("ShowTypingIndicator", "bool", "false", T("Exibir indicador de digitacao.", "Show typing indicator.")),
+        new ApiRow("SendOnEnter", "bool", "true", T("Enviar ao pressionar Enter.", "Send on Enter press.")),
+        new ApiRow("Rows", "int", "2", T("Linhas do textarea.", "Textarea rows.")),
+        new ApiRow("Size", "XFSize", "Md", T("Sm, Md ou Lg.", "Sm, Md or Lg.")),
+        new ApiRow("HeaderContent", "RenderFragment?", "null", T("Template do cabecalho.", "Header template.")),
+        new ApiRow("ComposerStart", "RenderFragment?", "null", T("Adorno antes do textarea.", "Adornment before textarea.")),
+        new ApiRow("ComposerEnd", "RenderFragment?", "null", T("Adorno apos o textarea.", "Adornment after textarea.")),
+        new ApiRow("EmptyContent", "RenderFragment?", "null", T("Template para estado vazio.", "Empty state template.")),
+        new ApiRow("MessageTemplate", "RenderFragment<XFChatMessage>?", "null", T("Template customizado de mensagem.", "Custom message template.")),
+        new ApiRow("MessageSent", "EventCallback<XFChatSendEventArgs>", "default", T("Evento ao enviar mensagem.", "Event on message send.")),
+        new ApiRow("DraftChanged", "EventCallback<string?>", "default", T("Two-way binding do rascunho.", "Two-way draft binding."))
+    };
+
+    private IReadOnlyList<ApiRow> MessageApiRows => new[]
+    {
+        new ApiRow("Id", "string", "Guid", T("Identificador unico.", "Unique identifier.")),
+        new ApiRow("UserId", "string", "\"\"", T("ID do autor.", "Author ID.")),
+        new ApiRow("Content", "string", "\"\"", T("Conteudo da mensagem.", "Message content.")),
+        new ApiRow("Role", "AiRole", "Other", T("User, Assistant, System ou Other.", "User, Assistant, System or Other.")),
+        new ApiRow("Timestamp", "DateTime", "DateTime.Now", T("Data/hora da mensagem.", "Message timestamp.")),
+        new ApiRow("IsStreaming", "bool", "false", T("Mensagem em streaming.", "Streaming message.")),
+        new ApiRow("IsLoading", "bool", "false", T("Mensagem carregando.", "Loading message."))
+    };
+
+    private IReadOnlyList<ApiRow> UserApiRows => new[]
+    {
+        new ApiRow("Id", "string", "Guid", T("Identificador unico.", "Unique identifier.")),
+        new ApiRow("Name", "string", "\"\"", T("Nome do usuario.", "User name.")),
+        new ApiRow("AvatarUrl", "string?", "null", T("URL do avatar.", "Avatar URL.")),
+        new ApiRow("IsOnline", "bool", "true", T("Status online.", "Online status.")),
+        new ApiRow("Initials", "string", "(auto)", T("Iniciais computadas do nome.", "Computed initials from name."))
+    };
+
+    private IReadOnlyList<NameValueRow> EventRows => new[]
+    {
+        new NameValueRow("MessageSent", T("Mensagem enviada com Content, UserId e Timestamp.", "Message sent with Content, UserId and Timestamp.")),
+        new NameValueRow("DraftChanged", T("Rascunho alterado.", "Draft changed."))
+    };
+
+    private IReadOnlyList<DocTile> AccessibilityItems => new[]
+    {
+        new DocTile("aria-busy", T("Loading=true anuncia busy para screen readers.", "Loading=true announces busy to screen readers."), "spinner"),
+        new DocTile("aria-label", T("Composer e botao enviar com labels acessiveis.", "Composer and send button with accessible labels."), "tag")
+    };
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => new[]
+    {
+        new NameValueRow("Enter", T("Envia mensagem (quando SendOnEnter=true).", "Sends message (when SendOnEnter=true).")),
+        new NameValueRow("Shift+Enter", T("Nova linha no composer.", "New line in composer.")),
+        new NameValueRow("Tab", T("Move foco entre composer e botao enviar.", "Moves focus between composer and send button."))
+    };
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => new[]
+    {
+        new DocTile(T("Largura total", "Full width"), T("Chat ocupa 100% do container pai.", "Chat occupies 100% of parent container."), "maximize"),
+        new DocTile(T("Tamanho responsivo", "Responsive size"), T("Sm para mobile, Md para desktop.", "Sm for mobile, Md for desktop."), "mobile-screen")
+    };
+
+    private IReadOnlyList<DocTile> PerformanceItems => new[]
+    {
+        new DocTile(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop para renderizar.", "No JavaScript interop to render."), "bolt"),
+        new DocTile(T("Render leve", "Light render"), T("Componentes nativos Blazor sem wrappers desnecessarios.", "Native Blazor components without unnecessary wrappers."), "feather")
+    };
+
+    private IReadOnlyList<DocTile> ScenarioItems => new[]
+    {
+        new DocTile(T("Help desk", "Help desk"), T("Atendimento ao cliente com tickets e prioridade.", "Customer service with tickets and priority."), "headset"),
+        new DocTile(T("AI assistant", "AI assistant"), T("Conversa com assistente AI e indicador de digitacao.", "Conversation with AI assistant and typing indicator."), "robot"),
+        new DocTile(T("Chat interno", "Internal chat"), T("Comunicacao entre equipes com status online.", "Team communication with online status."), "comments")
+    };
+
+    private IReadOnlyList<DocTile> CompositionItems => new[]
+    {
+        new DocTile(T("Chat + Card", "Chat + Card"), T("XFChat dentro de XFCard para contexto.", "XFChat inside XFCard for context."), "square"),
+        new DocTile(T("Chat + Sidebar", "Chat + Sidebar"), T("Lista de conversas ao lado do chat.", "Conversation list beside chat."), "bars"),
+        new DocTile(T("Chat + Typing", "Chat + Typing"), T("ShowTypingIndicator com texto customizado.", "ShowTypingIndicator with custom text."), "pen")
+    };
+
+    private IReadOnlyList<DocTile> BestPracticeItems => new[]
+    {
+        new DocTile(T("Sempre usar ReadOnly para historico", "Always use ReadOnly for history"), T("Nao permita edicao de mensagens antigas.", "Do not allow editing old messages."), "lock"),
+        new DocTile(T("Placeholder descritivo", "Descriptive placeholder"), T("Indique claramente o que o usuario deve digitar.", "Clearly indicate what the user should type."), "align-left"),
+        new DocTile(T("Typing indicator para feedback", "Typing indicator for feedback"), T("Mostre quando o destinatario esta digitando.", "Show when the recipient is typing."), "spinner"),
+        new DocTile(T("Template customizado para roles", "Custom template for roles"), T("Use MessageTemplate para diferenciar visualmente os roles.", "Use MessageTemplate to visually differentiate roles."), "paintbrush")
+    };
+
+    private IReadOnlyList<DocTile> AntiPatternItems => new[]
+    {
+        new DocTile(T("Sem avatar", "No avatar"), T("Mensagens sem avatar sao dificeis de identificar.", "Messages without avatar are hard to identify."), "xmark"),
+        new DocTile(T("Muitas mensagens sem pagina", "Too many messages without pagination"), T("Carregue mensagens em lotes para performance.", "Load messages in batches for performance."), "ban"),
+        new DocTile(T("Composer sem label", "Composer without label"), T("Use ComposerLabel para acessibilidade.", "Use ComposerLabel for accessibility."), "triangle-exclamation")
+    };
+
+    private IReadOnlyList<NameValueRow> TokenRows => new[]
+    {
+        new NameValueRow("Root", T("rounded-lg border border-border-light bg-bg-surface shadow-sm.", "rounded-lg border border-border-light bg-bg-surface shadow-sm.")),
+        new NameValueRow("Header", T("border-b border-border-light px-4 py-3.", "border-b border-border-light px-4 py-3.")),
+        new NameValueRow("Composer", T("border-t border-border-light bg-surface-50 p-3.", "border-t border-border-light bg-surface-50 p-3.")),
+        new NameValueRow("Textarea", T("rounded-lg border border-surface-200 bg-bg-surface px-3 py-2.", "rounded-lg border border-surface-200 bg-bg-surface px-3 py-2."))
+    };
+
+    private IReadOnlyList<DocTile> ThemeItems => new[]
+    {
+        new DocTile("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new DocTile("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    };
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => new[]
+    {
+        new DocTile("XFMessageList", T("Lista de mensagens standalone.", "Standalone message list."), "list"),
+        new DocTile("XFAiChat", T("Chat AI com streaming e tool calls.", "AI chat with streaming and tool calls."), "robot"),
+        new DocTile("XFCard", T("Container para chat em dashboards.", "Container for chat in dashboards."), "square")
+    };
+
+    private IReadOnlyList<NameValueRow> FaqRows => new[]
+    {
+        new NameValueRow(T("Como implementar streaming?", "How to implement streaming?"), T("Use IsStreaming=true na XFChatMessage e atualize Content via timer.", "Use IsStreaming=true on XFChatMessage and update Content via timer.")),
+        new NameValueRow(T("Chat ou XFAiChat?", "Chat or XFAiChat?"), T("XFChat para chat humano. XFAiChat para AI com tool calls.", "XFChat for human chat. XFAiChat for AI with tool calls.")),
+        new NameValueRow(T("Como adicionar anexos?", "How to add attachments?"), T("Use ComposerStart/ComposerEnd com botoes e logica customizada.", "Use ComposerStart/ComposerEnd with buttons and custom logic."))
+    };
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => new[]
+    {
+        new NameValueRow("2026-06-02", T("Documentacao premium: 10 exemplos, API completa, WCAG AAA.", "Premium docs: 10 examples, full API, WCAG AAA.")),
+        new NameValueRow("2026-06-12", T("Refatorada para padrao enterprise com 26 secoes.", "Refactored to enterprise standard with 26 sections."))
+    };
+
+    // --- Code Strings ---
+    private string CodeBasic =>
+        "<XFChat Title=\"Chat\"" + "\n" +
+        "        Messages=\"@messages\"" + "\n" +
+        "        Users=\"@users\"" + "\n" +
+        "        CurrentUserId=\"user1\" />";
+
+    private string CodeUsers =>
+        "private IReadOnlyList<XFChatUser> users = new[] {" + "\n" +
+        "    new XFChatUser { Id = \"user1\", Name = \"Maria Silva\"," + "\n" +
+        "        IsOnline = true }," + "\n" +
+        "    new XFChatUser { Id = \"agent\", Name = \"Support\"," + "\n" +
+        "        IsOnline = true }" + "\n" +
+        "};" + "\n" +
+        "\n" +
+        "// Initials computed automatically: \"MS\", \"SU\"";
+
+    private string CodeRoles =>
+        "new XFChatMessage" + "\n" +
+        "{" + "\n" +
+        "    UserId = \"user1\"," + "\n" +
+        "    Content = \"Mensagem do usuario.\"," + "\n" +
+        "    Role = AiRole.User," + "\n" +
+        "    Timestamp = DateTime.Now" + "\n" +
+        "};" + "\n" +
+        "\n" +
+        "new XFChatMessage" + "\n" +
+        "{" + "\n" +
+        "    UserId = \"agent\"," + "\n" +
+        "    Content = \"Resposta do assistente.\"," + "\n" +
+        "    Role = AiRole.Assistant," + "\n" +
+        "    Timestamp = DateTime.Now" + "\n" +
+        "};" + "\n" +
+        "\n" +
+        "new XFChatMessage" + "\n" +
+        "{" + "\n" +
+        "    UserId = \"system\"," + "\n" +
+        "    Content = \"Conversa iniciada.\"," + "\n" +
+        "    Role = AiRole.System," + "\n" +
+        "    Timestamp = DateTime.Now" + "\n" +
+        "};" + "\n" +
+        "\n" +
+        "new XFChatMessage" + "\n" +
+        "{" + "\n" +
+        "    UserId = \"other\"," + "\n" +
+        "    Content = \"Nota interna.\"," + "\n" +
+        "    Role = AiRole.Other," + "\n" +
+        "    Timestamp = DateTime.Now" + "\n" +
+        "};";
+
+    private string CodeLoading =>
+        "<XFChat ShowTypingIndicator=\"true\"" + "\n" +
+        "        TypingText=\"Agent is typing...\"" + "\n" +
+        "        Loading=\"true\" />";
+
+    private string CodeSendOnEnter =>
+        "<XFChat SendOnEnter=\"false\"" + "\n" +
+        "        Rows=\"3\" />" + "\n" +
+        "\n" +
+        "// Enter inserts new line" + "\n" +
+        "// Use send button to submit";
+
+    private string CodeMessageTemplate =>
+        "<XFChat Title=\"Template customizado\"" + "\n" +
+        "        Messages=\"@messages\"" + "\n" +
+        "        Users=\"@users\"" + "\n" +
+        "        CurrentUserId=\"user1\"" + "\n" +
+        "        ReadOnly=\"true\">" + "\n" +
+        "    <MessageTemplate Context=\"msg\">" + "\n" +
+        "        <div class=\"@(msg.Role == AiRole.User" + "\n" +
+        "            ? \"ml-auto bg-primary/10\" : \"mr-auto bg-surface-100\")" + "\n" +
+        "            rounded-xl p-3 max-w-[80%]\">" + "\n" +
+        "            <div class=\"text-xs font-bold\">" + "\n" +
+        "                @(msg.Role == AiRole.User" + "\n" +
+        "                    ? \"Voce\" : \"Assistente\")" + "\n" +
+        "            </div>" + "\n" +
+        "            <div class=\"text-sm\">@msg.Content</div>" + "\n" +
+        "            <div class=\"text-[10px] text-text-muted\">" + "\n" +
+        "                @msg.Timestamp.ToString(\"HH:mm\")" + "\n" +
+        "            </div>" + "\n" +
+        "        </div>" + "\n" +
+        "    </MessageTemplate>" + "\n" +
+        "</XFChat>";
+
+    private string CodeCustomHeader =>
+        "<XFChat Messages=\"@messages\"" + "\n" +
+        "        Users=\"@users\"" + "\n" +
+        "        CurrentUserId=\"user1\"" + "\n" +
+        "        ReadOnly=\"true\">" + "\n" +
+        "    <HeaderContent>" + "\n" +
+        "        <div class=\"flex items-center gap-3\">" + "\n" +
+        "            <span class=\"rounded-full bg-success/10 p-2\">" + "\n" +
+        "                <!-- headset icon -->" + "\n" +
+        "            </span>" + "\n" +
+        "            <div>" + "\n" +
+        "                <div>Suporte Tecnico</div>" + "\n" +
+        "                <div class=\"text-success\">Online</div>" + "\n" +
+        "            </div>" + "\n" +
+        "        </div>" + "\n" +
+        "    </HeaderContent>" + "\n" +
+        "</XFChat>";
+
+    private string CodeComposerAdornments =>
+        "<XFChat Title=\"Com anexos\"" + "\n" +
+        "        Messages=\"@messages\"" + "\n" +
+        "        Users=\"@users\"" + "\n" +
+        "        CurrentUserId=\"user1\"" + "\n" +
+        "        ReadOnly=\"true\">" + "\n" +
+        "    <ComposerStart>" + "\n" +
+        "        <button type=\"button\" aria-label=\"Anexar arquivo\">" + "\n" +
+        "            <!-- paperclip icon -->" + "\n" +
+        "        </button>" + "\n" +
+        "    </ComposerStart>" + "\n" +
+        "    <ComposerEnd>" + "\n" +
+        "        <button type=\"button\" aria-label=\"Emoji\">" + "\n" +
+        "            <!-- smile icon -->" + "\n" +
+        "        </button>" + "\n" +
+        "    </ComposerEnd>" + "\n" +
+        "</XFChat>";
+
+    private string CodeReadOnly =>
+        "<XFChat Title=\"History\"" + "\n" +
+        "        Messages=\"@messages\"" + "\n" +
+        "        Users=\"@users\"" + "\n" +
+        "        CurrentUserId=\"user1\"" + "\n" +
+        "        ReadOnly=\"true\" />";
+
+    private string CodeEnterprise =>
+        "<XFChat Messages=\"@messages\"" + "\n" +
+        "        Users=\"@users\"" + "\n" +
+        "        CurrentUserId=\"user1\"" + "\n" +
+        "        ShowTypingIndicator=\"true\">" + "\n" +
+        "    <HeaderContent>" + "\n" +
+        "        <!-- Ticket info, priority badge, status -->" + "\n" +
+        "    </HeaderContent>" + "\n" +
+        "</XFChat>";
+
+    // --- Records ---
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

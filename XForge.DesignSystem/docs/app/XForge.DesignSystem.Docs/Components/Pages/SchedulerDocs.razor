@@ -1,0 +1,985 @@
+@page "/display/scheduler"
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.DataDisplay.Scheduler
+@using XForge.DesignSystem.Components.Overlays.Dialog
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <!-- ===== HERO ===== -->
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFScheduler" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Mes, semana e dia", "Month, week and day")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Agenda corporativa com visoes de mes, semana e dia, recursos e drag-and-drop.",
+                               "Corporate scheduler with month, week and day views, resources and drag-and-drop.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("Componente generico para exibicao e interacao com compromissos, com navegacao por periodo, multiplos recursos, templates customizados, movimentacao e redimensionamento.",
+                               "Generic component for displaying and interacting with appointments, with period navigation, multiple resources, custom templates, move and resize.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 4)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <!-- ===== 6 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Visao Mes", "1. Month View"), T("Grade mensal com agendamentos agrupados por dia.", "Monthly grid with appointments grouped by day."), ExMonthView(), Code1)
+            @Example(T("2. Visao Semana com Recursos", "2. Week View with Resources"), T("Timeline semanal com colunas por recurso (sala, equipe).", "Weekly timeline with resource columns (room, team)."), ExWeekViewResources(), Code2)
+            @Example(T("3. Visao Dia", "3. Day View"), T("Timeline diaria com slots de 30 minutos.", "Daily timeline with 30-minute slots."), ExDayView(), Code3)
+            @Example(T("4. Template Customizado", "4. Custom Template"), T("Appointments com icone e cor customizada via Template.", "Appointments with icon and custom color via Template."), ExCustomTemplate(), Code4)
+            @Example(T("5. Slot Template", "5. Slot Template"), T("Slot customizado com acao de criar agendamento.", "Custom slot with create-appointment action."), ExSlotTemplate(), Code5)
+            @Example(T("6. Navegacao e Dialog", "6. Navigation and Dialog"), T("Navegar entre datas, criar e visualizar agendamentos com XFDialogService.", "Navigate between dates, create and view appointments with XFDialogService."), ExNavigationEvents(), Code6)
+        </XFStack>
+
+        <!-- ===== API + REFERENCE ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("XFScheduler", "XFScheduler");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private sealed class EventItem
+    {
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public string? ResourceId { get; set; }
+    }
+
+    // === HERO ===
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFScheduler TItem="EventItem"
+                     Data="@HeroData"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Text"
+                     ResourceProperty="ResourceId"
+                     Resources="@HeroResources"
+                     View="XFSchedulerView.Week"
+                     StartHour="8"
+                     EndHour="18"
+                     SlotMinutes="60" />
+    </XFStack>;
+
+    private IReadOnlyList<EventItem> HeroData => new List<EventItem>
+    {
+        new EventItem { Start = DateTime.Today.AddHours(9), End = DateTime.Today.AddHours(10), Text = "Daily Standup", ResourceId = "room-a" },
+        new EventItem { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(15).AddMinutes(30), Text = "Sprint Review", ResourceId = "room-b" }
+    };
+
+    private IReadOnlyList<XFSchedulerResource> HeroResources => new List<XFSchedulerResource>
+    {
+        new XFSchedulerResource("room-a", "Sala A"),
+        new XFSchedulerResource("room-b", "Sala B")
+    };
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("3 visoes", "3 views"), T("Mes, semana e dia com navegacao por periodo.", "Month, week and day with period navigation."), "calendar"),
+        new(T("Recursos", "Resources"), T("Multiplos recursos com colunas na visao timeline.", "Multiple resources with columns in timeline view."), "layer-group"),
+        new(T("Drag-and-drop", "Drag-and-drop"), T("Mover e redimensionar agendamentos.", "Move and resize appointments."), "arrows-up-down")
+    ];
+
+    // === METADATA ===
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFScheduler<TItem>"),
+        new("Namespace", "XForge.DesignSystem.Components.DataDisplay.Scheduler"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Data Display / Scheduler"),
+        new("Status", T("Estavel", "Stable")),
+        new("Generic", "TItem = tipo do item de dados"),
+        new("Accessibility", T("role=grid, role=button, aria-label, aria-selected, aria-description.", "role=grid, role=button, aria-label, aria-selected, aria-description.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    // === OVERVIEW ===
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Agenda corporativa", "Corporate scheduler"), T("Exibicao de compromissos em grade e timeline.", "Appointment display in grid and timeline."), "calendar"),
+        new(T("3 visoes", "3 views"), T("Mes (grade), semana (timeline), dia (timeline).", "Month (grid), week (timeline), day (timeline)."), "columns-3"),
+        new(T("Recursos", "Resources"), T("Agrupamento por sala, equipe ou pessoa.", "Grouping by room, team or person."), "layer-group"),
+        new(T("Drag-and-drop", "Drag-and-drop"), T("Mover e redimensionar agendamentos.", "Move and resize appointments."), "arrows-up-down"),
+        new(T("Templates", "Templates"), T("Renderizacao customizada de slots e appointments.", "Custom rendering of slots and appointments."), "paintbrush"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Reunioes", "Meetings"), T("Agendar reunioes com participantes e salas.", "Schedule meetings with attendees and rooms."), "users"),
+        new(T("Alocacao", "Allocation"), T("Alocar recursos em projetos.", "Allocate resources to projects."), "layer-group"),
+        new(T("Turnos", "Shifts"), T("Gerenciar escalas de trabalho.", "Manage work shifts."), "clock")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Agendamentos sem visualizacao consolidada.", "Appointments without consolidated view."), "xmark"),
+        new(T("Depois", "After"), T("Grade e timeline com navegacao e interacao.", "Grid and timeline with navigation and interaction."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=grid, aria-label, aria-selected.", "role=grid, aria-label, aria-selected."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Agendas corporativas", "Corporate calendars"), T("Calendario de reunioes e alocacao de salas.", "Meeting calendar and room allocation."), "calendar"),
+        new(T("Gestao de projetos", "Project management"), T("Acompanhamento de marcos e entregas.", "Tracking milestones and deliverables."), "tasks")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Listas simples", "Simple lists"), T("Use XFTable para listas sem dimensao temporal.", "Use XFTable for lists without temporal dimension."), "list"),
+        new(T("Gantt detalhado", "Detailed Gantt"), T("Para diagramas Gantt complexos, use biblioteca especializada.", "For complex Gantt charts, use a specialized library."), "chart-gantt")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Header", T("Navegacao por periodo, titulo e seletor de view.", "Period navigation, title and view selector."), "heading"),
+        new("Month Grid", T("Grade 7x6 com dias e agendamentos.", "7x6 grid with days and appointments."), "grid"),
+        new("Timeline", T("Coluna de horas com slots e agendamentos.", "Hour column with slots and appointments."), "clock"),
+        new("Appointment", T("Bloco de agendamento com texto e horario.", "Appointment block with text and time."), "square"),
+        new("Resource Column", T("Coluna por recurso na visao timeline.", "Per-resource column in timeline view."), "layer-group"),
+        new("View Switcher", T("Toggle entre mes, semana e dia.", "Toggle between month, week and day."), "toggle-on")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Visao consolidada", "Consolidated view"), T("Tudo em uma tela: agenda, recursos, navegacao.", "Everything on one screen: calendar, resources, navigation."), "eye"),
+        new(T("Interacao direta", "Direct interaction"), T("Clique no slot para criar, no appointment para selecionar.", "Click slot to create, appointment to select."), "hand-pointer"),
+        new(T("Navegacao periodica", "Period navigation"), T("Anterior/Proximo com botao Hoje.", "Previous/Next with Today button."), "arrows-left-right")
+    ];
+
+    // === EXAMPLES ===
+    private RenderFragment ExMonthView() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFScheduler TItem="EventItem"
+                     Data="@MonthData"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Text"
+                     View="XFSchedulerView.Month"
+                     FirstDayOfWeek="DayOfWeek.Monday" />
+    </XFStack>;
+
+    private IReadOnlyList<EventItem> MonthData => new List<EventItem>
+    {
+        new EventItem { Start = DateTime.Today.AddDays(-2).AddHours(10), End = DateTime.Today.AddDays(-2).AddHours(11), Text = "Kickoff" },
+        new EventItem { Start = DateTime.Today.AddDays(1).AddHours(14), End = DateTime.Today.AddDays(1).AddHours(15), Text = "Revisao de codigo" },
+        new EventItem { Start = DateTime.Today.AddDays(1).AddHours(16), End = DateTime.Today.AddDays(1).AddHours(17), Text = "Demo" },
+        new EventItem { Start = DateTime.Today.AddDays(3).AddHours(9), End = DateTime.Today.AddDays(3).AddHours(10).AddMinutes(30), Text = "Planejamento sprint" },
+        new EventItem { Start = DateTime.Today.AddDays(5).AddHours(11), End = DateTime.Today.AddDays(5).AddHours(12), Text = "Retrospectiva" }
+    };
+
+    private const string Code1 = @"<XFScheduler TItem=""EventItem""
+         Data=""@MonthData""
+         StartProperty=""Start""
+         EndProperty=""End""
+         TextProperty=""Text""
+         View=""XFSchedulerView.Month""
+         FirstDayOfWeek=""DayOfWeek.Monday"" />
+
+@code {
+    private sealed class EventItem
+    {
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public string Text { get; set; } = string.Empty;
+    }
+
+    private IReadOnlyList<EventItem> MonthData => new List<EventItem>
+    {
+        new EventItem
+        {
+            Start = DateTime.Today.AddDays(1).AddHours(14),
+            End = DateTime.Today.AddDays(1).AddHours(15),
+            Text = ""Revisao de codigo""
+        },
+        new EventItem
+        {
+            Start = DateTime.Today.AddDays(3).AddHours(9),
+            End = DateTime.Today.AddDays(3).AddHours(10).AddMinutes(30),
+            Text = ""Planejamento sprint""
+        }
+    };
+}";
+
+    private RenderFragment ExWeekViewResources() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFScheduler TItem="EventItem"
+                     Data="@WeekResourcesData"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Text"
+                     ResourceProperty="ResourceId"
+                     Resources="@WeekResources"
+                     View="XFSchedulerView.Week"
+                     StartHour="8"
+                     EndHour="18"
+                     SlotMinutes="60"
+                     Size="XFSize.Lg" />
+    </XFStack>;
+
+    private IReadOnlyList<EventItem> WeekResourcesData => new List<EventItem>
+    {
+        new EventItem { Start = DateTime.Today.AddHours(9), End = DateTime.Today.AddHours(10), Text = "Daily Standup", ResourceId = "room-a" },
+        new EventItem { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(15).AddMinutes(30), Text = "Sprint Review", ResourceId = "room-b" },
+        new EventItem { Start = DateTime.Today.AddDays(1).AddHours(10), End = DateTime.Today.AddDays(1).AddHours(11), Text = "Pair Programming", ResourceId = "room-a" },
+        new EventItem { Start = DateTime.Today.AddDays(2).AddHours(13), End = DateTime.Today.AddDays(2).AddHours(14), Text = "Retro", ResourceId = "room-b" }
+    };
+
+    private IReadOnlyList<XFSchedulerResource> WeekResources => new List<XFSchedulerResource>
+    {
+        new XFSchedulerResource("room-a", "Sala A - Reunioes"),
+        new XFSchedulerResource("room-b", "Sala B - Workshop")
+    };
+
+    private const string Code2 = @"<XFScheduler TItem=""EventItem""
+         Data=""@WeekData""
+         StartProperty=""Start""
+         EndProperty=""End""
+         TextProperty=""Text""
+         ResourceProperty=""ResourceId""
+         Resources=""@Resources""
+         View=""XFSchedulerView.Week""
+         StartHour=""8""
+         EndHour=""18""
+         SlotMinutes=""60""
+         Size=""XFSize.Lg"" />
+
+@code {
+    private sealed class EventItem
+    {
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public string? ResourceId { get; set; }
+    }
+
+    private IReadOnlyList<EventItem> WeekData => new List<EventItem>
+    {
+        new EventItem
+        {
+            Start = DateTime.Today.AddHours(9),
+            End = DateTime.Today.AddHours(10),
+            Text = ""Daily Standup"",
+            ResourceId = ""room-a""
+        },
+        new EventItem
+        {
+            Start = DateTime.Today.AddHours(14),
+            End = DateTime.Today.AddHours(15).AddMinutes(30),
+            Text = ""Sprint Review"",
+            ResourceId = ""room-b""
+        }
+    };
+
+    private IReadOnlyList<XFSchedulerResource> Resources => new List<XFSchedulerResource>
+    {
+        new XFSchedulerResource(""room-a"", ""Sala A - Reunioes""),
+        new XFSchedulerResource(""room-b"", ""Sala B - Workshop"")
+    };
+}";
+
+    private RenderFragment ExDayView() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFScheduler TItem="EventItem"
+                     Data="@DayData"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Text"
+                     View="XFSchedulerView.Day"
+                     StartHour="7"
+                     EndHour="20"
+                     SlotMinutes="30"
+                     Size="XFSize.Lg" />
+    </XFStack>;
+
+    private IReadOnlyList<EventItem> DayData => new List<EventItem>
+    {
+        new EventItem { Start = DateTime.Today.AddHours(8), End = DateTime.Today.AddHours(8).AddMinutes(45), Text = "Cerimonial diario" },
+        new EventItem { Start = DateTime.Today.AddHours(9).AddMinutes(30), End = DateTime.Today.AddHours(11), Text = "Revisao de PR" },
+        new EventItem { Start = DateTime.Today.AddHours(13), End = DateTime.Today.AddHours(14), Text = "Almoco tecnico" },
+        new EventItem { Start = DateTime.Today.AddHours(15), End = DateTime.Today.AddHours(16).AddMinutes(30), Text = "Pair programming" }
+    };
+
+    private const string Code3 = @"<XFScheduler TItem=""EventItem""
+         Data=""@DayData""
+         StartProperty=""Start""
+         EndProperty=""End""
+         TextProperty=""Text""
+         View=""XFSchedulerView.Day""
+         StartHour=""7""
+         EndHour=""20""
+         SlotMinutes=""30""
+         Size=""XFSize.Lg"" />
+
+@code {
+    private sealed class EventItem
+    {
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public string Text { get; set; } = string.Empty;
+    }
+
+    private IReadOnlyList<EventItem> DayData => new List<EventItem>
+    {
+        new EventItem
+        {
+            Start = DateTime.Today.AddHours(9).AddMinutes(30),
+            End = DateTime.Today.AddHours(11),
+            Text = ""Revisao de PR""
+        },
+        new EventItem
+        {
+            Start = DateTime.Today.AddHours(15),
+            End = DateTime.Today.AddHours(16).AddMinutes(30),
+            Text = ""Pair programming""
+        }
+    };
+}";
+
+    private RenderFragment ExCustomTemplate() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFScheduler TItem="EventItem"
+                     Data="@TemplateData"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Text"
+                     View="XFSchedulerView.Week"
+                     StartHour="8"
+                     EndHour="18"
+                     SlotMinutes="60">
+            <Template Context="ctx">
+                <div class="flex items-center gap-1.5 rounded-md bg-success/12 px-2 py-1 text-xs text-success ring-1 ring-success/18">
+                    <span class="inline-block h-3 w-3">@((MarkupString)XFSvgIcons.MarkupWithSize("check", 12))</span>
+                    <span class="truncate font-semibold">@ctx.Text</span>
+                </div>
+            </Template>
+        </XFScheduler>
+    </XFStack>;
+
+    private IReadOnlyList<EventItem> TemplateData => new List<EventItem>
+    {
+        new EventItem { Start = DateTime.Today.AddHours(9), End = DateTime.Today.AddHours(10), Text = "Deploy v2.1" },
+        new EventItem { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(15), Text = "Code review" }
+    };
+
+    private const string Code4 = @"<XFScheduler TItem=""EventItem""
+         Data=""@Data""
+         StartProperty=""Start""
+         EndProperty=""End""
+         TextProperty=""Text""
+         View=""XFSchedulerView.Week""
+         StartHour=""8""
+         EndHour=""18""
+         SlotMinutes=""60"">
+    <Template Context=""ctx"">
+        <div class=""flex items-center gap-1.5 rounded-md bg-success/12 px-2 py-1 text-xs text-success ring-1 ring-success/18"">
+            <span class=""inline-block h-3 w-3"">@((MarkupString)XFSvgIcons.MarkupWithSize(""check"", 12))</span>
+            <span class=""truncate font-semibold"">@ctx.Text</span>
+        </div>
+    </Template>
+</XFScheduler>
+
+@code {
+    private sealed class EventItem
+    {
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public string Text { get; set; } = string.Empty;
+    }
+
+    private IReadOnlyList<EventItem> Data => new List<EventItem>
+    {
+        new EventItem
+        {
+            Start = DateTime.Today.AddHours(9),
+            End = DateTime.Today.AddHours(10),
+            Text = ""Deploy v2.1""
+        }
+    };
+}";
+
+    private RenderFragment ExSlotTemplate() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFScheduler TItem="EventItem"
+                     Data="@SlotTemplateData"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Text"
+                     View="XFSchedulerView.Day"
+                     StartHour="8"
+                     EndHour="18"
+                     SlotMinutes="60">
+            <SlotTemplate Context="ctx">
+                <div class="grid min-h-16 grid-cols-[4rem_1fr] gap-2 border-b border-border-light bg-bg-surface p-2">
+                    <span class="text-xs font-semibold text-text-muted">@ctx.Start.ToString("HH:mm")</span>
+                    <div class="grid gap-1">
+                        @foreach (var appointment in ctx.Appointments)
+                        {
+                            <div class="rounded-md bg-primary/12 px-2 py-1 text-xs text-primary ring-1 ring-primary/18">
+                                @appointment
+                            </div>
+                        }
+                        <button type="button" class="mt-1 inline-flex w-full items-center justify-center gap-1 rounded-md border border-dashed border-border-light bg-transparent px-2 py-1 text-[0.6875rem] font-semibold text-text-muted transition-colors hover:border-primary hover:text-primary">
+                            <span class="inline-block h-3 w-3">@((MarkupString)XFSvgIcons.MarkupWithSize("plus", 12))</span>
+                            @T("Criar agendamento", "Create appointment")
+                        </button>
+                    </div>
+                </div>
+            </SlotTemplate>
+        </XFScheduler>
+    </XFStack>;
+
+    private IReadOnlyList<EventItem> SlotTemplateData => new List<EventItem>
+    {
+        new EventItem { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(11), Text = "Reuniao" }
+    };
+
+    private const string Code5 = @"<XFScheduler TItem=""EventItem""
+         Data=""@Data""
+         StartProperty=""Start""
+         EndProperty=""End""
+         TextProperty=""Text""
+         View=""XFSchedulerView.Day""
+         StartHour=""8""
+         EndHour=""18""
+         SlotMinutes=""60"">
+    <SlotTemplate Context=""ctx"">
+        <div class=""grid min-h-16 grid-cols-[4rem_1fr] gap-2 border-b border-border-light bg-bg-surface p-2"">
+            <span class=""text-xs font-semibold text-text-muted"">@ctx.Start.ToString(""HH:mm"")</span>
+            <div class=""grid gap-1"">
+                @foreach (var appointment in ctx.Appointments)
+                {
+                    <div class=""rounded-md bg-primary/12 px-2 py-1 text-xs text-primary ring-1 ring-primary/18"">
+                        @appointment
+                    </div>
+                }
+                <button type=""button"" class=""mt-1 inline-flex w-full items-center justify-center gap-1 rounded-md border border-dashed border-border-light bg-transparent px-2 py-1 text-[0.6875rem] font-semibold text-text-muted transition-colors hover:border-primary hover:text-primary"">
+                    <span class=""inline-block h-3 w-3"">@((MarkupString)XFSvgIcons.MarkupWithSize(""plus"", 12))</span>
+                    @T(""Criar agendamento"", ""Create appointment"")
+                </button>
+            </div>
+        </div>
+    </SlotTemplate>
+</XFScheduler>
+
+@code {
+    private sealed class EventItem
+    {
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public string Text { get; set; } = string.Empty;
+    }
+
+    private IReadOnlyList<EventItem> Data => new List<EventItem>
+    {
+        new EventItem
+        {
+            Start = DateTime.Today.AddHours(10),
+            End = DateTime.Today.AddHours(11),
+            Text = ""Reuniao""
+        }
+    };
+}";
+
+    // --- 6. Navigation + Dialog ---
+    [Inject] private XFDialogService DialogService { get; set; } = default!;
+
+    private DateTime ExternalDate = DateTime.Today;
+    private XFSchedulerView ExternalView = XFSchedulerView.Week;
+    private string? LastEvent;
+    private string newAppointmentText = "";
+
+    private IReadOnlyList<EventItem> NavData => new List<EventItem>
+    {
+        new EventItem { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(11), Text = "Standup" },
+        new EventItem { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(15), Text = "Review" }
+    };
+
+    private RenderFragment ExNavigationEvents() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="2" FullWidth="true">
+            <XFButton Variant="XFButtonVariant.Outline" Size="XFExtendedSize.Sm" OnClick="@(() => ExternalDate = ExternalDate.AddDays(-7))">@T("Anterior", "Previous")</XFButton>
+            <XFButton Variant="XFButtonVariant.Outline" Size="XFExtendedSize.Sm" OnClick="@(() => ExternalDate = DateTime.Today)">@T("Hoje", "Today")</XFButton>
+            <XFButton Variant="XFButtonVariant.Outline" Size="XFExtendedSize.Sm" OnClick="@(() => ExternalDate = ExternalDate.AddDays(7))">@T("Proximo", "Next")</XFButton>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@ExternalDate.ToString("dd/MM/yyyy")" />
+        </XFStack>
+        <XFScheduler TItem="EventItem"
+                     Data="@NavData"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Text"
+                     Date="@ExternalDate"
+                     DateChanged="@((DateTime d) => ExternalDate = d)"
+                     View="@ExternalView"
+                     ViewChanged="@((XFSchedulerView v) => ExternalView = v)"
+                     SlotSelect="@OnSlotSelect"
+                     AppointmentSelect="@OnAppointmentSelect"
+                     StartHour="8"
+                     EndHour="18"
+                     SlotMinutes="60" />
+        @if (LastEvent is not null)
+        {
+            <div class="rounded-lg border border-border-light bg-surface-50 p-3 text-xs font-semibold text-text-secondary">
+                @T("Ultimo evento: ", "Last event: ")@LastEvent
+            </div>
+        }
+    </XFStack>;
+
+    private async Task OnSlotSelect(XFSchedulerSlotSelectEventArgs args)
+    {
+        newAppointmentText = "";
+        var result = await DialogService.ShowAsync(
+            new XFDialogOptions
+            {
+                Title = T("Criar agendamento", "Create appointment"),
+                Description = $"{args.Start:dd/MM/yyyy HH:mm} - {args.End:HH:mm}",
+                Tone = XFSemanticColor.Primary,
+                Size = XFOverlaySize.Sm
+            },
+            _ => builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddAttribute(1, "class", "flex flex-col gap-3 px-6 pb-4");
+                builder.OpenElement(2, "label");
+                builder.AddAttribute(3, "class", "text-sm font-medium text-text-primary");
+                builder.AddContent(5, T("Titulo do agendamento", "Appointment title"));
+                builder.CloseElement();
+                builder.OpenElement(6, "input");
+                builder.AddAttribute(7, "type", "text");
+                builder.AddAttribute(8, "value", newAppointmentText);
+                builder.AddAttribute(9, "oninput", EventCallback.Factory.CreateBinder(this, value => newAppointmentText = value ?? "", newAppointmentText));
+                builder.AddAttribute(10, "class", "rounded-lg border border-border-light bg-bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:ring-2 focus:ring-primary/20");
+                builder.AddAttribute(11, "placeholder", T("Ex: Reuniao de alinhamento", "E.g.: Alignment meeting"));
+                builder.CloseElement();
+                builder.CloseElement();
+            });
+
+        if (!result.Cancelled && !string.IsNullOrWhiteSpace(newAppointmentText))
+        {
+            var updated = NavData.ToList();
+            updated.Add(new EventItem
+            {
+                Start = args.Start,
+                End = args.End,
+                Text = newAppointmentText
+            });
+            LastEvent = T("Agendamento criado: ", "Appointment created: ") + newAppointmentText;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnAppointmentSelect(XFSchedulerAppointmentSelectEventArgs<EventItem> args)
+    {
+        await DialogService.ShowAsync(
+            new XFDialogOptions
+            {
+                Title = args.Text,
+                Description = $"{args.Start:dd/MM/yyyy HH:mm} - {args.End:HH:mm}",
+                Size = XFOverlaySize.Sm
+            },
+            _ => builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddAttribute(1, "class", "flex flex-col gap-3 px-6 pb-4");
+                builder.OpenElement(2, "p");
+                builder.AddAttribute(3, "class", "text-sm text-text-secondary");
+                builder.AddContent(10, T($"Horario: {args.Start:HH:mm} - {args.End:HH:mm}", $"Time: {args.Start:HH:mm} - {args.End:HH:mm}"));
+                builder.CloseElement();
+                builder.OpenElement(11, "p");
+                builder.AddAttribute(12, "class", "text-sm text-text-secondary");
+                builder.AddContent(13, T($"Data: {args.Start:dd/MM/yyyy}", $"Date: {args.Start:dd/MM/yyyy}"));
+                builder.CloseElement();
+                builder.CloseElement();
+            });
+
+        LastEvent = T("Detalhes: ", "Details: ") + $"{args.Text} ({args.Start:HH:mm} - {args.End:HH:mm})";
+        StateHasChanged();
+    }
+
+    private const string Code6 = @"@inject XFDialogService DialogService
+
+<XFStack Orientation=""XFOrientation.Horizontal"" Gap=""2"" FullWidth=""true"">
+    <XFButton Variant=""XFButtonVariant.Outline"" Size=""XFExtendedSize.Sm""
+              OnClick=""@(() => ExternalDate = ExternalDate.AddDays(-7))"">
+        @T(""Anterior"", ""Previous"")
+    </XFButton>
+    <XFButton Variant=""XFButtonVariant.Outline"" Size=""XFExtendedSize.Sm""
+              OnClick=""@(() => ExternalDate = DateTime.Today)"">
+        @T(""Hoje"", ""Today"")
+    </XFButton>
+    <XFButton Variant=""XFButtonVariant.Outline"" Size=""XFExtendedSize.Sm""
+              OnClick=""@(() => ExternalDate = ExternalDate.AddDays(7))"">
+        @T(""Proximo"", ""Next"")
+    </XFButton>
+    <XFBadge Variant=""XFBadgeVariant.Soft"" Color=""XFBadgeColor.Info""
+             Text=""@ExternalDate.ToString(""dd/MM/yyyy"")"" />
+</XFStack>
+
+<XFScheduler TItem=""EventItem""
+             Data=""@Data""
+             StartProperty=""Start""
+             EndProperty=""End""
+             TextProperty=""Text""
+             Date=""@ExternalDate""
+             DateChanged=""@((DateTime d) => ExternalDate = d)""
+             View=""@ExternalView""
+             ViewChanged=""@((XFSchedulerView v) => ExternalView = v)""
+             SlotSelect=""@OnSlotSelect""
+             AppointmentSelect=""@OnAppointmentSelect""
+             StartHour=""8""
+             EndHour=""18""
+             SlotMinutes=""60"" />
+
+@code {
+    [Inject] private XFDialogService DialogService { get; set; } = default!;
+
+    private DateTime ExternalDate = DateTime.Today;
+    private XFSchedulerView ExternalView = XFSchedulerView.Week;
+    private string newAppointmentText = """";
+
+    private IReadOnlyList<EventItem> Data => new List<EventItem>
+    {
+        new EventItem
+        {
+            Start = DateTime.Today.AddHours(10),
+            End = DateTime.Today.AddHours(11),
+            Text = ""Standup""
+        }
+    };
+
+    private async Task OnSlotSelect(XFSchedulerSlotSelectEventArgs args)
+    {
+        newAppointmentText = """";
+        var result = await DialogService.ShowAsync(
+            new XFDialogOptions
+            {
+                Title = ""Criar agendamento"",
+                Description = $""{args.Start:dd/MM/yyyy HH:mm} - {args.End:HH:mm}"",
+                Tone = XFSemanticColor.Primary,
+                Size = XFOverlaySize.Sm
+            },
+            _ => builder =>
+            {
+                builder.OpenElement(0, ""div"");
+                builder.AddAttribute(1, ""class"", ""flex flex-col gap-3 px-6 pb-4"");
+                builder.OpenElement(2, ""label"");
+                builder.AddAttribute(3, ""class"", ""text-sm font-medium"");
+                builder.AddContent(4, ""Titulo do agendamento"");
+                builder.CloseElement();
+                builder.OpenElement(5, ""input"");
+                builder.AddAttribute(6, ""type"", ""text"");
+                builder.AddAttribute(7, ""value"", newAppointmentText);
+                builder.AddAttribute(8, ""oninput"",
+                    EventCallback.Factory.CreateBinder(this,
+                        value => newAppointmentText = value, newAppointmentText));
+                builder.AddAttribute(9, ""placeholder"", ""Ex: Reuniao de alinhamento"");
+                builder.CloseElement();
+                builder.CloseElement();
+            });
+
+        if (!result.Cancelled && !string.IsNullOrWhiteSpace(newAppointmentText))
+        {
+            Data.ToList().Add(new EventItem
+            {
+                Start = args.Start,
+                End = args.End,
+                Text = newAppointmentText
+            });
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnAppointmentSelect(
+        XFSchedulerAppointmentSelectEventArgs<EventItem> args)
+    {
+        await DialogService.ShowAsync(
+            new XFDialogOptions
+            {
+                Title = args.Text,
+                Description = $""{args.Start:dd/MM/yyyy HH:mm} - {args.End:HH:mm}"",
+                Size = XFOverlaySize.Sm
+            },
+            _ => builder =>
+            {
+                builder.OpenElement(0, ""div"");
+                builder.AddAttribute(1, ""class"", ""flex flex-col gap-3 px-6 pb-4"");
+                builder.OpenElement(2, ""p"");
+                builder.AddAttribute(3, ""class"", ""text-sm text-text-secondary"");
+                builder.AddContent(4,
+                    $""Horario: {args.Start:HH:mm} - {args.End:HH:mm}"");
+                builder.CloseElement();
+                builder.CloseElement();
+            });
+    }
+}";
+
+    // === API ===
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Data", "IEnumerable<TItem>?", "null", T("Colecao de itens de agendamento.", "Collection of appointment items.")),
+        new("StartProperty", "string?", "\"Start\"", T("Nome da propriedade de inicio.", "Start property name.")),
+        new("EndProperty", "string?", "\"End\"", T("Nome da propriedade de fim.", "End property name.")),
+        new("TextProperty", "string?", "\"Text\"", T("Nome da propriedade de texto.", "Text property name.")),
+        new("ResourceProperty", "string?", "null", T("Nome da propriedade de recurso.", "Resource property name.")),
+        new("ResourceSelector", "Func<TItem, string?>?", "null", T("Seletor funcional de recurso.", "Functional resource selector.")),
+        new("Resources", "IReadOnlyList<XFSchedulerResource>", "[]", T("Lista de recursos disponiveis.", "List of available resources.")),
+        new("Template", "RenderFragment<XFSchedulerAppointmentContext<TItem>>?", "null", T("Template customizado de appointment.", "Custom appointment template.")),
+        new("SlotTemplate", "RenderFragment<XFSchedulerSlotContext<TItem>>?", "null", T("Template customizado de slot.", "Custom slot template.")),
+        new("Date", "DateTime", "DateTime.Today", T("Data atual da visao.", "Current view date.")),
+        new("View", "XFSchedulerView", "Month", T("Month, Week, Day.", "Month, Week, Day.")),
+        new("Visible", "bool", "true", T("Exibe ou oculta o componente.", "Shows or hides the component.")),
+        new("ShowHeader", "bool", "true", T("Exibe o header com navegacao.", "Shows header with navigation.")),
+        new("AllowAppointmentMove", "bool", "false", T("Permite arrastar agendamentos.", "Allows dragging appointments.")),
+        new("AllowAppointmentResize", "bool", "false", T("Permite redimensionar agendamentos.", "Allows resizing appointments.")),
+        new("StartHour", "int", "8", T("Hora inicial da timeline (0-23).", "Timeline start hour (0-23).")),
+        new("EndHour", "int", "18", T("Hora final da timeline (1-24).", "Timeline end hour (1-24).")),
+        new("SlotMinutes", "int", "60", T("Duracao do slot em minutos (15-240).", "Slot duration in minutes (15-240).")),
+        new("MaxAppointmentsPerSlot", "int", "3", T("Maximo de agendamentos visiveis por slot na visao mes.", "Max visible appointments per slot in month view.")),
+        new("FirstDayOfWeek", "DayOfWeek", "Sunday", T("Primeiro dia da semana.", "First day of the week.")),
+        new("Culture", "CultureInfo?", "null", T("Cultura para nomes de dias e meses.", "Culture for day and month names.")),
+        new("Size", "XFSize", "Md", T("Sm, Md, Lg.", "Sm, Md, Lg.")),
+        new("Variant", "XFContainerVariant", "Surface", T("Surface, Plain, Soft.", "Surface, Plain, Soft."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("DateChanged", T("Disparado ao navegar para uma nova data. Recebe DateTime.", "Fired when navigating to a new date. Receives DateTime.")),
+        new("ViewChanged", T("Disparado ao trocar a view. Recebe XFSchedulerView.", "Fired when switching view. Receives XFSchedulerView.")),
+        new("SlotSelect", T("Disparado ao clicar em um slot. Recebe Start, End, View.", "Fired when clicking a slot. Receives Start, End, View.")),
+        new("AppointmentSelect", T("Disparado ao clicar em um appointment. Recebe Item, Start, End, Text.", "Fired when clicking an appointment. Receives Item, Start, End, Text.")),
+        new("AppointmentMove", T("Disparado ao mover um appointment. Recebe Item, Start, End, NewStart, NewEnd, ResourceId.", "Fired when moving an appointment. Receives Item, Start, End, NewStart, NewEnd, ResourceId.")),
+        new("AppointmentResize", T("Disparado ao redimensionar um appointment. Recebe Item, Start, End, NewStart, NewEnd, ResourceId.", "Fired when resizing an appointment. Receives Item, Start, End, NewStart, NewEnd, ResourceId."))
+    ];
+
+    // === ACCESSIBILITY ===
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=grid", "role=grid"), T("Grade de mes e timeline usam role=grid.", "Month grid and timeline use role=grid."), "universal-access"),
+        new(T("role=button", "role=button"), T("Slots e appointments sao botoes clicaveis.", "Slots and appointments are clickable buttons."), "hand-pointer"),
+        new(T("aria-label", "aria-label"), T("Labels descritivos para cada elemento interativo.", "Descriptive labels for each interactive element."), "tag"),
+        new(T("aria-selected", "aria-selected"), T("View toggle indica estado selecionado.", "View toggle indicates selected state."), "check"),
+        new(T("aria-description", "aria-description"), T("Descricao de redimensionamento para appointments.", "Resize description for appointments."), "font")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("Tab", T("Navega entre slots e appointments.", "Navigates between slots and appointments.")),
+        new("Enter/Space", T("Seleciona slot ou appointment focado.", "Selects focused slot or appointment.")),
+        new("Drag", T("Arrasta appointment (quando AllowAppointmentMove).", "Drags appointment (when AllowAppointmentMove)."))
+    ];
+
+    // === RESPONSIVENESS ===
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Largura total", "Full width"), T("Scheduler ocupa 100% do container.", "Scheduler occupies 100% of container."), "maximize"),
+        new(T("Timeline scroll", "Timeline scroll"), T("Timeline com scroll vertical para muitos slots.", "Timeline with vertical scroll for many slots."), "arrows-up-down"),
+        new(T("Header responsivo", "Responsive header"), T("Navegacao e view switcher se adaptam.", "Navigation and view switcher adapt."), "mobile-screen"),
+        new(T("Mes compacto", "Compact month"), T("Celulas de mes com truncamento de texto.", "Month cells with text truncation."), "minimize")
+    ];
+
+    // === PERFORMANCE ===
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("Cache interno", "Internal cache"), T("Appointments e slots recalculados apenas em mudanca.", "Appointments and slots recalculated only on change."), "database"),
+        new(T("Render leve", "Light render"), T("Sem wrappers extras. RenderBuilder direto.", "No extra wrappers. Direct RenderBuilder."), "feather"),
+        new(T("Lazy resources", "Lazy resources"), T("Recursos renderizados apenas na visao timeline.", "Resources rendered only in timeline view."), "layer-group")
+    ];
+
+    // === SCENARIOS ===
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Reunioes corporativas", "Corporate meetings"), T("Agenda de reunioes com salas e participantes.", "Meeting calendar with rooms and attendees."), "users"),
+        new(T("Alocacao de equipe", "Team allocation"), T("Alocacao de devs em projetos.", "Developer allocation to projects."), "layer-group"),
+        new(T("Turnos de trabalho", "Work shifts"), T("Escala de turnos com recursos.", "Shift schedule with resources."), "clock")
+    ];
+
+    // === COMPOSITION ===
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Scheduler + Card", "Scheduler + Card"), T("Scheduler dentro de XFCard para contexto.", "Scheduler inside XFCard for context."), "square"),
+        new(T("Scheduler + Button", "Scheduler + Button"), T("Botoes externos para navegacao e acoes.", "External buttons for navigation and actions."), "hand-pointer"),
+        new(T("Scheduler + Badge", "Scheduler + Badge"), T("Badges indicando status de agendamentos.", "Badges indicating appointment status."), "tag")
+    ];
+
+    // === BEST PRACTICES ===
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Usar Resources", "Use Resources"), T("Defina Resources para visoes timeline.", "Define Resources for timeline views."), "layer-group"),
+        new(T("StartProperty explicito", "Explicit StartProperty"), T("Defina StartProperty/EndProperty para clareza.", "Set StartProperty/EndProperty for clarity."), "font"),
+        new(T("SlotMinutes adequado", "Adequate SlotMinutes"), T("60 para reunioes, 30 para alocacao.", "60 for meetings, 30 for allocation."), "clock"),
+        new(T("AllowAppointmentMove", "AllowAppointmentMove"), T("Ative apenas quando o backend suporta.", "Enable only when backend supports it."), "arrows-up-down")
+    ];
+
+    // === ANTI-PATTERNS ===
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem Data", "No Data"), T("Scheduler vazio e confuso.", "Empty scheduler is confusing."), "xmark"),
+        new(T("Muitos agendamentos", "Too many appointments"), T("Evite mais de 10 por dia sem virtualizacao.", "Avoid more than 10 per day without virtualization."), "ban"),
+        new(T("StartHour > EndHour", "StartHour > EndHour"), T("Causa erros de renderizacao.", "Causes rendering errors."), "triangle-exclamation")
+    ];
+
+    // === TOKENS ===
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("variant-surface", T("rounded-xl border border-border-light bg-bg-surface shadow.", "rounded-xl border border-border-light bg-bg-surface shadow.")),
+        new("variant-plain", T("bg-transparent text-text-primary.", "bg-transparent text-text-primary.")),
+        new("variant-soft", T("rounded-xl bg-primary/4 text-text-primary ring-1 ring-primary/10.", "rounded-xl bg-primary/4 text-text-primary ring-1 ring-primary/10.")),
+        new("appointment", T("rounded-md bg-primary/12 px-2 py-1 text-xs text-primary ring-1 ring-primary/18.", "rounded-md bg-primary/12 px-2 py-1 text-xs text-primary ring-1 ring-primary/18.")),
+        new("slot-hover", T("hover:bg-primary/5 focus-visible:ring-2 focus-visible:ring-primary/22.", "hover:bg-primary/5 focus-visible:ring-2 focus-visible:ring-primary/22.")),
+        new("today-ring", T("ring-2 ring-primary/18.", "ring-2 ring-primary/18."))
+    ];
+
+    // === THEMING ===
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook"),
+        new("Variantes", T("Surface, Plain, Soft adaptam ao tema.", "Surface, Plain, Soft adapt to theme."), "palette")
+    ];
+
+    // === TESTING ===
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Render, props, views, resources, events.", "Render, props, views, resources, events.")),
+        new("Accessibility", T("role=grid, role=button, aria-label, aria-selected.", "role=grid, role=button, aria-label, aria-selected.")),
+        new("Integration", T("SlotSelect, AppointmentSelect, DateChanged, ViewChanged.", "SlotSelect, AppointmentSelect, DateChanged, ViewChanged."))
+    ];
+
+    // === LIMITATIONS ===
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("StartHour/EndHour", T("EndHour deve ser > StartHour. Clamp automatico.", "EndHour must be > StartHour. Automatic clamp.")),
+        new("SlotMinutes", T("Minimo 15, maximo 240. Clamp automatico.", "Minimum 15, maximum 240. Automatic clamp.")),
+        new("Recursos", T("Resources suportado apenas em visoes Week e Day.", "Resources supported only in Week and Day views.")),
+        new("Move/Resize", T("AllowAppointmentMove/Resize nao persiste automaticamente.", "AllowAppointmentMove/Resize does not persist automatically."))
+    ];
+
+    // === RELATED ===
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFDataTable", T("Listagens de dados tabulares.", "Tabular data listings."), "table"),
+        new("XFTimeline", T("Linha do tempo somente leitura.", "Read-only timeline."), "clock"),
+        new("XFBadge", T("Status de agendamentos.", "Appointment status."), "tag")
+    ];
+
+    // === FAQ ===
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Month vs Week vs Day?", "Month vs Week vs Day?"), T("Month = grade de dias. Week = timeline com 7 dias. Day = timeline de 1 dia.", "Month = day grid. Week = 7-day timeline. Day = 1-day timeline.")),
+        new(T("Como criar agendamentos?", "How to create appointments?"), T("Use SlotSelect para detectar clique no slot e adicionar ao Data.", "Use SlotSelect to detect slot click and add to Data.")),
+        new(T("Recursos so em timeline?", "Resources only in timeline?"), T("Sim. Resources e ResourceProperty so funcionam em Week e Day.", "Yes. Resources and ResourceProperty only work in Week and Day.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop. Puro C# + Tailwind.", "Yes. No JavaScript interop. Pure C# + Tailwind.")),
+        new(T("Como personalizar appointments?", "How to customize appointments?"), T("Use o Template parameter com RenderFragment<XFSchedulerAppointmentContext<TItem>>.", "Use the Template parameter with RenderFragment<XFSchedulerAppointmentContext<TItem>>."))
+    ];
+
+    // === CHANGELOG ===
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-03", T("Pagina inicial com seed basico.", "Initial page with basic seed.")),
+        new("2026-06-12", T("Exemplo 6 aprimorado com XFDialogService para criar/visualizar agendamentos.", "Example 6 enhanced with XFDialogService for creating/viewing appointments."))
+    ];
+
+    // === HELPERS ===
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    // === RECORDS ===
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

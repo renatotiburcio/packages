@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace XForge.Components.Base;
+namespace XForge.DesignSystem.Components.Base;
 
 /// <summary>
 /// Categorizes a component for grouping in designer and docs.

@@ -1,0 +1,826 @@
+@page "/display/calendar"
+@using XForge.DesignSystem.Components.DataDisplay.Calendar
+@using XForge.DesignSystem.Core.Primitives
+@using XForge.DesignSystem.Components.Shared
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="Core OSS"
+                 Title="Calendar"
+                 Status="Premium"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFCalendar" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="WAI-ARIA" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("3 Views", "3 Views")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Calendario acessivel para selecao de datas, agendas operacionais e datas destacadas.", "Accessible calendar for date selection, operational agendas and highlighted dates.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("3 views (month, week, day), 3 sizes, 3 variants, constrained dates, disabled dates, highlighted dates, day templates, culture e FirstDayOfWeek.",
+                               "3 views (month, week, day), 3 sizes, 3 variants, constrained dates, disabled dates, highlighted dates, day templates, culture and FirstDayOfWeek.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("Calendario mensal padrao com selecao de data.", "Default monthly calendar with date selection."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Tamanhos", "2. Sizes"),
+                T("Sm, Md e Lg — larguras progressivas.", "Sm, Md and Lg — progressive widths."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("3. Variantes", "3. Variants"),
+                T("Surface, Soft e Plain — diferentes niveis de destaque.", "Surface, Soft and Plain — different emphasis levels."),
+                ExVariants(), CodeVariants)
+
+            @Example(T("4. Vista diaria", "4. Day View"),
+                T("Foco em um unico dia — ideal para agendas.", "Focus on a single day — ideal for schedules."),
+                ExDayView(), CodeDayView)
+
+            @Example(T("5. Vista semanal", "5. Week View"),
+                T("Visualizacao de 7 dias com cards por dia.", "7-day view with per-day cards."),
+                ExWeekView(), CodeWeekView)
+
+            @Example(T("6. Restricao de datas", "6. Date Constraints"),
+                T("Min/Max para limitar intervalo e DisabledDate para datas especificas.", "Min/Max to limit range and DisabledDate for specific dates."),
+                ExConstraints(), CodeConstraints)
+
+            @Example(T("7. Datas destacadas", "7. Highlighted Dates"),
+                T("HighlightedDates para marcar eventos e reunioes.", "HighlightedDates to mark events and meetings."),
+                ExHighlighted(), CodeHighlighted)
+
+            @Example(T("8. DayTemplate customizado", "8. Custom DayTemplate"),
+                T("RenderFragment<XFCalendarDayContext> para markup rico em cada dia.", "RenderFragment<XFCalendarDayContext> for rich markup in each day."),
+                ExDayTemplate(), CodeDayTemplate)
+
+            @Example(T("9. Cultura e FirstDayOfWeek", "9. Culture & FirstDayOfWeek"),
+                T("Localizacao e primeiro dia da semana configuravel.", "Localization and configurable first day of week."),
+                ExCulture(), CodeCulture)
+
+            @Example(T("10. Bind completo", "10. Full Bind"),
+                T("Value + DisplayDate + Change com feedback em tempo real.", "Value + DisplayDate + Change with real-time feedback."),
+                ExFullBind(), CodeFullBind)
+
+            @Example(T("11. Selecao por intervalo", "11. Range Selection"),
+                T("Selecione um intervalo de datas com arrastar o mouse.", "Select a date range by dragging the mouse."),
+                ExRange(), CodeRange)
+
+            @Example(T("12. Multipla selecao", "12. Multiple Selection"),
+                T("Selecione multiplas datas clicando.", "Select multiple dates by clicking."),
+                ExMultiple(), CodeMultiple)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Copiar codigo", "Copy code");
+
+    // State
+    private DateOnly heroDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly basicDate = new(2026, 6, 15);
+    private DateOnly basicDisplay = new(2026, 6, 1);
+    private DateOnly sizeSmDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly sizeMdDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly sizeLgDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly variantSurfaceDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly variantSoftDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly variantPlainDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly dayViewDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly dayDisplayDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly weekViewDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly weekDisplayDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly constraintDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly highlightedDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly templateDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly culturePtDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly cultureEnDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly cultureJpDate = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly fullBindDate = new(2026, 6, 15);
+    private DateOnly fullBindDisplay = new(2026, 6, 1);
+    private DateOnly? lastChangedDate;
+
+    private static readonly DateOnly MinConstraint = new(2026, 6, 1);
+    private static readonly DateOnly MaxConstraint = new(2026, 6, 30);
+    private static readonly IReadOnlyList<XFCalendarHighlight> CalendarHighlights = new[]
+    {
+        new XFCalendarHighlight(new DateOnly(2026, 6, 5), "Lembrete: Revisao do trimestre", XFSemanticColor.Info),
+        new XFCalendarHighlight(new DateOnly(2026, 6, 5), "Mensagem: Relatorio pronto", XFSemanticColor.Success),
+        new XFCalendarHighlight(new DateOnly(2026, 6, 12), "Agendamento: Reuniao diretoria", XFSemanticColor.Warning),
+        new XFCalendarHighlight(new DateOnly(2026, 6, 12), "Lembrete: Enviar convites", XFSemanticColor.Info),
+        new XFCalendarHighlight(new DateOnly(2026, 6, 19), "Agendamento: Apresentacao cliente", XFSemanticColor.Danger),
+        new XFCalendarHighlight(new DateOnly(2026, 6, 26), "Mensagem: Feedback disponivel", XFSemanticColor.Success),
+        new XFCalendarHighlight(new DateOnly(2026, 6, 26), "Lembrete: Atualizar documentacao", XFSemanticColor.Info),
+        new XFCalendarHighlight(new DateOnly(2026, 6, 26), "Agendamento: Sprint review", XFSemanticColor.Warning)
+    };
+
+    private static bool IsWeekend(DateOnly d) =>
+        d.DayOfWeek == DayOfWeek.Saturday || d.DayOfWeek == DayOfWeek.Sunday;
+
+    // Hero
+    private RenderFragment HeroPreview() => @<div>
+        <XFCalendar Value="heroDate"
+                    ValueChanged="@(v => heroDate = v ?? default)"
+                    Highlights="CalendarHighlights"
+                    Size="XFSize.Md"
+                    Variant="XFContainerVariant.Surface" />
+    </div>;
+
+    // 1. Basic
+    private RenderFragment ExBasic() => @<div>
+        <XFCalendar Value="basicDate"
+                    ValueChanged="@(v => basicDate = v ?? default)"
+                    DisplayDate="basicDisplay"
+                    DisplayDateChanged="@(v => basicDisplay = v)" />
+    </div>;
+
+    // 2. Sizes
+    private RenderFragment ExSizes() => @<div class="flex flex-col gap-6">
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Sm</XFTypography>
+            <XFCalendar Value="sizeSmDate" ValueChanged="@(v => sizeSmDate = v ?? default)" Size="XFSize.Sm" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Md</XFTypography>
+            <XFCalendar Value="sizeMdDate" ValueChanged="@(v => sizeMdDate = v ?? default)" Size="XFSize.Md" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Lg</XFTypography>
+            <XFCalendar Value="sizeLgDate" ValueChanged="@(v => sizeLgDate = v ?? default)" Size="XFSize.Lg" />
+        </div>
+    </div>;
+
+    // 3. Variants
+    private RenderFragment ExVariants() => @<div class="grid gap-4 md:grid-cols-3">
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Surface</XFTypography>
+            <XFCalendar Value="variantSurfaceDate" ValueChanged="@(v => variantSurfaceDate = v ?? default)" Variant="XFContainerVariant.Surface" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Soft</XFTypography>
+            <XFCalendar Value="variantSoftDate" ValueChanged="@(v => variantSoftDate = v ?? default)" Variant="XFContainerVariant.Soft" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">Plain</XFTypography>
+            <XFCalendar Value="variantPlainDate" ValueChanged="@(v => variantPlainDate = v ?? default)" Variant="XFContainerVariant.Plain" />
+        </div>
+    </div>;
+
+    // 4. Day View
+    private RenderFragment ExDayView() => @<div>
+        <XFCalendar Value="dayViewDate"
+                    ValueChanged="@(v => dayViewDate = v ?? default)"
+                    DisplayDate="dayDisplayDate"
+                    DisplayDateChanged="@(v => dayDisplayDate = v)"
+                    View="XFCalendarView.Day"
+                    Highlights="CalendarHighlights"
+                    Size="XFSize.Md" />
+    </div>;
+
+    // 5. Week View
+    private RenderFragment ExWeekView() => @<div>
+        <XFCalendar Value="weekViewDate"
+                    ValueChanged="@(v => weekViewDate = v ?? default)"
+                    DisplayDate="weekDisplayDate"
+                    DisplayDateChanged="@(v => weekDisplayDate = v)"
+                    View="XFCalendarView.Week"
+                    Highlights="CalendarHighlights"
+                    Size="XFSize.Lg" />
+    </div>;
+
+    // 6. Constraints
+    private RenderFragment ExConstraints() => @<div class="grid gap-4 md:grid-cols-2">
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                @T("Junho 2026 apenas", "June 2026 only")
+            </XFTypography>
+            <XFCalendar Value="constraintDate"
+                        ValueChanged="@(v => constraintDate = v ?? default)"
+                        Min="MinConstraint"
+                        Max="MaxConstraint"
+                        DisplayDate="MinConstraint" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+                @T("Finais de semana desabilitados", "Weekends disabled")
+            </XFTypography>
+            <XFCalendar Value="constraintDate"
+                        ValueChanged="@(v => constraintDate = v ?? default)"
+                        DisabledDate="IsWeekend" />
+        </div>
+    </div>;
+
+    // 7. Highlighted
+    private RenderFragment ExHighlighted() => @<div>
+        <XFCalendar Value="highlightedDate"
+                    ValueChanged="@(v => highlightedDate = v ?? default)"
+                    Highlights="CalendarHighlights"
+                    DisplayDate="new(2026, 6, 1)" />
+        <div class="mt-3 flex flex-wrap gap-3">
+            <span class="inline-flex items-center gap-1.5 text-xs text-text-secondary">
+                <span class="h-2 w-2 rounded-full bg-info"></span> @T("Lembrete", "Reminder")
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs text-text-secondary">
+                <span class="h-2 w-2 rounded-full bg-success"></span> @T("Mensagem", "Message")
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs text-text-secondary">
+                <span class="h-2 w-2 rounded-full bg-warning"></span> @T("Agendamento", "Appointment")
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs text-text-secondary">
+                <span class="h-2 w-2 rounded-full bg-danger"></span> @T("Urgente", "Urgent")
+            </span>
+        </div>
+    </div>;
+
+    // 8. DayTemplate
+    private RenderFragment ExDayTemplate() => @<div>
+        <XFCalendar Value="templateDate"
+                    ValueChanged="@(v => templateDate = v ?? default)"
+                    Highlights="CalendarHighlights"
+                    DisplayDate="new(2026, 6, 1)">
+            <DayTemplate Context="ctx">
+                <span class="@(ctx.IsSelected ? "font-bold" : "font-semibold")">@ctx.Date.Day</span>
+                @if (ctx.Highlights.Count > 0)
+                {
+                    <span class="flex gap-0.5">
+                        @foreach (var h in ctx.Highlights.Take(2))
+                        {
+                            <span class="h-1 w-1 rounded-full @(ctx.IsSelected ? "bg-white" : "bg-primary")"></span>
+                        }
+                        @if (ctx.Highlights.Count > 2)
+                        {
+                            <span class="text-[8px] @(ctx.IsSelected ? "text-white/80" : "text-text-muted")">+@(ctx.Highlights.Count - 2)</span>
+                        }
+                    </span>
+                }
+                @if (ctx.IsToday)
+                {
+                    <span class="text-[10px] font-bold @(ctx.IsSelected ? "text-white" : "text-primary")">@T("Hoje", "Today")</span>
+                }
+            </DayTemplate>
+        </XFCalendar>
+    </div>;
+
+    // 9. Culture
+    private RenderFragment ExCulture() => @<div class="grid gap-4 md:grid-cols-3">
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">pt-BR</XFTypography>
+            <XFCalendar Value="culturePtDate" ValueChanged="@(v => culturePtDate = v ?? default)"
+                        Culture="@(new System.Globalization.CultureInfo("pt-BR"))"
+                        FirstDayOfWeek="DayOfWeek.Sunday" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">en-US (Monday)</XFTypography>
+            <XFCalendar Value="cultureEnDate" ValueChanged="@(v => cultureEnDate = v ?? default)"
+                        Culture="@(new System.Globalization.CultureInfo("en-US"))"
+                        FirstDayOfWeek="DayOfWeek.Monday" />
+        </div>
+        <div>
+            <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">ja-JP</XFTypography>
+            <XFCalendar Value="cultureJpDate" ValueChanged="@(v => cultureJpDate = v ?? default)"
+                        Culture="@(new System.Globalization.CultureInfo("ja-JP"))"
+                        FirstDayOfWeek="DayOfWeek.Sunday" />
+        </div>
+    </div>;
+
+    // 10. Full Bind
+    private RenderFragment ExFullBind() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <XFStack Orientation="XFOrientation.Horizontal" Gap="3" Wrap="XFWrap.Wrap" AlignItems="XFAlignItems.Center">
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary"
+                     Text="@($"Value: {fullBindDate:yyyy-MM-dd}")" />
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info"
+                     Text="@($"Display: {fullBindDisplay:yyyy-MM-dd}")" />
+            @if (lastChangedDate is not null)
+            {
+                <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success"
+                         Text="@($"Changed: {lastChangedDate:yyyy-MM-dd}")" />
+            }
+        </XFStack>
+        <XFCalendar Value="fullBindDate"
+                    ValueChanged="@(v => fullBindDate = v ?? default)"
+                    DisplayDate="fullBindDisplay"
+                    DisplayDateChanged="@(v => fullBindDisplay = v)"
+                    Change="@(v => lastChangedDate = v)"
+                    Highlights="CalendarHighlights" />
+    </XFStack>;
+
+    // Helpers
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow>
+            <XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell>
+            <XFTableCell Header="true">Type</XFTableCell>
+            <XFTableCell Header="true">Default</XFTableCell>
+            <XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell>
+        </XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) {
+            <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow>
+        }</XFTableBody>
+    </XFTable>;
+
+    // Data
+    private IReadOnlyList<DocTile> QuickFacts => new[]
+    {
+        new DocTile(T("3 views", "3 views"), T("Month, Week e Day para diferentes niveis de detalhe.", "Month, Week and Day for different detail levels."), "calendar-days"),
+        new DocTile(T("Date constraints", "Date constraints"), T("Min, Max e DisabledDate para limitar selecao.", "Min, Max and DisabledDate to limit selection."), "lock"),
+        new DocTile(T("Day template", "Day template"), T("RenderFragment<XFCalendarDayContext> para markup customizado.", "RenderFragment<XFCalendarDayContext> for custom markup."), "paintbrush"),
+        new DocTile(T("Culture support", "Culture support"), T("Nomes localizados e FirstDayOfWeek configuravel.", "Localized names and configurable FirstDayOfWeek."), "globe")
+    };
+
+    private IReadOnlyList<NameValueRow> MetadataRows => new[]
+    {
+        new NameValueRow("Component", "XFCalendar"),
+        new NameValueRow("Namespace", "XForge.DesignSystem.Components.DataDisplay.Calendar"),
+        new NameValueRow("Package", "XForge.DesignSystem"),
+        new NameValueRow("Category", "Components / DataDisplay / Calendar"),
+        new NameValueRow("Status", T("Estavel", "Stable")),
+        new NameValueRow("Accessibility", T("role grid, aria-label, aria-pressed, aria-current date, touch target 44px AAA.", "role grid, aria-label, aria-pressed, aria-current date, 44px AAA touch target.")),
+        new NameValueRow("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    };
+
+    private IReadOnlyList<DocTile> OverviewItems => new[]
+    {
+        new DocTile(T("Month grid", "Month grid"), T("Grade 6x7 com navegacao por mes e nomes de dias localizados.", "6x7 grid with month navigation and localized day names."), "table-cells"),
+        new DocTile(T("Day context", "Day context"), T("XFCalendarDayContext com IsSelected, IsToday, IsDisabled, IsHighlighted.", "XFCalendarDayContext with IsSelected, IsToday, IsDisabled, IsHighlighted."), "cube"),
+        new DocTile(T("Navigation", "Navigation"), T("Chevron buttons com aria-labels dinamicas por view.", "Chevron buttons with dynamic aria-labels per view."), "arrows-left-right")
+    };
+
+    private IReadOnlyList<DocTile> PurposeItems => new[]
+    {
+        new DocTile(T("Date selection", "Date selection"), T("Selecionar data para filtro, agendamento ou aniversario.", "Select date for filter, scheduling or birthday."), "calendar-check"),
+        new DocTile(T("Agenda view", "Agenda view"), T("Visualizar eventos por dia ou semana.", "View events by day or week."), "clock"),
+        new DocTile(T("Booking", "Booking"), T("Selecionar datas de check-in/check-out com restricoes.", "Select check-in/check-out dates with constraints."), "calendar-plus")
+    };
+
+    private IReadOnlyList<DocTile> UseItems => new[]
+    {
+        new DocTile(T("Filtro de data", "Date filter"), T("Filtrar relatorios e listagens por periodo.", "Filter reports and listings by period."), "filter"),
+        new DocTile(T("Agendamento", "Scheduling"), T("Marcar reunioes, entregas e compromissos.", "Schedule meetings, deliveries and appointments."), "calendar-days")
+    };
+
+    private IReadOnlyList<DocTile> AvoidItems => new[]
+    {
+        new DocTile(T("Input de data", "Date input"), T("Para entrada rapida use XFDateInput ou XFDatePicker.", "For quick input use XFDateInput or XFDatePicker."), "xmark"),
+        new DocTile(T("Range extenso", "Wide range"), T("Para anos de dados use um seletor, nao um calendario.", "For years of data use a selector, not a calendar."), "triangle-exclamation")
+    };
+
+    private IReadOnlyList<DocTile> ProblemItems => new[]
+    {
+        new DocTile(T("Antes", "Before"), T("Select nativo sem suporte a restricoes ou templates.", "Native select without support for constraints or templates."), "xmark"),
+        new DocTile(T("Depois", "After"), T("Calendario com vistas, highlights, culture e templates.", "Calendar with views, highlights, culture and templates."), "check"),
+        new DocTile(T("Acessibilidade", "Accessibility"), T("role grid, aria-pressed, aria-current, touch target 44px.", "role grid, aria-pressed, aria-current, 44px touch target."), "universal-access")
+    };
+
+    private IReadOnlyList<DocTile> AnatomyItems => new[]
+    {
+        new DocTile(T("Cabecalho", "Header"), T("Navegacao com titulo do mes, setas prev/next e subtitulo da view.", "Navigation with month title, prev/next arrows and view subtitle."), "heading"),
+        new DocTile(T("Grade de dias", "Day grid"), T("Grade 6x7 com nomes abreviados de dias da semana localizados.", "6x7 grid with localized abbreviated weekday names."), "table-cells"),
+        new DocTile(T("Celula de dia", "Day cell"), T("Botao com numero, dot de highlight, estados selected/today/disabled.", "Button with number, highlight dot, selected/today/disabled states."), "square"),
+        new DocTile(T("Setas de navegacao", "Navigation arrows"), T("Botoes prev/next com aria-label dinamico por view.", "Prev/next buttons with dynamic aria-label per view."), "arrows-left-right"),
+        new DocTile(T("Dots de highlight", "Highlight dots"), T("Pontos coloridos indicando eventos no dia.", "Colored dots indicating events on the day."), "circle"),
+        new DocTile(T("Day view", "Day view"), T("Visualizacao de um unico dia com dados completos.", "Single day view with full data display."), "calendar-day")
+    };
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => new[]
+    {
+        new DocTile(T("Clareza visual", "Visual clarity"), T("Mes e ano prominentes, dias com contraste adequado.", "Prominent month and year, days with adequate contrast."), "eye"),
+        new DocTile(T("Acessibilidade primeiro", "Accessibility first"), T("Navegacao por teclado completa, aria-labels dinamicos.", "Full keyboard navigation, dynamic aria-labels."), "universal-access"),
+        new DocTile(T("Cultura e localizacao", "Culture & localization"), T("Nomes de dias/meses e FirstDayOfWeek adaptaveis.", "Localized day/month names and configurable FirstDayOfWeek."), "globe")
+    };
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => new[]
+    {
+        new DocTile(T("Largura total", "Full width"), T("Calendario ocupa 100% do container pai.", "Calendar occupies 100% of parent container."), "maximize"),
+        new DocTile(T("Tamanhos adaptivos", "Adaptive sizes"), T("Sm para mobile, Md para tablet, Lg para desktop.", "Sm for mobile, Md for tablet, Lg for desktop."), "mobile-screen")
+    };
+
+    private IReadOnlyList<DocTile> PerformanceItems => new[]
+    {
+        new DocTile(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt"),
+        new DocTile(T("Lookup O(1)", "O(1) lookup"), T("Dictionary para highlights. Lookup por dia em O(1).", "Dictionary for highlights. O(1) lookup per day."), "gauge")
+    };
+
+    private IReadOnlyList<DocTile> ScenarioItems => new[]
+    {
+        new DocTile(T("Agendamento ERP", "ERP scheduling"), T("Selecionar data para ordem de producao ou entrega.", "Select date for production order or delivery."), "calendar-check"),
+        new DocTile(T("Booking", "Booking"), T("Check-in/check-out com restricoes Min/Max e DisabledDate.", "Check-in/check-out with Min/Max constraints and DisabledDate."), "bed"),
+        new DocTile(T("Turnos de trabalho", "Work shifts"), T("Visualizar turnos por dia/semana com highlights.", "View shifts by day/week with highlights."), "clock")
+    };
+
+    private IReadOnlyList<DocTile> CompositionItems => new[]
+    {
+        new DocTile(T("Calendar + Highlights", "Calendar + Highlights"), T("Eventos visuais com dots coloridos e tooltips.", "Visual events with colored dots and tooltips."), "calendar-days"),
+        new DocTile(T("Calendar + DayTemplate", "Calendar + DayTemplate"), T("Markup customizado com dados de XFCalendarDayContext.", "Custom markup with XFCalendarDayContext data."), "paintbrush"),
+        new DocTile(T("Calendar + Form", "Calendar + Form"), T("Integracao com XFDateInput via @bind-Value.", "Integration with XFDateInput via @bind-Value."), "input-text")
+    };
+
+    private IReadOnlyList<DocTile> BestPracticeItems => new[]
+    {
+        new DocTile(T("Usar constraints", "Use constraints"), T("Defina Min/Max e DisabledDate para guiar o usuario.", "Set Min/Max and DisabledDate to guide the user."), "lock"),
+        new DocTile(T("Highlight com moderacao", "Highlights with moderation"), T("Limite a 3-4 highlights por dia para legibilidade.", "Limit to 3-4 highlights per day for readability."), "tag"),
+        new DocTile(T("Culture para localizacao", "Culture for localization"), T("Configure Culture e FirstDayOfWeek para cada idioma.", "Configure Culture and FirstDayOfWeek for each language."), "globe"),
+        new DocTile(T("Aria labels", "Aria labels"), T("Customize PreviousDayLabel, NextDayLabel para acessibilidade.", "Customize PreviousDayLabel, NextDayLabel for accessibility."), "universal-access")
+    };
+
+    private IReadOnlyList<DocTile> AntiPatternItems => new[]
+    {
+        new DocTile(T("Muitos highlights", "Too many highlights"), T("Mais de 5 dots por dia dificulta a leitura.", "More than 5 dots per day makes reading difficult."), "xmark"),
+        new DocTile(T("Sem restricoes", "No constraints"), T("Permitir qualquer data pode causar erros.", "Allowing any date can cause errors."), "ban"),
+        new DocTile(T("Ignorar culture", "Ignoring culture"), T("Primeiro dia da semana varia por pais.", "First day of week varies by country."), "triangle-exclamation")
+    };
+
+    private IReadOnlyList<NameValueRow> TokenRows => new[]
+    {
+        new NameValueRow("xf-calendar", T("Container principal do calendario.", "Main calendar container.")),
+        new NameValueRow("bg-surface", T("Fundo Surface para variante Surface.", "Surface background for Surface variant.")),
+        new NameValueRow("border-light", T("Borda nas celulas da grade.", "Border on grid cells.")),
+        new NameValueRow("bg-primary", T("Cor de fundo do dia selecionado.", "Background color of selected day.")),
+        new NameValueRow("text-primary", T("Cor de texto do dia atual e selecionado.", "Text color of today and selected day."))
+    };
+
+    private IReadOnlyList<DocTile> ThemeItems => new[]
+    {
+        new DocTile("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new DocTile("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    };
+
+    private IReadOnlyList<NameValueRow> TestingRows => new[]
+    {
+        new NameValueRow("Unit", T("Testes de render, props, 3 views, 3 sizes, 3 variants, highlights, disabled.", "Render, props, 3 views, 3 sizes, 3 variants, highlights, disabled tests.")),
+        new NameValueRow("Accessibility", T("role grid, aria-pressed, aria-current, aria-label, touch target 44px.", "role grid, aria-pressed, aria-current, aria-label, 44px touch target."))
+    };
+
+    private IReadOnlyList<NameValueRow> LimitationRows => new[]
+    {
+        new NameValueRow(T("DayTemplate no Month", "DayTemplate in Month"), T("DayTemplate so e renderizado no view Month.", "DayTemplate is only rendered in Month view.")),
+        new NameValueRow(T("Max 6 semanas", "Max 6 weeks"), T("Grade sempre exibe 6 semanas, mesmo com meses curtos.", "Grid always displays 6 weeks, even with short months.")),
+        new NameValueRow(T("Value DateOnly", "Value DateOnly"), T("Value usa DateOnly, nao DateTime. Sem componente de hora.", "Value uses DateOnly, not DateTime. No time component."))
+    };
+
+    private IReadOnlyList<ApiRow> ApiRows => new[]
+    {
+        new ApiRow("Value", "DateOnly?", "null", T("Data selecionada.", "Selected date.")),
+        new ApiRow("ValueChanged", "EventCallback<DateOnly?>", "default", T("Two-way binding da data selecionada.", "Two-way selected date binding.")),
+        new ApiRow("Change", "EventCallback<DateOnly?>", "default", T("Evento ao selecionar data.", "Event on date selection.")),
+        new ApiRow("DisplayDate", "DateOnly?", "null", T("Mes exibido. Se null, usa Value ou hoje.", "Displayed month. If null, uses Value or today.")),
+        new ApiRow("DisplayDateChanged", "EventCallback<DateOnly>", "default", T("Two-way binding do mes exibido.", "Two-way displayed month binding.")),
+        new ApiRow("Min", "DateOnly?", "null", T("Data minima selecionavel.", "Minimum selectable date.")),
+        new ApiRow("Max", "DateOnly?", "null", T("Data maxima selecionavel.", "Maximum selectable date.")),
+        new ApiRow("Highlights", "IReadOnlyList<XFCalendarHighlight>", "[]", T("Eventos destacados com Label, Color e XFTooltip.", "Highlighted events with Label, Color and XFTooltip.")),
+        new ApiRow("DisabledDate", "Func<DateOnly, bool>?", "null", T("Funcao para desabilitar datas especificas.", "Function to disable specific dates.")),
+        new ApiRow("DayTemplate", "RenderFragment<XFCalendarDayContext>?", "null", T("Template customizado por dia.", "Custom template per day.")),
+        new ApiRow("View", "XFCalendarView", "Month", T("Month, Week ou Day.", "Month, Week or Day.")),
+        new ApiRow("Size", "XFSize", "Md", T("Sm, Md ou Lg.", "Sm, Md or Lg.")),
+        new ApiRow("Variant", "XFContainerVariant", "Surface", T("Surface, Soft ou Plain.", "Surface, Soft or Plain.")),
+        new ApiRow("FirstDayOfWeek", "DayOfWeek", "Sunday", T("Primeiro dia da semana.", "First day of week.")),
+        new ApiRow("Culture", "CultureInfo?", "null", T("Cultura para nomes de dias e meses.", "Culture for day/month names.")),
+        new ApiRow("Visible", "bool", "true", T("Controla visibilidade do componente.", "Controls component visibility.")),
+        new ApiRow("AriaLabel", "string", "\"Calendar\"", T("Label acessivel do calendario.", "Accessible calendar label.")),
+        new ApiRow("DayViewLabel", "string", "\"Daily view\"", T("Subtitulo da vista diaria.", "Day view subtitle.")),
+        new ApiRow("WeekViewLabel", "string", "\"Weekly view\"", T("Subtitulo da vista semanal.", "Week view subtitle.")),
+        new ApiRow("MonthViewLabel", "string", "\"Monthly view\"", T("Subtitulo da vista mensal.", "Month view subtitle.")),
+        new ApiRow("DayAriaLabelFormat", "string", "\"{0:D}\"", T("Formato do aria-label de cada dia.", "Format of each day aria-label.")),
+        new ApiRow("PreviousDayLabel", "string", "\"Previous day\"", T("Label do botao anterior na vista diaria.", "Previous button label in day view.")),
+        new ApiRow("PreviousWeekLabel", "string", "\"Previous week\"", T("Label do botao anterior na vista semanal.", "Previous button label in week view.")),
+        new ApiRow("PreviousMonthLabel", "string", "\"Previous month\"", T("Label do botao anterior na vista mensal.", "Previous button label in month view.")),
+        new ApiRow("NextDayLabel", "string", "\"Next day\"", T("Label do botao proximo na vista diaria.", "Next button label in day view.")),
+        new ApiRow("NextWeekLabel", "string", "\"Next week\"", T("Label do botao proximo na vista semanal.", "Next button label in week view.")),
+        new ApiRow("NextMonthLabel", "string", "\"Next month\"", T("Label do botao proximo na vista mensal.", "Next button label in month view."))
+    };
+
+    private IReadOnlyList<NameValueRow> EventRows => new[]
+    {
+        new NameValueRow("ValueChanged", T("Data selecionada alterada.", "Selected date changed.")),
+        new NameValueRow("Change", T("Data selecionada (dispara ao clicar).", "Date selected (fires on click).")),
+        new NameValueRow("DisplayDateChanged", T("Mes exibido alterado.", "Displayed month changed."))
+    };
+
+    private IReadOnlyList<DocTile> AccessibilityItems => new[]
+    {
+        new DocTile("WAI-ARIA", T("role grid no month view, role list no week view.", "role grid in month view, role list in week view."), "universal-access"),
+        new DocTile(T("aria-pressed", "aria-pressed"), T("Dias selecionados com aria-pressed=true.", "Selected days with aria-pressed=true."), "toggle-on"),
+        new DocTile(T("aria-current date", "aria-current date"), T("Dia atual com aria-current=date.", "Current day with aria-current=date."), "calendar-day"),
+        new DocTile(T("Touch target 44px", "44px touch target"), T("Botoes de dia com area minima de 44px.", "Day buttons with 44px minimum area."), "hand-pointer")
+    };
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => new[]
+    {
+        new NameValueRow("Enter / Space", T("Seleciona o dia focado.", "Selects focused day.")),
+        new NameValueRow("Tab", T("Move foco entre dias e navegacao.", "Moves focus between days and navigation.")),
+        new NameValueRow("Shift+Tab", T("Move foco para o elemento anterior.", "Moves focus to previous element.")),
+        new NameValueRow("ArrowLeft", T("Move foco para o dia anterior.", "Moves focus to previous day.")),
+        new NameValueRow("ArrowRight", T("Move foco para o proximo dia.", "Moves focus to next day.")),
+        new NameValueRow("ArrowUp", T("Move foco para o dia da semana anterior.", "Moves focus to previous week.")),
+        new NameValueRow("ArrowDown", T("Move foco para o dia da semana seguinte.", "Moves focus to next week.")),
+        new NameValueRow("Home", T("Move foco para o primeiro dia da semana.", "Moves focus to first day of week.")),
+        new NameValueRow("End", T("Move foco para o ultimo dia da semana.", "Moves focus to last day of week."))
+    };
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => new[]
+    {
+        new DocTile("XFDatePicker", T("Popover com calendario para selecao de data em forms.", "Popover with calendar for date selection in forms."), "calendar"),
+        new DocTile("XFDateInput", T("Input nativo de data com styling enterprise.", "Native date input with enterprise styling."), "input-text"),
+        new DocTile("XFScheduler", T("Agenda visual com eventos por dia/semana/mes.", "Visual agenda with events by day/week/month."), "clock")
+    };
+
+    private IReadOnlyList<NameValueRow> FaqRows => new[]
+    {
+        new NameValueRow(T("Calendar ou DatePicker?", "Calendar or DatePicker?"), T("Calendar para exibir inline. DatePicker para input em forms.", "Calendar for inline display. DatePicker for form input.")),
+        new NameValueRow(T("Como desabilitar fins de semana?", "How to disable weekends?"), T("Use DisabledDate com funcao que verifica Saturday/Sunday.", "Use DisabledDate with function checking Saturday/Sunday.")),
+        new NameValueRow(T("Posso usar templates?", "Can I use templates?"), T("Sim, DayTemplate recebe XFCalendarDayContext com Date, IsSelected, IsToday, etc.", "Yes, DayTemplate receives XFCalendarDayContext with Date, IsSelected, IsToday, etc."))
+    };
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => new[]
+    {
+        new NameValueRow("2026-06-02", T("Highlights/XFTooltip/Sizes/Nav: 3 views, 3 sizes, 3 variants, constraints, templates, culture, 10 exemplos, WCAG AAA.", "Premium refactor: 3 views, 3 sizes, 3 variants, constraints, templates, culture, 10 examples, WCAG AAA.")),
+        new NameValueRow("2026-06-12", T("Refatorada para padrao AppShellDocs com 26 secoes, API completa, 13 novas secoes enterprise.", "Refactored to AppShellDocs pattern with 26 sections, full API, 13 new enterprise sections."))
+    };
+
+    // Code Strings
+    private string CodeBasic =>
+        "<XFCalendar @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\" />";
+
+    private string CodeSizes =>
+        "<XFCalendar Size=\"XFSize.Sm\"" + "\n" +
+        "            @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\" />" + "\n" +
+        "<!-- p-2, min-h-8, text-xs, gap-0.5 -->" + "\n" + "\n" +
+        "<XFCalendar Size=\"XFSize.Md\"" + "\n" +
+        "            @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\" />" + "\n" +
+        "<!-- p-4, min-h-10, text-sm, gap-1 -->" + "\n" + "\n" +
+        "<XFCalendar Size=\"XFSize.Lg\"" + "\n" +
+        "            @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\" />" + "\n" +
+        "<!-- p-5, min-h-12, text-base, gap-1.5 -->";
+
+    private string CodeVariants =>
+        "<XFCalendar Variant=\"XFContainerVariant.Surface\"" + "\n" +
+        "            @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\" />" + "\n" + "\n" +
+        "<XFCalendar Variant=\"XFContainerVariant.Soft\"" + "\n" +
+        "            @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\" />" + "\n" + "\n" +
+        "<XFCalendar Variant=\"XFContainerVariant.Plain\"" + "\n" +
+        "            @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\" />";
+
+    private string CodeDayView =>
+        "<!-- DisplayDate controls navigation; Value controls selection -->" + "\n" +
+        "<XFCalendar View=\"XFCalendarView.Day\"" + "\n" +
+        "            @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\"" + "\n" +
+        "            Highlights=\"highlights\"" + "\n" +
+        "            Size=\"XFSize.Md\" />";
+
+    private string CodeWeekView =>
+        "<!-- DisplayDate controls navigation; Value controls selection -->" + "\n" +
+        "<XFCalendar View=\"XFCalendarView.Week\"" + "\n" +
+        "            @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\"" + "\n" +
+        "            Highlights=\"highlights\"" + "\n" +
+        "            Size=\"XFSize.Lg\" />";
+
+    private string CodeConstraints =>
+        "<!-- Min/Max range -->" + "\n" +
+        "<XFCalendar Min=\"new DateOnly(2026, 6, 1)\"" + "\n" +
+        "            Max=\"new DateOnly(2026, 6, 30)\"" + "\n" +
+        "            DisplayDate=\"new(2026, 6, 1)\" />" + "\n" + "\n" +
+        "<!-- Disabled weekends -->" + "\n" +
+        "<XFCalendar DisabledDate=\"IsWeekend\" />";
+
+    private string CodeHighlighted =>
+        "private IReadOnlyList<XFCalendarHighlight> Highlights = new[]" + "\n" +
+        "{" + "\n" +
+        "    new XFCalendarHighlight(new(2026, 6, 5)," + "\n" +
+        "        \"Lembrete: Revisao do trimestre\", XFSemanticColor.Info)," + "\n" +
+        "    new XFCalendarHighlight(new(2026, 6, 5)," + "\n" +
+        "        \"Mensagem: Relatorio pronto\", XFSemanticColor.Success)," + "\n" +
+        "    new XFCalendarHighlight(new(2026, 6, 12)," + "\n" +
+        "        \"Agendamento: Reuniao diretoria\", XFSemanticColor.Warning)," + "\n" +
+        "    new XFCalendarHighlight(new(2026, 6, 19)," + "\n" +
+        "        \"Agendamento: Apresentacao cliente\", XFSemanticColor.Danger)" + "\n" +
+        "};" + "\n" + "\n" +
+        "<XFCalendar Highlights=\"Highlights\"" + "\n" +
+        "            DisplayDate=\"new(2026, 6, 1)\" />";
+
+    private string CodeDayTemplate =>
+        "<XFCalendar Highlights=\"Highlights\">" + "\n" +
+        "    <DayTemplate Context=\"ctx\">" + "\n" +
+        "        <span class=\"font-semibold\">@ctx.Date.Day</span>" + "\n" +
+        "        @if (ctx.Highlights.Count > 0)" + "\n" +
+        "        {" + "\n" +
+        "            <span class=\"flex gap-0.5\">" + "\n" +
+        "                @foreach (var h in ctx.Highlights.Take(2))" + "\n" +
+        "                {" + "\n" +
+        "                    <span class=\"h-1 w-1 rounded-full" + "\n" +
+        "                      @(ctx.IsSelected ? \"bg-white\" : \"bg-primary\")\">" + "\n" +
+        "                    </span>" + "\n" +
+        "                }" + "\n" +
+        "            </span>" + "\n" +
+        "        }" + "\n" +
+        "    </DayTemplate>" + "\n" +
+        "</XFCalendar>";
+
+    private string CodeCulture =>
+        "<!-- Portuguese (Brazil) -->" + "\n" +
+        "<XFCalendar Culture=\"@(new CultureInfo(\\\"pt-BR\\\"))\"" + "\n" +
+        "            FirstDayOfWeek=\"DayOfWeek.Sunday\" />" + "\n" + "\n" +
+        "<!-- English (US) with Monday start -->" + "\n" +
+        "<XFCalendar Culture=\"@(new CultureInfo(\\\"en-US\\\"))\"" + "\n" +
+        "            FirstDayOfWeek=\"DayOfWeek.Monday\" />" + "\n" + "\n" +
+        "<!-- Japanese -->" + "\n" +
+        "<XFCalendar Culture=\"@(new CultureInfo(\\\"ja-JP\\\"))\" />";
+
+    private string CodeFullBind =>
+        "<XFCalendar @bind-Value=\"selectedDate\"" + "\n" +
+        "            DisplayDate=\"displayDate\"" + "\n" +
+        "            DisplayDateChanged=\"@(v => displayDate = v)\"" + "\n" +
+        "            Change=\"@(v => lastChanged = v)\"" + "\n" +
+        "            Highlights=\"Highlights\" />";
+
+    // Range selection
+    private IReadOnlyList<DateOnly> rangeDates = Array.Empty<DateOnly>();
+
+    private RenderFragment ExRange() => @<div class="flex flex-col gap-4">
+        <XFCalendar SelectMode="XFCalendarSelectMode.Range"
+                    SelectedDates="rangeDates"
+                    SelectedDatesChanged="@(v => rangeDates = v)"
+                    DisplayDate="new DateOnly(2026, 6, 1)" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Datas selecionadas: ", "Selected dates: ") @string.Join(", ", rangeDates.Select(d => d.ToString("dd/MM")))
+        </XFTypography>
+    </div>;
+
+    private string CodeRange =>
+        "private IReadOnlyList<DateOnly> rangeDates = Array.Empty<DateOnly>();" + "\n" + "\n" +
+        "<XFCalendar SelectMode=\"XFCalendarSelectMode.Range\"" + "\n" +
+        "            SelectedDates=\"rangeDates\"" + "\n" +
+        "            SelectedDatesChanged=\"@(v => rangeDates = v)\"" + "\n" +
+        "            DisplayDate=\"new DateOnly(2026, 6, 1)\" />";
+
+    // Multiple selection
+    private IReadOnlyList<DateOnly> multipleDates = new[] { new DateOnly(2026, 6, 5), new DateOnly(2026, 6, 12) };
+
+    private RenderFragment ExMultiple() => @<div class="flex flex-col gap-4">
+        <XFCalendar SelectMode="XFCalendarSelectMode.Multiple"
+                    SelectedDates="multipleDates"
+                    SelectedDatesChanged="@(v => multipleDates = v)"
+                    DisplayDate="new DateOnly(2026, 6, 1)" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Datas selecionadas: ", "Selected dates: ") @string.Join(", ", multipleDates.Select(d => d.ToString("dd/MM")))
+        </XFTypography>
+    </div>;
+
+    private string CodeMultiple =>
+        "private IReadOnlyList<DateOnly> multipleDates = new[] {" + "\n" +
+        "    new DateOnly(2026, 6, 5), new DateOnly(2026, 6, 12)" + "\n" +
+        "};" + "\n" + "\n" +
+        "<XFCalendar SelectMode=\"XFCalendarSelectMode.Multiple\"" + "\n" +
+        "            SelectedDates=\"multipleDates\"" + "\n" +
+        "            SelectedDatesChanged=\"@(v => multipleDates = v)\"" + "\n" +
+        "            DisplayDate=\"new DateOnly(2026, 6, 1)\" />";
+
+    // Records
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

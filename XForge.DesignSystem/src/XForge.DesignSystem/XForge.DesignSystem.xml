@@ -236,6 +236,12 @@
         <member name="T:XForge.DesignSystem.Analyzers.XFCatalogedAnalyzers">
             <summary>Catalog of analyzers shipped with the XForge meta-package.</summary>
         </member>
+        <member name="T:XForge.DesignSystem.Components.Base.XFAutoParameterInspector">
+            <summary>
+            Detects [Parameter] auto-properties at runtime to enable metadata introspection.
+            Inspired by MudBlazor T012: avoid manual getter/setter boilerplate.
+            </summary>
+        </member>
         <member name="T:XForge.DesignSystem.Components.Base.XFBaseComponent">
             <summary>
             Base class for XForge components supporting ShouldAutoGenerateId and CaptureUnmatchedValues.
@@ -259,6 +265,28 @@
         </member>
         <member name="P:XForge.DesignSystem.Components.Base.XFBaseComponent.EffectiveId">
             <summary>Resolves the effective id: explicit Id, or xf-{8-char-guid} when ShouldAutoGenerateId.</summary>
+        </member>
+        <member name="T:XForge.DesignSystem.Components.Base.XFCategoryAttribute">
+            <summary>
+            Categorizes a component for grouping in designer and docs.
+            Inspired by MudBlazor T013: every component declares a Category.
+            </summary>
+        </member>
+        <member name="T:XForge.DesignSystem.Components.Base.XFCategories">
+            <summary>
+            Predefined component categories (MudBlazor-aligned).
+            </summary>
+        </member>
+        <member name="T:XForge.DesignSystem.Components.Base.XFFormForwardRef`1">
+            <summary>
+            Queue of actions to be executed after the next render.
+            Inspired by antd-blazor CallAfterRender pattern.
+            </summary>
+        </member>
+        <member name="T:XForge.DesignSystem.Components.Base.XFFormForwardRefComponentBase">
+            <summary>
+            AfterRender action queue; actions run once after next render then are cleared.
+            </summary>
         </member>
         <member name="T:XForge.DesignSystem.Components.Base.XFTypedBaseComponent`2">
             <summary>
@@ -285,6 +313,15 @@
         </member>
         <member name="T:XForge.DesignSystem.Components.Base.DemoStyles">
             <summary>Demo style catalog used in tests.</summary>
+        </member>
+        <member name="T:XForge.DesignSystem.Components.Base.XFXFComponentBase">
+            <summary>
+            Base for components needing theme/RTL/breakpoint cascade.
+            Inspired by MudBlazor MudComponentBase.
+            </summary>
+        </member>
+        <member name="P:XForge.DesignSystem.Components.Base.XFXFComponentBase.IsDarkMode">
+            <summary>True if user prefers dark mode (placeholder for system preference).</summary>
         </member>
         <member name="T:XForge.DesignSystem.Components.CrossPlatform.XFGestureType">
             <summary>Detected gesture type from pointer/touch events.</summary>
@@ -3277,6 +3314,12 @@
         <member name="T:XForge.DesignSystem.Components.Forms.DatePicker.XFDatePickerFooterContext">
             <summary>Context passed to the DatePicker FooterTemplate.</summary>
         </member>
+        <member name="T:XForge.DesignSystem.Components.Forms.Draft.XFDraftState">
+            <summary>
+            Monitors form draft state (in-progress edits not yet submitted).
+            Inspired by antd-blazor DraftMonitor component.
+            </summary>
+        </member>
         <member name="M:XForge.DesignSystem.Components.Forms.FileInput.XFFileInput.UpdateItemProgress(System.Int32,XForge.DesignSystem.Components.Forms.FileInput.XFFileInputStatus,System.Int32,System.String)">
             <summary>Updates the status and progress of a file item by index. Call this from parent components to report upload progress.</summary>
         </member>
@@ -4385,6 +4428,16 @@
         <member name="P:XForge.DesignSystem.Components.Overlays.Drawer.XFDrawer.OnClose">
             <summary>Fires when the drawer is closed. Compliant with D-001 On{Action} convention.</summary>
         </member>
+        <member name="T:XForge.DesignSystem.Components.Gantt.GanttTaskModalModel">
+            <summary>
+            Mutable model for the task creation modal form.
+            </summary>
+        </member>
+        <member name="T:XForge.DesignSystem.Components.Scheduler.SchedulerEventModalModel">
+            <summary>
+            Mutable model for the event modal form.
+            </summary>
+        </member>
         <member name="T:XForge.DesignSystem.Components.Typography.DynamicElement">
             <summary>
             Helper component to render dynamic HTML tags from properties.
@@ -5386,59 +5439,6 @@
         <member name="T:XForge.DesignSystem.Weavers.XFParameterChangeTracker">
             <summary>
             Tracks parameter changes on a component. Pair with <see cref="T:XForge.DesignSystem.Weavers.XFDirtyAttribute"/> to mark which parameters participate.
-            </summary>
-        </member>
-        <member name="T:XForge.Components.Base.XFAutoParameterInspector">
-            <summary>
-            Detects [Parameter] auto-properties at runtime to enable metadata introspection.
-            Inspired by MudBlazor T012: avoid manual getter/setter boilerplate.
-            </summary>
-        </member>
-        <member name="T:XForge.Components.Base.XFCategoryAttribute">
-            <summary>
-            Categorizes a component for grouping in designer and docs.
-            Inspired by MudBlazor T013: every component declares a Category.
-            </summary>
-        </member>
-        <member name="T:XForge.Components.Base.XFCategories">
-            <summary>
-            Predefined component categories (MudBlazor-aligned).
-            </summary>
-        </member>
-        <member name="T:XForge.Components.Base.XFFormForwardRef`1">
-            <summary>
-            Queue of actions to be executed after the next render.
-            Inspired by antd-blazor CallAfterRender pattern.
-            </summary>
-        </member>
-        <member name="T:XForge.Components.Base.XFFormForwardRefComponentBase">
-            <summary>
-            AfterRender action queue; actions run once after next render then are cleared.
-            </summary>
-        </member>
-        <member name="T:XForge.Components.Base.XFXFComponentBase">
-            <summary>
-            Base for components needing theme/RTL/breakpoint cascade.
-            Inspired by MudBlazor MudComponentBase.
-            </summary>
-        </member>
-        <member name="P:XForge.Components.Base.XFXFComponentBase.IsDarkMode">
-            <summary>True if user prefers dark mode (placeholder for system preference).</summary>
-        </member>
-        <member name="T:XForge.Components.Forms.Draft.XFDraftState">
-            <summary>
-            Monitors form draft state (in-progress edits not yet submitted).
-            Inspired by antd-blazor DraftMonitor component.
-            </summary>
-        </member>
-        <member name="T:XForge.Components.Gantt.GanttTaskModalModel">
-            <summary>
-            Mutable model for the task creation modal form.
-            </summary>
-        </member>
-        <member name="T:XForge.Components.Scheduler.SchedulerEventModalModel">
-            <summary>
-            Mutable model for the event modal form.
             </summary>
         </member>
         <member name="T:XForge.Core.Base.XFDomComponentBase">

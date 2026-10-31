@@ -65,6 +65,12 @@ jobs:
           dotnet build XForge.DesignSystem/src/XForge.DesignSystem/XForge.DesignSystem.csproj -c Release
           dotnet build XForge.DesignSystem/src/XForge.DesignSystem.Tests/XForge.DesignSystem.Tests.csproj -c Release
 
+      # App de documentacao/demonstracao (manual interativo dos componentes)
+      - name: Build XForge.DesignSystem.Docs (manual + demonstracao)
+        run: |
+          dotnet build XForge.DesignSystem/docs/app/XForge.DesignSystem.Docs.Shared/XForge.DesignSystem.Docs.Shared.csproj -c Release
+          dotnet build XForge.DesignSystem/docs/app/XForge.DesignSystem.Docs/XForge.DesignSystem.Docs.csproj -c Release
+
       # Suite bUnit completa e longa (488 arquivos) — job dedicado com timeout folgado
       - name: Test XForge.DesignSystem (nucleo)
         timeout-minutes: 40

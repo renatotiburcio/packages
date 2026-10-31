@@ -1,6 +1,6 @@
 using Bunit;
 using Xunit;
-using XForge.Components.Editors;
+using XForge.DesignSystem.Components.Editors;
 
 namespace XForge.DesignSystem.Tests.Components.Editors;
 

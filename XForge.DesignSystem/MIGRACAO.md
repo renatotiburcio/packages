@@ -371,3 +371,26 @@ Antes de adicionar ShouldRender a um componente: (1) listar todo estado proprio
 (incluindo colecoes readonly e expressoes derivadas); (2) listar estado que entra por
 eventos externos (EditContext, servicos, timers); (3) so usar assinatura se TODO o
 estado que direciona o render entrar nela — caso contrario, nao usar o padrao.
+
+## Migracao do app de documentacao (2026-10-30)
+
+### O que migrou
+- XForge.DesignSystem.Docs.Shared -> docs/app/XForge.DesignSystem.Docs.Shared
+  (shell do manual, navegacao, contratos, produto, servicos de idioma)
+- XForge.DesignSystem.Docs -> docs/app/XForge.DesignSystem.Docs
+  (app Blazor WASM: 237 paginas, uma por componente, + App/Program/index)
+
+246 arquivos no app + 25 no Shared. Assets estaticos (_content/XForge.DesignSystem/*)
+ja existiam no wwwroot do core e continuam resolvendo pelo caminho padrao.
+
+### Namespaces normalizados no core
+O core migrado tinha 40 arquivos ainda declarando namespaces legados
+(XForge.Components.*). Isso impedia o app de documentacao de compilar e deixava a
+API publica com duas raizes de namespace. Normalizado para
+XForge.DesignSystem.Components.<pasta> (namespace segue a pasta):
+
+  Base, Charts, DataGrid, Diagram, Editors, Forms.Draft, Gantt(->Scheduler),
+  Latam, Maps, Pdf, Pivot, Scheduler
+
+Ajustados: 40 declaracoes em .cs, 39 @namespace em .razor, 44 usings nos testes,
+e as strings de catalogo (new("Namespace", ...)). 79 arquivos no total.

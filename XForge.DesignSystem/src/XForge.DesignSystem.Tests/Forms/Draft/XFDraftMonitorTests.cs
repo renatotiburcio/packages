@@ -1,4 +1,4 @@
-using XForge.Components.Forms.Draft;
+using XForge.DesignSystem.Components.Forms.Draft;
 using Xunit;
 
 namespace XForge.DesignSystem.Tests.Forms.Draft;

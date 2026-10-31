@@ -1,0 +1,877 @@
+@page "/forms/combobox"
+@using XForge.DesignSystem.Core.Primitives
+@using Microsoft.AspNetCore.Components.Forms
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@ProductLabelText"
+                 Title="@PageTitleText"
+                 Status="@PageStatusText"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFCombobox" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Busca assincrona", "Async search")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="@T("Validacao", "Validation")" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="@T("Enterprise", "Enterprise")" />
+                    </XFStack>
+                    <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                        <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                            @T("Controle de selecao com busca, filtro e carregamento assincrono para formularios enterprise.",
+                               "Selection control with search, filter and async loading for enterprise forms.")
+                        </XFTypography>
+                        <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                            @T("XFCombobox oferece selecao com busca integrada, filtro em tempo real, debounce configuravel, templates de item, validacao com EditForm, acessibilidade WCAG AAA e suporte a carregamento assincrono de dados.",
+                               "XFCombobox offers selection with integrated search, real-time filter, configurable debounce, item templates, EditForm validation, WCAG AAA accessibility and async data loading support.")
+                        </XFTypography>
+                    </XFStack>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveAuto" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico. Interacoes requerem modo interativo.", "Renders as static HTML. Interactions require interactive mode.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS. Funciona identicamente em todos os modos de renderizacao.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS. It works identically in all rendering modes.")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Consideracoes", "Considerations")</XFTypography>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor Server: eventos sao tratados via SignalR. Sem latencia adicional para componentes puramente renderizados.", "Blazor Server: events are handled via SignalR. No additional latency for purely rendered components.")</XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Blazor WebAssembly: eventos sao tratados diretamente no cliente. Mais responsivo.", "Blazor WebAssembly: events are handled directly on the client. More responsive.")</XFTypography>
+                </XFStack>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 2)</div>)
+        </XFStack>
+
+        <!-- ===== 11 EXAMPLES ===== -->
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"),
+                T("XFCombobox simples com Items, TextSelector, ValueSelector e Placeholder.", "Simple XFCombobox with Items, TextSelector, ValueSelector and Placeholder."),
+                ExBasic(), CodeBasic)
+
+            @Example(T("2. Label, Placeholder e Helper", "2. Label, Placeholder and Helper"),
+                T("Label, Placeholder, HelperText e Required com asterisco vermelho.", "Label, Placeholder, HelperText and Required with red asterisk."),
+                ExLabelPlaceholderHelper(), CodeLabelPlaceholderHelper)
+
+            @Example(T("3. Modos de filtro", "3. Filter Modes"),
+                T("Contains (padrao) e StartsWith para filtragem de itens.", "Contains (default) and StartsWith for item filtering."),
+                ExFilterModes(), CodeFilterModes)
+
+            @Example(T("4. Busca assincrona", "4. Async Search"),
+                T("SearchAsync com debounce, LoadingText e EmptyText para carregamento remoto.", "SearchAsync with debounce, LoadingText and EmptyText for remote loading."),
+                ExAsyncSearch(), CodeAsyncSearch)
+
+            @Example(T("5. Template de item customizado", "5. Custom Item Template"),
+                T("ItemTemplate para renderizar icone e nome em layout flex.", "ItemTemplate to render icon and name in flex layout."),
+                ExCustomTemplate(), CodeCustomTemplate)
+
+            @Example(T("6. Tamanhos", "6. Sizes"),
+                T("Sm, Md e Lg com touch target 44px minimo.", "Sm, Md and Lg with 44px minimum touch target."),
+                ExSizes(), CodeSizes)
+
+            @Example(T("7. Variantes", "7. Variants"),
+                T("Outline, Filled, Soft e Ghost para diferentes contextos visuais.", "Outline, Filled, Soft and Ghost for different visual contexts."),
+                ExVariants(), CodeVariants)
+
+            @Example(T("8. Validacao com EditForm", "8. EditForm Validation"),
+                T("Integracao com DataAnnotations para validacao obrigatoria.", "Integration with DataAnnotations for required validation."),
+                ExValidation(), CodeValidation)
+
+            @Example(T("9. Itens desabilitados", "9. Disabled Items"),
+                T("DisabledItemSelector para desabilitar itens especificos com cursor-not-allowed.", "DisabledItemSelector to disable specific items with cursor-not-allowed."),
+                ExDisabledItems(), CodeDisabledItems)
+
+            @Example(T("10. Estado de carregamento", "10. Loading State"),
+                T("Loading=true com spinner e LoadingText para feedback visual.", "Loading=true with spinner and LoadingText for visual feedback."),
+                ExLoading(), CodeLoading)
+
+            @Example(T("11. Cenario enterprise", "11. Enterprise Scenario"),
+                T("Modulo fiscal ERP: regime tributario com variante Soft e tom Primary.", "ERP fiscal module: tax regime with Soft variant and Primary tone."),
+                ExEnterprise(), CodeEnterprise)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Variantes", "Variants"), @<div>@NameValueTable(VariantRows, T("Variante", "Variant"), T("Caso de uso", "Use case"))</div>)
+            @Section(T("Estados", "States"), @<div>@NameValueTable(StateRows, T("Estado", "State"), T("Comportamento", "Behavior"))</div>)
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Metodos", "Methods"), @<div>@NameValueTable(MethodRows, T("Metodo", "Method"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("Design Tokens", @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+
+@code {
+    private string ProductLabelText => T("Core Open Source", "Core Open Source");
+    private string PageTitleText => T("Combobox", "Combobox");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string ptBr, string enUs) => LanguageService.Text(ptBr, enUs);
+    private string CopyableCodeTitle => T("Copiar codigo", "Copy code");
+
+    private int? _basicValue;
+    private int? _labelValue;
+    private int? _filterContainsValue;
+    private int? _filterStartsWithValue;
+    private int? _asyncValue;
+    private int? _templateValue;
+    private int? _smValue;
+    private int? _mdValue;
+    private int? _lgValue;
+    private int? _outlineValue;
+    private int? _filledValue;
+    private int? _softValue;
+    private int? _ghostValue;
+    private int? _disabledValue;
+    private int? _enterpriseValue;
+    private bool _formSubmitted;
+    private ComboboxFormModel _formModel = new();
+    private EditContext? _editContext;
+    private IReadOnlyList<CountryItem> _asyncResults = Array.Empty<CountryItem>();
+#pragma warning disable CS0169
+    private bool _asyncLoading;
+#pragma warning restore CS0169
+
+    private sealed record CountryItem(int Id, string Name);
+    private sealed record EmployeeItem(int Id, string Name, string Department);
+
+    private IReadOnlyList<CountryItem> Countries => [
+        new(1, "Brazil"), new(2, "Argentina"), new(3, "Chile"), new(4, "Colombia"),
+        new(5, "Mexico"), new(6, "Peru"), new(7, "Uruguay"), new(8, "Paraguay"),
+        new(9, "Ecuador"), new(10, "Bolivia"), new(11, "Venezuela"), new(12, "Antarctica")
+    ];
+
+    private IReadOnlyList<EmployeeItem> Employees => [
+        new(1, "Ana Silva", "Finance"), new(2, "Bruno Costa", "Tax"),
+        new(3, "Carlos Lima", "Inventory"), new(4, "Diana Souza", "HR"),
+        new(5, "Eduardo Mendes", "Finance"), new(6, "Fernanda Alves", "Tax")
+    ];
+
+    private async Task<IEnumerable<EmployeeItem>> SearchEmployees(string? search, CancellationToken ct)
+    {
+        await Task.Delay(300, ct);
+        if (string.IsNullOrWhiteSpace(search)) return Employees;
+        return Employees.Where(e => e.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private sealed class ComboboxFormModel
+    {
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Required")]
+        public int? SelectedCountry { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(_formModel);
+    }
+
+    private void HandleValidSubmit()
+    {
+        _formSubmitted = true;
+    }
+
+    private string GetCountryName(int? id)
+    {
+        if (id is null) return T("Nenhum", "None");
+        return Countries.FirstOrDefault(c => c.Id == id)?.Name ?? T("Desconhecido", "Unknown");
+    }
+
+    private string GetEmployeeName(int? id)
+    {
+        if (id is null) return T("Nenhum", "None");
+        return Employees.FirstOrDefault(e => e.Id == id)?.Name ?? T("Desconhecido", "Unknown");
+    }
+
+    // ==================== HELPERS ====================
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg"><Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header><ChildContent>@content</ChildContent></XFCard>;
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false"><Header><div class="px-6 pt-6"><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography></div></Header><ChildContent><div class="grid"><div class="border-t border-border-light p-6">@preview</div><div class="border-t border-border-light bg-surface-50 p-6"><XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" /></div></div></ChildContent></XFCard>;
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard>;
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) { <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true"><div class="flex items-center gap-4"><span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span><div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div></div><XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography></XFStack></ChildContent></XFCard> }</XFGrid>;
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true"><XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader><XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody></XFTable>;
+
+    // ==================== HERO ====================
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCombobox TItem="CountryItem" TValue="int?"
+            Items="Countries"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            Placeholder="@T("Selecione um pais...", "Select a country...")"
+            Label="@T("Pais", "Country")" />
+        <XFCombobox TItem="CountryItem" TValue="int?"
+            Items="Countries"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            Placeholder="@T("Busque um pais...", "Search a country...")"
+            Label="@T("Pais com busca", "Country with search")"
+            HelperText="@T("Digite para filtrar.", "Type to filter.")" />
+    </XFStack>;
+
+    // ==================== 1. BASIC ====================
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCombobox TItem="CountryItem" TValue="int?"
+            Items="Countries"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            @bind-Value="_basicValue"
+            Placeholder="@T("Selecione um pais...", "Select a country...")"
+            Label="@T("Pais", "Country")" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Valor selecionado: ", "Selected value: ") @_basicValue - @GetCountryName(_basicValue)
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 2. LABEL, PLACEHOLDER, HELPER ====================
+    private RenderFragment ExLabelPlaceholderHelper() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCombobox TItem="CountryItem" TValue="int?"
+            Items="Countries"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            @bind-Value="_labelValue"
+            Label="@T("Pais", "Country")"
+            Placeholder="@T("Busque o pais...", "Search country...")"
+            HelperText="@T("Selecione o pais para fins de declaracao fiscal.", "Select the country for tax reporting.")"
+            Required="true" />
+    </XFStack>;
+
+    // ==================== 3. FILTER MODES ====================
+    private RenderFragment ExFilterModes() => @<div class="grid gap-4 md:grid-cols-2">
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Contains (padrao)" />
+            <XFCombobox TItem="CountryItem" TValue="int?"
+                Items="Countries"
+                TextSelector="@(i => i.Name)"
+                ValueSelector="@(i => (int?)i.Id)"
+                @bind-Value="_filterContainsValue"
+                Filter="XFComboboxFilter.Contains"
+                Placeholder="@T("Digite para filtrar (contem)...", "Type to filter (contains)...")"
+                Label="@T("Contem", "Contains")" />
+        </XFStack>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="2" FullWidth="true">
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="StartsWith" />
+            <XFCombobox TItem="CountryItem" TValue="int?"
+                Items="Countries"
+                TextSelector="@(i => i.Name)"
+                ValueSelector="@(i => (int?)i.Id)"
+                @bind-Value="_filterStartsWithValue"
+                Filter="XFComboboxFilter.StartsWith"
+                Placeholder="@T("Digite para filtrar (inicia com)...", "Type to filter (starts with)...")"
+                Label="@T("Inicia com", "Starts with")" />
+        </XFStack>
+    </div>;
+
+    // ==================== 4. ASYNC SEARCH ====================
+    private RenderFragment ExAsyncSearch() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCombobox TItem="EmployeeItem" TValue="int?"
+            SearchAsync="SearchEmployees"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            @bind-Value="_asyncValue"
+            DebounceMs="500"
+            LoadingText="@T("Buscando funcionarios...", "Searching employees...")"
+            EmptyText="@T("Nenhum funcionario encontrado.", "No employees found.")"
+            Placeholder="@T("Digite para buscar...", "Type to search...")"
+            Label="@T("Funcionario", "Employee")" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Funcionario selecionado: ", "Selected employee: ") @GetEmployeeName(_asyncValue)
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 5. CUSTOM ITEM TEMPLATE ====================
+    private RenderFragment ExCustomTemplate() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCombobox TItem="CountryItem" TValue="int?"
+            Items="Countries"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            @bind-Value="_templateValue"
+            Placeholder="@T("Selecione um pais...", "Select a country...")"
+            Label="@T("Pais com icone", "Country with icon")">
+            <StartIcon>
+                <span class="inline-block h-4 w-4">@XFSvgIcons.Markup("globe")</span>
+            </StartIcon>
+            <ItemTemplate Context="item">
+                <div class="flex items-center gap-2">
+                    <span class="inline-block h-4 w-4 text-primary">@XFSvgIcons.Markup("globe")</span>
+                    <span>@item.Name</span>
+                </div>
+            </ItemTemplate>
+        </XFCombobox>
+    </XFStack>;
+
+    // ==================== 6. SIZES ====================
+    private RenderFragment ExSizes() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Sm" />
+            <div class="mt-2">
+                <XFCombobox TItem="CountryItem" TValue="int?" Size="XFSize.Sm"
+                    Items="Countries" TextSelector="@(i => i.Name)" ValueSelector="@(i => (int?)i.Id)"
+                    @bind-Value="_smValue" Placeholder="@T("Pequeno", "Small")" Label="Sm" />
+            </div>
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Md" />
+            <div class="mt-2">
+                <XFCombobox TItem="CountryItem" TValue="int?" Size="XFSize.Md"
+                    Items="Countries" TextSelector="@(i => i.Name)" ValueSelector="@(i => (int?)i.Id)"
+                    @bind-Value="_mdValue" Placeholder="@T("Medio", "Medium")" Label="Md" />
+            </div>
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="Lg" />
+            <div class="mt-2">
+                <XFCombobox TItem="CountryItem" TValue="int?" Size="XFSize.Lg"
+                    Items="Countries" TextSelector="@(i => i.Name)" ValueSelector="@(i => (int?)i.Id)"
+                    @bind-Value="_lgValue" Placeholder="@T("Grande", "Large")" Label="Lg" />
+            </div>
+        </div>
+    </XFStack>;
+
+    // ==================== 7. VARIANTS ====================
+    private RenderFragment ExVariants() => @<XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Outline" />
+            <div class="mt-2">
+                <XFCombobox TItem="CountryItem" TValue="int?" Variant="XFFormVariant.Outline"
+                    Items="Countries" TextSelector="@(i => i.Name)" ValueSelector="@(i => (int?)i.Id)"
+                    @bind-Value="_outlineValue" Placeholder="Outline" Label="Outline" />
+            </div>
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="Filled" />
+            <div class="mt-2">
+                <XFCombobox TItem="CountryItem" TValue="int?" Variant="XFFormVariant.Filled"
+                    Items="Countries" TextSelector="@(i => i.Name)" ValueSelector="@(i => (int?)i.Id)"
+                    @bind-Value="_filledValue" Placeholder="Filled" Label="Filled" />
+            </div>
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Warning" Text="Soft" />
+            <div class="mt-2">
+                <XFCombobox TItem="CountryItem" TValue="int?" Variant="XFFormVariant.Soft"
+                    Items="Countries" TextSelector="@(i => i.Name)" ValueSelector="@(i => (int?)i.Id)"
+                    @bind-Value="_softValue" Placeholder="Soft" Label="Soft" />
+            </div>
+        </div>
+        <div>
+            <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Primary" Text="Ghost" />
+            <div class="mt-2">
+                <XFCombobox TItem="CountryItem" TValue="int?" Variant="XFFormVariant.Ghost"
+                    Items="Countries" TextSelector="@(i => i.Name)" ValueSelector="@(i => (int?)i.Id)"
+                    @bind-Value="_ghostValue" Placeholder="Ghost" Label="Ghost" />
+            </div>
+        </div>
+    </XFStack>;
+
+    // ==================== 8. VALIDATION ====================
+    private RenderFragment ExValidation() => @<div>
+        <EditForm EditContext="@_editContext" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                <XFCombobox TItem="CountryItem" TValue="int?"
+                    Items="Countries"
+                    TextSelector="@(i => i.Name)"
+                    ValueSelector="@(i => (int?)i.Id)"
+                    @bind-Value="_formModel.SelectedCountry"
+                    Placeholder="@T("Selecione o pais...", "Select the country...")"
+                    Label="@T("Pais obrigatorio", "Required country")"
+                    Required="true" />
+                <XFButton Type="XFButtonType.Submit" Variant="XFButtonVariant.Solid" Color="XFButtonColor.Primary">@T("Enviar", "Submit")</XFButton>
+                @if (_formSubmitted)
+                {
+                    <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Success" Text="@T("Formulario valido!", "Form valid!")" />
+                }
+            </XFStack>
+        </EditForm>
+    </div>;
+
+    // ==================== 9. DISABLED ITEMS ====================
+    private RenderFragment ExDisabledItems() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCombobox TItem="CountryItem" TValue="int?"
+            Items="Countries"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            DisabledItemSelector="@(i => i.Name == "Antarctica")"
+            @bind-Value="_disabledValue"
+            Placeholder="@T("Selecione um pais...", "Select a country...")"
+            Label="@T("Pais (Antarctica desabilitada)", "Country (Antarctica disabled)")" />
+        <XFTypography Variant="XFTypographyVariant.Caption" Color="XFTypographyColor.Muted">
+            @T("Antarctica esta desabilitada e nao pode ser selecionada.", "Antarctica is disabled and cannot be selected.")
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== 10. LOADING STATE ====================
+    private RenderFragment ExLoading() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCombobox TItem="CountryItem" TValue="int?"
+            Items="Countries"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            Loading="true"
+            LoadingText="@T("Carregando paises...", "Loading countries...")"
+            Placeholder="@T("Selecione...", "Select...")"
+            Label="@T("Pais", "Country")" />
+    </XFStack>;
+
+    // ==================== 11. ENTERPRISE ====================
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCombobox TItem="CountryItem" TValue="int?"
+            Items="Countries"
+            TextSelector="@(i => i.Name)"
+            ValueSelector="@(i => (int?)i.Id)"
+            @bind-Value="_enterpriseValue"
+            Label="@T("Regime fiscal", "Fiscal regime")"
+            HelperText="@T("Selecione o regime tributario para esta entidade.", "Select the tax regime for this entity.")"
+            Required="true"
+            Variant="XFFormVariant.Soft"
+            Tone="XFSemanticColor.Primary" />
+        <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">
+            @T("Regime selecionado: ", "Selected regime: ") @GetCountryName(_enterpriseValue)
+        </XFTypography>
+    </XFStack>;
+
+    // ==================== QUICK FACTS ====================
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Busca integrada", "Integrated search"), T("Filtro em tempo real com debounce configuravel.", "Real-time filter with configurable debounce."), "magnifying-glass"),
+        new(T("Assincrono", "Async"), T("SearchAsync para carregamento remoto de dados.", "SearchAsync for remote data loading."), "bolt"),
+        new(T("WCAG AAA", "WCAG AAA"), T("role=listbox, aria-expanded, aria-activedescendant, touch 44px.", "role=listbox, aria-expanded, aria-activedescendant, 44px touch."), "universal-access")
+    ];
+
+    // ==================== METADATA ====================
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFCombobox"),
+        new("Namespace", "XForge.DesignSystem.Components.Forms.Combobox"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Forms / Combobox"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=combobox, role=listbox, aria-expanded, aria-activedescendant, aria-selected, touch 44px AAA, focus 40%.", "role=combobox, role=listbox, aria-expanded, aria-activedescendant, aria-selected, 44px AAA touch, 40% focus.")),
+        new("Theme support", T("Light, dark via tokens.", "Light, dark via tokens."))
+    ];
+
+    // ==================== STATIC DATA ====================
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Selecao com busca", "Searchable selection"), T("Filtro em tempo real dos itens da lista.", "Real-time filtering of list items."), "magnifying-glass"),
+        new(T("Carregamento assincrono", "Async loading"), T("SearchAsync com debounce para dados remotos.", "SearchAsync with debounce for remote data."), "cloud-arrow-down"),
+        new(T("Validacao", "Validation"), T("Integracao com EditContext e DataAnnotations.", "Integration with EditContext and DataAnnotations."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("Selecao de entidade", "Entity selection"), T("Pais, estado, cidade, funcionario, produto.", "Country, state, city, employee, product."), "list"),
+        new(T("Filtros avancados", "Advanced filters"), T("Busca em grandes conjuntos de dados.", "Search in large data sets."), "filter"),
+        new(T("Formularios ERP", "ERP forms"), T("Selecao em modulos fiscal, financeiro, RH.", "Selection in fiscal, financial, HR modules."), "file-lines")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Select HTML basico sem busca, sem validacao, sem templates.", "Basic HTML select without search, validation or templates."), "xmark"),
+        new(T("Depois", "After"), T("XFCombobox com busca, debounce, templates, validacao e WCAG AAA.", "XFCombobox with search, debounce, templates, validation and WCAG AAA."), "check"),
+        new(T("Risco reduzido", "Reduced risk"), T("Acessibilidade completa, validacao integrada, UX consistente.", "Complete accessibility, integrated validation, consistent UX."), "shield-check")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Listas grandes", "Large lists"), T("Mais de 10 opcoes com busca e filtro.", "More than 10 options with search and filter."), "list"),
+        new(T("Dados remotos", "Remote data"), T("Carregamento assincrono com SearchAsync.", "Async loading with SearchAsync."), "cloud-arrow-down"),
+        new(T("Formularios", "Forms"), T("Selecao obrigatoria com validacao.", "Required selection with validation."), "file-lines"),
+        new(T("Templates", "Templates"), T("Itens com icones, badges ou layouts customizados.", "Items with icons, badges or custom layouts."), "palette")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Poucas opcoes", "Few options"), T("3-5 opcoes: use XFRadio ou XFSelect simples.", "3-5 options: use XFRadio or simple XFSelect."), "triangle-exclamation"),
+        new(T("Multi-selecao", "Multi-select"), T("Use XFMultiSelect para selecionar varios itens.", "Use XFMultiSelect to select multiple items."), "triangle-exclamation"),
+        new(T("Toggle simples", "Simple toggle"), T("Use XFSwitch para alternar on/off.", "Use XFSwitch for on/off toggle."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Root", T("div com flex flex-col gap-1.5.", "div with flex flex-col gap-1.5."), "code"),
+        new("Label", T("label com text-sm font-medium, asterisco vermelho quando Required.", "label with text-sm font-medium, red asterisk when Required."), "font"),
+        new("Shell", T("div relative com border, bg, transition, focus ring.", "div relative with border, bg, transition, focus ring."), "square"),
+        new("Input", T("input type=text com autocomplete=off, role=combobox, aria-expanded.", "input type=text with autocomplete=off, role=combobox, aria-expanded."), "code"),
+        new("Toggle button", T("button com chevron icon para abrir/fechar.", "button with chevron icon to open/close."), "code"),
+        new("Listbox", T("div role=listbox com opcoes role=option e aria-selected.", "div role=listbox with role=option items and aria-selected."), "list"),
+        new("Helper/Error", T("div com texto de ajuda ou mensagem de erro.", "div with helper text or error message."), "info")
+    ];
+
+    private IReadOnlyList<NameValueRow> VariantRows => [
+        new("Outline", T("Borda visivel com bg-surface (padrao).", "Visible border with bg-surface (default).")),
+        new("Filled", T("bg-surface-100 com ring, sem borda.", "bg-surface-100 with ring, no border.")),
+        new("Soft", T("Fundo com tom da cor primaria (5%).", "Background with primary color tone (5%).")),
+        new("Ghost", T("Transparente, hover mostra fundo.", "Transparent, hover shows background."))
+    ];
+
+    private IReadOnlyList<NameValueRow> StateRows => [
+        new("Default", T("Borda surface-200, bg-bg-surface.", "border-surface-200, bg-bg-surface.")),
+        new("Hover", T("Borda com 45% da cor primaria.", "Border with 45% primary color.")),
+        new("Focus", T("Ring 2 com 18% da cor primaria.", "Ring 2 with 18% primary color.")),
+        new("Disabled", T("opacity-60, cursor-not-allowed.", "opacity-60, cursor-not-allowed.")),
+        new("ReadOnly", T("Input readonly, sem interacao.", "Input readonly, no interaction.")),
+        new("Loading", T("Spinner animado com LoadingText.", "Animated spinner with LoadingText.")),
+        new("Error", T("Borda danger, ring danger, mensagem de erro.", "Danger border, danger ring, error message."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ValueChanged", T("Two-way binding. Disparado ao selecionar ou limpar.", "Two-way binding. Fired on select or clear.")),
+        new("Change", T("Disparado ao mudar valor. TValue como payload.", "Fired on value change. TValue as payload.")),
+        new("SearchChanged", T("Disparado ao mudar texto de busca.", "Fired when search text changes.")),
+        new("SearchRequested", T("Disparado ao solicitar busca local.", "Fired when local search is requested."))
+    ];
+
+    private IReadOnlyList<NameValueRow> MethodRows => [
+        new("FocusAsync()", T("Foca o input do combobox programaticamente.", "Focuses the combobox input programmatically."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new("role=combobox", T("Input com role combobox e aria-autocomplete=list.", "Input with role combobox and aria-autocomplete=list."), "universal-access"),
+        new("role=listbox", T("Dropdown com role listbox e opcoes role=option.", "Dropdown with role listbox and role=option items."), "list"),
+        new("aria-expanded", T("Indica se o dropdown esta aberto ou fechado.", "Indicates if dropdown is open or closed."), "chevron-down"),
+        new("aria-activedescendant", T("Indica opcao destacada no teclado.", "Indicates keyboard-highlighted option."), "arrow-pointer"),
+        new("aria-selected", T("Indica opcao atualmente selecionada.", "Indicates currently selected option."), "check"),
+        new("aria-disabled", T("Itens desabilitados nao podem ser selecionados.", "Disabled items cannot be selected."), "ban"),
+        new(T("Touch target 44px", "44px touch target"), T("Area clicavel minima (WCAG 2.5.8 AAA).", "Minimum click area (WCAG 2.5.8 AAA)."), "hand-pointer"),
+        new(T("Foco visivel AAA", "AAA visible focus"), T("focus-visible ring com 40% primary.", "focus-visible ring with 40% primary."), "eye")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [
+        new("ArrowDown", T("Abre dropdown ou move destaque para baixo.", "Opens dropdown or moves highlight down.")),
+        new("ArrowUp", T("Move destaque para cima.", "Moves highlight up.")),
+        new("Enter", T("Seleciona opcao destacada.", "Selects highlighted option.")),
+        new("Escape", T("Fecha dropdown e restaura texto.", "Closes dropdown and restores text.")),
+        new("Tab", T("Fecha dropdown e move foco.", "Closes dropdown and moves focus."))
+    ];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("FullWidth", "FullWidth"), T("Ocupa largura total do container por padrao.", "Fills full container width by default."), "arrows-up-down"),
+        new(T("inline-flex", "inline-flex"), T("FullWidth=false para alinhamento horizontal.", "FullWidth=false for horizontal alignment."), "mobile-screen")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Debounce", "Debounce"), T("DebounceMs configuravel para evitar excesso de chamadas.", "Configurable DebounceMs to avoid excessive calls."), "bolt"),
+        new(T("Virtualizacao", "Virtualization"), T("MaxItems limita itens renderizados no dropdown.", "MaxItems limits rendered items in dropdown."), "bolt"),
+        new(T("Lazy async", "Lazy async"), T("SearchAsync carrega dados apenas quando necessario.", "SearchAsync loads data only when needed."), "cloud-arrow-down")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Selecao fiscal", "Tax selection"), T("Regime tributario, CFOP, NCM.", "Tax regime, CFOP, NCM."), "file-lines"),
+        new(T("Selecao de parceiro", "Partner selection"), T("Cliente, fornecedor, transportadora.", "Customer, supplier, carrier."), "users"),
+        new(T("Filtros de relatorio", "Report filters"), T("Periodo, centro de custo, departamento.", "Period, cost center, department."), "filter"),
+        new(T("RH", "HR"), T("Funcionario, cargo, departamento.", "Employee, position, department."), "users"),
+        new(T("Estoque", "Inventory"), T("Produto, deposito, lote.", "Product, warehouse, batch."), "boxes-stacked"),
+        new(T("Financeiro", "Financial"), T("Conta bancaria, natureza financeira.", "Bank account, financial nature."), "building-columns")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new("EditForm", T("Use @bind-Value para validacao automatica.", "Use @bind-Value for automatic validation."), "file-lines"),
+        new("XFStack", T("Alinhe comboboxes vertical ou horizontalmente.", "Align comboboxes vertically or horizontally."), "layer-group"),
+        new("XFCard", T("Agrupe em cards por secao do formulario.", "Group in cards by form section."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Placeholder claro", "Clear placeholder"), T("Exemplo: Selecione o pais..., Busque o funcionario...", "Example: Select the country..., Search for the employee..."), "circle-check"),
+        new(T("HelperText util", "Useful HelperText"), T("Explique o contexto: para relatorio fiscal, para NF-e.", "Explain context: for tax report, for NF-e."), "info"),
+        new(T("Required com asterisco", "Required with asterisk"), T("Sempre mostre asterisco vermelho para campos obrigatorios.", "Always show red asterisk for required fields."), "asterisk"),
+        new(T("LoadingText descritivo", "Descriptive LoadingText"), T("Use: Buscando funcionarios..., Carregando paises...", "Use: Searching employees..., Loading countries..."), "spinner")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Sem Label", "No Label"), T("Combobox sem Label ou AriaLabel e inacessivel.", "Combobox without Label or AriaLabel is inaccessible."), "xmark"),
+        new(T("Muitos itens sem busca", "Too many items without search"), T("Mais de 20 itens sem SearchAsync: use carregamento assincrono.", "More than 20 items without SearchAsync: use async loading."), "triangle-exclamation"),
+        new(T("Sem feedback de loading", "No loading feedback"), T("Async sem LoadingText deixa o usuario sem feedback.", "Async without LoadingText leaves user without feedback."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("colors", T("border-surface-200, bg-bg-surface, text-text-primary, text-text-muted.", "border-surface-200, bg-bg-surface, text-text-primary, text-text-muted.")),
+        new("typography", T("text-sm (input), text-xs (helper/error).", "text-sm (input), text-xs (helper/error).")),
+        new("radius", T("rounded-lg (shell e listbox).", "rounded-lg (shell and listbox).")),
+        new("spacing", T("h-9/h-10/h-12 per Size, gap-2, p-1 listbox.", "h-9/h-10/h-12 per Size, gap-2, p-1 listbox.")),
+        new("shadow", T("shadow-[0_18px_40px] no listbox.", "shadow-[0_18px_40px] on listbox.")),
+        new("focus", T("focus-within ring-2 com 18% primary.", "focus-within ring-2 with 18% primary."))
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, variants, sizes, filter, debounce, search, validation, disabled, loading.", "Render, props, variants, sizes, filter, debounce, search, validation, disabled, loading tests.")),
+        new("Integration", T("EditForm com DataAnnotations, bind-Value, ValueChanged, SearchAsync com CancellationToken.", "EditForm with DataAnnotations, bind-Value, ValueChanged, SearchAsync with CancellationToken.")),
+        new("Accessibility", T("role=combobox, aria-expanded, aria-activedescendant, aria-selected, aria-disabled, touch 44px.", "role=combobox, aria-expanded, aria-activedescendant, aria-selected, aria-disabled, 44px touch."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFSelect", T("Dropdown simples sem busca.", "Simple dropdown without search."), "chevron-down"),
+        new("XFAutocomplete", T("Input com sugestoes de autocomplete.", "Input with autocomplete suggestions."), "magnifying-glass"),
+        new("XFMultiSelect", T("Multi-selecao com busca.", "Multi-select with search."), "list-check"),
+        new("XFTextInput", T("Input de texto simples.", "Simple text input."), "font")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Como usar com EditForm?", "How to use with EditForm?"), T("Use @bind-Value e ValueExpression automaticamente via EditContext.", "Use @bind-Value and ValueExpression automatically via EditContext.")),
+        new(T("Como usar dados assincronos?", "How to use async data?"), T("Passe SearchAsync com Task<IEnumerable<TItem>>. Use DebounceMs para controlar frequencia.", "Pass SearchAsync with Task<IEnumerable<TItem>>. Use DebounceMs to control frequency.")),
+        new(T("Como desabilitar itens?", "How to disable items?"), T("Use DisabledItemSelector com lambda.", "Use DisabledItemSelector with lambda.")),
+        new(T("Qual a diferenca entre Contains e StartsWith?", "What is the difference between Contains and StartsWith?"), T("Contains busca em qualquer parte do texto. StartsWith busca apenas no inicio.", "Contains searches any part of text. StartsWith searches only the beginning."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-05-30", T("Pagina criada no padrao enterprise com 11 exemplos renderizados, API completa e cenarios ERP.", "Page created in enterprise standard with 11 rendered examples, complete API and ERP scenarios."))
+    ];
+
+    // ==================== CODE STRINGS ====================
+    private string CodeBasic =>
+        "<XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    @bind-Value=\"@selectedId\"\n" +
+        "    Label=\"Country\" Placeholder=\"Select...\" />";
+
+    private string CodeLabelPlaceholderHelper =>
+        "<XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Label=\"Country\"\n" +
+        "    Placeholder=\"Search country...\"\n" +
+        "    HelperText=\"Select the country for tax reporting.\"\n" +
+        "    Required=\"true\" />";
+
+    private string CodeFilterModes =>
+        "<!-- Contains (default) -->\n" +
+        "<XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Filter=\"XFComboboxFilter.Contains\"\n" +
+        "    Label=\"Contains\" />\n\n" +
+        "<!-- StartsWith -->\n" +
+        "<XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Filter=\"XFComboboxFilter.StartsWith\"\n" +
+        "    Label=\"Starts with\" />";
+
+    private string CodeAsyncSearch =>
+        "<XFCombobox TItem=\"EmployeeItem\" TValue=\"int\"\n" +
+        "    SearchAsync=\"@SearchEmployees\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    @bind-Value=\"@selectedEmployeeId\"\n" +
+        "    DebounceMs=\"500\"\n" +
+        "    LoadingText=\"Searching employees...\"\n" +
+        "    EmptyText=\"No employees found.\"\n" +
+        "    Placeholder=\"Type to search...\"\n" +
+        "    Label=\"Employee\" />\n\n" +
+        "@code {\n" +
+        "    private async Task<IEnumerable<EmployeeItem>> SearchEmployees(\n" +
+        "        string? search, CancellationToken ct)\n" +
+        "    {\n" +
+        "        await Task.Delay(300, ct);\n" +
+        "        if (string.IsNullOrWhiteSpace(search)) return Employees;\n" +
+        "        return Employees.Where(e => e.Name.Contains(\n" +
+        "            search, StringComparison.OrdinalIgnoreCase));\n" +
+        "    }\n" +
+        "}";
+
+    private string CodeCustomTemplate =>
+        "<XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    @bind-Value=\"@selectedId\"\n" +
+        "    Label=\"Country\">\n" +
+        "    <StartIcon>\n" +
+        "        <span class=\"h-4 w-4\">@XFSvgIcons.Markup(\"globe\")</span>\n" +
+        "    </StartIcon>\n" +
+        "    <ItemTemplate Context=\"item\">\n" +
+        "        <div class=\"flex items-center gap-2\">\n" +
+        "            <span class=\"h-4 w-4 text-primary\">\n" +
+        "                @XFSvgIcons.Markup(\"globe\")\n" +
+        "            </span>\n" +
+        "            <span>@item.Name</span>\n" +
+        "        </div>\n" +
+        "    </ItemTemplate>\n" +
+        "</XFCombobox>";
+
+    private string CodeSizes =>
+        "<XFCombobox Size=\"XFSize.Sm\" Label=\"Small\"\n" +
+        "    TItem=\"CountryItem\" TValue=\"int?\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Placeholder=\"Small\" />\n" +
+        "<XFCombobox Size=\"XFSize.Md\" Label=\"Medium\"\n" +
+        "    TItem=\"CountryItem\" TValue=\"int?\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Placeholder=\"Medium\" />\n" +
+        "<XFCombobox Size=\"XFSize.Lg\" Label=\"Large\"\n" +
+        "    TItem=\"CountryItem\" TValue=\"int?\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Placeholder=\"Large\" />";
+
+    private string CodeVariants =>
+        "<XFCombobox Variant=\"XFFormVariant.Outline\" Label=\"Outline\"\n" +
+        "    TItem=\"CountryItem\" TValue=\"int?\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Placeholder=\"Outline\" />\n" +
+        "<XFCombobox Variant=\"XFFormVariant.Filled\" Label=\"Filled\"\n" +
+        "    TItem=\"CountryItem\" TValue=\"int?\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Placeholder=\"Filled\" />\n" +
+        "<XFCombobox Variant=\"XFFormVariant.Soft\" Label=\"Soft\"\n" +
+        "    TItem=\"CountryItem\" TValue=\"int?\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Placeholder=\"Soft\" />\n" +
+        "<XFCombobox Variant=\"XFFormVariant.Ghost\" Label=\"Ghost\"\n" +
+        "    TItem=\"CountryItem\" TValue=\"int?\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Placeholder=\"Ghost\" />";
+
+    private string CodeValidation =>
+        "<EditForm EditContext=\"@ctx\" OnValidSubmit=\"@OnSubmit\">\n" +
+        "  <DataAnnotationsValidator />\n" +
+        "  <XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "      Items=\"@Countries\"\n" +
+        "      TextSelector=\"@(i => i.Name)\"\n" +
+        "      ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "      @bind-Value=\"model.SelectedCountry\"\n" +
+        "      Label=\"Required country\" Required=\"true\" />\n" +
+        "  <XFButton Type=\"XFButtonType.Submit\">Submit</XFButton>\n" +
+        "</EditForm>";
+
+    private string CodeDisabledItems =>
+        "<XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    DisabledItemSelector=\"@(i => i.Name == 'Antarctica')\"\n" +
+        "    Label=\"Country\" />";
+
+    private string CodeLoading =>
+        "<XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    Loading=\"true\"\n" +
+        "    LoadingText=\"Loading countries...\"\n" +
+        "    Label=\"Country\" />";
+
+    private string CodeEnterprise =>
+        "<XFCombobox TItem=\"CountryItem\" TValue=\"int\"\n" +
+        "    Items=\"@Countries\"\n" +
+        "    TextSelector=\"@(i => i.Name)\"\n" +
+        "    ValueSelector=\"@(i => (int?)i.Id)\"\n" +
+        "    @bind-Value=\"@selectedRegime\"\n" +
+        "    Label=\"Fiscal regime\"\n" +
+        "    HelperText=\"Select the tax regime for this entity.\"\n" +
+        "    Required=\"true\"\n" +
+        "    Variant=\"XFFormVariant.Soft\"\n" +
+        "    Tone=\"XFSemanticColor.Primary\" />";
+
+    // ==================== API TABLE ====================
+    private IReadOnlyList<ApiRow> ApiRows => [
+        // Identity
+        new("Name", "string?", "null", T("Nome do input HTML.", "HTML input name.")),
+        new("Label", "string?", "null", T("Texto do label acima do campo.", "Label text above field.")),
+        new("AriaLabel", "string?", "null", T("Nome acessivel alternativo.", "Alternative accessible name.")),
+        new("Placeholder", "string?", "null", T("Texto placeholder no input.", "Placeholder text in input.")),
+        new("HelperText", "string?", "null", T("Texto de ajuda abaixo do campo.", "Helper text below field.")),
+        // Data
+        new("Items", "IEnumerable<TItem>?", "null", T("Colecao de itens para o dropdown.", "Item collection for dropdown.")),
+        new("TextSelector", "Func<TItem, string>?", "null", T("Extrai texto exibido do item.", "Extracts display text from item.")),
+        new("ValueSelector", "Func<TItem, TValue?>?", "null", T("Extrai valor do item.", "Extracts value from item.")),
+        new("DisabledItemSelector", "Func<TItem, bool>?", "null", T("Determina se um item esta desabilitado.", "Determines if an item is disabled.")),
+        // Templates
+        new("StartIcon", "RenderFragment?", "null", T("Icone a esquerda do input.", "Icon to the left of input.")),
+        new("ItemTemplate", "RenderFragment<TItem>?", "null", T("Template customizado para itens do dropdown.", "Custom template for dropdown items.")),
+        // Binding
+        new("Value", "TValue?", "default", T("Valor selecionado.", "Selected value.")),
+        new("ValueChanged", "EventCallback<TValue?>", "default", T("Two-way binding callback.", "Two-way binding callback.")),
+        new("ValueExpression", "Expression<Func<TValue?>>?", "null", T("Expressao para validacao EditForm.", "Expression for EditForm validation.")),
+        new("Change", "EventCallback<TValue?>", "default", T("Fires ao mudar valor.", "Fires on value change.")),
+        // Search
+        new("Search", "string?", "null", T("Texto de busca controlado.", "Controlled search text.")),
+        new("SearchChanged", "EventCallback<string?>", "default", T("Fires ao mudar texto de busca.", "Fires when search text changes.")),
+        new("SearchRequested", "EventCallback<string?>", "default", T("Fires ao solicitar busca local.", "Fires on local search request.")),
+        new("SearchAsync", "Func<string?, CancellationToken, Task<IEnumerable<TItem>>>?", "null", T("Delegate para busca assincrona.", "Delegate for async search.")),
+        new("DebounceMs", "int", "300", T("Delay em ms antes de executar SearchAsync.", "Delay in ms before executing SearchAsync.")),
+        // Visual
+        new("Variant", "XFFormVariant", "Outline", T("Outline, Filled, Soft ou Ghost.", "Outline, Filled, Soft or Ghost.")),
+        new("Size", "XFSize", "Md", T("Sm, Md ou Lg.", "Sm, Md or Lg.")),
+        new("Tone", "XFSemanticColor", "Default", T("Tom semantico do foco.", "Semantic focus tone.")),
+        // Behavior
+        new("Filter", "XFComboboxFilter", "Contains", T("Modo de filtro: Contains ou StartsWith.", "Filter mode: Contains or StartsWith.")),
+        new("Required", "bool", "false", T("Obrigatorio com asterisco vermelho.", "Required with red asterisk.")),
+        new("ReadOnly", "bool", "false", T("Somente leitura.", "Read only.")),
+        new("FullWidth", "bool", "true", T("Ocupa largura total.", "Full width.")),
+        new("Clearable", "bool", "true", T("Permite limpar selecao com X.", "Allows clearing selection with X.")),
+        new("Loading", "bool", "false", T("Mostra spinner de carregamento.", "Shows loading spinner.")),
+        new("OpenOnFocus", "bool", "true", T("Abre dropdown ao focar.", "Opens dropdown on focus.")),
+        new("MaxItems", "int", "10", T("Maximo de itens renderizados no dropdown.", "Maximum items rendered in dropdown.")),
+        // Accessibility
+        new("ClearLabel", "string", "Clear selection", T("Label acessivel do botao limpar.", "Accessible label for clear button.")),
+        new("ToggleLabel", "string", "Toggle options", T("Label acessivel do botao toggle.", "Accessible label for toggle button.")),
+        new("LoadingText", "string", "Loading...", T("Texto exibido durante carregamento.", "Text shown during loading.")),
+        new("EmptyText", "string", "No options.", T("Texto exibido quando lista esta vazia.", "Text shown when list is empty.")),
+        new("ListboxLabel", "string", "Options", T("Label acessivel do listbox.", "Accessible label for listbox.")),
+        new("ErrorText", "string?", "null", T("Texto de erro customizado.", "Custom error text."))
+    ];
+
+    // ==================== RECORDS ====================
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}

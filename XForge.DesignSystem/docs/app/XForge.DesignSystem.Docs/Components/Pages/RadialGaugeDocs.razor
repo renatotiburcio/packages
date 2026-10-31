@@ -1,0 +1,342 @@
+@page "/components/radial-gauge"
+@using XForge.DesignSystem.Core.Primitives
+@inject XForgeDocsLanguageService LanguageService
+
+<XForgeDocsShell ProductLabel="@T("Gauge", "Gauge")"
+                 Title="@T("RadialGauge", "RadialGauge")"
+                 Status="@T("Documentacao completa", "Complete docs")"
+                 Items="XForgeDocsCatalog.CoreItems">
+    <XFStack Orientation="XFOrientation.Vertical" Gap="6" FullWidth="true">
+        <XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Xl" AreaRestricted="false">
+            <ChildContent>
+                <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+                    <XFStack Orientation="XFOrientation.Horizontal" Gap="2" Wrap="XFWrap.Wrap">
+                        <XFBadge Variant="XFBadgeVariant.Solid" Color="XFBadgeColor.Primary" Text="XFRadialGauge" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="Gauge" />
+                        <XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Info" Text="Pointer" />
+                    </XFStack>
+                    <XFTypography Variant="XFTypographyVariant.H2" Weight="XFTypographyWeight.Bold">
+                        @T("Gauge radial completo com ponteiro, ticks e faixas de valor.",
+                           "Full radial gauge with pointer, ticks and value ranges.")
+                    </XFTypography>
+                    <XFTypography Variant="XFTypographyVariant.Body1" Color="XFTypographyColor.Secondary">
+                        @T("Indicador visual circular para KPIs, metricas e dashboards, com ponteiro animado, ticks configuraveis e faixas de cor semantica.",
+                           "Circular visual indicator for KPIs, metrics and dashboards, with animated pointer, configurable ticks and semantic color ranges.")
+                    </XFTypography>
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                        <div class="rounded-lg border border-border-light bg-surface-50 p-5">
+                            @HeroPreview()
+                        </div>
+                        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+                            @foreach (var item in QuickFacts) { @Tile(item) }
+                        </XFStack>
+                    </div>
+                </XFStack>
+            </ChildContent>
+        </XFCard>
+
+        @Section(T("Metadados", "Metadata"), @<div>@NameValueTable(MetadataRows, T("Campo", "Field"), T("Valor", "Value"))</div>)
+
+        @Section("Blazor Server e Blazor WebAssembly", @<div>
+            <XFStack Orientation="XFOrientation.Vertical" Gap="4" FullWidth="true">
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Compatibilidade", "Compatibility")</XFTypography>
+                <XFTable Striped="true" Hoverable="true" Compact="true">
+                    <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Modo", "Mode")</XFTableCell><XFTableCell Header="true">@T("Suporte", "Support")</XFTableCell><XFTableCell Header="true">@T("Observacoes", "Notes")</XFTableCell></XFTableRow></XFTableHeader>
+                    <XFTableBody>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveServer" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="InteractiveWebAssembly" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Funciona sem restricoes.", "Works without restrictions.")</XFTableCell></XFTableRow>
+                        <XFTableRow><XFTableCell><XFCode Text="Static SSR" /></XFTableCell><XFTableCell><XFBadge Variant="XFBadgeVariant.Soft" Color="XFBadgeColor.Success" Text="@T("Sim", "Yes")" /></XFTableCell><XFTableCell>@T("Renderiza como HTML estatico.", "Renders as static HTML.")</XFTableCell></XFTableRow>
+                    </XFTableBody>
+                </XFTable>
+                <XFTypography Variant="XFTypographyVariant.H5" Weight="XFTypographyWeight.Semibold">@T("Sem dependencias JS", "No JS Dependencies")</XFTypography>
+                <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@T("Este componente nao utiliza JavaScript interop. E puramente renderizado com C# e Tailwind CSS.", "This component does not use JavaScript interop. It is purely rendered with C# and Tailwind CSS.")</XFTypography>
+            </XFStack>
+        </div>)
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Visao geral", "Overview"), @<div>@TileGrid(OverviewItems, 3)</div>)
+            @Section(T("Proposito", "Purpose"), @<div>@TileGrid(PurposeItems, 3)</div>)
+            @Section(T("Problema resolvido", "Problem Solved"), @<div>@TileGrid(ProblemItems, 3)</div>)
+            @Section(T("Quando usar", "When To Use"), @<div>@TileGrid(UseItems, 2)</div>)
+            @Section(T("Quando nao usar", "When Not To Use"), @<div>@WarningGrid(AvoidItems)</div>)
+            @Section(T("Anatomia", "Anatomy"), @<div>@TileGrid(AnatomyItems, 3)</div>)
+            @Section(T("Principios de design", "Design Principles"), @<div>@TileGrid(DesignPrincipleItems, 3)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Example(T("1. Basico", "1. Basic"), T("Gauge radial com valor e intervalo.", "Radial gauge with value and range."), ExBasic(), Code1)
+            @Example(T("2. Com ponteiro e ticks", "2. With pointer and ticks"), T("Ponteiro visivel e ticks no arco.", "Visible pointer and ticks on arc."), ExPointer(), Code2)
+            @Example(T("3. Enterprise Dashboard", "3. Enterprise Dashboard"), T("Painel de KPIs com gauges.", "KPI panel with gauges."), ExEnterprise(), Code3)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section("API", @<div>@ApiTable(ApiRows)</div>)
+            @Section(T("Eventos", "Events"), @<div>@NameValueTable(EventRows, T("Evento", "Event"), T("Comportamento", "Behavior"))</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Acessibilidade", "Accessibility"), @<div>@TileGrid(AccessibilityItems, 2)</div>)
+            @Section(T("Suporte de teclado", "Keyboard Support"), @<div>@NameValueTable(KeyboardRows, T("Tecla", "Key"), T("Comportamento", "Behavior"))</div>)
+            @Section(T("Responsividade", "Responsiveness"), @<div>@TileGrid(ResponsivenessItems, 2)</div>)
+            @Section(T("Performance", "Performance"), @<div>@TileGrid(PerformanceItems, 2)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Cenarios enterprise", "Enterprise Scenarios"), @<div>@TileGrid(ScenarioItems, 3)</div>)
+            @Section(T("Padroes de composicao", "Composition Patterns"), @<div>@TileGrid(CompositionItems, 3)</div>)
+            @Section(T("Boas praticas de UX", "UX Best Practices"), @<div>@TileGrid(BestPracticeItems, 2)</div>)
+            @Section(T("Anti-padroes", "Anti-patterns"), @<div>@WarningGrid(AntiPatternItems)</div>)
+        </XFStack>
+
+        <XFStack Orientation="XFOrientation.Vertical" Gap="5" FullWidth="true">
+            @Section(T("Design Tokens", "Design Tokens"), @<div>@NameValueTable(TokenRows, "Token", T("Proposito", "Purpose"))</div>)
+            @Section(T("Temas", "Theming"), @<div>@TileGrid(ThemeItems, 2)</div>)
+            @Section(T("Testes", "Testing"), @<div>@NameValueTable(TestingRows, T("Cobertura", "Coverage"), T("Evidencia", "Evidence"))</div>)
+            @Section(T("Limitacoes conhecidas", "Known Limitations"), @<div>@NameValueTable(LimitationRows, T("Limitacao", "Limitation"), T("Status", "Status"))</div>)
+            @Section(T("Componentes relacionados", "Related Components"), @<div>@TileGrid(RelatedComponentItems, 3)</div>)
+            @Section("FAQ", @<div>@NameValueTable(FaqRows, T("Pergunta", "Question"), T("Resposta", "Answer"))</div>)
+            @Section("Changelog", @<div>@NameValueTable(ChangelogRows, T("Versao", "Version"), T("Mudanca", "Change"))</div>)
+        </XFStack>
+    </XFStack>
+</XForgeDocsShell>
+@code {
+    private string ProductLabelText => T("Gauge", "Gauge");
+    private string PageTitleText => T("XFRadialGauge", "XFRadialGauge");
+    private string PageStatusText => T("Documentacao completa", "Complete docs");
+    private string T(string pt, string en) => LanguageService.Text(pt, en);
+    private string CopyableCodeTitle => T("Codigo copiavel", "Copyable code");
+
+    private RenderFragment HeroPreview() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text='@("<XFRadialGauge Value=\"75\" Min=\"0\" Max=\"100\" />")' Language="razor" Variant="XFCodeVariant.Block" Wrap="true" />
+    </XFStack>;
+
+    private IReadOnlyList<DocTile> QuickFacts => [
+        new(T("Gauge radial", "Radial gauge"), T("Arco circular com ponteiro.", "Circular arc with pointer."), "gauge"),
+        new(T("Faixas de cor", "Color ranges"), T("Ranges semanticos (verde, amarelo, vermelho).", "Semantic ranges (green, yellow, red)."), "palette"),
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop. Puro C# + Tailwind.", "No JavaScript interop. Pure C# + Tailwind."), "bolt")
+    ];
+
+    private IReadOnlyList<NameValueRow> MetadataRows => [
+        new("Component", "XFRadialGauge"),
+        new("Namespace", "XForge.DesignSystem.Components.Gauge.RadialGauge"),
+        new("Package", "XForge.DesignSystem"),
+        new("Category", "Gauge / Radial"),
+        new("Status", T("Estavel", "Stable")),
+        new("Accessibility", T("role=gauge, aria-valuenow, aria-valuemin, aria-valuemax, aria-label.", "role=gauge, aria-valuenow, aria-valuemin, aria-valuemax, aria-label.")),
+        new("Theme support", T("Light, dark e data-brand via tokens.", "Light, dark and data-brand via tokens."))
+    ];
+
+    private IReadOnlyList<DocTile> OverviewItems => [
+        new(T("Gauge radial", "Radial gauge"), T("Indicador circular de valor unico.", "Single-value circular indicator."), "gauge"),
+        new(T("Ponteiro", "Pointer"), T("Indicador rotativo no arco.", "Rotating indicator on arc."), "location-arrow"),
+        new(T("Ticks e ranges", "Ticks and ranges"), T("Marcas de escala e faixas de cor.", "Scale marks and color ranges."), "ruler")
+    ];
+
+    private IReadOnlyList<DocTile> PurposeItems => [
+        new(T("KPIs", "KPIs"), T("Mostrar valor unico em dashboard.", "Show single value in dashboard."), "chart-simple"),
+        new(T("Metricas", "Metrics"), T("CPU, memoria, utilizacao.", "CPU, memory, utilization."), "microchip"),
+        new(T("Score", "Score"), T("Nota, rating, performance.", "Score, rating, performance."), "star")
+    ];
+
+    private IReadOnlyList<DocTile> ProblemItems => [
+        new(T("Antes", "Before"), T("Numeros soltos sem contexto visual.", "Numbers without visual context."), "xmark"),
+        new(T("Depois", "After"), T("Gauge radial com ponteiro, cor e faixa.", "Radial gauge with pointer, color and range."), "check"),
+        new(T("Acessibilidade", "Accessibility"), T("role=gauge, aria-valuetext.", "role=gauge, aria-valuetext."), "universal-access")
+    ];
+
+    private IReadOnlyList<DocTile> UseItems => [
+        new(T("Dashboards", "Dashboards"), T("KPIs e metricas em tempo real.", "Real-time KPIs and metrics."), "gauge"),
+        new(T("Score visual", "Visual score"), T("Rating, nota, performance.", "Rating, score, performance."), "star")
+    ];
+
+    private IReadOnlyList<DocTile> AvoidItems => [
+        new(T("Multiplas series", "Multiple series"), T("Use XFBarChart ou XFLineChart.", "Use XFBarChart or XFLineChart."), "chart-line"),
+        new(T("Comparacao", "Comparison"), T("Use grafico de barras para comparar.", "Use bar chart for comparison."), "chart-simple")
+    ];
+
+    private IReadOnlyList<DocTile> AnatomyItems => [
+        new("Arc", T("Arco circular com cor de fundo.", "Circular arc with background color."), "circle"),
+        new("Pointer", T("Ponteiro rotativo indicando valor.", "Rotating pointer indicating value."), "location-arrow"),
+        new("Ticks", T("Marcas de escala no arco.", "Scale marks on arc."), "ruler"),
+        new("Value", T("Numero central (opcional).", "Central number (optional)."), "hashtag"),
+        new("Unit", T("Unidade de medida (opcional).", "Measurement unit (optional)."), "tag"),
+        new("Ranges", T("Faixas de cor semanticas.", "Semantic color ranges."), "palette")
+    ];
+
+    private IReadOnlyList<DocTile> DesignPrincipleItems => [
+        new(T("Um valor", "One value"), T("Gauge = unico indicador. Nao sobrecarregue.", "Gauge = single indicator. Do not overload."), "circle"),
+        new(T("Cor = significado", "Color = meaning"), T("Verde=bom, Amarelo=alerta, Vermelho=perigo.", "Green=good, Yellow=warning, Red=danger."), "palette"),
+        new(T("Simplicidade", "Simplicity"), T("Valor + ponteiro + cor. Sem excesso.", "Value + pointer + color. No excess."), "minimize")
+    ];
+
+    private RenderFragment ExBasic() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text="@Code1" Language="razor" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+    </XFStack>;
+
+    private RenderFragment ExPointer() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text="@Code2" Language="razor" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+    </XFStack>;
+
+    private RenderFragment ExEnterprise() => @<XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+        <XFCode Text="@Code3" Language="razor" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+    </XFStack>;
+
+    private const string Code1 = @"<XFRadialGauge Value=""75"" Min=""0"" Max=""100"" />";
+    private const string Code2 = @"<XFRadialGauge Value=""65"" Min=""0"" Max=""100""
+                       ShowPointer=""true"" ShowTicks=""true"" />";
+    private const string Code3 = @"<XFRadialGauge Value=""82"" Min=""0"" Max=""100""
+                       ShowPointer=""true"" Unit=""%"" />
+<XFRadialGauge Value=""45"" Min=""0"" Max=""100""
+                       ShowPointer=""true"" ShowTicks=""true"" />";
+
+    private IReadOnlyList<ApiRow> ApiRows => [
+        new("Value", "double", "0", T("Valor atual do gauge.", "Current gauge value.")),
+        new("Min", "double", "0", T("Valor minimo do arco.", "Minimum arc value.")),
+        new("Max", "double", "100", T("Valor maximo do arco.", "Maximum arc value.")),
+        new("StartAngle", "double", "150", T("Angulo inicial do arco (graus).", "Arc start angle (degrees).")),
+        new("SweepAngle", "double", "240", T("Angulo de varredura do arco (graus).", "Arc sweep angle (degrees).")),
+        new("ShowPointer", "bool", "true", T("Exibe ponteiro rotativo.", "Shows rotating pointer.")),
+        new("ShowTicks", "bool", "false", T("Exibe marcacoes de escala.", "Shows scale marks.")),
+        new("Ranges", "GaugeRange[]?", "null", T("Faixas de cor semanticas.", "Semantic color ranges.")),
+        new("Unit", "string?", "null", T("Unidade de medida (ex: %, km/h).", "Measurement unit (e.g. %, km/h).")),
+        new("Size", "XFExtendedSize", "Md", T("Tamanho: Sm, Md, Lg.", "Size: Sm, Md, Lg."))
+    ];
+
+    private IReadOnlyList<NameValueRow> EventRows => [
+        new("ValueChanged", T("Disparado quando o valor muda.", "Fired when value changes."))
+    ];
+
+    private IReadOnlyList<DocTile> AccessibilityItems => [
+        new(T("role=gauge", "role=gauge"), T("ARIA role para indicadores.", "ARIA role for indicators."), "universal-access"),
+        new(T("aria-valuenow", "aria-valuenow"), T("Valor atual do gauge.", "Current gauge value."), "hashtag"),
+        new(T("aria-valuemin/max", "aria-valuemin/max"), T("Limites do gauge.", "Gauge limits."), "arrows-left-right"),
+        new(T("aria-label", "aria-label"), T("Descricao do indicador.", "Indicator description."), "tag")
+    ];
+
+    private IReadOnlyList<NameValueRow> KeyboardRows => [];
+
+    private IReadOnlyList<DocTile> ResponsivenessItems => [
+        new(T("Tamanho responsivo", "Responsive size"), T("Sm para mobile, Md para desktop.", "Sm for mobile, Md for desktop."), "mobile-screen"),
+        new(T("SVG adaptavel", "Adaptable SVG"), T("Renderiza como SVG escalavel.", "Renders as scalable SVG."), "maximize")
+    ];
+
+    private IReadOnlyList<DocTile> PerformanceItems => [
+        new(T("Zero JS", "Zero JS"), T("Nenhum JavaScript interop.", "No JavaScript interop."), "bolt"),
+        new(T("SVG leve", "Light SVG"), T("Renderiza como SVG nativo.", "Renders as native SVG."), "feather")
+    ];
+
+    private IReadOnlyList<DocTile> ScenarioItems => [
+        new(T("Dashboard KPI", "KPI dashboard"), T("CPU, memoria, disco em tempo real.", "CPU, memory, disk in real time."), "gauge"),
+        new(T("Score de qualidade", "Quality score"), T("Nota de satisfacao, NPS.", "Satisfaction score, NPS."), "star"),
+        new(T("Monitoramento", "Monitoring"), T("Nivel de fila, capacidade.", "Queue level, capacity."), "chart-simple")
+    ];
+
+    private IReadOnlyList<DocTile> CompositionItems => [
+        new(T("Gauge + Label", "Gauge + Label"), T("Label descritivo acima do gauge.", "Descriptive label above gauge."), "font"),
+        new(T("Gauge + Value", "Gauge + Value"), T("Numero central com unidade.", "Central number with unit."), "hashtag"),
+        new(T("Gauge + Card", "Gauge + Card"), T("Gauge dentro de XFCard para contexto.", "Gauge inside XFCard for context."), "square")
+    ];
+
+    private IReadOnlyList<DocTile> BestPracticeItems => [
+        new(T("Um valor", "One value"), T("Um gauge = um KPI. Nao sobreponha.", "One gauge = one KPI. Do not overlap."), "circle"),
+        new(T("Ranges semanticos", "Semantic ranges"), T("Use cores para indicar significado.", "Use colors to indicate meaning."), "palette"),
+        new(T("Min/Max claros", "Clear Min/Max"), T("Defina limites compreensiveis.", "Set comprehensive limits."), "arrows-left-right")
+    ];
+
+    private IReadOnlyList<DocTile> AntiPatternItems => [
+        new(T("Muitos gauges", "Too many gauges"), T("Evite mais de 4 gauges visiveis.", "Avoid more than 4 visible gauges."), "xmark"),
+        new(T("Sem ranges", "No ranges"), T("Gauge sem faixas de cor e ambiguo.", "Gauge without color ranges is ambiguous."), "triangle-exclamation"),
+        new(T("Valores negativos", "Negative values"), T("Use linhas para valores negativos.", "Use lines for negative values."), "triangle-exclamation")
+    ];
+
+    private IReadOnlyList<NameValueRow> TokenRows => [
+        new("arc-bg", T("stroke-surface-200, stroke-width 8.", "stroke-surface-200, stroke-width 8.")),
+        new("arc-fill", T("stroke-primary, stroke-linecap round.", "stroke-primary, stroke-linecap round.")),
+        new("pointer", T("fill-primary, transform-origin center.", "fill-primary, transform-origin center."))
+    ];
+
+    private IReadOnlyList<DocTile> ThemeItems => [
+        new("data-theme", T("Tokens light/dark via CSS variables.", "Light/dark tokens via CSS variables."), "moon"),
+        new("data-brand", T("Primary acompanha marca ativa.", "Primary follows active brand."), "swatchbook")
+    ];
+
+    private IReadOnlyList<NameValueRow> TestingRows => [
+        new("Unit", T("Testes de render, props, ranges, pointer, ticks.", "Render, props, ranges, pointer, ticks tests.")),
+        new("Accessibility", T("role=gauge, aria-valuenow, aria-valuemin/max.", "role=gauge, aria-valuenow, aria-valuemin/max."))
+    ];
+
+    private IReadOnlyList<NameValueRow> LimitationRows => [
+        new("Valor", T("Value deve estar entre Min e Max.", "Value must be between Min and Max.")),
+        new("SVG", T("Nao suporta animacoes CSS avancadas.", "Does not support advanced CSS animations."))
+    ];
+
+    private IReadOnlyList<DocTile> RelatedComponentItems => [
+        new("XFProgress", T("Barra de progresso linear.", "Linear progress bar."), "bars"),
+        new("XFProgressRing", T("Progresso circular.", "Circular progress."), "circle-notch"),
+        new("XFSparkline", T("Mini grafico de linha.", "Mini line chart."), "chart-line")
+    ];
+
+    private IReadOnlyList<NameValueRow> FaqRows => [
+        new(T("Gauge vs ProgressRing?", "Gauge vs ProgressRing?"), T("Gauge = ponteiro + ranges. ProgressRing = arco de progresso.", "Gauge = pointer + ranges. ProgressRing = progress arc.")),
+        new(T("Como adicionar ranges?", "How to add ranges?"), T("Use o parametro Ranges com array de GaugeRange.", "Use the Ranges parameter with GaugeRange array.")),
+        new(T("Funciona sem JS?", "Works without JS?"), T("Sim. Nenhum JavaScript interop.", "Yes. No JavaScript interop."))
+    ];
+
+    private IReadOnlyList<NameValueRow> ChangelogRows => [
+        new("2026-06-30", T("Pagina criada no padrao enterprise com 3 exemplos.", "Page created in enterprise standard with 3 examples."))
+    ];
+
+    private RenderFragment Section(string title, RenderFragment content) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.Lg">
+        <Header><XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography></Header>
+        <ChildContent>@content</ChildContent>
+    </XFCard>;
+
+    private RenderFragment Example(string title, string description, RenderFragment preview, string codeText) => @<XFCard Variant="XFCardVariant.Outlined" Padding="XFPadding.None" AreaRestricted="false">
+        <Header><div class="px-6 pt-6 pb-2">
+            <XFTypography Variant="XFTypographyVariant.H4" Weight="XFTypographyWeight.Semibold">@title</XFTypography>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Muted">@description</XFTypography>
+        </div></Header>
+        <ChildContent><div class="flex flex-col">
+            <div class="border-t border-border-light p-6">@preview</div>
+            <div class="border-t border-border-light bg-surface-50 p-6">
+                <XFCode Text="@codeText" Language="razor" Title="@CopyableCodeTitle" Variant="XFCodeVariant.Block" Copyable="true" Wrap="true" />
+            </div>
+        </div></ChildContent>
+    </XFCard>;
+
+    private RenderFragment Tile(DocTile item) => @<XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent>
+        <XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack>
+    </ChildContent></XFCard>;
+
+    private RenderFragment TileGrid(IReadOnlyList<DocTile> items, int columns) => @<XFGrid Cols="1" Md="@Math.Min(columns, 2)" Lg="@columns" Gap="4">@foreach (var item in items) { @Tile(item) }</XFGrid>;
+
+    private RenderFragment WarningGrid(IReadOnlyList<DocTile> items) => @<XFGrid Cols="1" Md="2" Gap="4">@foreach (var item in items) {
+        <XFCard Variant="XFCardVariant.Filled" Padding="XFPadding.Lg"><ChildContent><XFStack Orientation="XFOrientation.Vertical" Gap="3" FullWidth="true">
+            <div class="flex items-center gap-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-danger/10 bg-danger/10 text-danger" aria-hidden="true">@((MarkupString)XFSvgIcons.MarkupWithSize(item.Icon, 18))</span>
+                <div class="min-w-0"><XFTypography Variant="XFTypographyVariant.Body1" Weight="XFTypographyWeight.Semibold">@item.Title</XFTypography></div>
+            </div>
+            <XFTypography Variant="XFTypographyVariant.Body2" Color="XFTypographyColor.Secondary">@item.Description</XFTypography>
+        </XFStack></ChildContent></XFCard>
+    }</XFGrid>;
+
+    private RenderFragment NameValueTable(IReadOnlyList<NameValueRow> rows, string nameHeader, string valueHeader) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@nameHeader</XFTableCell><XFTableCell Header="true">@valueHeader</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Value</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private RenderFragment ApiTable(IReadOnlyList<ApiRow> rows) => @<XFTable Striped="true" Hoverable="true" Compact="true">
+        <XFTableHeader><XFTableRow><XFTableCell Header="true">@T("Parametro", "Parameter")</XFTableCell><XFTableCell Header="true">Type</XFTableCell><XFTableCell Header="true">Default</XFTableCell><XFTableCell Header="true">@T("Descricao", "Description")</XFTableCell></XFTableRow></XFTableHeader>
+        <XFTableBody>@foreach (var row in rows) { <XFTableRow><XFTableCell><XFCode Text="@row.Name" /></XFTableCell><XFTableCell>@row.Type</XFTableCell><XFTableCell><XFCode Text="@row.DefaultValue" /></XFTableCell><XFTableCell>@row.Description</XFTableCell></XFTableRow> }</XFTableBody>
+    </XFTable>;
+
+    private sealed record DocTile(string Title, string Description, string Icon);
+    private sealed record NameValueRow(string Name, string Value);
+    private sealed record ApiRow(string Name, string Type, string DefaultValue, string Description);
+}
