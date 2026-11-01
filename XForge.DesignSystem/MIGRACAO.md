@@ -479,3 +479,17 @@ comportamento quebrado. Agora resolve o pt-BR.json real (chave como fallback) e
 JSON, nunca digitados, para evitar mangling de acento.
 
 Saldo da campanha de testes: 199 -> 85 falhas unicas.
+
+### Mojibake no pt-BR.json (2026-10-31)
+
+Encontrado e corrigido: 25 valores do locale estavam com dupla codificacao UTF-8
+(ex.: "Súmário" gravado como A-mi-microns). Chegariam ao usuario final como texto
+corrompido em todos os componentes que usam essas chaves. Corrigido decodificando
+Latin-1 -> UTF-8 valor a valor; verificacao final: 0 linhas com padrao de mojibake.
+
+Licao de processo: escreverJSON com acentos via Get-Content -Raw | ConvertFrom-Json
+no Windows PowerShell 5.1 le como ANSI e mangla. O caminho seguro e ler os valores
+do proprio arquivo (bytes) ou construir com [char].
+
+Os mesmos 5 valores tinham sido propagados para expects de testes pelo replace
+automatico; corrigidos pelo mapeamento inverso (valor correto -> mojibake -> correto).

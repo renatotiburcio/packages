@@ -96,7 +96,7 @@ public class XFPivotDataGridComponentTest : XForgeTestContext
             parameters.Add(p => p.Caption, "Resumo fiscal por trimestre");
         });
 
-        Assert.Contains("<caption class=\"sr-only\">Tabela dinÃ¢mica</caption>", defaultCut.Markup);
+        Assert.Contains("<caption class=\"sr-only\">Tabela dinâmica</caption>", defaultCut.Markup);
         Assert.Contains("<caption class=\"sr-only\">Resumo fiscal por trimestre</caption>", customCut.Markup);
     }
 
