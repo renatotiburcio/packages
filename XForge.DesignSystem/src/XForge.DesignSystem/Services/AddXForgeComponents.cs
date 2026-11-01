@@ -13,7 +13,23 @@ public static class XForgeServiceCollectionExtensions
     {
         services.AddSingleton<Debouncer>();
         services.AddSingleton<Throttler>();
+
+        // AIChatService depende de HttpClient — sem este registro o servico nao resolve.
+        if (!services.Any(d => d.ServiceType == typeof(HttpClient)))
+        {
+            services.AddSingleton<HttpClient>();
+        }
+
         services.AddSingleton<IAIChatService, AIChatService>();
+
+        // AIChatService consome IOptions<AIChatServiceOptions>.
+        services.AddOptions<AIChatServiceOptions>();
+
+        // Opcoes sempre disponiveis, independente do overload usado.
+        if (!services.Any(d => d.ServiceType == typeof(XForgeComponentsOptions)))
+        {
+            services.AddSingleton(new XForgeComponentsOptions());
+        }
 
         // Localization
         services.AddSingleton<XFJsonLocaleProvider>(sp =>

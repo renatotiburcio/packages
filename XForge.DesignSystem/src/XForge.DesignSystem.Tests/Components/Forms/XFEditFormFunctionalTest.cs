@@ -25,10 +25,22 @@ public sealed class XFEditFormFunctionalTest : XForgeTestContext
         });
     }
 
+    // XFEditForm aceita Model OU EditContext, nunca os dois.
+    private IRenderedComponent<XFEditForm> RenderFormWithContext(
+        EditContext context,
+        Action<ComponentParameterCollectionBuilder<XFEditForm>> configure)
+    {
+        return Render<XFEditForm>(p =>
+        {
+            p.Add(x => x.EditContext, context);
+            configure(p);
+        });
+    }
+
     // Rendering
     [Fact] public void Renders_Default() => RenderForm(p => { });
-    [Fact] public void Renders_WithModel() => RenderForm(p => p.Add(x => x.Model, DefaultModel));
-    [Fact] public void Renders_WithEditContext() { var ctx = new EditContext(DefaultModel); RenderForm(p => p.Add(x => x.EditContext, ctx)); }
+    [Fact] public void Renders_WithModel() => RenderForm(p => { });
+    [Fact] public void Renders_WithEditContext() { var ctx = new EditContext(DefaultModel); RenderFormWithContext(ctx, p => { }); }
     [Fact] public void Renders_WithFormName() => RenderForm(p => p.Add(x => x.FormName, "myForm"));
     [Fact] public void Renders_WithAriaLabel() => RenderForm(p => p.Add(x => x.AriaLabel, "Edit form"));
 

@@ -17,7 +17,7 @@ public class XFDataGridColumnComponentTest : XForgeTestContext
     {
         var cut = Render<XFDataGrid<object>>(parameters => parameters
             .Add(p => p.Items, Array.Empty<object>())
-            .AddChildContent<XFDataGridColumn<object>>(col => col
+            .Add<XFDataGridColumn<object>>(p => p.Columns, col => col
                 .Add(c => c.Title, "ColumnTitle")
                 .Add(c => c.Property, "Name")));
         Assert.Contains("ColumnTitle", cut.Markup);
@@ -28,7 +28,7 @@ public class XFDataGridColumnComponentTest : XForgeTestContext
     {
         var cut = Render<XFDataGrid<object>>(parameters => parameters
             .Add(p => p.Items, Array.Empty<object>())
-            .AddChildContent<XFDataGridColumn<object>>(col => col
+            .Add<XFDataGridColumn<object>>(p => p.Columns, col => col
                 .Add(c => c.Title, "Sortable")
                 .Add(c => c.SortKey, "sort-field")));
         Assert.Contains("Sortable", cut.Markup);
@@ -39,7 +39,7 @@ public class XFDataGridColumnComponentTest : XForgeTestContext
     {
         var cut = Render<XFDataGrid<object>>(parameters => parameters
             .Add(p => p.Items, Array.Empty<object>())
-            .AddChildContent<XFDataGridColumn<object>>(col => col
+            .Add<XFDataGridColumn<object>>(p => p.Columns, col => col
                 .Add(c => c.Title, "Invisible")
                 .Add(c => c.Visible, false)));
         Assert.DoesNotContain("Invisible", cut.Markup);
