@@ -58,7 +58,7 @@ public class XFRepeaterTest : XForgeTestContext
             p.Add(x => x.Items, Array.Empty<string>());
             p.Add(x => x.AllowAdd, true);
         });
-        Assert.Contains("repeater.add_item", cut.Markup);
+        Assert.Contains("Adicionar item", cut.Markup);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class XFRepeaterTest : XForgeTestContext
             p.Add(x => x.Items, Array.Empty<string>());
             p.Add(x => x.AllowAdd, false);
         });
-        Assert.DoesNotContain("repeater.add_item", cut.Markup);
+        Assert.DoesNotContain("Adicionar item", cut.Markup);
     }
 
     [Fact]
@@ -82,8 +82,8 @@ public class XFRepeaterTest : XForgeTestContext
             p.Add(x => x.ReadOnly, true);
             p.Add(x => x.ItemTemplate, ctx => builder => builder.AddContent(0, ctx.Item));
         });
-        Assert.DoesNotContain("repeater.add_item", cut.Markup);
-        Assert.DoesNotContain("repeater.remove_item", cut.Markup);
+        Assert.DoesNotContain("Adicionar item", cut.Markup);
+        Assert.DoesNotContain("Remover item {0}", cut.Markup);
     }
 
     [Fact]

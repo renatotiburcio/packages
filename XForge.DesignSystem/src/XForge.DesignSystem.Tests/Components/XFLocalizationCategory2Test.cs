@@ -39,7 +39,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
             parameters.Add(p => p.ShowStateText, true);
         });
 
-        Assert.Contains("switch.on", cut.Markup);
+        Assert.Contains("Sim", cut.Markup);
 
         // Test unchecked state
         var cut2 = Render<XFSwitch>(parameters =>
@@ -48,7 +48,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
             parameters.Add(p => p.ShowStateText, true);
         });
 
-        Assert.Contains("switch.off", cut2.Markup);
+        Assert.Contains("Não", cut2.Markup);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
     {
         var cut = Render<XFSearch>();
 
-        Assert.Contains("search.placeholder", cut.Markup);
+        Assert.Contains("Pesquisar", cut.Markup);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
             parameters.Add(p => p.Clearable, true);
         });
 
-        Assert.Contains("input.clear", cut.Markup);
+        Assert.Contains("Limpar valor", cut.Markup);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
             parameters.Add(p => p.ChildContent, "Content");
         });
 
-        Assert.Contains("popover.open", cut.Markup);
+        Assert.Contains("Abrir", cut.Markup);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
     {
         var cut = Render<XFSplashScreen>();
 
-        Assert.Contains("splash.loading", cut.Markup);
+        Assert.Contains("Carregando", cut.Markup);
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
             parameters.Add(p => p.Indeterminate, true);
         });
 
-        Assert.Contains("progress.loading", cut.Markup);
+        Assert.Contains("Carregando", cut.Markup);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
             parameters.Add(p => p.Indeterminate, true);
         });
 
-        Assert.Contains("progress.loading", cut.Markup);
+        Assert.Contains("Carregando", cut.Markup);
     }
 
     [Fact]
@@ -117,9 +117,9 @@ public class XFLocalizationCategory2Test : XForgeTestContext
     {
         var cut = Render<XFSignaturePad>();
 
-        Assert.Contains("signaturepad.label", cut.Markup);
-        Assert.Contains("signaturepad.clear", cut.Markup);
-        Assert.Contains("signaturepad.undo", cut.Markup);
+        Assert.Contains("Campo de assinatura", cut.Markup);
+        Assert.Contains("Limpar", cut.Markup);
+        Assert.Contains("Desfazer", cut.Markup);
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
     {
         var cut = Render<XFFileInput>();
 
-        Assert.Contains("fileinput.choose", cut.Markup);
+        Assert.Contains("Escolher", cut.Markup);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
     {
         var cut = Render<XFDatePicker>();
 
-        Assert.Contains("datepicker.open", cut.Markup);
+        Assert.Contains("Abrir calendário", cut.Markup);
     }
 
     [Fact]
@@ -148,10 +148,10 @@ public class XFLocalizationCategory2Test : XForgeTestContext
             parameters.Add(p => p.Page, 1);
         });
 
-        Assert.Contains("pagination.first", cut.Markup);
-        Assert.Contains("pagination.prev", cut.Markup);
-        Assert.Contains("pagination.next", cut.Markup);
-        Assert.Contains("pagination.last", cut.Markup);
+        Assert.Contains("Primeira página", cut.Markup);
+        Assert.Contains("Página anterior", cut.Markup);
+        Assert.Contains("Próxima página", cut.Markup);
+        Assert.Contains("Última página", cut.Markup);
     }
 
     [Fact]
@@ -163,7 +163,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
             parameters.Add(p => p.Status, XFAvatarStatus.Online);
         });
 
-        Assert.Contains("avatar.online", cut.Markup);
+        Assert.Contains("Disponível", cut.Markup);
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public class XFLocalizationCategory2Test : XForgeTestContext
     {
         var cut = Render<XFPdfViewer>();
 
-        Assert.Contains("pdfviewer.title", cut.Markup);
-        Assert.Contains("pdfviewer.placeholder", cut.Markup);
+        Assert.Contains("Visualizador de PDF", cut.Markup);
+        Assert.Contains("Informe uma URL ou base64 para visualizar o PDF.", cut.Markup);
     }
 }

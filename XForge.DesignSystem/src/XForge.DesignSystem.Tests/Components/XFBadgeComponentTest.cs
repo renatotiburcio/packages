@@ -97,8 +97,8 @@ public class XFBadgeComponentTest : XForgeTestContext
         await cut.Find("button").ClickAsync();
 
         Assert.True(dismissed);
-        Assert.Contains("badge.dismiss_format", cut.Markup);
-        Assert.Contains("badge.dismiss", cut.Markup);
+        Assert.Contains("Remover ", cut.Markup);
+        Assert.Contains("aria-label=\"Remover marcador ", cut.Markup);
     }
 
     [Fact]
@@ -112,8 +112,8 @@ public class XFBadgeComponentTest : XForgeTestContext
             parameters.Add(p => p.OnDismiss, EventCallback.Factory.Create<MouseEventArgs>(this, _ => { }));
         });
 
-        Assert.Contains("badge.dismiss_format", cut.Markup);
-        Assert.Contains("badge.dismiss", cut.Markup);
+        Assert.Contains("Remover ", cut.Markup);
+        Assert.Contains("aria-label=\"Remover marcador ", cut.Markup);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class XFBadgeComponentTest : XForgeTestContext
             parameters.Add(p => p.OnDismiss, EventCallback.Factory.Create<MouseEventArgs>(this, _ => { }));
         });
 
-        Assert.Contains("badge.dismiss", cut.Markup);
+        Assert.Contains("aria-label=\"Remover marcador ", cut.Markup);
         Assert.DoesNotContain("Remover marcador badge", cut.Markup);
     }
 }

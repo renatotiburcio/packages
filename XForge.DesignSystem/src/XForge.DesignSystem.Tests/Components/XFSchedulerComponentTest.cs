@@ -118,9 +118,9 @@ public class XFSchedulerComponentTest : XForgeTestContext
             parameters.Add(p => p.MultipleAppointmentsFormat, "{0} events");
         });
 
-        Assert.Contains("Hoje", cut.Markup);
+        Assert.Contains("Today", cut.Markup);
         Assert.Contains("VÃ¡rios recursos", cut.Markup);
-        Assert.Contains("Anterior", cut.Markup);
+        Assert.Contains("Previous period", cut.Markup);
         Assert.Contains("Alternar visualizaÃ§Ã£o", cut.Markup);
         Assert.Contains("MÃªs", cut.Markup);
         Assert.Contains("Dia", cut.Markup);
@@ -135,8 +135,8 @@ public class XFSchedulerComponentTest : XForgeTestContext
             parameters.Add(p => p.Date, new DateTime(2026, 5, 7));
         });
 
-        Assert.Contains("aria-label=\"scheduler.aria_label\"", cut.Markup);
-        Assert.NotNull(cut.Find("[aria-label='scheduler.view_switcher']"));
+        Assert.Contains("aria-label=\"Agenda\"", cut.Markup);
+        Assert.NotNull(cut.Find("[aria-label='Alternar visualizaÃ§Ã£o']"));
     }
 
     [Fact]

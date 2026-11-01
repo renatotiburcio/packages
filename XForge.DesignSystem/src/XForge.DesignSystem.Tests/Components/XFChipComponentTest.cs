@@ -76,7 +76,7 @@ public class XFChipComponentTest : XForgeTestContext
             parameters.Add(p => p.Dismissible, true);
         });
 
-        Assert.Contains("chip.dismiss", cut.Markup);
+        Assert.Contains("Remover", cut.Markup);
         Assert.Contains("<svg", cut.Markup);
     }
 
@@ -91,7 +91,7 @@ public class XFChipComponentTest : XForgeTestContext
             parameters.Add(p => p.OnDismiss, EventCallback.Factory.Create(this, () => dismissed = true));
         });
 
-        var dismissButton = cut.Find("button[aria-label='chip.dismiss']");
+        var dismissButton = cut.Find("button[aria-label='Remover']");
         await dismissButton.ClickAsync();
 
         Assert.True(dismissed);

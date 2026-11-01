@@ -59,6 +59,7 @@ public partial class XFPdfViewer : XForgeComponentBase, IAsyncDisposable
         if (string.IsNullOrWhiteSpace(ZoomInLabel)) ZoomInLabel = L("pdfviewer.zoom_in", "Aumentar zoom");
         if (string.IsNullOrWhiteSpace(ZoomOutLabel)) ZoomOutLabel = L("pdfviewer.zoom_out", "Reduzir zoom");
         if (string.IsNullOrWhiteSpace(PageLabelFormat)) PageLabelFormat = L("pdfviewer.page_format", "Pagina {0}");
+        if (string.IsNullOrWhiteSpace(PageCountLabelFormat)) PageCountLabelFormat = L("pdfviewer.page_count_format", "Pagina {0} de {1}");
         if (string.IsNullOrWhiteSpace(DownloadLabel)) DownloadLabel = L("pdfviewer.download", "Baixar");
         if (string.IsNullOrWhiteSpace(PrintLabel)) PrintLabel = L("pdfviewer.print", "Imprimir");
         if (string.IsNullOrWhiteSpace(FullscreenLabel)) FullscreenLabel = L("pdfviewer.fullscreen", "Tela cheia");

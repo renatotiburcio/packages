@@ -461,3 +461,21 @@ ComponentDisposedException; para exercitar o unsubscribe usa-se
 ((IDisposable)provider.Instance).Dispose().
 
 Resultado da classe: 17/17 (era 1 travando + 2 falhando).
+
+### Bug real de produto encontrado pela campanha (2026-10-31)
+
+XFPdfViewer usava PageCountLabelFormat em string.Format sem nunca receber default —
+o parametro ficava null e o componente estourava ArgumentNullException em runtime.
+Corrigido: default via L("pdfviewer.page_count_format", "Pagina {0} de {1}") e chave
+adicionada ao locale. Varredura do mesmo padrao nos demais componentes nao achou
+outro caso.
+
+### TestLocalizer deixou de mascarar chaves ausentes
+
+O stub devolvia a propria chave, entao testes assertavam texto cruo
+("gantt.empty", "chart.empty", "scheduler.aria_label") e passavam contra o
+comportamento quebrado. Agora resolve o pt-BR.json real (chave como fallback) e
+35 asserts foram reapontadas para o texto localizado — valores lidos do proprio
+JSON, nunca digitados, para evitar mangling de acento.
+
+Saldo da campanha de testes: 199 -> 85 falhas unicas.

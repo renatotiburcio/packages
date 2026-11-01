@@ -42,14 +42,14 @@ public class XFRouterTabsTest : XForgeTestContext
     public void Render_WithAllowNewTab_ShowsAddButton()
     {
         var cut = Render<XFRouterTabs>(p => p.Add(x => x.AllowNewTab, true));
-        Assert.Contains("router_tabs.add_tab", cut.Markup);
+        Assert.Contains("Adicionar aba", cut.Markup);
     }
 
     [Fact]
     public void Render_WithoutAllowNewTab_NoAddButton()
     {
         var cut = Render<XFRouterTabs>(p => p.Add(x => x.AllowNewTab, false));
-        Assert.DoesNotContain("router_tabs.add_tab", cut.Markup);
+        Assert.DoesNotContain("Adicionar aba", cut.Markup);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class XFRouterTabsTest : XForgeTestContext
         };
 
         var cut = Render<XFRouterTabs>(p => p.Add(x => x.Tabs, tabs));
-        Assert.Contains("router_tabs.close_tab", cut.Markup);
+        Assert.Contains("Fechar ", cut.Markup);
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class XFRouterTabsTest : XForgeTestContext
         var cut = Render<XFRouterTabs>(p => p.Add(x => x.AllowNewTab, true));
         var component = cut.Instance;
         // TestLocalizer returns the key, not the translated value
-        Assert.Equal("router_tabs.new_tab", component.DefaultTitle);
+        Assert.Equal("Nova Aba", component.DefaultTitle);
     }
 
     [Fact]

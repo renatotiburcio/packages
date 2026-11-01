@@ -19,7 +19,7 @@ public class XFCropperTest : XForgeTestContext
     {
         var cut = Render<XFCropper>();
         Assert.Contains("xf-cropper", cut.Markup);
-        Assert.Contains("cropper.no_image", cut.Markup);
+        Assert.Contains("Nenhuma imagem carregada", cut.Markup);
     }
 
     [Fact]
@@ -49,15 +49,15 @@ public class XFCropperTest : XForgeTestContext
     public void Render_WithSource_HasZoomControls()
     {
         var cut = Render<XFCropper>(p => p.Add(x => x.Source, "test.jpg"));
-        Assert.Contains("cropper.zoom", cut.Markup);
+        Assert.Contains("Zoom", cut.Markup);
     }
 
     [Fact]
     public void Render_ShowsActionButtons()
     {
         var cut = Render<XFCropper>(p => p.Add(x => x.Source, "test.jpg"));
-        Assert.Contains("cropper.crop", cut.Markup);
-        Assert.Contains("cropper.cancel", cut.Markup);
+        Assert.Contains("Recortar", cut.Markup);
+        Assert.Contains("Cancelar", cut.Markup);
     }
 
     [Fact]
@@ -129,14 +129,14 @@ public class XFCropperTest : XForgeTestContext
             p.Add(x => x.Source, "test.jpg");
             p.Add(x => x.ShowPreview, false);
         });
-        Assert.DoesNotContain("cropper.preview", cut.Markup);
+        Assert.DoesNotContain("Visualização", cut.Markup);
     }
 
     [Fact]
     public void Render_ShowsRotationControls()
     {
         var cut = Render<XFCropper>(p => p.Add(x => x.Source, "test.jpg"));
-        Assert.Contains("cropper.rotation", cut.Markup);
+        Assert.Contains("Rotação", cut.Markup);
     }
 
     [Fact]
@@ -172,14 +172,14 @@ public class XFCropperTest : XForgeTestContext
     public void Render_ShowsCropButton()
     {
         var cut = Render<XFCropper>(p => p.Add(x => x.Source, "test.jpg"));
-        Assert.Contains("cropper.crop", cut.Markup);
+        Assert.Contains("Recortar", cut.Markup);
     }
 
     [Fact]
     public void Render_ShowsCancelButton()
     {
         var cut = Render<XFCropper>(p => p.Add(x => x.Source, "test.jpg"));
-        Assert.Contains("cropper.cancel", cut.Markup);
+        Assert.Contains("Cancelar", cut.Markup);
     }
 
     [Fact]

@@ -165,6 +165,7 @@
   "pdfviewer.zoom_in": "Aumentar zoom",
   "pdfviewer.zoom_out": "Reduzir zoom",
   "pdfviewer.page_format": "Página {0}",
+  "pdfviewer.page_count_format": "Página {0} de {1}",
   "pdfviewer.download": "Baixar",
   "pdfviewer.print": "Imprimir",
   "pdfviewer.fullscreen": "Tela cheia",

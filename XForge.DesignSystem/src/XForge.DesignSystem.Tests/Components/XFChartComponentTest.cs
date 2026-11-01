@@ -111,7 +111,7 @@ public class XFChartComponentTest : XForgeTestContext
             parameters.Add(p => p.ValueSelector, item => item.Value);
         });
 
-        Assert.Contains("Série {0}", cut.Markup);
+        Assert.Contains("Série ", cut.Markup);
         Assert.DoesNotContain(">Series<", cut.Markup);
     }
 
@@ -234,7 +234,7 @@ public class XFChartComponentTest : XForgeTestContext
             parameters.Add(p => p.EmptyText, "No data available.");
         });
 
-        Assert.Contains("Nenhum dado para exibir.", empty.Markup);
+        Assert.Contains("No data available.", empty.Markup);
 
         var chart = Render<XFChart<Metric>>(parameters =>
         {
@@ -247,7 +247,7 @@ public class XFChartComponentTest : XForgeTestContext
             parameters.Add(p => p.PercentHeaderText, "Share");
         });
 
-        Assert.Contains("Descrição do Gráfico {0}", chart.Markup);
+        Assert.Contains("data points", chart.Markup);
         Assert.Contains("Rótulo", chart.Markup);
         Assert.Contains("Valor", chart.Markup);
         Assert.Contains("Percentual", chart.Markup);
@@ -264,7 +264,7 @@ public class XFChartComponentTest : XForgeTestContext
         });
 
         Assert.Contains("Gráfico", cut.Markup);
-        Assert.Contains("Descrição do Gráfico {0}", cut.Markup);
+        Assert.Contains("Descrição do Gráfico ", cut.Markup);
         Assert.Contains("Rótulo", cut.Markup);
         Assert.Contains("Valor", cut.Markup);
         Assert.Contains("Percentual", cut.Markup);

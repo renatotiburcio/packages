@@ -134,7 +134,7 @@ public class XFTileLayoutTest : XForgeTestContext
             p.Add(x => x.Title, "Dashboard");
             p.Add(x => x.AllowEdit, true);
         });
-        Assert.Contains("tilelayout.edit_mode", cut.Markup);
+        Assert.Contains("Editar layout", cut.Markup);
     }
 
     [Fact]
@@ -145,7 +145,7 @@ public class XFTileLayoutTest : XForgeTestContext
             p.Add(x => x.Title, "Dashboard");
             p.Add(x => x.AllowEdit, false);
         });
-        Assert.DoesNotContain("tilelayout.edit_mode", cut.Markup);
+        Assert.DoesNotContain("Editar layout", cut.Markup);
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public class XFTileLayoutTest : XForgeTestContext
     public void Render_WithoutShowHeader_HidesHeaderSection()
     {
         var cut = Render<XFTileLayout>(p => p.Add(x => x.ShowHeader, false));
-        Assert.DoesNotContain("tilelayout.edit_mode", cut.Markup);
+        Assert.DoesNotContain("Editar layout", cut.Markup);
     }
 
     [Fact]

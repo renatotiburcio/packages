@@ -207,21 +207,21 @@ public class XFBIDashboardTest : XForgeTestContext
     public void Render_WithAllowLayoutEdit_ShowsEditModeButton()
     {
         var cut = Render<XFBIDashboard>(p => p.Add(x => x.AllowLayoutEdit, true));
-        Assert.Contains("bidashboard.edit_mode", cut.Markup);
+        Assert.Contains("Editar layout", cut.Markup);
     }
 
     [Fact]
     public void Render_WithAllowRefresh_ShowsRefreshButton()
     {
         var cut = Render<XFBIDashboard>(p => p.Add(x => x.AllowRefresh, true));
-        Assert.Contains("bidashboard.refresh", cut.Markup);
+        Assert.Contains("Atualizar", cut.Markup);
     }
 
     [Fact]
     public void Render_WithAllowAddWidget_NoAddButtonWhenNotEditing()
     {
         var cut = Render<XFBIDashboard>(p => p.Add(x => x.AllowAddWidget, true));
-        Assert.DoesNotContain("bidashboard.add_widget", cut.Markup);
+        Assert.DoesNotContain("Adicionar widget", cut.Markup);
     }
 
     [Fact]
