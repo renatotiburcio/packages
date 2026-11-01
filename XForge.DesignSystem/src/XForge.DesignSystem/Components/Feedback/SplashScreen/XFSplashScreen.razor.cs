@@ -14,7 +14,7 @@ public partial class XFSplashScreen : XForgeComponentBase
     [Parameter] public bool FullScreen { get; set; } = true;
     [Parameter] public string? Title { get; set; } = "Carregando";
     [Parameter] public string? Message { get; set; }
-    [Parameter] public string Initials { get; set; } = default!;
+    [Parameter] public string Initials { get; set; } = "XF";
     [Parameter] public double? Progress { get; set; }
     [Parameter] public bool ShowProgressValue { get; set; }
     [Parameter] public string? AriaLabel { get; set; } = "Carregando aplicacao";
@@ -24,6 +24,7 @@ public partial class XFSplashScreen : XForgeComponentBase
     {
         if (string.IsNullOrWhiteSpace(Title)) Title = L("splash.loading", Title);
         if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("splash.loading_app", AriaLabel);
+        if (string.IsNullOrWhiteSpace(ProgressValueFormat)) ProgressValueFormat = L("splash.progress_format", ProgressValueFormat);
         base.OnInitialized();
     }
     [Parameter] public RenderFragment? Logo { get; set; }

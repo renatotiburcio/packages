@@ -336,5 +336,7 @@
     "pivotdatagrid.caption": "Tabela dinÃ¢mica",
     "pivotdatagrid.row_header": "Linha",
     "pivotdatagrid.total_header": "Total",
-    "combobox.empty": "Nenhum resultado encontrado"
+    "combobox.empty": "Nenhum resultado encontrado",
+    "splash.progress_format": "Carregando {0}%",
+    "contextmenu.submenu_format": "Submenu {0}"
 }

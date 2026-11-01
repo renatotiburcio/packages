@@ -32,6 +32,7 @@ namespace XForge.DesignSystem.Components.Overlays.ContextMenu
         protected override void OnInitialized()
         {
             if (string.IsNullOrWhiteSpace(AriaLabel)) AriaLabel = L("contextmenu.label", AriaLabel);
+        if (string.IsNullOrWhiteSpace(SubmenuAriaLabelFormat)) SubmenuAriaLabelFormat = L("contextmenu.submenu_format", SubmenuAriaLabelFormat);
             base.OnInitialized();
         }
 
