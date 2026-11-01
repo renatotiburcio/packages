@@ -493,3 +493,15 @@ do proprio arquivo (bytes) ou construir com [char].
 
 Os mesmos 5 valores tinham sido propagados para expects de testes pelo replace
 automatico; corrigidos pelo mapeamento inverso (valor correto -> mojibake -> correto).
+
+### Nota de ambiente (2026-11-01)
+
+A extracao do resumo do `dotnet test` ficou instavel nesta sessao: com
+`--logger console;verbosity=normal` e redirecionamento para arquivo, o pipe do
+PowerShell passa a engolir a linha de resumo (o arquivo fica so com avisos BL0005).
+Validacoes pontuais por `--filter` continuam funcionando e foram usadas em todos os
+lotes.
+
+Ultimo numero estavel medido por filtro agregado: 48 falhas -> 42 apos o lote
+XFTabPanel (5 testes) + XFTOC sem falhas.
+
