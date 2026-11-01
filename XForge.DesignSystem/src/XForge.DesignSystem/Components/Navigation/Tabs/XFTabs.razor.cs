@@ -33,7 +33,6 @@ namespace XForge.DesignSystem.Components.Navigation.Tabs
         [Parameter] public RenderFragment? EndContent { get; set; }
         [Parameter] public RenderFragment? Tabs { get; set; }
         [Parameter] public RenderFragment? Panels { get; set; }
-        [Parameter] public RenderFragment? ChildContent { get; set; }
 
         [Inject] internal NavigationManager Navigation { get; set; } = default!;
 
