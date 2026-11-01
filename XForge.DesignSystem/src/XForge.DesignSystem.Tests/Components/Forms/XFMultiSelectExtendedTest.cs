@@ -301,7 +301,7 @@ public class XFMultiSelectExtendedTest : XForgeTestContext
             p.Add(x => x.ValueSelector, o => o.Id);
         });
         cut.Find("input").Focus();
-        Assert.Contains("Nenhuma opcao.", cut.Markup);
+        Assert.Contains("Nenhuma opção.", cut.Markup);
     }
 
     // --- Custom EmptyText ---

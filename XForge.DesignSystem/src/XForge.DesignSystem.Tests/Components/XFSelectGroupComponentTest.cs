@@ -19,7 +19,7 @@ public class XFSelectGroupComponentTest : XForgeTestContext
     {
         var cut = Render<XFSelectGroup<string>>(parameters =>
             parameters.Add(p => p.Label, "Group A"));
-        Assert.Contains("optgroup", cut.Markup);
+        Assert.Contains(@"role=""group""", cut.Markup);
         Assert.Contains("Group A", cut.Markup);
     }
 
@@ -42,7 +42,7 @@ public class XFSelectGroupComponentTest : XForgeTestContext
             parameters.Add(p => p.Label, "Disabled Group");
             parameters.Add(p => p.Disabled, true);
         });
-        Assert.Contains("disabled", cut.Markup);
+        Assert.Contains(@"aria-disabled=""true""", cut.Markup);
     }
 
     [Fact]
@@ -50,6 +50,6 @@ public class XFSelectGroupComponentTest : XForgeTestContext
     {
         var cut = Render<XFSelectGroup<int>>(parameters =>
             parameters.Add(p => p.Label, "Numbers"));
-        Assert.Contains("optgroup", cut.Markup);
+        Assert.Contains(@"role=""group""", cut.Markup);
     }
 }

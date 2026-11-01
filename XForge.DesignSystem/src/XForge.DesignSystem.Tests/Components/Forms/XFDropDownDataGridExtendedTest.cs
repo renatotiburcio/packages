@@ -410,7 +410,7 @@ public sealed class XFDropDownDataGridExtendedTest : XForgeTestContext
     public void Extended_Defaults_ListboxLabel_IsOpcoes()
     {
         var cut = RenderDDDG();
-        Assert.Equal("Opcoes", cut.Instance.ListboxLabel);
+        Assert.Equal("Opções", cut.Instance.ListboxLabel);
     }
 
     [Fact]

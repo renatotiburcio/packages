@@ -1,6 +1,6 @@
 ﻿@typeparam TValue
 
-<div class="xf-select-group-heading" role="group" aria-label="@Label">
+<div class="xf-select-group-heading" role="group" aria-label="@Label" aria-disabled="@(Disabled ? "true" : null)">
     @if (!string.IsNullOrWhiteSpace(Label))
     {
         <span>@Label</span>

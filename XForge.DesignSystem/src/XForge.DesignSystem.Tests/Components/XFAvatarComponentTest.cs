@@ -42,7 +42,7 @@ public class XFAvatarComponentTest : XForgeTestContext
         });
 
         Assert.Contains("bg-success", cut.Markup);
-        Assert.Contains("Disponivel", cut.Markup);
+        Assert.Contains("Disponível", cut.Markup);
     }
 
     [Fact]

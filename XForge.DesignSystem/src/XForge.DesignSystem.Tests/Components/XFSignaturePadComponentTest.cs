@@ -66,7 +66,7 @@ public class XFSignaturePadComponentTest : XForgeTestContext
             parameters.Add(p => p.Required, true);
         });
 
-        Assert.Contains("Assinatura obrigatoria.", cut.Markup);
+        Assert.Contains("Assinatura obrigatória.", cut.Markup);
     }
 
     [Fact]
@@ -219,7 +219,7 @@ public class XFSignaturePadComponentTest : XForgeTestContext
             parameters.Add(p => p.Required, false);
         });
 
-        Assert.DoesNotContain("Assinatura obrigatoria.", cut.Markup);
+        Assert.DoesNotContain("Assinatura obrigatória.", cut.Markup);
     }
 
     [Fact]
@@ -231,7 +231,7 @@ public class XFSignaturePadComponentTest : XForgeTestContext
             parameters.Add(p => p.Value, "data:image/png;base64,abc");
         });
 
-        Assert.DoesNotContain("Assinatura obrigatoria.", cut.Markup);
+        Assert.DoesNotContain("Assinatura obrigatória.", cut.Markup);
     }
 
     [Fact]
