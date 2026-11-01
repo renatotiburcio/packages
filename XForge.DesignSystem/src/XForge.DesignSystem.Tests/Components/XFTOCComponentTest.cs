@@ -97,7 +97,7 @@ public class XFTOCComponentTest : XForgeTestContext
             parameters.Add(p => p.DisabledItemAriaLabelFormat, "{0}, bloqueado");
         });
 
-        Assert.Contains("aria-label=\"Súmario\"", cut.Markup);
+        Assert.Contains(@"aria-label=""Súmario""", cut.Markup);
         Assert.Contains("aria-label=\"Overview, selecionado\"", cut.Markup);
         Assert.Contains("aria-label=\"Disabled, bloqueado\"", cut.Markup);
     }
@@ -253,7 +253,7 @@ public class XFTOCComponentTest : XForgeTestContext
             parameters.Add(p => p.Items, CreateItems());
         });
 
-        Assert.Contains("aria-label=\"Súmario\"", cut.Markup);
+        Assert.Contains(@"aria-label=""Súmario""", cut.Markup);
     }
 
     [Fact]
