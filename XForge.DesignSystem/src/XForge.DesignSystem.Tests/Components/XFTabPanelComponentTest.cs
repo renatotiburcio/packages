@@ -1,4 +1,5 @@
 using Bunit;
+using Microsoft.AspNetCore.Components;
 using Xunit;
 using XForge.DesignSystem.Components.Navigation.Tabs;
 
@@ -13,20 +14,18 @@ public class XFTabPanelComponentTest : XForgeTestContext
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
 
-    private static void AddPanel(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder, int seq, string tabId, string content)
+    private IRenderedComponent<XFTabs> RenderTabs(string activeId, string panelContent)
     {
-        builder.OpenComponent<XFTabPanel>(seq);
-        builder.AddAttribute(seq + 1, nameof(XFTabPanel.TabId), tabId);
-        builder.AddAttribute(seq + 2, nameof(XFTabPanel.ChildContent), (RenderFragment)(panel => panel.AddContent(0, content)));
-        builder.CloseComponent();
-    }
-
-    private static IRenderedComponent<XFTabs> RenderTabs(string activeId, string panelContent)
-    {
-        return Render<XFTabs>(parameters =>
+        return Render<XFTabs>(p =>
         {
-            parameters.Add(p => p.ActiveId, activeId);
-            parameters.Add(p => p.Panels, builder => AddPanel(builder, 0, activeId, panelContent));
+            p.Add(x => x.ActiveId, activeId);
+            p.Add(x => x.Panels, (RenderFragment)(builder =>
+            {
+                builder.OpenComponent<XFTabPanel>(0);
+                builder.AddAttribute(1, "TabId", activeId);
+                builder.AddAttribute(2, "ChildContent", (RenderFragment)(b => b.AddContent(0, panelContent)));
+                builder.CloseComponent();
+            }));
         });
     }
 
@@ -54,10 +53,16 @@ public class XFTabPanelComponentTest : XForgeTestContext
     [Fact]
     public void Render_InactivePanel_HasAriaHidden()
     {
-        var cut = Render<XFTabs>(parameters =>
+        var cut = Render<XFTabs>(p =>
         {
-            parameters.Add(p => p.ActiveId, "other");
-            parameters.Add(p => p.Panels, builder => AddPanel(builder, 0, "tab1", "Content"));
+            p.Add(x => x.ActiveId, "other");
+            p.Add(x => x.Panels, (RenderFragment)(builder =>
+            {
+                builder.OpenComponent<XFTabPanel>(0);
+                builder.AddAttribute(1, "TabId", "tab1");
+                builder.AddAttribute(2, "ChildContent", (RenderFragment)(b => b.AddContent(0, "Content")));
+                builder.CloseComponent();
+            }));
         });
 
         Assert.Contains("aria-hidden=\"true\"", cut.Markup);
