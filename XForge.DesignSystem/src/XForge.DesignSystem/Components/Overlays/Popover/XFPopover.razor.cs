@@ -18,7 +18,8 @@ namespace XForge.DesignSystem.Components.Overlays.Popover
 
         protected override void OnInitialized()
         {
-            if (string.IsNullOrWhiteSpace(ButtonText)) ButtonText = L("popover.open", ButtonText);
+            if (string.IsNullOrWhiteSpace(ButtonText)) ButtonText = L("popover.open", "Abrir");
+            if (string.IsNullOrWhiteSpace(Role)) Role = "dialog";
             base.OnInitialized();
         }
         [Parameter] public string? PanelAriaLabel { get; set; }

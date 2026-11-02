@@ -177,6 +177,13 @@ namespace XForge.DesignSystem.Components.Forms.Select
 
         internal void ToggleDropdown()
         {
+            // Select desabilitado nao abre: sem esta guarda o botao segue clicavel
+            // e o painel de opcoes aparece mesmo com disabled (regressao de a11y).
+            if (Disabled && !IsOpen)
+            {
+                return;
+            }
+
             IsOpen = !IsOpen;
             StateHasChanged();
         }

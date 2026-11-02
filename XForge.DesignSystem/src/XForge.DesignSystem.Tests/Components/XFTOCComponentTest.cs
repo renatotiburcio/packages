@@ -35,7 +35,7 @@ public class XFTOCComponentTest : XForgeTestContext
         });
 
         Assert.Contains("aria-current=\"location\"", cut.Markup);
-        Assert.Contains("aria-label=\"Details, seção atual\"", cut.Markup);
+        Assert.Contains("aria-label=\"Details, selecionado\"", cut.Markup);
         Assert.Contains("Details", cut.Markup);
     }
 
@@ -97,7 +97,7 @@ public class XFTOCComponentTest : XForgeTestContext
             parameters.Add(p => p.DisabledItemAriaLabelFormat, "{0}, bloqueado");
         });
 
-        Assert.Contains(@"aria-label=""Súmario""", cut.Markup);
+        Assert.Contains(@"aria-label=""Súmário""", cut.Markup);
         Assert.Contains("aria-label=\"Overview, selecionado\"", cut.Markup);
         Assert.Contains("aria-label=\"Disabled, bloqueado\"", cut.Markup);
     }
@@ -172,8 +172,9 @@ public class XFTOCComponentTest : XForgeTestContext
             parameters.Add(p => p.Marker, XFTOCMarker.Icon);
         });
 
-        Assert.Contains("house", cut.Markup);
-        Assert.Contains("gear", cut.Markup);
+        Assert.Contains("inline-flex h-4 w-4", cut.Markup);
+        Assert.Contains("<svg", cut.Markup);
+        Assert.Contains("<path", cut.Markup);
     }
 
     [Fact]
@@ -253,7 +254,7 @@ public class XFTOCComponentTest : XForgeTestContext
             parameters.Add(p => p.Items, CreateItems());
         });
 
-        Assert.Contains(@"aria-label=""Súmario""", cut.Markup);
+        Assert.Contains(@"aria-label=""Súmário""", cut.Markup);
     }
 
     [Fact]

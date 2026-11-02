@@ -110,6 +110,7 @@
   "search.clear": "Limpar pesquisa",
   "input.clear": "Limpar valor",
   "inputmask.clear": "Limpar",
+  "popover.role": "dialog",
   "popover.open": "Abrir",
   "splash.loading": "Carregando",
   "splash.loading_app": "Carregando aplicação",

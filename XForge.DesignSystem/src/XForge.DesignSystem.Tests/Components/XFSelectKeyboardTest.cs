@@ -25,8 +25,10 @@ public class XFSelectKeyboardTest : XForgeTestContext
                 });
         });
 
-        var select = cut.Find("select");
-        Assert.NotNull(select);
+        // XFSelect e um dropdown customizado: o gatilho e um <button> (nao ha <select>).
+        var trigger = cut.Find("button[aria-haspopup='listbox']");
+        Assert.NotNull(trigger);
+        Assert.Equal("false", trigger.GetAttribute("aria-expanded"));
     }
 
     [Fact]
@@ -51,7 +53,8 @@ public class XFSelectKeyboardTest : XForgeTestContext
                 });
         });
 
-        cut.Find("select").Change("opt2");
+        cut.Find("button[aria-haspopup='listbox']").Click();
+        cut.Find("div[role='option']:nth-of-type(2)").MouseDown();
 
         Assert.Equal("opt2", value);
     }
@@ -91,7 +94,12 @@ public class XFSelectKeyboardTest : XForgeTestContext
 
         Assert.Contains("disabled", cut.Markup);
 
-        cut.Find("select").Change("opt2");
+        var trigger = cut.Find("button[aria-haspopup='listbox']");
+        trigger.Click();
+
+        // disabled: o dropdown nao abre e o valor nao muda.
+        Assert.Equal("false", trigger.GetAttribute("aria-expanded"));
+        Assert.DoesNotContain("div[role='listbox']", cut.Markup);
         Assert.Equal("opt1", value);
     }
 }

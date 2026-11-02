@@ -1,4 +1,5 @@
-﻿using XForge.DesignSystem.Components.Emoji;
+﻿using System;
+using XForge.DesignSystem.Components.Emoji;
 using Xunit;
 
 namespace XForge.DesignSystem.Tests;
@@ -8,10 +9,18 @@ public class EmojiCatalogTests
     [Fact]
     public void Zip_AndUnzip_RoundTripsSvg()
     {
-        var svg = "<svg><text>rocket</text></svg>";
+        // payload grande: ae a compressao compensa o overhead do header GZip
+        var svg = string.Concat(Enumerable.Repeat("<svg><text>rocket</text></svg>", 200));
         var zipped = XFEmojiCompress.Zip(svg);
         Assert.True(zipped.Length < svg.Length);
         Assert.Equal(svg, XFEmojiCompress.Unzip(zipped));
+    }
+
+    [Fact]
+    public void Zip_EmptyPayload_ReturnsEmptyBuffer()
+    {
+        Assert.Empty(XFEmojiCompress.Zip(""));
+        Assert.Equal(string.Empty, XFEmojiCompress.Unzip(Array.Empty<byte>()));
     }
 
     [Fact]
