@@ -38,7 +38,7 @@
             }
             else if (indexedItem.item.Kind == XFDropdownMenuItemKind.XFCheckbox)
             {
-                <div class="flex items-center px-2 py-1.5">
+                <div class="flex items-center px-2 py-1.5" role="menuitemcheckbox" aria-checked="@(indexedItem.item.Checked.ToString().ToLowerInvariant())">
                     <XFCheckbox Value="@indexedItem.item.Checked"
                                 ValueChanged="@((bool? v) => HandleCheckboxChanged(indexedItem.item, v))"
                                 Label="@indexedItem.item.Text"
@@ -53,17 +53,19 @@
                 {
                     var groupItems = Items.Where(i => i.Kind == XFDropdownMenuItemKind.XFRadio && i.Group == indexedItem.item.Group).ToList();
                     var checkedItem = groupItems.FirstOrDefault(i => i.Checked);
-                    <XFRadioGroup Value="@checkedItem?.Id"
-                                  ValueChanged="@((string? v) => HandleRadioGroupChanged(indexedItem.item.Group, v))"
-                                  Size="XFSize.Sm"
-                                  AriaLabel="@indexedItem.item.Group">
-                        @foreach (var radioItem in groupItems)
-                        {
-                            <XFRadio Value="@radioItem.Id"
-                                     Label="@radioItem.Text"
-                                     Disabled="@radioItem.Disabled" />
-                        }
-                    </XFRadioGroup>
+                    <div role="menuitemradio" aria-checked="@((checkedItem is not null).ToString().ToLowerInvariant())" aria-labelledby="@indexedItem.item.Group">
+                        <XFRadioGroup Value="@checkedItem?.Id"
+                                      ValueChanged="@((string? v) => HandleRadioGroupChanged(indexedItem.item.Group, v))"
+                                      Size="XFSize.Sm"
+                                      AriaLabel="@indexedItem.item.Group">
+                            @foreach (var radioItem in groupItems)
+                            {
+                                <XFRadio Value="@radioItem.Id"
+                                         Label="@radioItem.Text"
+                                         Disabled="@radioItem.Disabled" />
+                            }
+                        </XFRadioGroup>
+                    </div>
                 }
             }
             else

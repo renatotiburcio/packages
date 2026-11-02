@@ -126,8 +126,8 @@ public class XFEditFormExtendedTest : XForgeTestContext
         cut.Find("button[type='button']").Click();
         Assert.Contains("Alterações não salvas", cut.Markup);
 
-        // Click "Voltar e continuar" (ContinueEditing)
-        var continueBtn = cut.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Voltar e continuar"));
+        // Click "Continuar editando" (ContinueEditing)
+        var continueBtn = cut.FindAll("button").FirstOrDefault(b => b.TextContent.Contains("Continuar editando"));
         Assert.NotNull(continueBtn);
         continueBtn.Click();
 
@@ -539,7 +539,7 @@ public class XFEditFormExtendedTest : XForgeTestContext
 
         cut.Find("form").Submit();
 
-        Assert.Contains("pendencia", cut.Markup);
+        Assert.Contains("Revisar validação", cut.Markup);
     }
 
     [Fact]

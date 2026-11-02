@@ -339,5 +339,10 @@
     "pivotdatagrid.total_header": "Total",
     "combobox.empty": "Nenhum resultado encontrado",
     "splash.progress_format": "Carregando {0}%",
-    "contextmenu.submenu_format": "Submenu {0}"
+    "contextmenu.submenu_format": "Submenu {0}",
+    "appshell.theme": "light",
+    "appshell.main_id": "main-content",
+    "appshell.main_class": "flex-1 overflow-auto",
+    "appshell.aside_class": "flex h-full shrink-0 z-50",
+    "popover.role": "dialog"
 }

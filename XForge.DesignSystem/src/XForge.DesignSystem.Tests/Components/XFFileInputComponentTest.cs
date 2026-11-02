@@ -25,7 +25,7 @@ public class XFFileInputComponentTest : XForgeTestContext
         Assert.Contains("Invoice", cut.Markup);
         Assert.Contains("PDF only.", cut.Markup);
         Assert.Contains("accept=\".pdf\"", cut.Markup);
-        Assert.Contains("max. 5 MB", cut.Markup);
+        Assert.Contains("máx. 5 MB", cut.Markup);
         Assert.Equal("false", cut.Find("label[aria-disabled]").GetAttribute("aria-disabled"));
         Assert.Contains(cut.Find("label[aria-disabled]").GetAttribute("aria-describedby")!, cut.Markup);
     }
@@ -40,7 +40,7 @@ public class XFFileInputComponentTest : XForgeTestContext
         });
 
         Assert.Contains("multiple", cut.Markup);
-        Assert.Contains("Multiplos arquivos", cut.Markup);
+        Assert.Contains("Múltiplos arquivos", cut.Markup);
     }
 
     [Fact]

@@ -40,7 +40,7 @@
                 }
                 else if (indexedItem.item.Kind == XFDropdownMenuItemKind.XFCheckbox)
                 {
-                    <div class="flex items-center px-2 py-1.5">
+                    <div class="flex items-center px-2 py-1.5" role="menuitemcheckbox" aria-checked="@(indexedItem.item.Checked.ToString().ToLowerInvariant())">
                         <XFCheckbox Value="@indexedItem.item.Checked"
                                     ValueChanged="@((bool? v) => HandleCheckboxChanged(indexedItem.item, v))"
                                     Label="@indexedItem.item.Text"

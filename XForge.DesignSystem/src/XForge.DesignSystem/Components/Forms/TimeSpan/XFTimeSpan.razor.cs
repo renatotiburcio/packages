@@ -145,7 +145,6 @@ namespace XForge.DesignSystem.Components.Forms.TimeSpan
         private string AdornmentClass => "flex shrink-0 items-center text-text-muted transition-colors duration-150 group-focus-within:text-primary";
 
         private string StepperWrapClass => "flex h-full shrink-0 items-center gap-1";
-
         private string StepperButtonClass => "inline-flex h-6 w-6 items-center justify-center rounded-md bg-transparent text-primary outline-none ring-1 ring-transparent transition-all duration-150 hover:bg-[color-mix(in_oklab,var(--color-primary)_10%,transparent)] hover:ring-[color-mix(in_oklab,var(--color-primary)_20%,transparent)] focus-visible:ring-2 focus-visible:ring-[color-mix(in_oklab,var(--color-primary)_25%,transparent)] active:scale-95 disabled:pointer-events-none disabled:text-text-muted";
 
         private string HelperClass => "text-xs leading-5 text-text-secondary";

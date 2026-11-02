@@ -48,6 +48,10 @@ namespace XForge.DesignSystem.Components.Layout.Shell
 
         protected override void OnInitialized()
         {
+            if (string.IsNullOrWhiteSpace(Theme)) Theme = L("appshell.theme", "light");
+            if (string.IsNullOrWhiteSpace(MainId)) MainId = L("appshell.main_id", "main-content");
+            if (string.IsNullOrWhiteSpace(MainClass)) MainClass = L("appshell.main_class", "flex-1 overflow-auto");
+            if (string.IsNullOrWhiteSpace(AsideClass)) AsideClass = L("appshell.aside_class", "flex h-full shrink-0 z-50");
             if (string.IsNullOrWhiteSpace(MainAriaLabel)) MainAriaLabel = L("appshell.main_content", MainAriaLabel);
             if (string.IsNullOrWhiteSpace(NavigationAriaLabel)) NavigationAriaLabel = L("appshell.navigation", NavigationAriaLabel);
             base.OnInitialized();

@@ -416,20 +416,20 @@ public class XFTimeSpanExtendedTest : XForgeTestContext
         Assert.Contains("text-text-muted", cut.Markup);
     }
 
-    // StepperWrapClass (line 147)
+    // StepperWrapClass: "flex h-full shrink-0 items-center gap-1"
     [Fact]
     public void Extended_XFTimeSpan_StepperWrap_HasStepperWrapClass()
     {
         var cut = Render<XFTimeSpan>(ps => ps.Add(p => p.ShowSteppers, true));
-        Assert.Contains("flex flex-col gap-0.5 ml-1", cut.Markup);
+        Assert.Contains("flex h-full shrink-0 items-center gap-1", cut.Markup);
     }
 
-    // StepperButtonClass (line 149)
+    // StepperButtonClass: "inline-flex h-6 w-6 items-center justify-center rounded-md ..."
     [Fact]
     public void Extended_XFTimeSpan_StepperButton_HasStepperButtonClass()
     {
         var cut = Render<XFTimeSpan>(ps => ps.Add(p => p.ShowSteppers, true));
-        Assert.Contains("h-5 w-5", cut.Markup);
+        Assert.Contains("inline-flex h-6 w-6 items-center justify-center rounded-md", cut.Markup);
     }
 
     // Precision Minute hides seconds (line 102 already tested but verify seconds label)
