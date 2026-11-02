@@ -107,7 +107,11 @@ public class XFOneTimeInputComponentTest : XForgeTestContext
 
         Assert.Contains("Digite o codigo OTP.", cut.Markup);
         var group = cut.Find("[role=group]");
-        Assert.Contains("xf-one-time-input-helper", group.GetAttribute("aria-describedby")!);
+        var describedBy = group.GetAttribute("aria-describedby");
+        Assert.NotNull(describedBy);
+        // o id do helper e derivado do Id do componente (auto-gerado): {Id}-helper
+        Assert.Contains($"-helper", describedBy);
+        Assert.Contains($"id=\"{describedBy}\"", cut.Markup);
     }
 
     [Fact]

@@ -200,7 +200,9 @@ public class XFCodeComponentTest : XForgeTestContext
             parameters.Add(p => p.Copyable, false);
         });
 
-        Assert.DoesNotContain("border-b", cut.Markup);
+        // Assert sobre o header em si (nao sobre "border-b", que colide com "border bg-bg-surface").
+        Assert.DoesNotContain("justify-between gap-3", cut.Markup);
+        Assert.DoesNotContain("Copy", cut.Markup);
     }
 
     [Fact]

@@ -112,8 +112,8 @@ public class XFSplitterComponentTest : XForgeTestContext
             parameters.Add(p => p.Change, args => changed = args);
         });
 
-        await cut.Instance.SetSizeFromJsAsync(62, notifyChanged: false);
-        await cut.Instance.SetSizeFromJsAsync(64, notifyChanged: true);
+        await cut.InvokeAsync(() => cut.Instance.SetSizeFromJsAsync(62, notifyChanged: false));
+        await cut.InvokeAsync(() => cut.Instance.SetSizeFromJsAsync(64, notifyChanged: true));
 
         Assert.Equal(64, size);
         Assert.NotNull(changed);

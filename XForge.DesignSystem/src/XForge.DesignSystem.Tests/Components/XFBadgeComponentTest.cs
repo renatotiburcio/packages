@@ -112,8 +112,8 @@ public class XFBadgeComponentTest : XForgeTestContext
             parameters.Add(p => p.OnDismiss, EventCallback.Factory.Create<MouseEventArgs>(this, _ => { }));
         });
 
-        Assert.Contains("Remover ", cut.Markup);
-        Assert.Contains("aria-label=\"Remover marcador ", cut.Markup);
+        Assert.Contains("title=\"Excluir Filtro ativo\"", cut.Markup);
+        Assert.Contains("aria-label=\"Excluir filtro Filtro ativo\"", cut.Markup);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class XFBadgeComponentTest : XForgeTestContext
             parameters.Add(p => p.OnDismiss, EventCallback.Factory.Create<MouseEventArgs>(this, _ => { }));
         });
 
-        Assert.Contains("aria-label=\"Remover marcador ", cut.Markup);
+        Assert.Contains("aria-label=\"Remover marcador\"", cut.Markup);
         Assert.DoesNotContain("Remover marcador badge", cut.Markup);
     }
 }

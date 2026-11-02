@@ -48,7 +48,7 @@ public class XFPdfViewerComponentTest : XForgeTestContext
             parameters.Add(p => p.ZoomChanged, value => zoom = value);
         });
 
-        await cut.Find("[aria-label=Proxima]").ClickAsync(new MouseEventArgs());
+        await cut.Find("[aria-label=Próxima]").ClickAsync(new MouseEventArgs());
         await cut.Find("[aria-label=\"Aumentar zoom\"]").ClickAsync(new MouseEventArgs());
 
         Assert.Equal(2, page);

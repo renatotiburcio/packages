@@ -21,7 +21,22 @@ public class HxFilterForm<T> : XForgeComponentBase where T : class, new()
     [Parameter] public EventCallback<T> OnApply { get; set; }
     [Parameter] public EventCallback OnReset { get; set; }
     public T CurrentModel { get; protected set; } = new();
-    public IReadOnlyList<FilterChip> Chips => ChipGenerator?.GenerateChips(CurrentModel).ToList() ?? new List<FilterChip>();
+
+    // Model atribuido fora do ciclo de render (inicializador de objeto, testes unitarios)
+    // nunca passa por SetParametersAsync; Chips resolve o modelo efetivo sob demanda.
+    private T EffectiveModel => Model is not null && !ReferenceEquals(Model, CurrentModel) ? Model : CurrentModel;
+
+    public IReadOnlyList<FilterChip> Chips => ChipGenerator?.GenerateChips(EffectiveModel).ToList() ?? new List<FilterChip>();
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        var result = base.SetParametersAsync(parameters);
+        if (Model is not null && !ReferenceEquals(Model, CurrentModel))
+        {
+            CurrentModel = Model;
+        }
+        return result;
+    }
     protected override void OnParametersSet() { if (Model is not null) CurrentModel = Model; }
     public Task ApplyAsync() => OnApply.InvokeAsync(CurrentModel);
     public Task ResetAsync() { CurrentModel = new T(); return OnReset.InvokeAsync(); }

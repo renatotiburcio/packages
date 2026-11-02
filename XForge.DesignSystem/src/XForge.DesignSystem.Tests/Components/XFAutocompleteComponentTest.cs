@@ -37,7 +37,7 @@ public class XFAutocompleteComponentTest : XForgeTestContext
     }
 
     [Fact]
-    public void Click_WhenItemSelected_UpdatesValueAndSearch()
+    public async Task Click_WhenItemSelected_UpdatesValueAndSearch()
     {
         int? value = null;
         string? search = null;
@@ -52,7 +52,7 @@ public class XFAutocompleteComponentTest : XForgeTestContext
         });
 
         cut.Find("input").Focus();
-        cut.FindAll("button").First(button => button.TextContent.Contains("Acme")).Click();
+        await cut.FindAll("button").First(button => button.TextContent.Contains("Acme")).ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
 
         Assert.Equal(1, value);
         Assert.Equal("Acme Foods", search);

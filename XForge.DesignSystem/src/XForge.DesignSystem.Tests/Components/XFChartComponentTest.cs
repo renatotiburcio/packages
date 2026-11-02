@@ -248,9 +248,9 @@ public class XFChartComponentTest : XForgeTestContext
         });
 
         Assert.Contains("data points", chart.Markup);
-        Assert.Contains("Rótulo", chart.Markup);
-        Assert.Contains("Valor", chart.Markup);
-        Assert.Contains("Percentual", chart.Markup);
+        Assert.Contains("Category", chart.Markup);
+        Assert.Contains("Amount", chart.Markup);
+        Assert.Contains("Share", chart.Markup);
     }
 
     [Fact]

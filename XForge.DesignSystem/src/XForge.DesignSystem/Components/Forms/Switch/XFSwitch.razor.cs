@@ -17,7 +17,7 @@ namespace XForge.DesignSystem.Components.Forms.Switch
         [Parameter] public string? AriaLabel { get; set; }
         [Parameter] public string? Description { get; set; }
         [Parameter] public string? CheckedText { get; set; } = "Sim";
-        [Parameter] public string? UncheckedText { get; set; } = "Nao";
+        [Parameter] public string? UncheckedText { get; set; } = "Não";
 
         protected override void OnInitialized()
         {

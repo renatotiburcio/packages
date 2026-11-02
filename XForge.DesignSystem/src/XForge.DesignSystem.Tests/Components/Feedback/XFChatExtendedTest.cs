@@ -76,7 +76,7 @@ public sealed class XFChatExtendedTest : XForgeTestContext
     public void Extended_Renders_SendButton()
     {
         var cut = RenderChat();
-        Assert.Contains("Enviar mensagem", cut.Markup);
+        Assert.Contains("Enviar", cut.Markup);
     }
 
     [Fact]

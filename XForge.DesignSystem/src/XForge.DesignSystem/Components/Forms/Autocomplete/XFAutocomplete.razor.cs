@@ -54,7 +54,7 @@ namespace XForge.DesignSystem.Components.Forms.Autocomplete
         // snapshot dos parâmetros que dirigem o render — o componente re-renderiza muito
         // (busca, abertura do dropdown); pula renders redundantes do pai
         private string? _sName, _sLabel, _sAria, _sPlaceholder, _sHelperText, _sClearLabel, _sLoadingText, _sEmptyText;
-        private bool _sClearable, _sLoading, _sInitialized;
+        private bool _sClearable, _sLoading, _sInitialized, _sIsOpen, _sKeepOpen;
         private int _sMinLength, _sMaxItems;
 
         protected override bool ShouldRender()
@@ -65,11 +65,13 @@ namespace XForge.DesignSystem.Components.Forms.Autocomplete
                 return true;
             }
 
+            // IsOpen entra no snapshot: sem isso, fechar o dropdown apos selecionar um item
+            // nao produzia render e o listbox continuava visivel.
             var changed = _sName != Name || _sLabel != Label || _sAria != AriaLabel ||
                           _sPlaceholder != Placeholder || _sHelperText != HelperText ||
                           _sClearLabel != ClearLabel || _sLoadingText != LoadingText || _sEmptyText != EmptyText ||
                           _sClearable != Clearable || _sLoading != Loading || _sMinLength != MinLength ||
-                          _sMaxItems != MaxItems;
+                          _sMaxItems != MaxItems || _sIsOpen != IsOpen || _sKeepOpen != KeepOpen;
 
             if (!changed)
             {
@@ -85,7 +87,7 @@ namespace XForge.DesignSystem.Components.Forms.Autocomplete
             _sName = Name; _sLabel = Label; _sAria = AriaLabel; _sPlaceholder = Placeholder;
             _sHelperText = HelperText; _sClearLabel = ClearLabel; _sLoadingText = LoadingText;
             _sEmptyText = EmptyText; _sClearable = Clearable; _sLoading = Loading;
-            _sMinLength = MinLength; _sMaxItems = MaxItems;
+            _sMinLength = MinLength; _sMaxItems = MaxItems; _sIsOpen = IsOpen; _sKeepOpen = KeepOpen;
             _sInitialized = true;
         }
         [Parameter] public string ListboxLabel { get; set; } = default!;

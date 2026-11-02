@@ -46,7 +46,8 @@ public class XFBadgeIconComponentTest : XForgeTestContext
     {
         var cut = Render<XFBadgeIcon>(parameters =>
             parameters.Add(p => p.Brand, "microsoft"));
-        Assert.Contains("aria-label=\"microsoft\"", cut.Markup);
+        // aria-label do componente: "<brand> logo"
+        Assert.Contains("aria-label=\"microsoft logo\"", cut.Markup);
     }
 
     [Fact]

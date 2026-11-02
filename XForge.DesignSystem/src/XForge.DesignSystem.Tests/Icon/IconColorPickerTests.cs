@@ -8,9 +8,9 @@ public class IconColorPickerTests
     [Fact]
     public void ColorMap_HasAllSemanticColors()
     {
-        Assert.Contains("Accent", XFIconColorMap.ToCssVariable(XFIconColor.Accent));
-        Assert.Contains("Success", XFIconColorMap.ToCssVariable(XFIconColor.Success));
-        Assert.Contains("Warning", XFIconColorMap.ToCssVariable(XFIconColor.Warning));
-        Assert.Contains("Error", XFIconColorMap.ToCssVariable(XFIconColor.Error));
+        Assert.Equal("var(--xf-color-accent)", XFIconColorMap.ToCssVariable(XFIconColor.Accent));
+        Assert.Equal("var(--xf-color-success)", XFIconColorMap.ToCssVariable(XFIconColor.Success));
+        Assert.Equal("var(--xf-color-warning)", XFIconColorMap.ToCssVariable(XFIconColor.Warning));
+        Assert.Equal("var(--xf-color-error)", XFIconColorMap.ToCssVariable(XFIconColor.Error));
     }
 }

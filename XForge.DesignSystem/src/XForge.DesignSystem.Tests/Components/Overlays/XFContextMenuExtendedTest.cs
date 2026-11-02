@@ -264,7 +264,7 @@ public sealed class XFContextMenuExtendedTest : XForgeTestContext
         Assert.Equal(8, cut.Instance.CollisionPadding);
         Assert.Equal(XFSize.Md, cut.Instance.Size);
         Assert.Equal("Menu de contexto", cut.Instance.AriaLabel);
-        Assert.Equal("{0}", cut.Instance.SubmenuAriaLabelFormat);
+        Assert.Equal("Submenu {0}", cut.Instance.SubmenuAriaLabelFormat);
     }
 
     [Fact]

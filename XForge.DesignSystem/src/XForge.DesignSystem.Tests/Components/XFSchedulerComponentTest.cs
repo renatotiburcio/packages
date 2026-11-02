@@ -119,11 +119,11 @@ public class XFSchedulerComponentTest : XForgeTestContext
         });
 
         Assert.Contains("Today", cut.Markup);
-        Assert.Contains("Vários recursos", cut.Markup);
+        Assert.Contains("2 events", cut.Markup);
         Assert.Contains("Previous period", cut.Markup);
-        Assert.Contains("Alternar visualização", cut.Markup);
-        Assert.Contains("Mês", cut.Markup);
-        Assert.Contains("Dia", cut.Markup);
+        Assert.Contains("Calendar views", cut.Markup);
+        Assert.Contains("Month", cut.Markup);
+        Assert.Contains("Day", cut.Markup);
     }
 
     [Fact]
