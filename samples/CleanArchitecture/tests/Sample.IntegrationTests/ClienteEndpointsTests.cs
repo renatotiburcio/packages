@@ -39,6 +39,17 @@ public class ClienteEndpointsTests : IClassFixture<WebApplicationFactory<Program
     }
 
     [Fact]
+    public async Task Get_da_lista_devolve_200()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/clientes");
+
+        // a listagem completa alimenta o XFDataGrid do front (Sample.Web)
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Get_de_cliente_inexistente_devolve_404()
     {
         var client = _factory.CreateClient();

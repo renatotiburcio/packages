@@ -1,0 +1,36 @@
+@inject NavigationStateService NavigationState
+@inject BrandMetadataService BrandMetadata
+
+<header class="flex h-14 shrink-0 items-center gap-3 border-b border-border-light bg-bg-surface px-4">
+    @if (!string.IsNullOrWhiteSpace(BrandIcon))
+    {
+        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"
+              aria-hidden="true">
+            @((MarkupString)BrandIcon)
+        </span>
+    }
+
+    <div class="min-w-0 flex-1">
+        <div class="truncate text-sm font-semibold text-text-primary">@BrandTitle</div>
+        <div class="truncate text-xs text-text-muted">Clean Architecture com XForge.DesignSystem</div>
+    </div>
+
+    <XFButton Variant="XFButtonVariant.Ghost"
+              Size="XFExtendedSize.Sm"
+              AriaLabel="@(IsDark ? "Ativar tema claro" : "Ativar tema escuro")"
+              OnClick="ToggleAsync">
+        <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+            @((MarkupString)XFSvgIcons.Get(IsDark ? "sun" : "moon"))
+        </span>
+    </XFButton>
+</header>
+
+@code {
+    [Parameter] public bool IsDark { get; set; }
+    [Parameter] public EventCallback<bool> OnToggleTheme { get; set; }
+
+    private string BrandTitle => BrandMetadata.GetBrandTitle(NavigationState.CurrentBrand);
+    private string BrandIcon => BrandMetadata.GetBrandIconSvg(NavigationState.CurrentBrand);
+
+    private async Task ToggleAsync() => await OnToggleTheme.InvokeAsync();
+}

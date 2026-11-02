@@ -1,0 +1,106 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+
+<a href="#main-content"
+   class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-text-primary focus:shadow-lg">
+    Pular para o conteudo principal
+</a>
+
+<XFAppShell Theme="@Theme"
+            Brand="@CurrentBrand"
+            MainClass="flex-1 overflow-y-auto overflow-x-hidden bg-surface-50/30 outline-none p-4 md:p-6 lg:p-8">
+    <Rail>
+        <SampleRail />
+    </Rail>
+    <AppBar>
+        <SampleAppBar IsDark="@_isDark" OnToggleTheme="@ToggleThemeAsync" />
+    </AppBar>
+    <Footer>
+        <XFFooter UserName="Sample Clean Architecture"
+                  AppName="Clientes"
+                  Version="v1.0.0"
+                  StatusText="Estável"
+                  Environment="Produção" />
+    </Footer>
+    <ChildContent>
+        <XFDialogProvider />
+        <XFDrawerProvider />
+        <XFToastProvider />
+        <div @key="_renderKey">
+            @Body
+        </div>
+    </ChildContent>
+</XFAppShell>
+
+@code {
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private NavigationStateService NavigationState { get; set; } = default!;
+    [Inject] private BrandMetadataService BrandMetadata { get; set; } = default!;
+
+    private bool _isDark;
+    private int _renderKey;
+
+    private string Theme => _isDark ? "dark" : "light";
+
+    private string CurrentBrand => string.IsNullOrWhiteSpace(NavigationState.CurrentBrand)
+        ? "clientes"
+        : NavigationState.CurrentBrand;
+
+    protected override void OnInitialized()
+    {
+        NavigationState.BrandChanged += OnBrandChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await NavigationState.InitializeAsync(SampleNavigation.RailItems);
+        await InitializeThemeAsync();
+        StateHasChanged();
+    }
+
+    private async Task InitializeThemeAsync()
+    {
+        try
+        {
+            var theme = await JSRuntime.InvokeAsync<string>("xfTheme.getTheme");
+            _isDark = string.Equals(theme, "dark", StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            _isDark = false;
+        }
+    }
+
+    private async Task ToggleThemeAsync()
+    {
+        try
+        {
+            var theme = await JSRuntime.InvokeAsync<string>("xfTheme.toggleTheme");
+            _isDark = string.Equals(theme, "dark", StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            _isDark = !_isDark;
+        }
+    }
+
+    private void OnBrandChanged(object? sender, string brand)
+    {
+        _ = InvokeAsync(() =>
+        {
+            _renderKey++;
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        NavigationState.BrandChanged -= OnBrandChanged;
+        GC.SuppressFinalize(this);
+    }
+}

@@ -7,6 +7,7 @@ src/Sample.Domain/          entidades e contratos (zero dependências)
 src/Sample.Application/     comandos/queries, handlers, validadores, DTOs (usa os 5 pacotes)
 src/Sample.Infrastructure/  repositório em memória
 src/Sample.Api/             minimal API + composição de DI
+src/Sample.Web/             front Blazor 100% XForge.DesignSystem (shell + rail)
 tests/Sample.IntegrationTests/  testes ponta a ponta via WebApplicationFactory
 ```
 
@@ -14,12 +15,13 @@ tests/Sample.IntegrationTests/  testes ponta a ponta via WebApplicationFactory
 
 | Pacote | Onde | Papel no sample |
 |---|---|---|
-| `XForge.Mediator` | Application/API | `IRequest`, `IRequestHandler`, `ISender`, pipeline |
+| `XForge.Mediator` | Application/API/Web | `IRequest`, `IRequestHandler`, `ISender`, pipeline |
 | **`XForge.Mediator.SourceGenerator`** | Application | descobre os handlers em compile-time → `AddXForgeMediatorGenerated()` |
 | `XForge.Validation` | Application | `Validator<CriarClienteCommand>` fluent com códigos padronizados |
-| `XForge.Mediator.Behaviors` | API | `ValidationBehavior<,>` no pipeline — bloqueia comandos inválidos |
+| `XForge.Mediator.Behaviors` | API/Web | `ValidationBehavior<,>` no pipeline — bloqueia comandos inválidos |
 | **`XForge.Mapper.SourceGenerator`** | Application | `[XForgeMap] ClienteMappings` — `Cliente → ClienteDto` gerado em compile-time |
 | `XForge.Mapper` | Application | motor de runtime disponível para os casos dinâmicos |
+| **`XForge.DesignSystem`** | **Sample.Web** | shell, rail, grid, formulários e feedback do front |
 
 Nenhum assembly scanning para handlers: o source generator gera o registro a partir do código
 de `Sample.Application`. A validação continua via scanning (`AddXForgeValidation`) porque o
@@ -29,14 +31,19 @@ modelo de validação do XForge é resolvido por DI em tempo de execução.
 
 ```bash
 dotnet run --project src/Sample.Api     # API em http://localhost:5xxx
+dotnet run --project src/Sample.Web     # front Blazor em http://localhost:5xxx
 dotnet test                              # testes de integração ponta a ponta
 ```
+
+O front é um processo único e consome a camada `Sample.Application` pelo `ISender` no mesmo
+processo — sem CORS e sem segundo serviço no ar. Detalhes em `src/Sample.Web/README.md`.
 
 ## Endpoints
 
 | Método | Rota | Comportamento |
 |---|---|---|
 | POST | `/clientes` | comando válido → 201; inválido → **422** (bloqueado pelo `ValidationBehavior`) |
+| GET | `/clientes` | listagem completa → `ClienteDto[]` |
 | GET | `/clientes/{id}` | query → DTO ou 404 |
 
 ## Nota sobre o host de testes (.NET 10)

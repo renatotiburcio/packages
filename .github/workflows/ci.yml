@@ -59,6 +59,7 @@ jobs:
         run: |
           dotnet build samples/CleanArchitecture/CleanArchitecture.sln -c Release
           dotnet test samples/CleanArchitecture/CleanArchitecture.sln -c Release --no-build
+          dotnet build samples/CleanArchitecture/src/Sample.Web/Sample.Web.csproj -c Release
 
       - name: Build XForge.DesignSystem (core)
         run: |

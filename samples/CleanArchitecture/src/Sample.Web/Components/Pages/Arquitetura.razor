@@ -1,0 +1,115 @@
+@page "/arquitetura"
+@inherits ComponentBase
+@using XForge.DesignSystem.Components.Navigation.Steps
+
+<PageTitle>Arquitetura</PageTitle>
+
+<h1 class="text-xl font-semibold text-text-primary">Arquitetura do sample</h1>
+<p class="mt-1 max-w-3xl text-sm text-text-muted">
+    Quatro camadas com dependência sempre voltada para dentro. O front é mais uma borda —
+    consome a mesma camada de Application que a API, pelo mesmo pipeline do Mediator.
+</p>
+
+<div class="mt-6 max-w-2xl">
+    <XFSteps Items="@_camadas" Orientation="XFOrientation.Vertical" AriaLabel="Camadas do sample" />
+</div>
+
+<div class="mt-8 grid gap-5 lg:grid-cols-2">
+    <XFCard>
+        <Header>
+            <h2 class="text-sm font-semibold text-text-primary">Onde os pacotes entram</h2>
+        </Header>
+        <ChildContent>
+            <XFTable Caption="Pacotes XForge usados no sample" Striped="true">
+                <XFTableHead>
+                    <XFTableRow>
+                        <XFTableHeader>Pacote</XFTableHeader>
+                        <XFTableHeader>Camada</XFTableHeader>
+                        <XFTableHeader>Papel</XFTableHeader>
+                    </XFTableRow>
+                </XFTableHead>
+                <XFTableBody>
+                    @foreach (var pacote in _pacotes)
+                    {
+                        <XFTableRow>
+                            <XFTableCell>@pacote.Nome</XFTableCell>
+                            <XFTableCell>@pacote.Camada</XFTableCell>
+                            <XFTableCell>@pacote.Papel</XFTableCell>
+                        </XFTableRow>
+                    }
+                </XFTableBody>
+            </XFTable>
+        </ChildContent>
+    </XFCard>
+
+    <XFCard>
+        <Header>
+            <h2 class="text-sm font-semibold text-text-primary">Este front</h2>
+        </Header>
+        <ChildContent>
+            <p class="text-sm text-text-secondary">
+                O shell é inteiramente <code class="font-mono">XForge.DesignSystem</code>:
+                <code class="font-mono">XFAppShell</code> com rail, app bar e rodapé.
+            </p>
+            <XFDivider Class="my-4" />
+            <XFCode Variant="XFCodeVariant.Block"
+                     Language="razor"
+                     Title="MainLayout.razor"
+                     Text="@_trechoShell" />
+            <p class="mt-3 text-sm text-text-secondary">
+                A listagem usa <code class="font-mono">XFDataGrid</code>; o cadastro,
+                <code class="font-mono">XFTextInput</code> + <code class="font-mono">XFAlert</code>;
+                o retorno, <code class="font-mono">XFToastService</code>.
+            </p>
+        </ChildContent>
+    </XFCard>
+</div>
+
+@code {
+    private IReadOnlyList<XFStepItemModel> _camadas { get; } = new[]
+    {
+        new XFStepItemModel
+        {
+            Label = "Sample.Domain",
+            Description = "Entidades e contratos, zero dependências",
+            Status = XFStepStatus.Complete
+        },
+        new XFStepItemModel
+        {
+            Label = "Sample.Application",
+            Description = "Comandos, queries, handlers, validadores e DTOs",
+            Status = XFStepStatus.Complete
+        },
+        new XFStepItemModel
+        {
+            Label = "Sample.Infrastructure",
+            Description = "Repositório em memória",
+            Status = XFStepStatus.Complete
+        },
+        new XFStepItemModel
+        {
+            Label = "Sample.Api + Sample.Web",
+            Description = "Bordas: minimal API e este front Blazor",
+            Status = XFStepStatus.Current
+        }
+    };
+
+    private readonly IReadOnlyList<(string Nome, string Camada, string Papel)> _pacotes = new[]
+    {
+        ("XForge.Mediator", "Application/API", "IRequest, IRequestHandler, ISender e pipeline"),
+        ("XForge.Mediator.SourceGenerator", "Application", "descobre handlers em compile-time"),
+        ("XForge.Validation", "Application", "Validator<T> fluent com códigos padronizados"),
+        ("XForge.Mediator.Behaviors", "API/front", "ValidationBehavior<,> barra comandos inválidos"),
+        ("XForge.Mapper.SourceGenerator", "Application", "[XForgeMap] gera Cliente -> ClienteDto"),
+        ("XForge.DesignSystem", "Sample.Web", "shell, rail, grid, formulários e feedback")
+    };
+
+    private const string _trechoShell = """
+        <XFAppShell Theme="@Theme" Brand="@CurrentBrand">
+            <Rail><SampleRail /></Rail>
+            <AppBar><SampleAppBar /></AppBar>
+            <Footer><XFFooter ... /></Footer>
+            <ChildContent>@Body</ChildContent>
+        </XFAppShell>
+        """;
+}

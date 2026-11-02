@@ -36,6 +36,14 @@ app.MapPost("/clientes", async (CriarClienteCommand command, ISender sender, Can
     return Results.Created();
 });
 
+// listagem completa — o front (Sample.Web) consume via ISender no mesmo processo,
+// mas o endpoint existe para consumidores HTTP
+app.MapGet("/clientes", async (ISender sender, CancellationToken ct) =>
+{
+    var clientes = await sender.Send(new ObterClientesQuery(), ct);
+    return Results.Text(System.Text.Json.JsonSerializer.Serialize(clientes), "application/json");
+});
+
 app.MapGet("/clientes/{id:int}", async (int id, ISender sender, CancellationToken ct) =>
 {
     var cliente = await sender.Send(new ObterClienteQuery(id), ct);

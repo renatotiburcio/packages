@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Sample.Web</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- referencias de projeto, no mesmo padrao da Sample.Api -->
+    <ProjectReference Include="..\..\..\..\XForge.Mediator.Behaviors\src\XForge.Mediator.Behaviors\XForge.Mediator.Behaviors.csproj" />
+    <ProjectReference Include="..\..\..\..\XForge.Validation\src\XForge.Validation\XForge.Validation.csproj" />
+    <ProjectReference Include="..\..\..\..\XForge.DesignSystem\src\XForge.DesignSystem\XForge.DesignSystem.csproj" />
+    <ProjectReference Include="..\Sample.Domain\Sample.Domain.csproj" />
+    <ProjectReference Include="..\Sample.Application\Sample.Application.csproj" />
+    <ProjectReference Include="..\Sample.Infrastructure\Sample.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

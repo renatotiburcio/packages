@@ -1,0 +1,73 @@
+@page "/clientes/{Id:int}"
+@using Sample.Application.Clientes
+@inherits ComponentBase
+@inject ISender Sender
+
+<PageTitle>Cliente @Id</PageTitle>
+
+<XFBreadcrumb Class="mb-4">
+    <XFBreadcrumbItem Href="/clientes">Clientes</XFBreadcrumbItem>
+    <XFBreadcrumbItem Current="true">@(_cliente?.Nome ?? $"#{Id}")</XFBreadcrumbItem>
+</XFBreadcrumb>
+
+@if (_carregando)
+{
+    <XFSkeleton HeightClass="h-32" Shape="XFSkeletonShape.Rectangle" />
+}
+else if (_cliente is null)
+{
+    <XFAlert Intent="XFIntent.Warning" Title="Cliente não encontrado" Text="@($"Nenhum cliente com id {Id}.")" />
+}
+else
+{
+    <div class="grid gap-5 lg:grid-cols-3">
+        <XFCard Class="lg:col-span-2">
+            <Header>
+                <h1 class="text-sm font-semibold text-text-primary">@_cliente.Nome</h1>
+            </Header>
+            <ChildContent>
+                <dl class="grid gap-3 sm:grid-cols-2">
+                    <div>
+                        <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">Id</dt>
+                        <dd class="mt-0.5 font-mono text-sm text-text-primary">@_cliente.Id</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">E-mail</dt>
+                        <dd class="mt-0.5 text-sm text-text-primary">
+                            <a class="text-primary underline" href="mailto:@_cliente.Email">@_cliente.Email</a>
+                        </dd>
+                    </div>
+                </dl>
+            </ChildContent>
+        </XFCard>
+
+        <XFCard>
+            <Header>
+                <h2 class="text-sm font-semibold text-text-primary">Rota consultada</h2>
+            </Header>
+            <ChildContent>
+                <XFCode Variant="XFCodeVariant.Block"
+                         Text="GET /clientes/{id}"
+                         Language="http"
+                         Title="Endpoint equivalente" />
+                <p class="mt-3 text-xs text-text-muted">
+                    A query roda no mesmo processo via <code class="font-mono">ISender</code> — a API expõe a
+                    mesma operação por HTTP.
+                </p>
+            </ChildContent>
+        </XFCard>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private ClienteDto? _cliente;
+    private bool _carregando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _cliente = await Sender.Send(new ObterClienteQuery(Id));
+        _carregando = false;
+    }
+}

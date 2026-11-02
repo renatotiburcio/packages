@@ -1,0 +1,135 @@
+@page "/clientes/novo"
+@inherits ComponentBase
+@using XForge.Validation
+@inject ISender Sender
+@inject NavigationManager Navegacao
+@inject XFToastService Toasts
+
+<PageTitle>Novo cliente</PageTitle>
+
+<XFBreadcrumb Class="mb-4">
+    <XFBreadcrumbItem Href="/clientes">Clientes</XFBreadcrumbItem>
+    <XFBreadcrumbItem Current="true">Novo</XFBreadcrumbItem>
+</XFBreadcrumb>
+
+<h1 class="text-xl font-semibold text-text-primary">Novo cliente</h1>
+<p class="mt-1 text-sm text-text-muted">
+    O comando passa pelo <code class="rounded bg-surface-100 px-1 py-0.5 font-mono text-xs">ValidationBehavior</code>
+    do Mediator antes de chegar no handler.
+</p>
+
+<div class="mt-5 grid gap-5 lg:grid-cols-3">
+    <XFCard Class="lg:col-span-2">
+        <Header>
+            <h2 class="text-sm font-semibold text-text-primary">Dados do cliente</h2>
+        </Header>
+        <ChildContent>
+            <div class="space-y-4">
+                <XFTextInput @bind-Value="_nome"
+                             Label="Nome"
+                             Placeholder="Ex.: Maria Silva"
+                             HelperText="Entre 1 e 80 caracteres."
+                             Required="true"
+                             Disabled="@_enviando" />
+
+                <XFTextInput @bind-Value="_email"
+                             Label="E-mail"
+                             Type="XFTextInputType.Email"
+                             Placeholder="Ex.: maria@empresa.com"
+                             HelperText="Usado como contato principal."
+                             Required="true"
+                             Disabled="@_enviando" />
+
+                <div class="flex flex-wrap items-center gap-2 pt-2">
+                    <XFButton Variant="XFButtonVariant.Solid"
+                              Loading="@_enviando"
+                              Disabled="@_enviando"
+                              AriaLabel="Salvar cliente"
+                              OnClick="SalvarAsync">
+                        <ChildContent>Salvar</ChildContent>
+                    </XFButton>
+                    <XFButton Variant="XFButtonVariant.Ghost"
+                              AriaLabel="Cancelar e voltar"
+                              OnClick="@(() => Navegacao.NavigateTo("/clientes"))">
+                        <ChildContent>Cancelar</ChildContent>
+                    </XFButton>
+                </div>
+            </div>
+        </ChildContent>
+    </XFCard>
+
+    <div class="space-y-4">
+        @if (_erros.Count > 0)
+        {
+            <XFAlert Intent="XFIntent.Danger" Title="Não foi possível salvar">
+                <ul class="list-disc space-y-1 pl-5 text-sm">
+                    @foreach (var erro in _erros)
+                    {
+                        <li>@erro</li>
+                    }
+                </ul>
+            </XFAlert>
+        }
+
+        <XFCard>
+            <Header>
+                <h2 class="text-sm font-semibold text-text-primary">Regras aplicadas</h2>
+            </Header>
+            <ChildContent>
+                <ul class="list-disc space-y-1 pl-5 text-sm text-text-secondary">
+                    @foreach (var regra in Regras)
+                    {
+                        <li>@regra</li>
+                    }
+                </ul>
+            </ChildContent>
+        </XFCard>
+    </div>
+</div>
+
+@code {
+    private string? _nome;
+    private string? _email;
+    private bool _enviando;
+    private readonly List<string> _erros = new();
+
+    // espelho das regras do CriarClienteValidator, exibido no painel de apoio
+    private static IReadOnlyList<string> Regras { get; } = new[]
+    {
+        "Nome: obrigatório, de 1 a 80 caracteres.",
+        "E-mail: obrigatório e com formato válido."
+    };
+
+    private async Task SalvarAsync()
+    {
+        _erros.Clear();
+
+        if (_enviando)
+        {
+            return;
+        }
+
+        _enviando = true;
+
+        try
+        {
+            await Sender.Send(new CriarClienteCommand(_nome ?? string.Empty, _email ?? string.Empty));
+            await Toasts.SuccessAsync("Cliente criado", $"{_nome} foi cadastrado com sucesso.");
+            Navegacao.NavigateTo("/clientes");
+        }
+        catch (ValidationException ex)
+        {
+            // o ValidationBehavior barra o handler e devolve as falhas agregadas
+            foreach (var falha in ex.Errors)
+            {
+                _erros.Add($"{falha.PropertyName}: {falha.ErrorMessage}");
+            }
+
+            await Toasts.DangerAsync("Validação reprovada", $"{_erros.Count} problema(s) encontrado(s).");
+        }
+        finally
+        {
+            _enviando = false;
+        }
+    }
+}

@@ -1,0 +1,95 @@
+@page "/clientes"
+@using Sample.Application.Clientes
+@inherits ComponentBase
+@inject ISender Sender
+@inject NavigationManager Navegacao
+
+<PageTitle>Clientes</PageTitle>
+
+<div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <div>
+        <h1 class="text-xl font-semibold text-text-primary">Clientes</h1>
+        <p class="mt-1 text-sm text-text-muted">
+            Dados vindos de <code class="rounded bg-surface-100 px-1 py-0.5 font-mono text-xs">ObterClientesQuery</code>,
+            despachado pelo pipeline do Mediator.
+        </p>
+    </div>
+    <XFButton Variant="XFButtonVariant.Solid"
+              AriaLabel="Cadastrar novo cliente"
+              OnClick="@(() => Navegacao.NavigateTo("/clientes/novo"))">
+        <StartIcon>
+            <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                @((MarkupString)XFSvgIcons.Get("user-plus"))
+            </span>
+        </StartIcon>
+        <ChildContent>Novo cliente</ChildContent>
+    </XFButton>
+</div>
+
+@if (_carregando)
+{
+    <XFSkeletonTable Rows="4" Columns="3" ShowHeader="true" AriaLabel="Carregando clientes" />
+}
+else if (_erro is not null)
+{
+    <XFAlert Intent="XFIntent.Danger" Title="Falha ao carregar" Text="@_erro" />
+}
+else if (_clientes.Count == 0)
+{
+    <XFCard>
+        <Header>
+            <h2 class="text-sm font-semibold text-text-primary">Nenhum cliente cadastrado</h2>
+        </Header>
+        <ChildContent>
+            <p class="text-sm text-text-secondary">
+                Use o botao <strong>Novo cliente</strong> para criar o primeiro registro.
+            </p>
+        </ChildContent>
+    </XFCard>
+}
+else
+{
+    <XFDataGrid TItem="ClienteDto"
+                Items="@_clientes"
+                Caption="Clientes cadastrados"
+                ShowColumnChooser="true"
+                AllowPaging="true"
+                PageSize="10"
+                Striped="true"
+                Hoverable="true"
+                RowClicked="@AbrirDetalhe">
+        <Columns>
+            <XFDataGridColumn TItem="ClienteDto" Property="Id" Title="Id" Width="XFDataGridColumnWidth.Xs" />
+            <XFDataGridColumn TItem="ClienteDto" Property="Nome" Title="Nome" />
+            <XFDataGridColumn TItem="ClienteDto" Property="Email" Title="E-mail" />
+        </Columns>
+    </XFDataGrid>
+}
+
+@code {
+    private List<ClienteDto> _clientes = new();
+    private bool _carregando = true;
+    private string? _erro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var resultado = await Sender.Send(new ObterClientesQuery());
+            _clientes = resultado.ToList();
+        }
+        catch (Exception ex)
+        {
+            _erro = ex.Message;
+        }
+        finally
+        {
+            _carregando = false;
+        }
+    }
+
+    private void AbrirDetalhe(ClienteDto cliente)
+    {
+        Navegacao.NavigateTo($"/clientes/{cliente.Id}");
+    }
+}

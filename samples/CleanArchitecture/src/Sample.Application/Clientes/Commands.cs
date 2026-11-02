@@ -8,6 +8,9 @@ public sealed record CriarClienteCommand(string Nome, string Email) : IRequest;
 /// <summary>Query: buscar cliente por id.</summary>
 public sealed record ObterClienteQuery(int Id) : IRequest<ClienteDto?>;
 
+/// <summary>Query: listar todos os clientes (alimenta o grid do front).</summary>
+public sealed record ObterClientesQuery : IRequest<IReadOnlyList<ClienteDto>>;
+
 /// <summary>DTO de leitura — alvo do mapeamento gerado em compile-time.</summary>
 public sealed class ClienteDto
 {
