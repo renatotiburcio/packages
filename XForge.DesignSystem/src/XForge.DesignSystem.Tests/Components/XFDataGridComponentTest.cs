@@ -200,6 +200,10 @@ public class XFDataGridComponentTest : XForgeTestContext
         XFDataGridColumnVisibilityChangedEventArgs? args = null;
         var cut = Render<XFDataGrid<Row>>(parameters =>
         {
+            // Id explicito: o id auto-gerado (xf- + 8 hex aleatorios) pode conter
+            // "98" por acaso, o que faria o DoesNotContain abaixo falhar de forma
+            // intermitente e mascarar uma regressao real.
+            parameters.Add(p => p.Id, "grid-chooser");
             parameters.Add(p => p.Items, Rows);
             parameters.Add(p => p.ShowColumnChooser, true);
             parameters.Add(p => p.ColumnVisibilityChanged, value => args = value);
