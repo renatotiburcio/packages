@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/*
+ * Input do Tailwind para o Sample.Web.
+ *
+ * O CSS do design system (xf-designsystem.css) traz apenas os tokens de tema em
+ * runtime. Duas coisas sao necessarias aqui e nao podem vir de la:
+ *
+ *  1. @theme — sem ele o Tailwind nao conhece os nomes de cor do design system
+ *     (primary, surface-50, text-primary...) e simplesmente nao gera as classes
+ *     bg-primary / text-text-primary / bg-surface-50. O rail ficaria sem cor de
+ *     fundo, os cartoes sem borda, e assim por diante.
+ *  2. @source dos .razor do design system — os componentes montam muito do seu
+ *     CSS dentro de strings C# (GetRailClass, GetItemClass, ...), que o Tailwind
+ *     nao veria sem varrer esses arquivos.
+ */
+@source "../**/*.razor";
+@source "../**/*.cs";
+@source "../../../../../XForge.DesignSystem/src/XForge.DesignSystem/**/*.razor";
+@source "../../../../../XForge.DesignSystem/src/XForge.DesignSystem/**/*.razor.cs";
+@source "../../../../../XForge.DesignSystem/src/XForge.DesignSystem/**/*.cs";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Text colors */
+  --color-text-primary: 15 23 42;
+  --color-text-secondary: 51 65 85;
+  --color-text-muted: 100 116 139;
+  --color-text-subtle: 148 163 184;
+  --color-text-inverse: 255 255 255;
+
+  /* Semantic text colors (AA-compliant on bg-surface) */
+  --color-primary-link: 37 99 235;
+  --color-success-text: 21 128 61;
+  --color-warning-text: 120 53 15;
+  --color-danger-text: 153 27 27;
+  --color-info-text: 29 78 216;
+
+  /* Border colors */
+  --color-border: 226 232 240;
+  --color-border-light: 241 245 249;
+  --color-border-focus: 59 130 246;
+
+  /* Backgrounds */
+  --color-bg: 241 245 249;
+  --color-bg-surface: 255 255 255;
+
+  /* Surfaces */
+  --color-surface-50: 248 250 252;
+  --color-surface-100: 241 245 249;
+  --color-surface-200: 226 232 240;
+  --color-surface-300: 203 213 225;
+  --color-surface-400: 148 163 184;
+  --color-surface-500: 100 116 139;
+  --color-surface-600: 71 85 105;
+  --color-surface-700: 51 65 85;
+  --color-surface-800: 30 41 59;
+  --color-surface-900: 15 23 42;
+  --color-surface-950: 2 6 23;
+
+  /* Primary */
+  --color-primary: 99 102 241;
+  --color-primary-hover: 87 90 212;
+  --color-primary-active: 75 78 183;
+  --color-primary-contrast: 255 255 255;
+
+  /* Secondary */
+  --color-secondary: 100 116 139;
+  --color-secondary-hover: 71 85 105;
+  --color-secondary-active: 51 65 85;
+  --color-secondary-contrast: 255 255 255;
+
+  /* Semantic colors */
+  --color-success: 22 163 74;
+  --color-success-hover: 21 128 61;
+  --color-success-active: 14 101 48;
+  --color-success-contrast: 255 255 255;
+
+  --color-warning: 245 158 11;
+  --color-warning-hover: 217 119 6;
+  --color-warning-active: 180 83 9;
+  --color-warning-contrast: 15 23 42;
+
+  --color-danger: 220 38 38;
+  --color-danger-hover: 185 28 28;
+  --color-danger-active: 153 27 27;
+  --color-danger-contrast: 255 255 255;
+
+  --color-info: 37 99 235;
+  --color-info-hover: 29 78 216;
+  --color-info-active: 30 64 175;
+  --color-info-contrast: 255 255 255;
+}
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@layer base {
+
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  #app {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+}
+
+.blazor-error-ui {
+  background: var(--color-danger, #dc2626);
+  bottom: 0;
+  box-shadow: 0 -1px 2px rgb(0 0 0 / 20%);
+  display: none;
+  left: 0;
+  padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+  position: fixed;
+  right: 0;
+  z-index: 1000;
+}
+
+.blazor-error-ui.show {
+  display: block;
+}

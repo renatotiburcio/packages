@@ -15,10 +15,10 @@
         <div class="truncate text-xs text-text-muted">Clean Architecture com XForge.DesignSystem</div>
     </div>
 
-    <XFButton Variant="XFButtonVariant.Ghost"
-              Size="XFExtendedSize.Sm"
+    <XFButton Variant="@XFButtonVariant.Ghost"
+              Size="@XFExtendedSize.Sm"
               AriaLabel="@(IsDark ? "Ativar tema claro" : "Ativar tema escuro")"
-              OnClick="ToggleAsync">
+              OnClick="@ToggleAsync">
         <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
             @((MarkupString)XFSvgIcons.Get(IsDark ? "sun" : "moon"))
         </span>
@@ -29,8 +29,12 @@
     [Parameter] public bool IsDark { get; set; }
     [Parameter] public EventCallback<bool> OnToggleTheme { get; set; }
 
-    private string BrandTitle => BrandMetadata.GetBrandTitle(NavigationState.CurrentBrand);
-    private string BrandIcon => BrandMetadata.GetBrandIconSvg(NavigationState.CurrentBrand);
+    private string EffectiveBrand => string.IsNullOrWhiteSpace(NavigationState.CurrentBrand)
+        ? "clientes"
+        : NavigationState.CurrentBrand;
+
+    private string BrandTitle => BrandMetadata.GetBrandTitle(EffectiveBrand);
+    private string BrandIcon => BrandMetadata.GetBrandIconSvg(EffectiveBrand);
 
     private async Task ToggleAsync() => await OnToggleTheme.InvokeAsync();
 }

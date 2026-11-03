@@ -1,6 +1,5 @@
 @page "/clientes"
 @using Sample.Application.Clientes
-@inherits ComponentBase
 @inject ISender Sender
 @inject NavigationManager Navegacao
 
@@ -14,9 +13,9 @@
             despachado pelo pipeline do Mediator.
         </p>
     </div>
-    <XFButton Variant="XFButtonVariant.Solid"
+    <XFButton Variant="@XFButtonVariant.Solid"
               AriaLabel="Cadastrar novo cliente"
-              OnClick="@(() => Navegacao.NavigateTo("/clientes/novo"))">
+              OnClick="@(() => Navegacao.NavigateTo("/clientes/novo", forceLoad: true))">
         <StartIcon>
             <span class="inline-flex h-4 w-4 items-center justify-center" aria-hidden="true">
                 @((MarkupString)XFSvgIcons.Get("user-plus"))
@@ -90,6 +89,9 @@ else
 
     private void AbrirDetalhe(ClienteDto cliente)
     {
-        Navegacao.NavigateTo($"/clientes/{cliente.Id}");
+        // forceLoad: true porque neste app a navegacao SPA a partir de uma pagina nao
+        // re-renderiza o Router (a URL muda mas o RouteView mantem a rota anterior).
+        // A navegacao via rail funciona normalmente; a partir de pagas precisa do reload.
+        Navegacao.NavigateTo($"/clientes/{cliente.Id}", forceLoad: true);
     }
 }

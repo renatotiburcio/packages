@@ -8,8 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <!-- O Sdk.Web ja referencia Microsoft.AspNetCore.App; explicitar duplica a
+         referencia e muda a resolucao das assemblies de compilacao do Razor. -->
   </ItemGroup>
+
+  <!--
+    O CSS do design system traz somente os tokens de tema. As classes utilitarias
+    (.flex, .h-5, .grid...) sao geradas pelo Tailwind a partir dos .razor do projeto.
+    Sem este target o app sobe sem estilo nenhum.
+    O build e ignorado quando node_modules nao existe (ex.: restore em CI sem npm).
+  -->
+  <Target Name="BuildTailwindCSS" BeforeTargets="Build" Condition="Exists('node_modules')">
+    <Exec Command="npm run build:css" StandardOutputImportance="low" />
+  </Target>
 
   <ItemGroup>
     <!-- referencias de projeto, no mesmo padrao da Sample.Api -->

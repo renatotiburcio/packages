@@ -12,6 +12,9 @@
     <Rail>
         <SampleRail />
     </Rail>
+    <Sidebar>
+        <SampleSidebar />
+    </Sidebar>
     <AppBar>
         <SampleAppBar IsDark="@_isDark" OnToggleTheme="@ToggleThemeAsync" />
     </AppBar>
@@ -26,9 +29,7 @@
         <XFDialogProvider />
         <XFDrawerProvider />
         <XFToastProvider />
-        <div @key="_renderKey">
-            @Body
-        </div>
+        @Body
     </ChildContent>
 </XFAppShell>
 
@@ -46,9 +47,20 @@
         ? "clientes"
         : NavigationState.CurrentBrand;
 
+    [Inject] private NavigationManager Navegacao { get; set; } = default!;
+
     protected override void OnInitialized()
     {
         NavigationState.BrandChanged += OnBrandChanged;
+        Navegacao.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // Forca o layout a re-renderizar em TODA navegacao, inclusive quando a marca
+        // nao muda (ex.: /clientes -> /clientes/novo). Sem isto o RouteView mantém o
+        // RouteData anterior e o conteúdo não troca apesar da URL mudar.
+        InvokeAsync(StateHasChanged);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -58,7 +70,9 @@
             return;
         }
 
-        await NavigationState.InitializeAsync(SampleNavigation.RailItems);
+        // NAO chamar NavigationState.InitializeAsync aqui: XFRail.OnInitializedAsync
+        // ja registra os itens. Chamar duas vezes limpava e re-registrava a lista,
+        // e o item "Clientes" sumia do rail interativo.
         await InitializeThemeAsync();
         StateHasChanged();
     }
@@ -101,6 +115,7 @@
     public void Dispose()
     {
         NavigationState.BrandChanged -= OnBrandChanged;
+        Navegacao.LocationChanged -= OnLocationChanged;
         GC.SuppressFinalize(this);
     }
 }

@@ -6,7 +6,6 @@ using Sample.Infrastructure;
 using XForge.DesignSystem.Components.Feedback.Toast;
 using XForge.DesignSystem.Components.Overlays.Dialog;
 using XForge.DesignSystem.Components.Overlays.Drawer;
-using XForge.DesignSystem.Components.Utilities.BreakpointObserver;
 using XForge.DesignSystem.Services;
 using XForge.Localization.Json;
 using XForge.Mediator;
@@ -26,12 +25,13 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 builder.Services.AddXForgeMediatorGenerated();                                 // Mediator (source generator)
 
 // ---- Servicos de shell do design system ----
+// XFBreakpointService ja vem de AddXForgeComponents (Scoped, para funcionar tanto no
+// Blazor Server quanto no WASM).
 builder.Services.AddScoped<NavigationStateService>();
 builder.Services.AddSingleton<BrandMetadataService>();
 builder.Services.AddScoped<XFDialogService>();
 builder.Services.AddScoped<XFDrawerService>();
 builder.Services.AddScoped<XFToastService>();
-builder.Services.AddSingleton<XFBreakpointService>();
 
 // ---- Marcas do shell (o rail usa a cor/icone da marca ativa) ----
 builder.Services.Configure<BrandMetadataOptions>(options =>
@@ -40,6 +40,8 @@ builder.Services.Configure<BrandMetadataOptions>(options =>
         XForge.DesignSystem.Components.Icon.XFSvgIcons.Get("users"));
     options.Brands["arquitetura"] = new BrandMetadata("Arquitetura", "#10b981",
         XForge.DesignSystem.Components.Icon.XFSvgIcons.Get("layer-group"));
+    options.Brands["inicio"] = new BrandMetadata("Início", "#6366f1",
+        XForge.DesignSystem.Components.Icon.XFSvgIcons.Get("house"));
 });
 
 // ---- Blazor: render interativo no servidor (sem projeto WASM separado) ----
@@ -51,10 +53,14 @@ var app = builder.Build();
 // AddXForgeComponents carrega os locales pt-BR/en/es, mas o provider nasce com
 // CurrentCulture = "en". Sem escolher pt-BR aqui, as chaves caem no locale ingles
 // e voltam cruas no markup (ex.: id="appshell.main_id").
-app.Services.GetRequiredService<XFJsonLocaleProvider>().CurrentCulture = "pt-BR";
+if (app.Services.GetService<XFJsonLocaleProvider>() is { } locale)
+{
+    locale.CurrentCulture = "pt-BR";
+}
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.MapStaticAssets();
 
 // Dados de demonstracao: o repositorio e em memoria e nasce vazio, entao sem este
 // seed o grid nunca mostraria linhas. Marcado como demo — remover em uso real.

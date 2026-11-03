@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using XForge.DesignSystem.Services.AI;
 using XForge.DesignSystem.Components.Utilities.Timing;
+using XForge.DesignSystem.Components.Utilities.BreakpointObserver;
 using XForge.DesignSystem.Components.Icon;
 using XForge.Localization;
 using XForge.Localization.Json;
@@ -11,8 +12,17 @@ public static class XForgeServiceCollectionExtensions
 {
     public static IServiceCollection AddXForgeComponents(this IServiceCollection services)
     {
-        services.AddSingleton<Debouncer>();
-        services.AddSingleton<Throttler>();
+        // Debouncer e Throttler exigem (delayMs, Action) no construtor. Registrar o tipo
+        // puro faz o provider explodir na validacao (ambiente de desenvolvimento) com
+        // "Unable to resolve service for type 'System.Int32'". A factory entrega os dois
+        // argumentos; a acao vazia e o padrao — quem precisa de comportamento cria a sua.
+        services.AddSingleton(sp => new Debouncer(250, () => { }));
+        services.AddSingleton(sp => new Throttler(250, () => { }));
+
+        // XFBreakpointService consome IJSRuntime, que e scoped no Blazor Server e
+        // singleton no WASM. Scoped resolve nos dois casos (scoped pode consumir
+        // singleton); singleton quebraria no Blazor Server em validacao.
+        services.AddScoped<XFBreakpointService>();
 
         // AIChatService depende de HttpClient — sem este registro o servico nao resolve.
         if (!services.Any(d => d.ServiceType == typeof(HttpClient)))

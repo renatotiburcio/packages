@@ -1,5 +1,4 @@
 @page "/clientes/novo"
-@inherits ComponentBase
 @using XForge.Validation
 @inject ISender Sender
 @inject NavigationManager Navegacao
@@ -41,16 +40,16 @@
                              Disabled="@_enviando" />
 
                 <div class="flex flex-wrap items-center gap-2 pt-2">
-                    <XFButton Variant="XFButtonVariant.Solid"
+                    <XFButton Variant="@XFButtonVariant.Solid"
                               Loading="@_enviando"
                               Disabled="@_enviando"
                               AriaLabel="Salvar cliente"
-                              OnClick="SalvarAsync">
+                              OnClick="@SalvarAsync">
                         <ChildContent>Salvar</ChildContent>
                     </XFButton>
-                    <XFButton Variant="XFButtonVariant.Ghost"
+                    <XFButton Variant="@XFButtonVariant.Ghost"
                               AriaLabel="Cancelar e voltar"
-                              OnClick="@(() => Navegacao.NavigateTo("/clientes"))">
+                              OnClick="@(() => Navegacao.NavigateTo("/clientes", forceLoad: true))">
                         <ChildContent>Cancelar</ChildContent>
                     </XFButton>
                 </div>
@@ -115,7 +114,7 @@
         {
             await Sender.Send(new CriarClienteCommand(_nome ?? string.Empty, _email ?? string.Empty));
             await Toasts.SuccessAsync("Cliente criado", $"{_nome} foi cadastrado com sucesso.");
-            Navegacao.NavigateTo("/clientes");
+            Navegacao.NavigateTo("/clientes", forceLoad: true);
         }
         catch (ValidationException ex)
         {

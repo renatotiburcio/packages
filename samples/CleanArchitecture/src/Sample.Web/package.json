@@ -1,0 +1,14 @@
+{
+  "name": "sample-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:css": "tailwindcss -i ./wwwroot/app.css -o ./wwwroot/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./wwwroot/app.css -o ./wwwroot/css/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.4",
+    "tailwindcss": "^4.1.14"
+  }
+}
